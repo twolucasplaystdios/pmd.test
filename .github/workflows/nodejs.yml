@@ -11,7 +11,7 @@ jobs:
     concurrency: ci-${{ github.ref }} # Recommended if you intend to make multiple deployments in quick succession.
     runs-on: ubuntu-latest
     steps:
-      - name: Deploy Gui Repo
+      - name: Workflow Dispatch and wait
         uses: aurelien-baudet/workflow-dispatch@v2.1.1
         with:
           workflow: PenguinMod/PenguinMod-Gui/tree/develop/.github/workflows/node.js.yml
