@@ -12,7 +12,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Deploy Gui Repo
-        uses: aurelien-baudet/workflow-dispatch@v2.1.1
+        uses: aurelien-baudet/workflow-dispatch@2.1.1
         with:
           workflow: PenguinMod/PenguinMod-Gui/tree/develop/.github/workflows/node.js.yml
           token: ${{ secrets.t }}
