@@ -98,7 +98,7 @@ class Scratch3PenBlocks {
      * @type {{min: number, max: number}}
      */
     static get PEN_SIZE_RANGE () {
-        return {min: 1, max: 1200};
+        return {min: 1, max: 1e308};
     }
 
     /**
@@ -433,7 +433,7 @@ class Scratch3PenBlocks {
                     blockType: BlockType.COMMAND,
                     text: formatMessage({
                         id: 'pen.setShade',
-                        default: 'set pen shade to [SHADE]',
+                        default: 'LEGACY - set pen shade to [SHADE]',
                         description: 'legacy pen blocks - set pen shade'
                     }),
                     arguments: {
@@ -442,14 +442,14 @@ class Scratch3PenBlocks {
                             defaultValue: 1
                         }
                     },
-                    hideFromPalette: true
+                    hideFromPalette: false
                 },
                 {
                     opcode: 'changePenShadeBy',
                     blockType: BlockType.COMMAND,
                     text: formatMessage({
                         id: 'pen.changeShade',
-                        default: 'change pen shade by [SHADE]',
+                        default: 'LEGACY - change pen shade by [SHADE]',
                         description: 'legacy pen blocks - change pen shade'
                     }),
                     arguments: {
@@ -458,14 +458,14 @@ class Scratch3PenBlocks {
                             defaultValue: 1
                         }
                     },
-                    hideFromPalette: true
+                    hideFromPalette: false
                 },
                 {
                     opcode: 'setPenHueToNumber',
                     blockType: BlockType.COMMAND,
                     text: formatMessage({
                         id: 'pen.setHue',
-                        default: 'set pen color to [HUE]',
+                        default: 'LEGACY - set pen color to [HUE]',
                         description: 'legacy pen blocks - set pen color to number'
                     }),
                     arguments: {
@@ -474,14 +474,14 @@ class Scratch3PenBlocks {
                             defaultValue: 1
                         }
                     },
-                    hideFromPalette: true
+                    hideFromPalette: false
                 },
                 {
                     opcode: 'changePenHueBy',
                     blockType: BlockType.COMMAND,
                     text: formatMessage({
                         id: 'pen.changeHue',
-                        default: 'change pen color by [HUE]',
+                        default: 'LEGACY - change pen color by [HUE]',
                         description: 'legacy pen blocks - change pen color'
                     }),
                     arguments: {
@@ -490,7 +490,7 @@ class Scratch3PenBlocks {
                             defaultValue: 1
                         }
                     },
-                    hideFromPalette: true
+                    hideFromPalette: false
                 }
             ],
             menus: {
