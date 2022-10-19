@@ -33,7 +33,8 @@ class Scratch3OperatorsBlocks {
             operator_contains: this.contains,
             operator_mod: this.mod,
             operator_round: this.round,
-            operator_mathop: this.mathop
+            operator_mathop: this.mathop,
+            operator_advlog: this.advlog,
         };
     }
 
@@ -151,6 +152,10 @@ class Scratch3OperatorsBlocks {
         case '10 ^': return Math.pow(10, n);
         }
         return 0;
+    }
+    
+    advlog (args) {
+        return Math.log(Cast.toNumber(args.NUM2)) / Math.log(Cast.toNumber(args.NUM1))
     }
 }
 
