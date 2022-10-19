@@ -1,4 +1,4 @@
-## TurboWarp/scratch-vm
+## TurboWarp/scratch-vmm
 
 Modified Scratch VM with a JIT compiler and more features.
 
