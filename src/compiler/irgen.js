@@ -442,6 +442,12 @@ class ScriptTreeGenerator {
             };
             }
         }
+        case 'operator_advlog':
+            return {
+                kind: 'op.advlog',
+                left: this.descendInputOfBlock(block, 'NUM1'),
+                right: this.descendInputOfBlock(block, 'NUM2')
+            };
         case 'operator_mod':
             return {
                 kind: 'op.mod',
