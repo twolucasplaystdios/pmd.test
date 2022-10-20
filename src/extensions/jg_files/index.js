@@ -34,6 +34,7 @@ class JgFilesBlocks {
                         default: 'can files be used?',
                         description: 'Block that returns whether the user\'s machine allows for Scratch to read their files'
                     }),
+                    disableMonitor: false,
                     blockType: BlockType.BOOLEAN
                 },
                 {
@@ -45,6 +46,26 @@ class JgFilesBlocks {
                     }),
                     disableMonitor: true,
                     blockType: BlockType.REPORTER
+                },
+                {
+                    opcode: 'askUserForFileOfType',
+                    text: formatMessage({
+                        id: 'jgFiles.blocks.askUserForFileOfType',
+                        default: 'ask user for a file of type [FILE_TYPE]',
+                        description: 'Block that returns the contents of a file the user provides. The file picker will only allow the file types specified. The block will return no text if it was rejected.'
+                    }),
+                    disableMonitor: true,
+                    blockType: BlockType.REPORTER,
+                    arguments: {
+                        FILE_TYPE: {
+                            type: ArgumentType.STRING,
+                            defaultValue: formatMessage({
+                                id: 'jgFiles.file_type_accept_area',
+                                default: 'any',
+                                description: 'Default file types accepted for the file picker on the ask user for file block'
+                            })
+                        }
+                    }
                 },
                 {
                     opcode: 'downloadFile',
@@ -112,7 +133,7 @@ class JgFilesBlocks {
         return (window.FileReader != null);
     }
 
-    askUserForFile(args, util) {
+    __askUserForFile(acceptTypes) {
         return new Promise((resolve, _) => {
             const fileReader = new FileReader();
             fileReader.onload = (e) => {
@@ -120,6 +141,9 @@ class JgFilesBlocks {
             }
             const input = document.createElement("input");
             input.type = "file";
+            if (acceptTypes != null) {
+                input.accept = acceptTypes
+            }
             input.style.display = "none";
             document.body.append(input);
             input.onchange = () => {
@@ -132,8 +156,25 @@ class JgFilesBlocks {
                 }
                 input.remove();
             }
+            input.onblur = () => {
+                input.onchange();
+            }
+            input.focus();
             input.click();
         })
+    }
+
+    askUserForFile(args, util) {
+        return this.__askUserForFile(null);
+    }
+
+    askUserForFileOfType(args, util) {
+        const fileTypesAllowed = [];
+        const input = String(args.FILE_TYPE).toLowerCase().replace(/.,/gmi, "");
+        input.split(" ").forEach(type => {
+            fileTypesAllowed.push("." + type);
+        })
+        return this.__askUserForFile(fileTypesAllowed.join(","));
     }
 
     downloadFile(args, util) {
