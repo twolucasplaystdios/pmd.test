@@ -21,7 +21,7 @@ class JgFilesBlocks {
      */
     getInfo() {
         return {
-            id: 'jg_files',
+            id: 'jgFiles',
             name: 'Files',
             color1: '#ffbb00',
             color2: '#ffaa00',
@@ -30,7 +30,7 @@ class JgFilesBlocks {
                 {
                     opcode: 'isFileReaderSupported',
                     text: formatMessage({
-                        id: 'jg_files.blocks.canFilesBeUsed',
+                        id: 'jgFiles.blocks.canFilesBeUsed',
                         default: 'can files be used?',
                         description: 'Block that returns whether the user\'s machine allows for Scratch to read their files'
                     }),
@@ -39,7 +39,7 @@ class JgFilesBlocks {
                 {
                     opcode: 'askUserForFile',
                     text: formatMessage({
-                        id: 'jg_files.blocks.askUserForFile',
+                        id: 'jgFiles.blocks.askUserForFile',
                         default: 'ask user for a file',
                         description: 'Block that returns the contents of a file the user provides. The block will return no text if it was rejected.'
                     }),
@@ -49,7 +49,7 @@ class JgFilesBlocks {
                 {
                     opcode: 'downloadFile',
                     text: formatMessage({
-                        id: 'jg_files.blocks.downloadFile',
+                        id: 'jgFiles.blocks.downloadFile',
                         default: 'download content [FILE_CONTENT] as file name [FILE_NAME]',
                         description: 'Block that downloads a file. The content is what the file has inside, and the file name is what the file will save as on the user\'s computer.'
                     }),
@@ -58,7 +58,7 @@ class JgFilesBlocks {
                         FILE_CONTENT: {
                             type: ArgumentType.STRING,
                             defaultValue: formatMessage({
-                                id: 'jg_files.file_content_name_area',
+                                id: 'jgFiles.file_content_name_area',
                                 default: 'Hello!',
                                 description: 'Default text for the file\'s content'
                             })
@@ -66,7 +66,7 @@ class JgFilesBlocks {
                         FILE_NAME: {
                             type: ArgumentType.STRING,
                             defaultValue: formatMessage({
-                                id: 'jg_files.file_name_name_area',
+                                id: 'jgFiles.file_name_name_area',
                                 default: 'text.txt',
                                 description: 'Default text for the file\'s name'
                             })

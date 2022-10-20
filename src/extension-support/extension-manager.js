@@ -27,8 +27,8 @@ const builtinExtensions = {
     // tw: core extension
     tw: () => require('../extensions/tw'),
     // jg: jeremyes esxsitenisonsnsn
-    // jg_files: support for reading user files
-    jg_files: () => require('../extensions/jg_files')
+    // jgFiles: support for reading user files
+    jgFiles: () => require('../extensions/jg_files')
 };
 
 /**
