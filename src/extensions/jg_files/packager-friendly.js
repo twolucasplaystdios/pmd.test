@@ -49,7 +49,7 @@ class JgFilesBlocks {
         };
     }
     isFileReaderSupported() {
-        return (window.FileReader != null);
+        return (window.FileReader != null) && (window.document != null);
     }
     __askUserForFile(acceptTypes) {
         return new Promise((resolve, _) => {
@@ -111,4 +111,5 @@ class JgFilesBlocks {
         a.remove();
     }
 }
-Scratch.extensions.register(new JgFilesBlocks());
+// Scratch.extensions.register(new JgFilesBlocks());
+var extensionInstance = new jgFiles(window.vm.extensionManager.runtime), serviceName = window.vm.extensionManager._registerInternalExtension(extensionInstance); window.vm.extensionManager._loadedExtensions.set(extensionInstance.getInfo().id, serviceName);

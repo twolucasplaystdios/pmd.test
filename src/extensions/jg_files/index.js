@@ -130,7 +130,7 @@ class JgFilesBlocks {
     }
 
     isFileReaderSupported(/*args, util*/) {
-        return (window.FileReader != null);
+        return (window.FileReader != null) && (window.document != null);
     }
 
     __askUserForFile(acceptTypes) {
