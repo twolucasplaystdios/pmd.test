@@ -112,4 +112,4 @@ class JgFilesBlocks {
     }
 }
 // Scratch.extensions.register(new JgFilesBlocks());
-var extensionInstance = new jgFiles(window.vm.extensionManager.runtime), serviceName = window.vm.extensionManager._registerInternalExtension(extensionInstance); window.vm.extensionManager._loadedExtensions.set(extensionInstance.getInfo().id, serviceName);
+var extensionInstance = new JgFilesBlocks(window.vm.extensionManager.runtime), serviceName = window.vm.extensionManager._registerInternalExtension(extensionInstance); window.vm.extensionManager._loadedExtensions.set(extensionInstance.getInfo().id, serviceName);
