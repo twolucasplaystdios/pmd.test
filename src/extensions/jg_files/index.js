@@ -171,6 +171,8 @@ class JgFilesBlocks {
     askUserForFileOfType(args, util) {
         const fileTypesAllowed = [];
         const input = String(args.FILE_TYPE).toLowerCase().replace(/.,/gmi, "");
+        if (input == "any")
+            return this.__askUserForFile(null);
         input.split(" ").forEach(type => {
             fileTypesAllowed.push("." + type);
         })
