@@ -112,4 +112,19 @@ class JgFilesBlocks {
     }
 }
 // Scratch.extensions.register(new JgFilesBlocks());
-var extensionInstance = new JgFilesBlocks(window.vm.extensionManager.runtime), serviceName = window.vm.extensionManager._registerInternalExtension(extensionInstance); window.vm.extensionManager._loadedExtensions.set(extensionInstance.getInfo().id, serviceName);
+(function () {
+  var extensionClass = JgFilesBlocks;
+  if (typeof window === "undefined" || !window.vm) {
+    console.error("JgFilesBlocks is not supported in this environment.");
+  } else {
+    var extensionInstance = new extensionClass(
+      window.vm.extensionManager.runtime
+    );
+    var serviceName =
+      window.vm.extensionManager._registerInternalExtension(extensionInstance);
+    window.vm.extensionManager._loadedExtensions.set(
+      extensionInstance.getInfo().id,
+      serviceName
+    );
+    console.log("JgFilesBlocks has loaded.");
+  }
