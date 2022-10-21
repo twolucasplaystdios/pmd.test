@@ -6,7 +6,8 @@ class JgFilesBlocks {
         this.menuIconURI = null;
         this.blockIconURI = null;
         this.colorScheme = ["#ffbb00", "ffaa00"];
-      };
+      }
+      
     getInfo() {
         return {
             id: 'JgFilesBlocks',
