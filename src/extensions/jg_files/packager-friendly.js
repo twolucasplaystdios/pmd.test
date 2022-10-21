@@ -1,4 +1,12 @@
 class JgFilesBlocks {
+    constructor(runtime, id) {
+        //cq: ignore
+        //ext stuff
+        this.runtime = runtime;
+        this.menuIconURI = null;
+        this.blockIconURI = null;
+        this.colorScheme = ["#ffbb00", "ffaa00"];
+      };
     getInfo() {
         return {
             id: 'jgFiles',
@@ -127,4 +135,4 @@ class JgFilesBlocks {
       serviceName
     );
     console.log("JgFilesBlocks has loaded.");
-  }
+  }});
