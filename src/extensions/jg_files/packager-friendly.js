@@ -9,10 +9,12 @@ class JgFilesBlocks {
       };
     getInfo() {
         return {
-            id: 'jgFiles',
+            id: 'JgFilesBlocks',
             name: 'Files',
-            color1: '#ffbb00',
-            color2: '#ffaa00',
+            blockIconURI: this.blockIconURI,
+            menuIconURI: this.menuIconURI,
+            color1: this.colorScheme[0],
+            color2: this.colorScheme[1],
             blocks: [
                 {
                     opcode: 'isFileReaderSupported',
@@ -118,7 +120,7 @@ class JgFilesBlocks {
         window.URL.revokeObjectURL(url);
         a.remove();
     }
-}
+};
 // Scratch.extensions.register(new JgFilesBlocks());
 (function () {
   var extensionClass = JgFilesBlocks;
