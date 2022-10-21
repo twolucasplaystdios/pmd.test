@@ -21,7 +21,7 @@ class JgFilesBlocks {
      */
     getInfo() {
         return {
-            id: 'jgFiles,
+            id: 'jgFiles',
             name: 'Files',
             color1: '#ffbb00',
             color2: '#ffaa00',
