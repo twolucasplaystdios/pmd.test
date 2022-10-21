@@ -55,9 +55,9 @@ class JgFilesBlocks {
                             defaultValue: 'text.txt'
                         }
                     }
-                }
+                },
             ]
-        };
+        }
     }
     isFileReaderSupported() {
         return (window.FileReader != null) && (window.document != null);
