@@ -21,7 +21,7 @@ class JgFilesBlocks {
      */
     getInfo() {
         return {
-            id: 'jgFiles',
+            id: 'https://rawcdn.githack.com/PenguinMod/PenguinMod-Vm/b33fe88d048cede243f4398d6965d0539db5e533/src/extensions/jg_files/index.js',
             name: 'Files',
             color1: '#ffbb00',
             color2: '#ffaa00',
