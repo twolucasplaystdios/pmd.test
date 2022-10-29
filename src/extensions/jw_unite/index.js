@@ -44,7 +44,7 @@ class jwUnite {
             ]
         };
     }
-    whenAnything(args, util) {
+    whenanything(args, util) {
         return Boolean(args.ANYTHING || false)
     }
 }
