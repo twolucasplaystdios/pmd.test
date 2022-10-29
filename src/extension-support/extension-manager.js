@@ -1,4 +1,5 @@
 const dispatch = require('../dispatch/central-dispatch');
+const jwUnite = require('../extensions/jw_unite');
 const log = require('../util/log');
 const maybeFormatMessage = require('../util/maybe-format-message');
 
@@ -30,7 +31,10 @@ const builtinExtensions = {
     // jgFiles: support for reading user files
     jgFiles: () => require('../extensions/jg_files'),
     // jgWebsiteRequests: fetch GET and POST requests to apis & websites
-    jgWebsiteRequests: () => require("../extensions/jg_websiteRequests")
+    jgWebsiteRequests: () => require("../extensions/jg_websiteRequests"),
+    // jw: hello it is i jwklong
+    // jwUnite: literal features that should of been added in the first place
+    jwUnite: () => require("../extensions/jw_unite")
 };
 
 // CCW limited
