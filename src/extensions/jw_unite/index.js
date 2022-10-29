@@ -113,6 +113,30 @@ class jwUnite {
                             })
                         }
                     }
+                },
+                {
+                    opcode: 'readLineInMultilineText',
+                    text: formatMessage({
+                        id: 'jwUnite.blocks.readLineInMultilineText',
+                        default: 'read line #[LINE] in [TEXT]',
+                        description: 'Reads a certain line in text with multiple lines.'
+                    }),
+                    disableMonitor: true,
+                    blockType: BlockType.REPORTER,
+                    arguments: {
+                        LINE: {
+                            type: ArgumentType.NUMBER,
+                            defaultValue: 1
+                        },
+                        TEXT: {
+                            type: ArgumentType.STRING,
+                            defaultValue: formatMessage({
+                                id: 'jwUnite.readLineInMultilineText_text',
+                                default: 'Text with multiple lines here',
+                                description: 'The text to read lines from.'
+                            })
+                        }
+                    }
                 }
             ]
         };
@@ -138,6 +162,12 @@ class jwUnite {
         const string = String(args.TEXT);
         const substring = string.substring(index1, index2);
         return substring;
+    }
+    readLineInMultilineText(args, util) {
+        const line = (Number(args.LINE) ? Number(args.LINE) : 1) - 1;
+        const text = String(args.TEXT);
+        const readline = text.split("\n")[line] || "";
+        return readline;
     }
 }
 
