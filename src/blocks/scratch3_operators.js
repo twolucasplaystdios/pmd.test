@@ -155,7 +155,7 @@ class Scratch3OperatorsBlocks {
     }
     
     advlog (args) {
-        return Math.log(Cast.toNumber(args.NUM2)) / Math.log(Cast.toNumber(args.NUM1))
+        return Math.log(Cast.toNumber(args.NUM2)) / Math.log(Cast.toNumber(args.NUM1));
     }
 }
 
