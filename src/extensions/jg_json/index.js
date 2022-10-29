@@ -46,11 +46,7 @@ class JgJSONBlocks {
                         },
                         JSON: {
                             type: ArgumentType.STRING,
-                            defaultValue: formatMessage({
-                                id: 'jgJSON.getValueFromJSON_json',
-                                default: '{"key": "value"}',
-                                description: 'The JSON to get a value from.'
-                            })
+                            defaultValue: '{"key": "value"}'
                         }
                     }
                 },
@@ -82,11 +78,7 @@ class JgJSONBlocks {
                         },
                         JSON: {
                             type: ArgumentType.STRING,
-                            defaultValue: formatMessage({
-                                id: 'jgJSON.setValueToKeyInJSON_json',
-                                default: '{}',
-                                description: 'The JSON to set a key in.'
-                            })
+                            defaultValue: "{}"
                         }
                     }
                 }
