@@ -57,6 +57,62 @@ class jwUnite {
                             alt: 'Blue Flag'
                         }
                     }
+                },
+                {
+                    opcode: 'indexOfTextInText',
+                    text: formatMessage({
+                        id: 'jwUnite.blocks.indexOfTextInText',
+                        default: 'index of [TEXT1] in [TEXT2]',
+                        description: 'Finds the position of some text in another piece of text.'
+                    }),
+                    disableMonitor: true,
+                    blockType: BlockType.REPORTER,
+                    arguments: {
+                        TEXT1: {
+                            type: ArgumentType.STRING,
+                            defaultValue: formatMessage({
+                                id: 'jwUnite.indexof_textToFind',
+                                default: 'world',
+                                description: 'The text to look for.'
+                            })
+                        },
+                        TEXT2: {
+                            type: ArgumentType.STRING,
+                            defaultValue: formatMessage({
+                                id: 'jwUnite.indexof_textToSearch',
+                                default: 'Hello world!',
+                                description: 'The text to search in.'
+                            })
+                        }
+                    }
+                },
+                {
+                    opcode: 'getLettersFromIndexToIndexInText',
+                    text: formatMessage({
+                        id: 'jwUnite.blocks.getLettersFromIndexToIndexInText',
+                        default: 'get letters from [INDEX1] to [INDEX2] in [TEXT]',
+                        description: 'Gets a part of text using the indexes specified.'
+                    }),
+                    disableMonitor: true,
+                    blockType: BlockType.REPORTER,
+                    arguments: {
+                        INDEX1: {
+                            type: ArgumentType.NUMBER,
+                            defaultValue: 2
+                        },
+                        INDEX2: {
+                            type: ArgumentType.NUMBER,
+                            defaultValue: 3
+                        },
+                        TEXT: {
+                            type: ArgumentType.STRING,
+                            defaultValue: formatMessage({
+                                id: 'jwUnite.getLettersFromIndexToIndexInText_text',
+                                default: 'Hello!',
+                                description: 'The text to get a substring from.'
+                            })
+                        }
+                    }
                 }
             ]
         };
@@ -66,6 +122,22 @@ class jwUnite {
     }
     backToGreenFlag(args, util) {
         if (window && window.vm) window.vm.greenFlag()
+    }
+    indexOfTextInText(args, util) {
+        const lookfor = String(args.TEXT1);
+        const searchin = String(args.TEXT2);
+        let index = 0;
+        if (searchin.includes(lookfor)) {
+            index = searchin.indexOf(lookfor) + 1;
+        }
+        return index;
+    }
+    getLettersFromIndexToIndexInText(args, util) {
+        const index1 = (Number(args.INDEX1) ? Number(args.INDEX1) : 1) - 1;
+        const index2 = (Number(args.INDEX2) ? Number(args.INDEX2) : 1) - 1;
+        const string = String(args.TEXT);
+        const substring = string.substring(index1, index2);
+        return substring;
     }
 }
 
