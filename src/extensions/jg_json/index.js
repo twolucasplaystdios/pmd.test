@@ -127,7 +127,7 @@ class JgJSONBlocks {
             checking == "false" ? false :
                 Number(checking) ? Number(checking) :
                     checking == "null" ? null :
-                        canJSONParse ? JSON.parse(checking) :
+                        canParseJSON ? JSON.parse(checking) :
                             checking;
         return JSON.stringify(json)
     }
