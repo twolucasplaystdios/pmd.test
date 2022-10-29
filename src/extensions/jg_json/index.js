@@ -97,12 +97,10 @@ class JgJSONBlocks {
         if (!canParseJSON) return "";
         const json = JSON.parse(jsonString);
         const checking = json[key];
-        return checking == true ? true :
-            checking == false ? false :
-                Number(checking) ? Number(checking) :
-                    checking == null ? "null" :
-                        typeof checking == "object" || Array.isArray(checking) ? JSON.stringify(checking) :
-                            String(checking);
+        return Number(checking) ? Number(checking) :
+            checking == null ? "null" :
+                typeof checking == "object" || Array.isArray(checking) ? JSON.stringify(checking) :
+                    String(checking);
     }
     setValueToKeyInJSON(args) {
         const jsonString = String(args.JSON);
