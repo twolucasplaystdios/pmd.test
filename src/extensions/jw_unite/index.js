@@ -137,6 +137,16 @@ class jwUnite {
                             })
                         }
                     }
+                },
+                {
+                    opcode: 'newLine',
+                    text: formatMessage({
+                        id: 'jwUnite.blocks.newLine',
+                        default: 'new line',
+                        description: 'Represents a new line character.'
+                    }),
+                    disableMonitor: true,
+                    blockType: BlockType.REPORTER
                 }
             ]
         };
@@ -168,6 +178,9 @@ class jwUnite {
         const text = String(args.TEXT);
         const readline = text.split("\n")[line] || "";
         return readline;
+    }
+    newLine() {
+        return "\n";
     }
 }
 
