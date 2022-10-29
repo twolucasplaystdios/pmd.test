@@ -61,7 +61,7 @@ class JgFilesBlocks {
                             type: ArgumentType.STRING,
                             defaultValue: formatMessage({
                                 id: 'jgFiles.file_type_accept_area',
-                                default: 'any',
+                                default: 'txt savefile',
                                 description: 'Default file types accepted for the file picker on the ask user for file block'
                             })
                         }
