@@ -4,7 +4,7 @@ const ArgumentType = require('../../extension-support/argument-type');
 // const Cast = require('../../util/cast');
 
 /**
- * Class for File blocks
+ * Class for Website Request blocks
  * @constructor
  */
 class JgWebsiteRequestBlocks {
