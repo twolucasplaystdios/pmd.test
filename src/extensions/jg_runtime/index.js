@@ -14,9 +14,6 @@ class JgRuntimeBlocks {
          * @type {Runtime}
          */
         this.runtime = runtime;
-        this.deleted_sprites = {};
-        this._sprites = [];
-        this._costumes = [];
     }
 
     /**
@@ -154,9 +151,7 @@ class JgRuntimeBlocks {
                 fetch("https://api.allorigins.win/raw?url=" + encodeURIComponent(args.URL)).then(req => {
                     if (req.status == 200) {
                         req.blob().then(blob => {
-                            vm.addCostume(blob, sprite.id).then(costume => {
-                                this._costumes.push(costume.id);
-                            })
+                            vm.addCostume(blob, sprite.id)
                         })
                     } else {
                         console.warn("Failed to fetch costume");
