@@ -26,6 +26,7 @@ class jwUnite {
             color1: '#7ddcff',
             color2: '#4a98ff',
             blocks: [
+                "Events",
                 {
                     opcode: 'whenanything',
                     text: formatMessage({
@@ -41,6 +42,7 @@ class jwUnite {
                         }
                     }
                 },
+                "Control",
                 {
                     opcode: 'backToGreenFlag',
                     text: formatMessage({
@@ -58,6 +60,7 @@ class jwUnite {
                         }
                     }
                 },
+                "Operators",
                 {
                     opcode: 'indexOfTextInText',
                     text: formatMessage({
@@ -171,10 +174,62 @@ class jwUnite {
                             defaultValue: 0.5
                         }
                     }
-                }
-            ]
+                },
+                {
+                    opcode: 'createInsertableVariable',
+                    text: formatMessage({
+                        id: 'jwUnite.blocks.createInsertableVariable',
+                        default: 'Create an insertable variable',
+                        description: 'Creates an insertable variable.'
+                    }),
+                    disableMonitor: true,
+                    blockType: BlockType.Button,
+                },
+                {
+                    opcode: 'removeInsertableVariable',
+                    text: formatMessage({
+                        id: 'jwUnite.blocks.removeInsertableVariable',
+                        default: 'Remove an insertable variable',
+                        description: 'Removes an insertable variable.'
+                    }),
+                    disableMonitor: true,
+                    blockType: BlockType.Button,
+                },
+                {
+                    opcode: 'setInsertableVariable',
+                    text: formatMessage({
+                        id: 'jwUnite.blocks.setInsertableVariable',
+                        default: 'Set [INSVAR] to [VALUE]',
+                        description: 'Sets an insertable variable to a value'
+                    }),
+                    arguments: {
+                        INSVAR: {
+                            type: ArgumentType.STRING,
+                            defaultValue: "{1}",
+                            menu: 'insertableVariables'
+                        },
+                        VALUE: {
+                            type: ArgumentType.STRING,
+                            defaultValue: "0"
+                        },
+                    },
+                    disableMonitor: true,
+                    blockType: BlockType.BLOCK,
+                },
+            ],
+            menus: {
+                insertableVariables: 'getInsertableVariables'
+            }
         };
     }
+
+    insertableVariables = {
+        "{1}": 0
+    }
+    getInsertableVariables() {
+        return Object.keys(this.insertableVariables)
+    }
+
     whenanything(args, util) {
         return Boolean(args.ANYTHING || false)
     }
@@ -213,6 +268,19 @@ class jwUnite {
         let lerped = one;
         lerped += ((two - one) / (amount / (amount * amount)));
         return lerped;
+    }
+    createInsertableVariable(args, util) {
+        this.insertableVariables["{"+(Object.keys(this.insertableVariables).length+1)+"}"] = 0
+    }
+    removeInsertableVariable(args, util) {
+        if (Object.keys(this.insertableVariables).length > 1) {
+            delete this.insertableVariables["{"+Object.keys(this.insertableVariables).length+"}"]
+        }
+    }
+    setInsertableVariable(args, util) {
+        if (this.insertableVariables[String(args.INSVAR)]) {
+            this.insertableVariables[String(args.INSVAR)] = String(args.VALUE || "")
+        }
     }
 }
 
