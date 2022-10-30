@@ -183,7 +183,7 @@ class jwUnite {
                         description: 'Creates an insertable variable.'
                     }),
                     disableMonitor: true,
-                    blockType: BlockType.Button,
+                    blockType: BlockType.BUTTON,
                 },
                 {
                     opcode: 'removeInsertableVariable',
@@ -193,7 +193,7 @@ class jwUnite {
                         description: 'Removes an insertable variable.'
                     }),
                     disableMonitor: true,
-                    blockType: BlockType.Button,
+                    blockType: BlockType.BUTTON,
                 },
                 {
                     opcode: 'setInsertableVariable',
@@ -214,7 +214,23 @@ class jwUnite {
                         },
                     },
                     disableMonitor: true,
-                    blockType: BlockType.BLOCK,
+                    blockType: BlockType.COMMAND,
+                },
+                {
+                    opcode: 'replaceStringWithInsVar',
+                    text: formatMessage({
+                        id: 'jwUnite.blocks.replaceStringWithInsVar',
+                        default: 'Replace [STRING] with insertable variables',
+                        description: 'Replaces all insertable variable names with their respective value'
+                    }),
+                    arguments: {
+                        STRING: {
+                            type: ArgumentType.STRING,
+                            defaultValue: "Hello!"
+                        },
+                    },
+                    disableMonitor: true,
+                    blockType: BlockType.REPORTER,
                 },
             ],
             menus: {
@@ -281,6 +297,13 @@ class jwUnite {
         if (this.insertableVariables[String(args.INSVAR)]) {
             this.insertableVariables[String(args.INSVAR)] = String(args.VALUE || "")
         }
+    }
+    replaceStringWithInsVar(args, util) {
+        let string = String(args.STRING || "")
+        for (const insertableVariable of Object.keys(this.insertableVariables)) {
+            string = string.replaceAll(insertableVariable, this.insertableVariables[insertableVariable])
+        }
+        return string
     }
 }
 
