@@ -26,7 +26,6 @@ class jwUnite {
             color1: '#7ddcff',
             color2: '#4a98ff',
             blocks: [
-                "Events",
                 {
                     opcode: 'whenanything',
                     text: formatMessage({
@@ -42,7 +41,7 @@ class jwUnite {
                         }
                     }
                 },
-                "Control",
+                "---",
                 {
                     opcode: 'backToGreenFlag',
                     text: formatMessage({
@@ -60,7 +59,7 @@ class jwUnite {
                         }
                     }
                 },
-                "Operators",
+                "---",
                 {
                     opcode: 'indexOfTextInText',
                     text: formatMessage({
@@ -176,52 +175,31 @@ class jwUnite {
                     }
                 },
                 {
-                    opcode: 'createInsertableVariable',
+                    opcode: 'setReplacer',
                     text: formatMessage({
-                        id: 'jwUnite.blocks.createInsertableVariable',
-                        default: 'Create an insertable variable',
-                        description: 'Creates an insertable variable.'
-                    }),
-                    disableMonitor: true,
-                    blockType: BlockType.BUTTON,
-                },
-                {
-                    opcode: 'removeInsertableVariable',
-                    text: formatMessage({
-                        id: 'jwUnite.blocks.removeInsertableVariable',
-                        default: 'Remove an insertable variable',
-                        description: 'Removes an insertable variable.'
-                    }),
-                    disableMonitor: true,
-                    blockType: BlockType.BUTTON,
-                },
-                {
-                    opcode: 'setInsertableVariable',
-                    text: formatMessage({
-                        id: 'jwUnite.blocks.setInsertableVariable',
+                        id: 'jwUnite.blocks.setReplacer',
                         default: 'Set [INSVAR] to [VALUE]',
-                        description: 'Sets an insertable variable to a value'
+                        description: 'Sets a replacer to a value'
                     }),
                     arguments: {
                         INSVAR: {
                             type: ArgumentType.STRING,
-                            defaultValue: "{1}",
-                            menu: 'insertableVariables'
+                            defaultValue: "foo",
                         },
                         VALUE: {
                             type: ArgumentType.STRING,
-                            defaultValue: "0"
+                            defaultValue: "bar"
                         },
                     },
                     disableMonitor: true,
                     blockType: BlockType.COMMAND,
                 },
                 {
-                    opcode: 'replaceStringWithInsVar',
+                    opcode: 'replaceWithReplacers',
                     text: formatMessage({
-                        id: 'jwUnite.blocks.replaceStringWithInsVar',
-                        default: 'Replace [STRING] with insertable variables',
-                        description: 'Replaces all insertable variable names with their respective value'
+                        id: 'jwUnite.blocks.replaceWithReplacers',
+                        default: 'Replace [STRING] with replacers',
+                        description: 'Replaces all replacer names with their respective value'
                     }),
                     arguments: {
                         STRING: {
@@ -233,17 +211,12 @@ class jwUnite {
                     blockType: BlockType.REPORTER,
                 },
             ],
-            menus: {
-                insertableVariables: 'getInsertableVariables'
-            }
         };
     }
 
-    insertableVariables = {
-        "{1}": 0
-    }
-    getInsertableVariables() {
-        return Object.keys(this.insertableVariables)
+    replacers = {}
+    getreplacers() {
+        return Object.keys(this.replacers)
     }
 
     whenanything(args, util) {
@@ -285,23 +258,13 @@ class jwUnite {
         lerped += ((two - one) / (amount / (amount * amount)));
         return lerped;
     }
-    createInsertableVariable(args, util) {
-        this.insertableVariables["{"+(Object.keys(this.insertableVariables).length+1)+"}"] = 0
+    setReplacer(args, util) {
+        this.replacers["{"+String(args.REPLACER)+"}"] = String(args.VALUE || "")
     }
-    removeInsertableVariable(args, util) {
-        if (Object.keys(this.insertableVariables).length > 1) {
-            delete this.insertableVariables["{"+Object.keys(this.insertableVariables).length+"}"]
-        }
-    }
-    setInsertableVariable(args, util) {
-        if (this.insertableVariables[String(args.INSVAR)]) {
-            this.insertableVariables[String(args.INSVAR)] = String(args.VALUE || "")
-        }
-    }
-    replaceStringWithInsVar(args, util) {
+    replaceWithReplacers(args, util) {
         let string = String(args.STRING || "")
-        for (const insertableVariable of Object.keys(this.insertableVariables)) {
-            string = string.replaceAll(insertableVariable, this.insertableVariables[insertableVariable])
+        for (const replacer of Object.keys(this.replacers)) {
+            string = string.replaceAll(replacer, this.replacers[replacer])
         }
         return string
     }
