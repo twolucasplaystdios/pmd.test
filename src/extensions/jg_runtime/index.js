@@ -177,7 +177,7 @@ class JgRuntimeBlocks {
                 const COSTUME_NAME = "runtime_" + String(encodeURIComponent(URL)).replace(/[^A-Za-z0-9]/gmi, "_") + String(10000 + (Math.random() * 99999)) + String(((COSTUMES_CURRENTLY_IN_THE_SPRITE + LAST_SKIN_ID) * 3) + 11);
                 this.generateMd5Hash(COSTUME_NAME).then(GENERATED_MD5 => {
                     fetch("https://api.allorigins.win/raw?url=" + encodeURIComponent(URL)).then(req => {
-                        if (req.headers.get("Content-Type") != "image/png" || req.headers.get("Content-Type") != "image/svg+xml") return console.warn('Format', req.headers.get("Content-Type"), 'is not supported for costumes');
+                        if (req.headers.get("Content-Type") != "image/png" && req.headers.get("Content-Type") != "image/svg+xml") return console.warn('Format', req.headers.get("Content-Type"), 'is not supported for costumes');
                         if (req.status == 200) {
                             req.blob().then(blob => {
                                 blob.arrayBuffer().then(arrayBuffer => {
