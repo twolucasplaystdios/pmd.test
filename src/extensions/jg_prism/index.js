@@ -178,7 +178,7 @@ class JgPrismBlocks {
         this.audioPlayer.playbackRate = (isNaN(Number(args.SPEED)) ? 100 : Number(args.SPEED)) / 100;
     }
     getAudioPlaybackSpeed() {
-        return this.audioPlayer.playbackRate;
+        return this.audioPlayer.playbackRate * 100;
     }
     setAudioPosition(args) {
         this.audioPlayer.currentTime = isNaN(Number(args.POSITION)) ? 0 : Number(args.POSITION);
