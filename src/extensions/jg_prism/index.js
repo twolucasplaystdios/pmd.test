@@ -190,7 +190,7 @@ class JgPrismBlocks {
         this.audioPlayer.volume = (isNaN(Number(args.VOLUME)) ? 100 : Number(args.VOLUME)) / 100;
     }
     getAudioVolume() {
-        return this.audioPlayer.volume;
+        return this.audioPlayer.volume * 100;
     }
 }
 
