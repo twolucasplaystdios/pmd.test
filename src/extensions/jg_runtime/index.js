@@ -147,6 +147,7 @@ class JgRuntimeBlocks {
         };
     }
     addCostumeUrl(args, util) {
+        console.warn('Runtime Block "add costume" is currently broken. Please avoid using it until the block is updated.')
         try {
             if (util.target.isSprite) {
                 const sprite = util.target.sprite;
