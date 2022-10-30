@@ -107,7 +107,7 @@ class JgPrismBlocks {
                     opcode: 'setAudioPosition',
                     text: formatMessage({
                         id: 'jgPrism.blocks.setAudioPosition',
-                        default: 'set audio position to [POSITION]',
+                        default: 'set audio position to [POSITION] seconds',
                         description: 'Sets the position of the current audio in the audio player.'
                     }),
                     blockType: BlockType.COMMAND,
@@ -124,6 +124,31 @@ class JgPrismBlocks {
                         id: 'jgRuntime.blocks.getAudioPosition',
                         default: 'audio position',
                         description: 'Block that returns the position of the audio player in the currently playing audio.'
+                    }),
+                    disableMonitor: false,
+                    blockType: BlockType.REPORTER
+                },
+                {
+                    opcode: 'setAudioVolume',
+                    text: formatMessage({
+                        id: 'jgPrism.blocks.setAudioVolume',
+                        default: 'set audio volume to [VOLUME]%',
+                        description: 'Sets the volume of the current audio in the audio player.'
+                    }),
+                    blockType: BlockType.COMMAND,
+                    arguments: {
+                        VOLUME: {
+                            type: ArgumentType.NUMBER,
+                            defaultValue: 100
+                        }
+                    }
+                },
+                {
+                    opcode: 'getAudioVolume',
+                    text: formatMessage({
+                        id: 'jgRuntime.blocks.getAudioVolume',
+                        default: 'audio volume',
+                        description: 'Block that returns the volume of the audio player.'
                     }),
                     disableMonitor: false,
                     blockType: BlockType.REPORTER
@@ -160,6 +185,12 @@ class JgPrismBlocks {
     }
     getAudioPosition() {
         return this.audioPlayer.currentTime;
+    }
+    setAudioVolume(args) {
+        this.audioPlayer.volume = (isNaN(Number(args.VOLUME)) ? 100 : Number(args.VOLUME)) / 100;
+    }
+    getAudioVolume() {
+        return this.audioPlayer.volume;
     }
 }
 
