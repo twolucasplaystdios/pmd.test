@@ -34,6 +34,8 @@ const builtinExtensions = {
     jgWebsiteRequests: () => require("../extensions/jg_websiteRequests"),
     // jgJSON: handle JSON objects
     jgJSON: () => require("../extensions/jg_json"),
+    // jgRuntime: edit stage and other stuff
+    jgRuntime: () => require("../extensions/jg_runtime"),
     // jw: hello it is i jwklong
     // jwUnite: literal features that should of been added in the first place
     jwUnite: () => require("../extensions/jw_unite")
