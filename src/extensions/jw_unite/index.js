@@ -147,6 +147,30 @@ class jwUnite {
                     }),
                     disableMonitor: true,
                     blockType: BlockType.REPORTER
+                },
+                {
+                    opcode: 'lerpFunc',
+                    text: formatMessage({
+                        id: 'jwUnite.blocks.lerpFunc',
+                        default: 'interpolate: [ONE] to: [TWO] by: [AMOUNT]',
+                        description: 'Linearly interpolates the first number to the second by the amount.'
+                    }),
+                    disableMonitor: true,
+                    blockType: BlockType.REPORTER,
+                    arguments: {
+                        ONE: {
+                            type: ArgumentType.NUMBER,
+                            defaultValue: 1
+                        },
+                        TWO: {
+                            type: ArgumentType.NUMBER,
+                            defaultValue: 3
+                        },
+                        AMOUNT: {
+                            type: ArgumentType.NUMBER,
+                            defaultValue: 0.5
+                        }
+                    }
                 }
             ]
         };
@@ -181,6 +205,14 @@ class jwUnite {
     }
     newLine() {
         return "\n";
+    }
+    lerpFunc(args, util) {
+        const one = isNaN(Number(args.ONE)) ? 0 : Number(args.ONE);
+        const two = isNaN(Number(args.TWO)) ? 0 : Number(args.TWO);
+        const amount = isNaN(Number(args.AMOUNT)) ? 0 : Number(args.AMOUNT);
+        let lerped = one;
+        lerped += ((two - one) / (amount / (amount * amount)));
+        return lerped;
     }
 }
 
