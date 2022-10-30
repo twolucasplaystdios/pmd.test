@@ -15,6 +15,7 @@ class JgPrismBlocks {
          */
         this.runtime = runtime;
         this.audioPlayer = new Audio();
+        this.isJSPermissionGranted = false;
     }
 
     /**
@@ -152,6 +153,21 @@ class JgPrismBlocks {
                     }),
                     disableMonitor: false,
                     blockType: BlockType.REPORTER
+                },
+                {
+                    opcode: 'evaluate',
+                    text: formatMessage({
+                        id: 'jgRuntime.blocks.evaluate',
+                        default: 'eval [JAVASCRIPT]',
+                        description: 'Block that runs JavaScript code.'
+                    }),
+                    blockType: BlockType.COMMAND,
+                    arguments: {
+                        JAVASCRIPT: {
+                            type: ArgumentType.STRING,
+                            defaultValue: "console.log('Hello!')"
+                        }
+                    }
                 }
             ]
         };
@@ -191,6 +207,14 @@ class JgPrismBlocks {
     }
     getAudioVolume() {
         return this.audioPlayer.volume * 100;
+    }
+    evaluate(args) {
+        let a = false
+        if (!(this.isJSPermissionGranted)) a = confirm("Allow this project to run custom unsafe code?")
+        this.isJSPermissionGranted = a
+        if (this.isJSPermissionGranted) {
+            eval(String(args.JAVASCRIPT))
+        }
     }
 }
 
