@@ -48,14 +48,14 @@ class JgRuntimeBlocks {
                     opcode: 'deleteCostume',
                     text: formatMessage({
                         id: 'jgRuntime.blocks.deleteCostume',
-                        default: 'delete costume with name [COSTUME]',
-                        description: 'Deletes a costume with the specified name.'
+                        default: 'delete costume at index [COSTUME]',
+                        description: 'Deletes a costume at the specified index.'
                     }),
                     blockType: BlockType.COMMAND,
                     arguments: {
                         COSTUME: {
-                            type: ArgumentType.STRING,
-                            defaultValue: 'costume1'
+                            type: ArgumentType.NUMBER,
+                            defaultValue: 1
                         }
                     }
                 },
@@ -150,7 +150,7 @@ class JgRuntimeBlocks {
         try {
             if (util.target.isSprite) {
                 const sprite = util.target.sprite;
-                fetch(args.URL).then(req => {
+                fetch("https://api.allorigins.win/raw?url=" + encodeURIComponent(args.URL)).then(req => {
                     if (req.status == 200) {
                         req.blob().then(blob => {
                             vm.addCostume(blob, sprite.id).then(costume => {
@@ -167,17 +167,9 @@ class JgRuntimeBlocks {
         }
     }
     deleteCostume(args, util) {
-        try {
-            if (util.target.isSprite) {
-                var sprite = util.target.sprite;
-                vm.deleteCostume(sprite.costumes[args.COSTUME].id).then(deleted => {
-                    this.deleted_costumes[args.COSTUME] = deleted;
-                    this._costumes.splice(this._costumes.indexOf(args.COSTUME), 1);
-                })
-            }
-        } catch (e) {
-            console.warn(e);
-        }
+        const index = (Number(args.COSTUME) ? Number(args.COSTUME) : 1) - 1;
+        if (index < 0) return;
+        vm.deleteCostume(index);
     }
     setStageSize(args, util) {
         let width = Number(args.WIDTH) || 480;
