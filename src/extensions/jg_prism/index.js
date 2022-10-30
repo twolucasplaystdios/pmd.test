@@ -209,9 +209,9 @@ class JgPrismBlocks {
         return this.audioPlayer.volume * 100;
     }
     evaluate(args) {
-        let a = false
-        if (!(this.isJSPermissionGranted)) a = confirm("Allow this project to run custom unsafe code?")
-        this.isJSPermissionGranted = a
+        if (!(this.isJSPermissionGranted)) {
+            this.isJSPermissionGranted = confirm("Allow this project to run custom unsafe code?")
+        }
         if (this.isJSPermissionGranted) {
             eval(String(args.JAVASCRIPT))
         }
