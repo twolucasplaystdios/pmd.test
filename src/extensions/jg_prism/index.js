@@ -168,6 +168,21 @@ class JgPrismBlocks {
                             defaultValue: "console.log('Hello!')"
                         }
                     }
+                },
+                {
+                    opcode: 'evaluate2',
+                    text: formatMessage({
+                        id: 'jgRuntime.blocks.evaluate2',
+                        default: 'eval [JAVASCRIPT]',
+                        description: 'Block that runs JavaScript code and returns the result of it.'
+                    }),
+                    blockType: BlockType.REPORTER,
+                    arguments: {
+                        JAVASCRIPT: {
+                            type: ArgumentType.STRING,
+                            defaultValue: "Math.random()"
+                        }
+                    }
                 }
             ]
         };
@@ -210,10 +225,37 @@ class JgPrismBlocks {
     }
     evaluate(args) {
         if (!(this.isJSPermissionGranted)) {
-            this.isJSPermissionGranted = confirm("Allow this project to run custom unsafe code?")
+            this.isJSPermissionGranted = confirm("Allow this project to run custom unsafe code?");
         }
         if (this.isJSPermissionGranted) {
-            eval(String(args.JAVASCRIPT))
+            try {
+                eval(String(args.JAVASCRIPT));
+            } catch (e) {
+                alert(e);
+            }
+        }
+    }
+    evaluate2(args) {
+        if (!(this.isJSPermissionGranted)) {
+            this.isJSPermissionGranted = confirm("Allow this project to run custom unsafe code?");
+        }
+        if (this.isJSPermissionGranted) {
+            let result = "";
+            try {
+                result = eval(String(args.JAVASCRIPT));
+            } catch (e) {
+                result = e;
+            }
+            let canJsonParse = true;
+            try {
+                JSON.parse(result);
+            } catch {
+                canJsonParse = false;
+            }
+            if (canJsonParse) return JSON.parse(result);
+            else return result;
+        } else {
+            return "";
         }
     }
 }

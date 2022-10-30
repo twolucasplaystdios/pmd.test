@@ -178,7 +178,7 @@ class jwUnite {
                     opcode: 'setReplacer',
                     text: formatMessage({
                         id: 'jwUnite.blocks.setReplacer',
-                        default: 'Set [REPLACER] to [VALUE]',
+                        default: 'set [REPLACER] to [VALUE]',
                         description: 'Sets a replacer to a value'
                     }),
                     arguments: {
@@ -198,7 +198,7 @@ class jwUnite {
                     opcode: 'replaceWithReplacers',
                     text: formatMessage({
                         id: 'jwUnite.blocks.replaceWithReplacers',
-                        default: 'Replace [STRING] with replacers',
+                        default: 'replace [STRING] with replacers',
                         description: 'Replaces all replacer names with their respective value'
                     }),
                     arguments: {
@@ -256,7 +256,7 @@ class jwUnite {
         return lerped;
     }
     setReplacer(args, util) {
-        this.replacers["{"+String(args.REPLACER)+"}"] = String(args.VALUE || "")
+        this.replacers["{" + String(args.REPLACER) + "}"] = String(args.VALUE || "")
     }
     replaceWithReplacers(args, util) {
         let string = String(args.STRING || "")
