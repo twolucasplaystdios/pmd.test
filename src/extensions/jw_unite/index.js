@@ -155,7 +155,7 @@ class jwUnite {
         return Boolean(args.ANYTHING || false)
     }
     backToGreenFlag(args, util) {
-        if (window && window.vm) window.vm.greenFlag()
+        if (vm) vm.greenFlag()
     }
     indexOfTextInText(args, util) {
         const lookfor = String(args.TEXT1);
