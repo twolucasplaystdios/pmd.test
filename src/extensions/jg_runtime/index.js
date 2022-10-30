@@ -14,6 +14,27 @@ class JgRuntimeBlocks {
          * @type {Runtime}
          */
         this.runtime = runtime;
+        this.md5HashApi = "https://api.hashify.net/hash/md5/hex?value="; // costumes want MD5 hashes for asset IDs and just in general ig
+        this.generateMd5Hash = (hashing) => {
+            return new Promise((resolve, _) => {
+                fetch(this.md5HashApi + String(hashing)).then(res => {
+                    res.json().then(json => {
+                        if (!json.Digest) {
+                            console.warn("MD5 hash could not be generated. Fallback is resolving with random number.");
+                            resolve(Math.round(Math.random() * 99999999999)); // fallback to generating random numbers incase it is deemed good enough
+                            return
+                        }
+                        resolve(String(json.Digest));
+                    }).catch(() => {
+                        console.warn("MD5 hash could not be generated. Fallback is resolving with random number.");
+                        resolve(Math.round(Math.random() * 99999999999)); // fallback to generating random numbers incase it is deemed good enough
+                    })
+                }).catch(() => {
+                    console.warn("MD5 hash could not be generated. Fallback is resolving with random number.");
+                    resolve(Math.round(Math.random() * 99999999999)); // fallback to generating random numbers incase it is deemed good enough
+                })
+            })
+        }
     }
 
     /**
@@ -144,18 +165,60 @@ class JgRuntimeBlocks {
         };
     }
     addCostumeUrl(args, util) {
-        console.warn('Runtime Block "add costume" is currently broken. Please avoid using it until the block is updated.')
+        // console.warn('Runtime Block "add costume" is currently broken. Please avoid using it until the block is updated.');
+        const URL = String(args.URL);
+        const COSTUME_SIZE_X = 480; // this will be changed in the future to the ACTUAL image size
+        const COSTUME_SIZE_Y = 360; // this will be changed in the future to the ACTUAL image size
         try {
             if (util.target.isSprite) {
                 const sprite = util.target.sprite;
-                fetch("https://api.allorigins.win/raw?url=" + encodeURIComponent(args.URL)).then(req => {
-                    if (req.status == 200) {
-                        req.blob().then(blob => {
-                            vm.addCostume(blob, sprite.id)
-                        })
-                    } else {
-                        console.warn("Failed to fetch costume");
-                    }
+                const COSTUMES_CURRENTLY_IN_THE_SPRITE = sprite.costumes.length;
+                const LAST_SKIN_ID = sprite.costumes[sprite.costumes.length - 1].skinId
+                const COSTUME_NAME = "runtime_" + String(encodeURIComponent(URL)).replace(/[^A-Za-z0-9]/gmi, "_") + String(10000 + (Math.random() * 99999)) + String(((COSTUMES_CURRENTLY_IN_THE_SPRITE + LAST_SKIN_ID) * 3) + 11);
+                this.generateMd5Hash(COSTUME_NAME).then(GENERATED_MD5 => {
+                    fetch("https://api.allorigins.win/raw?url=" + encodeURIComponent(URL)).then(req => {
+                        if (req.headers.get("Content-Type") != "image/png" || req.headers.get("Content-Type") != "image/svg+xml") return console.warn('Format', req.headers.get("Content-Type"), 'is not supported for costumes');
+                        if (req.status == 200) {
+                            req.blob().then(blob => {
+                                blob.arrayBuffer().then(arrayBuffer => {
+                                    const UINT8ARRAY_COSTUME_DATA = new Uint8Array(arrayBuffer, 0, arrayBuffer.byteLength);
+                                    const CONTENT_TYPE = req.headers.get("Content-Type");
+                                    const IMAGE_CONTENT_TYPE = CONTENT_TYPE == "image/png" ? "ImageBitmap" : "ImageVector";
+                                    const FILE_EXTENSION = CONTENT_TYPE == "image/png" ? "png" : "svg";
+                                    const costumeObject = {
+                                        asset: {
+                                            assetId: GENERATED_MD5,
+                                            assetType: {
+                                                contentType: CONTENT_TYPE,
+                                                immutable: true,
+                                                name: IMAGE_CONTENT_TYPE,
+                                                runtimeFormat: FILE_EXTENSION
+                                            },
+                                            clean: true,
+                                            data: UINT8ARRAY_COSTUME_DATA,
+                                            dataFormat: FILE_EXTENSION,
+                                            dependencies: []
+                                        },
+                                        assetId: GENERATED_MD5,
+                                        bitmapResolution: 1,
+                                        dataFormat: FILE_EXTENSION,
+                                        md5: GENERATED_MD5 + "." + FILE_EXTENSION,
+                                        name: COSTUME_NAME,
+                                        rotationCenterX: Math.round(COSTUME_SIZE_X) / 2,
+                                        rotationCenterY: Math.round(COSTUME_SIZE_Y) / 2,
+                                        size: [
+                                            COSTUME_SIZE_X,
+                                            COSTUME_SIZE_Y
+                                        ],
+                                        skinId: LAST_SKIN_ID + 1
+                                    }
+                                    sprite.addCostumeAt(costumeObject, COSTUMES_CURRENTLY_IN_THE_SPRITE);
+                                })
+                            })
+                        } else {
+                            console.warn("Failed to fetch costume");
+                        }
+                    })
                 })
             }
         } catch (e) {
