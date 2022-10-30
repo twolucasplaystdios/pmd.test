@@ -166,6 +166,8 @@ class JgRuntimeBlocks {
     }
     addCostumeUrl(args, util) {
         // console.warn('Runtime Block "add costume" is currently broken. Please avoid using it until the block is updated.');
+        const Asset = vm.runtime.storage.Asset;
+        const AssetType = vm.runtime.storage.AssetType;
         const URL = String(args.URL);
         const COSTUME_SIZE_X = 480; // this will be changed in the future to the ACTUAL image size
         const COSTUME_SIZE_Y = 360; // this will be changed in the future to the ACTUAL image size
@@ -185,21 +187,10 @@ class JgRuntimeBlocks {
                                     const CONTENT_TYPE = req.headers.get("Content-Type");
                                     const IMAGE_CONTENT_TYPE = CONTENT_TYPE == "image/png" ? "ImageBitmap" : "ImageVector";
                                     const FILE_EXTENSION = CONTENT_TYPE == "image/png" ? "png" : "svg";
+                                    const ASSET = new Asset(AssetType[IMAGE_CONTENT_TYPE], GENERATED_MD5, FILE_EXTENSION, UINT8ARRAY_COSTUME_DATA, false)
                                     const costumeObject = {
-                                        asset: {
-                                            assetId: GENERATED_MD5,
-                                            assetType: {
-                                                contentType: CONTENT_TYPE,
-                                                immutable: true,
-                                                name: IMAGE_CONTENT_TYPE,
-                                                runtimeFormat: FILE_EXTENSION
-                                            },
-                                            clean: true,
-                                            data: UINT8ARRAY_COSTUME_DATA,
-                                            dataFormat: FILE_EXTENSION,
-                                            dependencies: []
-                                        },
-                                        assetId: GENERATED_MD5,
+                                        asset: ASSET,
+                                        assetId: ASSET.assetId,
                                         bitmapResolution: 1,
                                         dataFormat: FILE_EXTENSION,
                                         md5: GENERATED_MD5 + "." + FILE_EXTENSION,
