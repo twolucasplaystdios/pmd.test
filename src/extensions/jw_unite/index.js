@@ -178,11 +178,11 @@ class jwUnite {
                     opcode: 'setReplacer',
                     text: formatMessage({
                         id: 'jwUnite.blocks.setReplacer',
-                        default: 'Set [INSVAR] to [VALUE]',
+                        default: 'Set [REPLACER] to [VALUE]',
                         description: 'Sets a replacer to a value'
                     }),
                     arguments: {
-                        INSVAR: {
+                        REPLACER: {
                             type: ArgumentType.STRING,
                             defaultValue: "foo",
                         },
@@ -215,9 +215,6 @@ class jwUnite {
     }
 
     replacers = {}
-    getreplacers() {
-        return Object.keys(this.replacers)
-    }
 
     whenanything(args, util) {
         return Boolean(args.ANYTHING || false)
