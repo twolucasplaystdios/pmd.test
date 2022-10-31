@@ -192,47 +192,48 @@ class JgRuntimeBlocks {
                     const COSTUMES_CURRENTLY_IN_THE_SPRITE = sprite.costumes.length;
                     const LAST_SKIN_ID = sprite.costumes[sprite.costumes.length - 1].skinId
                     const COSTUME_NAME = "runtime_" + String(encodeURIComponent(URL)).replace(/[^A-Za-z0-9]/gmi, "_").substring(0, 600) + String(10000 + (Math.random() * 99999)) + String(((COSTUMES_CURRENTLY_IN_THE_SPRITE + LAST_SKIN_ID) * 3) + 11);
-                    this.generateMd5Hash(COSTUME_NAME).then(GENERATED_MD5 => {
-                        const fetchedImageUrl = String(URL).startsWith("data:image/") ? String(URL) : "https://api.allorigins.win/raw?url=" + encodeURIComponent(URL)
-                        fetch(fetchedImageUrl).then(req => {
-                            if (req.headers.get("Content-Type") != "image/png" && req.headers.get("Content-Type") != "image/jpeg") return console.warn('Format', req.headers.get("Content-Type"), 'is not supported for costumes');
-                            if (req.status == 200) {
-                                this.getImageSize(fetchedImageUrl).then(IMAGE_SIZE => {
-                                    const COSTUME_SIZE_X = IMAGE_SIZE.width;
-                                    const COSTUME_SIZE_Y = IMAGE_SIZE.height;
-                                    req.blob().then(blob => {
-                                        blob.arrayBuffer().then(arrayBuffer => {
-                                            const UINT8ARRAY_COSTUME_DATA = new Uint8Array(arrayBuffer, 0, arrayBuffer.byteLength);
-                                            const CONTENT_TYPE = req.headers.get("Content-Type");
-                                            const IMAGE_CONTENT_TYPE = /*CONTENT_TYPE == "image/png" ? */"ImageBitmap";// : "ImageVector";
-                                            const FILE_EXTENSION = CONTENT_TYPE == "image/png" ? "png" : "jpg";
-                                            const ASSET = new Asset(AssetType[IMAGE_CONTENT_TYPE], GENERATED_MD5, FILE_EXTENSION, UINT8ARRAY_COSTUME_DATA, false);
-                                            const SKIN_ID = vm.renderer.createBitmapSkin(UINT8ARRAY_COSTUME_DATA, 1);
-                                            const costumeObject = {
-                                                asset: ASSET,
-                                                assetId: ASSET.assetId,
-                                                bitmapResolution: 1,
-                                                dataFormat: FILE_EXTENSION,
-                                                md5: GENERATED_MD5 + "." + FILE_EXTENSION,
-                                                name: COSTUME_NAME,
-                                                rotationCenterX: Math.round(COSTUME_SIZE_X) / 2,
-                                                rotationCenterY: Math.round(COSTUME_SIZE_Y) / 2,
-                                                size: [
-                                                    COSTUME_SIZE_X,
-                                                    COSTUME_SIZE_Y
-                                                ],
-                                                skinId: SKIN_ID
-                                            }
-                                            sprite.addCostumeAt(costumeObject, COSTUMES_CURRENTLY_IN_THE_SPRITE);
-                                            resolve(COSTUME_NAME)
-                                        })
+                    // this.generateMd5Hash(COSTUME_NAME).then(GENERATED_MD5 => {
+                    const fetchedImageUrl = String(URL).startsWith("data:image/") ? String(URL) : "https://api.allorigins.win/raw?url=" + encodeURIComponent(URL)
+                    fetch(fetchedImageUrl).then(req => {
+                        if (req.headers.get("Content-Type") != "image/png" && req.headers.get("Content-Type") != "image/jpeg") return console.warn('Format', req.headers.get("Content-Type"), 'is not supported for costumes');
+                        if (req.status == 200) {
+                            this.getImageSize(fetchedImageUrl).then(IMAGE_SIZE => {
+                                const COSTUME_SIZE_X = IMAGE_SIZE.width;
+                                const COSTUME_SIZE_Y = IMAGE_SIZE.height;
+                                req.blob().then(blob => {
+                                    blob.arrayBuffer().then(arrayBuffer => {
+                                        const UINT8ARRAY_COSTUME_DATA = new Uint8Array(arrayBuffer, 0, arrayBuffer.byteLength);
+                                        const CONTENT_TYPE = req.headers.get("Content-Type");
+                                        const IMAGE_CONTENT_TYPE = /*CONTENT_TYPE == "image/png" ? */"ImageBitmap";// : "ImageVector";
+                                        const FILE_EXTENSION = CONTENT_TYPE == "image/png" ? "png" : "jpg";
+                                        const ASSET = vm.runtime.storage.createAsset(AssetType[IMAGE_CONTENT_TYPE], FILE_EXTENSION, UINT8ARRAY_COSTUME_DATA, null, true);
+                                        const GENERATED_MD5 = ASSET.assetId;
+                                        const SKIN_ID = vm.renderer.createBitmapSkin(UINT8ARRAY_COSTUME_DATA, 1);
+                                        const costumeObject = {
+                                            asset: ASSET,
+                                            assetId: ASSET.assetId,
+                                            bitmapResolution: 1,
+                                            dataFormat: FILE_EXTENSION,
+                                            md5: GENERATED_MD5 + "." + FILE_EXTENSION,
+                                            name: COSTUME_NAME,
+                                            rotationCenterX: Math.round(COSTUME_SIZE_X) / 2,
+                                            rotationCenterY: Math.round(COSTUME_SIZE_Y) / 2,
+                                            size: [
+                                                COSTUME_SIZE_X,
+                                                COSTUME_SIZE_Y
+                                            ],
+                                            skinId: SKIN_ID
+                                        }
+                                        sprite.addCostumeAt(costumeObject, COSTUMES_CURRENTLY_IN_THE_SPRITE);
+                                        resolve(COSTUME_NAME)
                                     })
                                 })
-                            } else {
-                                console.warn("Failed to fetch costume");
-                            }
-                        })
+                            })
+                        } else {
+                            console.warn("Failed to fetch costume");
+                        }
                     })
+                    // })
                 }
             } catch (e) {
                 console.warn(e);
