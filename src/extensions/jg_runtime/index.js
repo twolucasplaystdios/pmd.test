@@ -15,6 +15,7 @@ class JgRuntimeBlocks {
          */
         this.runtime = runtime;
         this.md5HashApi = "https://api.hashify.net/hash/md5/hex?value="; // costumes want MD5 hashes for asset IDs and just in general ig
+        this.getImageSizeApi = "https://pm-bapi.vercel.app/api/getSize?url=" // costumes want their image size so they dont break lol
         this.generateMd5Hash = (hashing) => {
             return new Promise((resolve, _) => {
                 fetch(this.md5HashApi + String(hashing)).then(res => {
@@ -35,6 +36,19 @@ class JgRuntimeBlocks {
                 })
             })
         }
+        this.getImageSize = (imageUrl) => {
+            return new Promise((resolve, _) => {
+                fetch(this.getImageSizeApi + encodeURIComponent(String(imageUrl))).then(res => {
+                    res.json().then(json => {
+                        resolve(json);
+                    }).catch(() => {
+                        resolve({ width: 480, height: 360 });
+                    })
+                }).catch(() => {
+                    resolve({ width: 480, height: 360 });
+                })
+            })
+        }
     }
 
     /**
@@ -52,13 +66,13 @@ class JgRuntimeBlocks {
                     text: formatMessage({
                         id: 'jgRuntime.blocks.addCostumeUrl',
                         default: 'add costume from [URL]',
-                        description: 'Adds a costume to the current sprite using the image at the URL.'
+                        description: 'Adds a costume to the current sprite using the image at the URL. Returns the costume name.'
                     }),
-                    blockType: BlockType.COMMAND,
+                    blockType: BlockType.REPORTER,
                     arguments: {
                         URL: {
                             type: ArgumentType.STRING,
-                            defaultValue: 'https://en.scratch-wiki.info/w/images/ScratchCat3.0.svg'
+                            defaultValue: 'https://en.scratch-wiki.info/w/images/thumb/ScratchCat-Small.png/200px-ScratchCat-Small.png'
                         }
                     }
                 },
@@ -165,56 +179,64 @@ class JgRuntimeBlocks {
         };
     }
     addCostumeUrl(args, util) {
-        // console.warn('Runtime Block "add costume" is currently broken. Please avoid using it until the block is updated.');
-        const Asset = vm.runtime.storage.Asset;
-        const AssetType = vm.runtime.storage.AssetType;
-        const URL = String(args.URL);
-        const COSTUME_SIZE_X = 480; // this will be changed in the future to the ACTUAL image size
-        const COSTUME_SIZE_Y = 360; // this will be changed in the future to the ACTUAL image size
-        try {
-            if (util.target.isSprite) {
-                const sprite = util.target.sprite;
-                const COSTUMES_CURRENTLY_IN_THE_SPRITE = sprite.costumes.length;
-                const LAST_SKIN_ID = sprite.costumes[sprite.costumes.length - 1].skinId
-                const COSTUME_NAME = "runtime_" + String(encodeURIComponent(URL)).replace(/[^A-Za-z0-9]/gmi, "_") + String(10000 + (Math.random() * 99999)) + String(((COSTUMES_CURRENTLY_IN_THE_SPRITE + LAST_SKIN_ID) * 3) + 11);
-                this.generateMd5Hash(COSTUME_NAME).then(GENERATED_MD5 => {
-                    fetch("https://api.allorigins.win/raw?url=" + encodeURIComponent(URL)).then(req => {
-                        if (req.headers.get("Content-Type") != "image/png" && req.headers.get("Content-Type") != "image/svg+xml") return console.warn('Format', req.headers.get("Content-Type"), 'is not supported for costumes');
-                        if (req.status == 200) {
-                            req.blob().then(blob => {
-                                blob.arrayBuffer().then(arrayBuffer => {
-                                    const UINT8ARRAY_COSTUME_DATA = new Uint8Array(arrayBuffer, 0, arrayBuffer.byteLength);
-                                    const CONTENT_TYPE = req.headers.get("Content-Type");
-                                    const IMAGE_CONTENT_TYPE = CONTENT_TYPE == "image/png" ? "ImageBitmap" : "ImageVector";
-                                    const FILE_EXTENSION = CONTENT_TYPE == "image/png" ? "png" : "svg";
-                                    const ASSET = new Asset(AssetType[IMAGE_CONTENT_TYPE], GENERATED_MD5, FILE_EXTENSION, UINT8ARRAY_COSTUME_DATA, false)
-                                    const costumeObject = {
-                                        asset: ASSET,
-                                        assetId: ASSET.assetId,
-                                        bitmapResolution: 1,
-                                        dataFormat: FILE_EXTENSION,
-                                        md5: GENERATED_MD5 + "." + FILE_EXTENSION,
-                                        name: COSTUME_NAME,
-                                        rotationCenterX: Math.round(COSTUME_SIZE_X) / 2,
-                                        rotationCenterY: Math.round(COSTUME_SIZE_Y) / 2,
-                                        size: [
-                                            COSTUME_SIZE_X,
-                                            COSTUME_SIZE_Y
-                                        ],
-                                        skinId: LAST_SKIN_ID + 1
-                                    }
-                                    sprite.addCostumeAt(costumeObject, COSTUMES_CURRENTLY_IN_THE_SPRITE);
+        return new Promise((resolve, reject) => {
+            // console.warn('Runtime Block "add costume" is currently broken. Please avoid using it until the block is updated.');
+            const Asset = vm.runtime.storage.Asset;
+            const AssetType = vm.runtime.storage.AssetType;
+            const URL = String(args.URL);
+            // const COSTUME_SIZE_X = 480; // this will be changed in the future to the ACTUAL image size
+            // const COSTUME_SIZE_Y = 360; // this will be changed in the future to the ACTUAL image size
+            try {
+                if (util.target.isSprite) {
+                    const sprite = util.target.sprite;
+                    const COSTUMES_CURRENTLY_IN_THE_SPRITE = sprite.costumes.length;
+                    const LAST_SKIN_ID = sprite.costumes[sprite.costumes.length - 1].skinId
+                    const COSTUME_NAME = "runtime_" + String(encodeURIComponent(URL)).replace(/[^A-Za-z0-9]/gmi, "_") + String(10000 + (Math.random() * 99999)) + String(((COSTUMES_CURRENTLY_IN_THE_SPRITE + LAST_SKIN_ID) * 3) + 11);
+                    this.generateMd5Hash(COSTUME_NAME).then(GENERATED_MD5 => {
+                        const fetchedImageUrl = "https://api.allorigins.win/raw?url=" + encodeURIComponent(URL)
+                        fetch(fetchedImageUrl).then(req => {
+                            if (req.headers.get("Content-Type") != "image/png" && req.headers.get("Content-Type") != "image/jpeg") return console.warn('Format', req.headers.get("Content-Type"), 'is not supported for costumes');
+                            if (req.status == 200) {
+                                this.getImageSize(fetchedImageUrl).then(IMAGE_SIZE => {
+                                    const COSTUME_SIZE_X = IMAGE_SIZE.width;
+                                    const COSTUME_SIZE_Y = IMAGE_SIZE.height;
+                                    req.blob().then(blob => {
+                                        blob.arrayBuffer().then(arrayBuffer => {
+                                            const UINT8ARRAY_COSTUME_DATA = new Uint8Array(arrayBuffer, 0, arrayBuffer.byteLength);
+                                            const CONTENT_TYPE = req.headers.get("Content-Type");
+                                            const IMAGE_CONTENT_TYPE = /*CONTENT_TYPE == "image/png" ? */"ImageBitmap";// : "ImageVector";
+                                            const FILE_EXTENSION = CONTENT_TYPE == "image/png" ? "png" : "jpg";
+                                            const ASSET = new Asset(AssetType[IMAGE_CONTENT_TYPE], GENERATED_MD5, FILE_EXTENSION, UINT8ARRAY_COSTUME_DATA, false)
+                                            const costumeObject = {
+                                                asset: ASSET,
+                                                assetId: ASSET.assetId,
+                                                bitmapResolution: 1,
+                                                dataFormat: FILE_EXTENSION,
+                                                md5: GENERATED_MD5 + "." + FILE_EXTENSION,
+                                                name: COSTUME_NAME,
+                                                rotationCenterX: Math.round(COSTUME_SIZE_X) / 2,
+                                                rotationCenterY: Math.round(COSTUME_SIZE_Y) / 2,
+                                                size: [
+                                                    COSTUME_SIZE_X,
+                                                    COSTUME_SIZE_Y
+                                                ],
+                                                skinId: LAST_SKIN_ID + 1
+                                            }
+                                            sprite.addCostumeAt(costumeObject, COSTUMES_CURRENTLY_IN_THE_SPRITE);
+                                            resolve(COSTUME_NAME)
+                                        })
+                                    })
                                 })
-                            })
-                        } else {
-                            console.warn("Failed to fetch costume");
-                        }
+                            } else {
+                                console.warn("Failed to fetch costume");
+                            }
+                        })
                     })
-                })
+                }
+            } catch (e) {
+                console.warn(e);
             }
-        } catch (e) {
-            console.warn(e);
-        }
+        })
     }
     deleteCostume(args, util) {
         const index = (Number(args.COSTUME) ? Number(args.COSTUME) : 1) - 1;
