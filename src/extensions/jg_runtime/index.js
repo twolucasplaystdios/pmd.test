@@ -207,6 +207,7 @@ class JgRuntimeBlocks {
                                             const IMAGE_CONTENT_TYPE = /*CONTENT_TYPE == "image/png" ? */"ImageBitmap";// : "ImageVector";
                                             const FILE_EXTENSION = CONTENT_TYPE == "image/png" ? "png" : "jpg";
                                             const ASSET = new Asset(AssetType[IMAGE_CONTENT_TYPE], GENERATED_MD5, FILE_EXTENSION, UINT8ARRAY_COSTUME_DATA, false)
+                                            const SKIN_ID = vm.renderer.createBitmapSkin(UINT8ARRAY_COSTUME_DATA, 1)
                                             const costumeObject = {
                                                 asset: ASSET,
                                                 assetId: ASSET.assetId,
@@ -220,7 +221,7 @@ class JgRuntimeBlocks {
                                                     COSTUME_SIZE_X,
                                                     COSTUME_SIZE_Y
                                                 ],
-                                                skinId: LAST_SKIN_ID + 1
+                                                skinId: SKIN_ID
                                             }
                                             sprite.addCostumeAt(costumeObject, COSTUMES_CURRENTLY_IN_THE_SPRITE);
                                             resolve(COSTUME_NAME)
