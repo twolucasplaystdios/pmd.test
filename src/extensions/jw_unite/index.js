@@ -153,6 +153,7 @@ class jwUnite {
                     disableMonitor: true,
                     blockType: BlockType.REPORTER
                 },
+                "---",
                 {
                     opcode: 'lerpFunc',
                     text: formatMessage({
@@ -178,10 +179,36 @@ class jwUnite {
                     }
                 },
                 {
+                    opcode: 'advMath',
+                    text: formatMessage({
+                        id: 'jwUnite.blocks.advMath',
+                        default: '[ONE] [OPTION] [TWO]',
+                        description: 'Operators advanced math function but with 2 variables'
+                    }),
+                    disableMonitor: true,
+                    blockType: BlockType.REPORTER,
+                    arguments: {
+                        ONE: {
+                            type: ArgumentType.NUMBER,
+                            defaultValue: 1
+                        },
+                        OPTION: {
+                            type: ArgumentType.NUMBER,
+                            defaultValue: "^",
+                            menu: 'advMath'
+                        },
+                        TWO: {
+                            type: ArgumentType.NUMBER,
+                            defaultValue: 2
+                        }
+                    }
+                },
+                "---",
+                {
                     opcode: 'setReplacer',
                     text: formatMessage({
                         id: 'jwUnite.blocks.setReplacer',
-                        default: 'set [REPLACER] to [VALUE]',
+                        default: 'set replacer [REPLACER] to [VALUE]',
                         description: 'Sets a replacer to a value'
                     }),
                     arguments: {
@@ -207,13 +234,19 @@ class jwUnite {
                     arguments: {
                         STRING: {
                             type: ArgumentType.STRING,
-                            defaultValue: "Hello!"
+                            defaultValue: "Hello {foo}!"
                         },
                     },
                     disableMonitor: true,
                     blockType: BlockType.REPORTER,
                 },
             ],
+            menus: {
+                advMath: [
+                    '^',
+                    'log'
+                ]
+            }
         };
     }
 
@@ -257,6 +290,16 @@ class jwUnite {
         let lerped = one;
         lerped += ((two - one) / (amount / (amount * amount)));
         return lerped;
+    }
+    advMath(args, util) {
+        const one = isNaN(Number(args.ONE)) ? 0 : Number(args.ONE)
+        const two = isNaN(Number(args.TWO)) ? 0 : Number(args.TWO)
+        const operator = String(args.OPTION)
+        switch(operator) {
+            case "^": return one ** two
+            case "log": return Math.log(two) / Math.log(one)
+           
+        }
     }
     setReplacer(args, util) {
         this.replacers["{" + String(args.REPLACER) + "}"] = String(args.VALUE || "")
