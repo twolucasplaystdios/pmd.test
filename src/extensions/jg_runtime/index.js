@@ -206,8 +206,8 @@ class JgRuntimeBlocks {
                                             const CONTENT_TYPE = req.headers.get("Content-Type");
                                             const IMAGE_CONTENT_TYPE = /*CONTENT_TYPE == "image/png" ? */"ImageBitmap";// : "ImageVector";
                                             const FILE_EXTENSION = CONTENT_TYPE == "image/png" ? "png" : "jpg";
-                                            const ASSET = new Asset(AssetType[IMAGE_CONTENT_TYPE], GENERATED_MD5, FILE_EXTENSION, UINT8ARRAY_COSTUME_DATA, false)
-                                            const SKIN_ID = vm.renderer.createBitmapSkin(UINT8ARRAY_COSTUME_DATA, 1)
+                                            const ASSET = new Asset(AssetType[IMAGE_CONTENT_TYPE], GENERATED_MD5, FILE_EXTENSION, UINT8ARRAY_COSTUME_DATA, false);
+                                            const SKIN_ID = vm.renderer.createBitmapSkin(UINT8ARRAY_COSTUME_DATA, 1);
                                             const costumeObject = {
                                                 asset: ASSET,
                                                 assetId: ASSET.assetId,
