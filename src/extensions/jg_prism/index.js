@@ -177,12 +177,23 @@ class JgPrismBlocks {
                         description: 'Block that runs JavaScript code and returns the result of it.'
                     }),
                     blockType: BlockType.REPORTER,
+                    disableMonitor: true,
                     arguments: {
                         JAVASCRIPT: {
                             type: ArgumentType.STRING,
                             defaultValue: "Math.random()"
                         }
                     }
+                },
+                {
+                    opcode: 'screenshotStage',
+                    text: formatMessage({
+                        id: 'jgRuntime.blocks.screenshotStage',
+                        default: 'screenshot the stage',
+                        description: 'Block that screenshots the stage and returns a Data URI of it.'
+                    }),
+                    blockType: BlockType.REPORTER,
+                    disableMonitor: true
                 }
             ]
         };
@@ -257,6 +268,13 @@ class JgPrismBlocks {
         } else {
             return "";
         }
+    }
+    screenshotStage() {
+        return new Promise((resolve, _) => {
+            vm.renderer.requestSnapshot(uri => {
+                resolve(uri);
+            })
+        })
     }
 }
 
