@@ -203,11 +203,11 @@ class JgRuntimeBlocks {
                                 req.blob().then(blob => {
                                     blob.arrayBuffer().then(arrayBuffer => {
                                         const UINT8ARRAY_COSTUME_DATA = new Uint8Array(arrayBuffer, 0, arrayBuffer.byteLength);
-                                        // const CONTENT_TYPE = req.headers.get("Content-Type");
-                                        // const IMAGE_CONTENT_TYPE = /*CONTENT_TYPE == "image/png" ? */"ImageBitmap";// : "ImageVector";
-                                        // const FILE_EXTENSION = CONTENT_TYPE == "image/png" ? "png" : "jpg";
-                                        // const ASSET = vm.runtime.storage.createAsset(AssetType[IMAGE_CONTENT_TYPE], FILE_EXTENSION, UINT8ARRAY_COSTUME_DATA, null, true);
-                                        // const GENERATED_MD5 = ASSET.assetId;
+                                        const CONTENT_TYPE = req.headers.get("Content-Type");
+                                        const IMAGE_CONTENT_TYPE = /*CONTENT_TYPE == "image/png" ? */"ImageBitmap";// : "ImageVector";
+                                        const FILE_EXTENSION = CONTENT_TYPE == "image/png" ? "png" : "jpg";
+                                        const ASSET = vm.runtime.storage.createAsset(AssetType[IMAGE_CONTENT_TYPE], FILE_EXTENSION, UINT8ARRAY_COSTUME_DATA, null, true);
+                                        const GENERATED_MD5 = ASSET.assetId;
                                         const ROTATION_CENTER = {
                                             x: Math.round(COSTUME_SIZE_X) / 2,
                                             y: Math.round(COSTUME_SIZE_Y) / 2
@@ -217,18 +217,18 @@ class JgRuntimeBlocks {
                                             ROTATION_CENTER.y
                                         ]);
                                         const costumeObject = {
-                                            // asset: ASSET,
-                                            // assetId: ASSET.assetId,
-                                            bitmapResolution: 2,
-                                            // dataFormat: FILE_EXTENSION,
-                                            // md5: GENERATED_MD5 + "." + FILE_EXTENSION,
+                                            asset: ASSET,
+                                            assetId: ASSET.assetId,
+                                            bitmapResolution: 1,
+                                            dataFormat: FILE_EXTENSION,
+                                            md5: GENERATED_MD5 + "." + FILE_EXTENSION,
                                             name: COSTUME_NAME,
                                             rotationCenterX: ROTATION_CENTER.x,
                                             rotationCenterY: ROTATION_CENTER.y,
-                                            // size: [
-                                            // COSTUME_SIZE_X,
-                                            // COSTUME_SIZE_Y
-                                            // ],
+                                            size: [
+                                                COSTUME_SIZE_X,
+                                                COSTUME_SIZE_Y
+                                            ],
                                             skinId: SKIN_ID
                                         }
                                         sprite.addCostumeAt(costumeObject, COSTUMES_CURRENTLY_IN_THE_SPRITE);
