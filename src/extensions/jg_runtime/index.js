@@ -208,7 +208,14 @@ class JgRuntimeBlocks {
                                         const FILE_EXTENSION = CONTENT_TYPE == "image/png" ? "png" : "jpg";
                                         const ASSET = vm.runtime.storage.createAsset(AssetType[IMAGE_CONTENT_TYPE], FILE_EXTENSION, UINT8ARRAY_COSTUME_DATA, null, true);
                                         const GENERATED_MD5 = ASSET.assetId;
-                                        const SKIN_ID = vm.renderer.createBitmapSkin(UINT8ARRAY_COSTUME_DATA, 1);
+                                        const ROTATION_CENTER = {
+                                            x: Math.round(COSTUME_SIZE_X) / 2,
+                                            y: Math.round(COSTUME_SIZE_Y) / 2
+                                        }
+                                        const SKIN_ID = vm.renderer.createBitmapSkin(UINT8ARRAY_COSTUME_DATA, 1, [
+                                            ROTATION_CENTER.x,
+                                            ROTATION_CENTER.y
+                                        ]);
                                         const costumeObject = {
                                             asset: ASSET,
                                             assetId: ASSET.assetId,
@@ -216,8 +223,8 @@ class JgRuntimeBlocks {
                                             dataFormat: FILE_EXTENSION,
                                             md5: GENERATED_MD5 + "." + FILE_EXTENSION,
                                             name: COSTUME_NAME,
-                                            rotationCenterX: Math.round(COSTUME_SIZE_X) / 2,
-                                            rotationCenterY: Math.round(COSTUME_SIZE_Y) / 2,
+                                            rotationCenterX: ROTATION_CENTER.x,
+                                            rotationCenterY: ROTATION_CENTER.y,
                                             size: [
                                                 COSTUME_SIZE_X,
                                                 COSTUME_SIZE_Y
