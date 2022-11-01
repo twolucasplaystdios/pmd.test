@@ -40,7 +40,9 @@ const builtinExtensions = {
     jgPrism: () => require("../extensions/jg_prism"),
     // jw: hello it is i jwklong
     // jwUnite: literal features that should of been added in the first place
-    jwUnite: () => require("../extensions/jw_unite")
+    jwUnite: () => require("../extensions/jw_unite"),
+    // griffpatch: *silence*
+    griffpatch: () => require("../extensions/griffpatch_box2d")
 };
 
 // CCW limited
