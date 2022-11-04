@@ -64,6 +64,37 @@ class jwUnite {
                 },
                 "---",
                 {
+                    opcode: 'trueBoolean',
+                    text: formatMessage({
+                        id: 'jwUnite.blocks.trueBoolean',
+                        default: 'true',
+                        description: 'Returns true'
+                    }),
+                    disableMonitor: true,
+                    blockType: BlockType.BOOLEAN,
+                },
+                {
+                    opcode: 'falseBoolean',
+                    text: formatMessage({
+                        id: 'jwUnite.blocks.falseBoolean',
+                        default: 'false',
+                        description: 'Returns false'
+                    }),
+                    disableMonitor: true,
+                    blockType: BlockType.BOOLEAN,
+                },
+                {
+                    opcode: 'randomBoolean',
+                    text: formatMessage({
+                        id: 'jwUnite.blocks.randomBoolean',
+                        default: 'Random boolean',
+                        description: 'Returns true or false'
+                    }),
+                    disableMonitor: true,
+                    blockType: BlockType.BOOLEAN,
+                },
+                "---",
+                {
                     opcode: 'indexOfTextInText',
                     text: formatMessage({
                         id: 'jwUnite.blocks.indexOfTextInText',
@@ -244,6 +275,7 @@ class jwUnite {
             menus: {
                 advMath: [
                     '^',
+                    'root',
                     'log'
                 ]
             }
@@ -251,13 +283,19 @@ class jwUnite {
     }
 
     replacers = {}
-
+    
     whenanything(args, util) {
         return Boolean(args.ANYTHING || false)
     }
+
     backToGreenFlag(args, util) {
         if (vm) vm.greenFlag()
     }
+
+    trueBoolean() {return true}
+    falseBoolean() {return false}
+    randomBoolean() {return Boolean(Math.round(Math.random()))}
+
     indexOfTextInText(args, util) {
         const lookfor = String(args.TEXT1);
         const searchin = String(args.TEXT2);
@@ -280,9 +318,8 @@ class jwUnite {
         const readline = text.split("\n")[line] || "";
         return readline;
     }
-    newLine() {
-        return "\n";
-    }
+    newLine() { return "\n" }
+
     lerpFunc(args, util) {
         const one = isNaN(Number(args.ONE)) ? 0 : Number(args.ONE);
         const two = isNaN(Number(args.TWO)) ? 0 : Number(args.TWO);
@@ -297,10 +334,11 @@ class jwUnite {
         const operator = String(args.OPTION)
         switch(operator) {
             case "^": return one ** two
+            case "root": return two ** 1/one
             case "log": return Math.log(two) / Math.log(one)
-           
         }
     }
+
     setReplacer(args, util) {
         this.replacers["{" + String(args.REPLACER) + "}"] = String(args.VALUE || "")
     }
