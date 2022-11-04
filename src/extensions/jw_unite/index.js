@@ -283,7 +283,7 @@ class jwUnite {
     }
 
     replacers = {}
-    
+
     whenanything(args, util) {
         return Boolean(args.ANYTHING || false)
     }
@@ -334,8 +334,9 @@ class jwUnite {
         const operator = String(args.OPTION)
         switch(operator) {
             case "^": return one ** two
-            case "root": return two ** 1/one
+            case "root": return one ** 1/two
             case "log": return Math.log(two) / Math.log(one)
+            default: return 0
         }
     }
 
