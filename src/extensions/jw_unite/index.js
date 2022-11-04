@@ -49,7 +49,7 @@ class jwUnite {
                     opcode: 'backToGreenFlag',
                     text: formatMessage({
                         id: 'jwUnite.blocks.backToGreenFlag',
-                        default: 'click [FLAG]',
+                        default: 'run [FLAG]',
                         description: 'Acts like a click on the flag has been done.'
                     }),
                     terminal: true,
@@ -87,7 +87,7 @@ class jwUnite {
                     opcode: 'randomBoolean',
                     text: formatMessage({
                         id: 'jwUnite.blocks.randomBoolean',
-                        default: 'Random boolean',
+                        default: 'random',
                         description: 'Returns true or false'
                     }),
                     disableMonitor: true,
@@ -126,7 +126,7 @@ class jwUnite {
                     opcode: 'getLettersFromIndexToIndexInText',
                     text: formatMessage({
                         id: 'jwUnite.blocks.getLettersFromIndexToIndexInText',
-                        default: 'get letters from [INDEX1] to [INDEX2] in [TEXT]',
+                        default: 'letters from [INDEX1] to [INDEX2] in [TEXT]',
                         description: 'Gets a part of text using the indexes specified.'
                     }),
                     disableMonitor: true,
@@ -154,7 +154,7 @@ class jwUnite {
                     opcode: 'readLineInMultilineText',
                     text: formatMessage({
                         id: 'jwUnite.blocks.readLineInMultilineText',
-                        default: 'read line #[LINE] in [TEXT]',
+                        default: 'read line [LINE] in [TEXT]',
                         description: 'Reads a certain line in text with multiple lines.'
                     }),
                     disableMonitor: true,
@@ -178,7 +178,7 @@ class jwUnite {
                     opcode: 'newLine',
                     text: formatMessage({
                         id: 'jwUnite.blocks.newLine',
-                        default: 'new line',
+                        default: 'newline',
                         description: 'Represents a new line character.'
                     }),
                     disableMonitor: true,
@@ -189,7 +189,7 @@ class jwUnite {
                     opcode: 'lerpFunc',
                     text: formatMessage({
                         id: 'jwUnite.blocks.lerpFunc',
-                        default: 'interpolate: [ONE] to: [TWO] by: [AMOUNT]',
+                        default: 'interpolate [ONE] to [TWO] by [AMOUNT]',
                         description: 'Linearly interpolates the first number to the second by the amount.'
                     }),
                     disableMonitor: true,
@@ -239,7 +239,7 @@ class jwUnite {
                     opcode: 'setReplacer',
                     text: formatMessage({
                         id: 'jwUnite.blocks.setReplacer',
-                        default: 'set replacer [REPLACER] to [VALUE]',
+                        default: 'replacer [REPLACER] to [VALUE]',
                         description: 'Sets a replacer to a value'
                     }),
                     arguments: {
