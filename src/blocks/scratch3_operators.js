@@ -25,6 +25,7 @@ class Scratch3OperatorsBlocks {
             operator_gt: this.gt,
             operator_and: this.and,
             operator_or: this.or,
+            operator_xor: this.xor,
             operator_not: this.not,
             operator_random: this.random,
             operator_join: this.join,
@@ -72,6 +73,10 @@ class Scratch3OperatorsBlocks {
 
     or (args) {
         return Cast.toBoolean(args.OPERAND1) || Cast.toBoolean(args.OPERAND2);
+    }
+    
+    xor (args) {
+        return (Cast.toBoolean(args.OPERAND1) || Cast.toBoolean(args.OPERAND2)) && !(Cast.toBoolean(args.OPERAND1) && Cast.toBoolean(args.OPERAND2));
     }
 
     not (args) {
