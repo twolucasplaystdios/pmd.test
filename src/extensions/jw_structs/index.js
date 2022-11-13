@@ -103,7 +103,7 @@ class jwStructs {
         let struct_name = String(args.STRUCT_NAME);
         if (this.structs.hasOwnProperty(struct_name)) {
             if (this.structs[struct_name].hasOwnProperty(prop_name)) {
-                return this.struct[struct_name][prop_name];
+                return this.structs[struct_name][prop_name];
             }
         }
         return 'undefined';
