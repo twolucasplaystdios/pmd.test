@@ -31,21 +31,21 @@ class jwStructs {
             color2: '#4a98ff',
             blocks: [
                 {
-                    opcode: 'createStruct',
+                    opcode: 'creteStruct',
                     text: formatMessage({
                         id: 'jwStructs.blocks.createStruct',
-                        default: 'create [NAME] struct',
-                        description: 'Creates a struct'
+                        default: 'Create Struct [NAME]',
+                        description: 'Creates a struct.'
                     }),
                     disableMonitor: true,
-                    blockType: BlockType.HAT,
+                    blockType: BlockType.REPORTER,
                     arguments: {
                         NAME: {
                             type: ArgumentType.STRING,
+                            defaultValue: "hi!"
                         }
                     }
                 },
-                "----",
                 {
                     opcode: 'returnProperty',
                     text: formatMessage({
@@ -95,10 +95,9 @@ class jwStructs {
     createStruct(args, util) {
         const name = String(args.NAME);
         if (this.structs[name]) {
-            return false;
+            return
         }
         this.structs[name] = {};
-        return true
     }
     returnProperty(args, util) {
         const prop_name = String(args.PROP_NAME);
@@ -106,7 +105,7 @@ class jwStructs {
         if (!this.structs[struct_name][prop_name]) {
             return this.struct[struct_name][prop_name];
         }
-        return false;
+        return 'undefined';
     }
     setStructProperty(args, util) {
         const prop_name = String(args.PROP_NAME);
