@@ -214,6 +214,8 @@ class ExtensionManager {
         */
         this.runtime.emit('EXTENSION_DATA_LOADING', true);
 
+        console.log('Loading extension', extensionURL);
+        console.log("runtime", this.runtime);
         return this.runtime.loadOnlineExtensionsLibrary() // ccw remote extensions library
             .then(lib => lib.default())
             .then(({ default: remoteExtensions }) => {
