@@ -93,7 +93,7 @@ const createExtensionService = extensionManager => {
 };
 
 class ExtensionManager {
-    constructor(runtime) {
+    constructor(runtime,testing) {
         /**
          * The ID number to provide to the next extension worker.
          * @type {int}
