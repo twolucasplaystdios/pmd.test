@@ -38,7 +38,7 @@ class jwStructs {
                         description: 'Creates a struct.'
                     }),
                     disableMonitor: true,
-                    blockType: BlockType.REPORTER,
+                    blockType: BlockType.COMMAND,
                     arguments: {
                         NAME: {
                             type: ArgumentType.STRING,
