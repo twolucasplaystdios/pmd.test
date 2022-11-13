@@ -31,7 +31,7 @@ class jwStructs {
             color2: '#4a98ff',
             blocks: [
                 {
-                    opcode: 'creteStruct',
+                    opcode: 'createStruct',
                     text: formatMessage({
                         id: 'jwStructs.blocks.createStruct',
                         default: 'Create Struct [NAME]',
@@ -92,7 +92,7 @@ class jwStructs {
         };
     }
 
-    creteStruct(args, util) {
+    createStruct(args, util) {
         let name = String(args.NAME);
         if (!this.structs[name]) {
             this.structs[name] = {};
