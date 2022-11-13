@@ -104,6 +104,7 @@ class jwStructs {
         if (this.structs.hasOwnProperty(struct_name)) {
             let struct = this.structs[struct_name];
             if (struct.hasOwnProperty(prop_name)) {
+                console.log("GOT THIS FAR, HERES THE STRUCT: " + struct);
                 return struct[prop_name];
             }
         }
