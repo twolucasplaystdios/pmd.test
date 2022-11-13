@@ -92,8 +92,8 @@ class jwStructs {
         };
     }
 
-    createStruct(args, util) {
-        const name = String(args.NAME);
+    creteStruct(args, util) {
+        let name = String(args.NAME);
         if (!this.structs[name]) {
             this.structs[name] = {};
         }
