@@ -42,7 +42,10 @@ const builtinExtensions = {
     // jwUnite: literal features that should of been added in the first place
     jwUnite: () => require("../extensions/jw_unite"),
     // griffpatch: *silence*
-    griffpatch: () => require("../extensions/griffpatch_box2d")
+    griffpatch: () => require("../extensions/griffpatch_box2d"),
+    // jw: They'll think its made by jwklong >:) (but it's not (yet (maybe (probably not (but its made by ianyourgod)))))
+    // Structs: hehe structs for oop (look at c)
+    jwStructs: () => require("../extensions/jw_structs"),
 };
 
 // CCW limited
