@@ -94,23 +94,22 @@ class jwStructs {
 
     createStruct(args, util) {
         const name = String(args.NAME);
-        if (this.structs[name]) {
-            return
+        if (!this.structs[name]) {
+            this.structs[name] = {};
         }
-        this.structs[name] = {};
     }
     returnProperty(args, util) {
-        const prop_name = String(args.PROP_NAME);
-        const struct_name = String(args.STRUCT_NAME);
-        if (!this.structs[struct_name][prop_name]) {
+        let prop_name = String(args.PROP_NAME);
+        let struct_name = String(args.STRUCT_NAME);
+        if (this.structs[struct_name][prop_name]) {
             return this.struct[struct_name][prop_name];
         }
         return 'undefined';
     }
     setStructProperty(args, util) {
-        const prop_name = String(args.PROP_NAME);
-        const struct_name = String(args.STRUCT_NAME);
-        const value = String(args.VALUE);
+        let prop_name = String(args.PROP_NAME);
+        let struct_name = String(args.STRUCT_NAME);
+        let value = String(args.VALUE);
         this.structs[struct_name][prop_name] = value;
     }
 }
