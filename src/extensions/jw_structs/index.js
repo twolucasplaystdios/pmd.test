@@ -17,7 +17,7 @@ class jwStructs {
          */
         this.runtime = runtime;
         this.structs = {};
-        this.vars = {};
+        this.vars = {"None": {}};
     }
 
     /**
@@ -100,8 +100,8 @@ class jwStructs {
                     }),
                     arguments: {
                         OBJECT: {
-                            type: ArgumentType.NUMBER,
-                            defaultValue: "",
+                            type: ArgumentType.STRING,
+                            defaultValue: this.vars["None"],
                             menu: 'setObjectProperty'
                         },
                         PROP_NAME: {
@@ -124,10 +124,10 @@ class jwStructs {
                         description: 'Gives a struct a property.'
                     }),
                     arguments: {
-                        OBJECT_NAME: {
-                            type: ArgumentType.NUMBER,
-                            defaultValue: "",
-                            menu: 'setObjectProperty'
+                        stageType: {
+                            type: ArgumentType.STRING,
+                            menu: 'StageTypes',
+                            defaultValue: this.vars["None"]
                         },
                         PROP_NAME: {
                             type: ArgumentType.NUMBER,
@@ -142,7 +142,18 @@ class jwStructs {
                     disableMonitor: true,
                     blockType: BlockType.COMMAND,
                 }
-            ]
+            ],
+            menus: {
+                objs: this.vars,
+                SpaceTypes: this.SPACE_TYPE_MENU,
+                WhereTypes: this.WHERE_TYPE_MENU,
+                ShapeTypes: this.SHAPE_TYPE_MENU,
+                EnableModeTypes: this.ENABLE_TYPES_TYPE_MENU,
+                StaticTypes: this.STATIC_TYPE_MENU,
+                FrictionTypes: this.FRICTION_TYPE_MENU,
+                RestitutionTypes: this.RESTITUTION_TYPE_MENU,
+                DensityTypes: this.DENSITY_TYPE_MENU
+            }
         };
     }
 
