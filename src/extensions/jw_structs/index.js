@@ -16,7 +16,10 @@ class jwStructs {
          * @type {Runtime}
          */
         this.runtime = runtime;
-        this.structs = {};
+        this.menus = {
+            structsMenu: {},
+            objects: {}
+        }
     }
 
     /**
@@ -42,79 +45,134 @@ class jwStructs {
                     arguments: {
                         NAME: {
                             type: ArgumentType.STRING,
-                            defaultValue: "hi!"
+                            defaultValue: ""
                         }
                     }
                 },
                 {
-                    opcode: 'returnProperty',
+                    opcode: 'createStructProperty',
                     text: formatMessage({
-                        id: 'jwStructs.blocks.returnProperty',
-                        default: 'return property, [PROP_NAME], from struct [STRUCT_NAME]',
-                        description: 'Gets a property from a struct.'
-                    }),
-                    disableMonitor: true,
-                    blockType: BlockType.REPORTER,
-                    arguments: {
-                        PROP_NAME: {
-                            type: ArgumentType.STRING,
-                            defaultValue: "hi!"
-                        },
-                        STRUCT_NAME: {
-                            type: ArgumentType.STRING,
-                        }
-                    }
-                },
-                {
-                    opcode: 'setStructProperty',
-                    text: formatMessage({
-                        id: 'jwUnite.blocks.setStructProperty',
-                        default: 'set property [PROP_NAME], of stuct [STRUCT_NAME], to [VALUE]',
-                        description: 'Sets a struct property to a value.'
+                        id: 'jwStructs.blocks.createStructProperty',
+                        default: 'create property [PROP_NAME] and add it to stuct [STRUCT_NAME] with a default value [VALUE]',
+                        description: 'Creates a structs property with a default value.'
                     }),
                     arguments: {
                         PROP_NAME: {
                             type: ArgumentType.STRING,
-                            defaultValue: "hi!",
+                            defaultValue: ""
                         },
                         STRUCT_NAME: {
-                            type: ArgumentType.STRING
+                            type: ArgumentType.STRING,
+                            defaultValue: "",
+                            menu: 'structsMenu'
                         },
                         VALUE: {
                             type: ArgumentType.STRING,
-                            defaultValue: "hello!"
+                            defaultValue: ""
                         }
                     },
                     disableMonitor: true,
                     blockType: BlockType.COMMAND,
                 },
-            ]
+                {
+                    opcode: 'createObject',
+                    text: formatMessage({
+                        id: 'jwStructs.blocks.createObject',
+                        default: 'create object [NAME] from struct [STRUCT_NAME]',
+                        description: 'Creates an object from a struct.'
+                    }),
+                    arguments: {
+                        NAME: {
+                            type: ArgumentType.STRING,
+                            defaultValue: ""
+                        },
+                        STRUCT_NAME: {
+                            type: ArgumentType.STRING,
+                            defaultValue: "",
+                            menu: 'structsMenu'
+                        }
+                    },
+                    disableMonitor: true,
+                    blockType: BlockType.COMMAND,
+                },
+                {
+                    opcode: 'setObjectProperty',
+                    text: formatMessage({
+                        id: 'jwStructs.blocks.setObjectProperty',
+                        default: 'set property [PROP_NAME] of object [OBJECT_NAME] to [VALUE]',
+                        description: 'Sets the value of an object property.'
+                    }),
+                    arguments: {
+                        PROP_NAME: {
+                            type: ArgumentType.STRING,
+                            defaultValue: ""
+                        },
+                        OBJECT_NAME: {
+                            type: ArgumentType.STRING,
+                            defaultValue: "",
+                            menu: 'objects'
+                        },
+                        VALUE: {
+                            type: ArgumentType.STRING,
+                            defaultValue: ""
+                        }
+                    },
+                    disableMonitor: true,
+                    blockType: BlockType.COMMAND,
+                },
+                {
+                    opcode: 'getObjectProperty',
+                    text: formatMessage({
+                        id: 'jwStructs.blocks.getObjectProperty',
+                        default: 'get property [PROP_NAME] of object [OBJECT_NAME]',
+                        description: 'Gets the value of an object property.'
+                    }),
+                    arguments: {
+                        PROP_NAME: {
+                            type: ArgumentType.STRING,
+                            defaultValue: ""
+                        },
+                        OBJECT_NAME: {
+                            type: ArgumentType.STRING,
+                            defaultValue: "",
+                            menu: 'objects'
+                        }
+                    },
+                    disableMonitor: true,
+                    blockType: BlockType.REPORTER,
+                }
+
+            ],
+            menus: this.menus
         };
     }
 
-    createStruct(args, util) {
-        let name = String(args.NAME);
-        if (!this.structs[name]) {
-            this.structs[name] = {};
+    createStruct(args,util) {
+        if (args.NAME == "default") {
+            return;
         }
-    }
-    returnProperty(args, util) {
-        let prop_name = String(args.PROP_NAME);
-        let struct_name = String(args.STRUCT_NAME);
-        if (this.structs.hasOwnProperty(struct_name)) {
-            let struct = this.structs[struct_name];
-            if (struct.hasOwnProperty(prop_name)) {
-                console.log("GOT THIS FAR, HERES THE STRUCT: " + struct);
-                return struct[prop_name];
-            }
+        if (this.menus.structsMenu.default[args.NAME] != undefined) {
+            return;
         }
-        return 'undefined';
+        this.menus.structsMenu[args.NAME] = args.NAME;
     }
-    setStructProperty(args, util) {
-        let prop_name = String(args.PROP_NAME);
-        let struct_name = String(args.STRUCT_NAME);
-        let value = String(args.VALUE);
-        this.structs[struct_name][prop_name] = value;
+    createStructProperty(args,util) {
+        if (this.menus.structsMenu[args.STRUCT_NAME] == undefined) {
+            this.menus.structsMenu[args.STRUCT_NAME] = {};
+        }
+        this.menus.structsMenu[args.STRUCT_NAME][args.PROP_NAME] = args.VALUE;
+    }
+    createObject(args,util) {
+        if (this.menus.objects[args.NAME] != undefined) {
+            return;
+        }
+        this.menus.objects[args.NAME] = this.menus.structsMenu[args.STRUCT_NAME];
+    }
+    setObjectProperty(args,util) {
+        this.menus.objects[args.OBJECT_NAME][args.PROP_NAME] = args.VALUE;
+    }
+    getObjectProperty(args,util) {
+        return this.menus.objects[args.OBJECT_NAME][args.PROP_NAME];
     }
 }
 
