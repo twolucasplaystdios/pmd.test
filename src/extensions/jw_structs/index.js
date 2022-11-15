@@ -26,6 +26,7 @@ class jwStructs {
      * @returns {object} metadata for this extension and its blocks.
      */
     getInfo() {
+        console.log("Getting info for the Structs extension!");
         return {
             id: 'jwStructs',
             name: 'Structs',
