@@ -66,7 +66,7 @@ class jwStructs {
                         STRUCT: {
                             type: ArgumentType.STRING,
                             defaultValue: "",
-                            menu: structs,
+                            menu: 'structs',
                         },
                         VALUE: {
                             type: ArgumentType.STRING,
