@@ -38,7 +38,7 @@ class jwProto {
                     }),
                     disableMonitor: true,
                     blockType: BlockType.COMMAND,
-                    branches: 1,
+                    branchCount: 1,
                     arguments: {
                         LABEL: {
                             type: ArgumentType.STRING,
