@@ -11,6 +11,7 @@ const blockIconURI = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAUAAAAFACAMA
  */
 class jwStructs {
     constructor(runtime) {
+        console.log("Welcome to the Structs extension!");
         /**
          * The runtime instantiating this block package.
          * @type {Runtime}
@@ -89,8 +90,7 @@ class jwStructs {
                         },
                         STRUCT: {
                             type: ArgumentType.STRING,
-                            defaultValue: "",
-                            menu: structs,
+                            defaultValue: ""
                         }
                     }
                 },
@@ -110,8 +110,7 @@ class jwStructs {
                         },
                         OBJECT: {
                             type: ArgumentType.STRING,
-                            defaultValue: "",
-                            menu: 'objects',
+                            defaultValue: ""
                         },
                         VALUE: {
                             type: ArgumentType.STRING,
@@ -135,7 +134,6 @@ class jwStructs {
                         OBJECT: {
                             type: ArgumentType.STRING,
                             defaultValue: "",
-                            menu: 'objects',
                         }
                     }
                 },
