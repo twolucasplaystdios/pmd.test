@@ -66,7 +66,6 @@ class jwStructs {
                         STRUCT: {
                             type: ArgumentType.STRING,
                             defaultValue: "",
-                            menu: 'structs',
                         },
                         VALUE: {
                             type: ArgumentType.STRING,
@@ -111,7 +110,6 @@ class jwStructs {
                         OBJECT: {
                             type: ArgumentType.STRING,
                             defaultValue: "",
-                            menu: 'objects',
                         },
                         VALUE: {
                             type: ArgumentType.STRING,
@@ -135,7 +133,6 @@ class jwStructs {
                         OBJECT: {
                             type: ArgumentType.STRING,
                             defaultValue: "",
-                            menu: 'objects',
                         }
                     }
                 },
