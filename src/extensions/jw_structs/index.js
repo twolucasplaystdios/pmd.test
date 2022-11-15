@@ -45,7 +45,7 @@ class jwStructs {
                     arguments: {
                         NAME: {
                             type: ArgumentType.STRING,
-                            defaultValue: ""
+                            defaultValue: "foo"
                         }
                     }
                 },
@@ -61,15 +61,15 @@ class jwStructs {
                     arguments: {
                         NAME: {
                             type: ArgumentType.STRING,
-                            defaultValue: ""
+                            defaultValue: "foo"
                         },
                         STRUCT: {
                             type: ArgumentType.STRING,
-                            defaultValue: "",
+                            defaultValue: "bar",
                         },
                         VALUE: {
                             type: ArgumentType.STRING,
-                            defaultValue: ""
+                            defaultValue: "foobar"
                         }
                     }
                 },
@@ -85,11 +85,11 @@ class jwStructs {
                     arguments: {
                         NAME: {
                             type: ArgumentType.STRING,
-                            defaultValue: ""
+                            defaultValue: "foo"
                         },
                         STRUCT: {
                             type: ArgumentType.STRING,
-                            defaultValue: ""
+                            defaultValue: "bar"
                         }
                     }
                 },
@@ -105,15 +105,15 @@ class jwStructs {
                     arguments: {
                         PROPERTY: {
                             type: ArgumentType.STRING,
-                            defaultValue: "",
+                            defaultValue: "foo",
                         },
                         OBJECT: {
                             type: ArgumentType.STRING,
-                            defaultValue: "",
+                            defaultValue: "bar",
                         },
                         VALUE: {
                             type: ArgumentType.STRING,
-                            defaultValue: ""
+                            defaultValue: "foobar"
                         }
                     }
                 },
@@ -128,11 +128,11 @@ class jwStructs {
                     arguments: {
                         PROPERTY: {
                             type: ArgumentType.STRING,
-                            defaultValue: "",
+                            defaultValue: "foo",
                         },
                         OBJECT: {
                             type: ArgumentType.STRING,
-                            defaultValue: "",
+                            defaultValue: "bar",
                         }
                     }
                 },
