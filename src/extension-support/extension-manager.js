@@ -1,5 +1,4 @@
 const dispatch = require('../dispatch/central-dispatch');
-const jwUnite = require('../extensions/jw_unite');
 const log = require('../util/log');
 const maybeFormatMessage = require('../util/maybe-format-message');
 
@@ -25,8 +24,10 @@ const builtinExtensions = {
     makeymakey: () => require('../extensions/scratch3_makeymakey'),
     boost: () => require('../extensions/scratch3_boost'),
     gdxfor: () => require('../extensions/scratch3_gdx_for'),
+
     // tw: core extension
     tw: () => require('../extensions/tw'),
+
     // jg: jeremyes esxsitenisonsnsn
     // jgFiles: support for reading user files
     jgFiles: () => require('../extensions/jg_files'),
@@ -38,12 +39,18 @@ const builtinExtensions = {
     jgRuntime: () => require("../extensions/jg_runtime"),
     // jgPrism: blocks for specific use cases or major convenience
     jgPrism: () => require("../extensions/jg_prism"),
+
     // jw: hello it is i jwklong
     // jwUnite: literal features that should of been added in the first place
     jwUnite: () => require("../extensions/jw_unite"),
+    // jwProto: placeholders, labels, defenitons, we got em
+    jwProto: () => require("../extensions/jw_proto"),
+
     // griffpatch: *silence*
     griffpatch: () => require("../extensions/griffpatch_box2d"),
+
     // jw: They'll think its made by jwklong >:) (but it's not (yet (maybe (probably not (but its made by ianyourgod)))))
+    // this is the real jwklong speaking, one word shall be said about this: A N G E R Y
     // Structs: hehe structs for oop (look at c)
     jwStructs: () => require("../extensions/jw_structs"),
 };
