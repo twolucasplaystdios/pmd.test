@@ -16,8 +16,8 @@ class jwStructs {
          * @type {Runtime}
          */
         this.runtime = runtime;
-        this.structs = {};
-        this.objects = {};
+        this.structs = {"None": {}};
+        this.objects = {"None": {}};
         this.cur_object = null;
     }
 
