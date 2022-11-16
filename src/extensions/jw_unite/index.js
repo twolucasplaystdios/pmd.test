@@ -192,7 +192,7 @@ class jwUnite {
                         description: 'Represents a new line character.'
                     }),
                     disableMonitor: true,
-                    blockType: BlockType.REPORTER
+                    blockType: BlockType.REPORTER,
                     arguments: {
                         ONE: {
                             type: ArgumentType.STRING,
