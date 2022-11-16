@@ -34,7 +34,7 @@ class jwProto {
                     text: formatMessage({
                         id: 'jwProto.blocks.labelFunction',
                         default: 'label [LABEL]',
-                        description: 'Runs blocks when set boolean is true'
+                        description: 'Label for some blocks.'
                     }),
                     disableMonitor: true,
                     blockType: BlockType.COMMAND,

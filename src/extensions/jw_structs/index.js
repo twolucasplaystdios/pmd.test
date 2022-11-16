@@ -18,6 +18,7 @@ class jwStructs {
         this.structs = {"None": {}};
         this.objects = {"None": {}};
         this.cur_object = null;
+        this.cur_struct = null;
     }
 
     /**
@@ -35,23 +36,22 @@ class jwStructs {
                     opcode: 'createStruct',
                     text: formatMessage({
                         id: 'jwStructs.blocks.createStruct',
-                        default: 'Create Struct [NAME]',
+                        default: 'create struct [NAME]',
                         description: 'Creates a struct.'
                     }),
                     disableMonitor: true,
-                    blockType: BlockType.COMMAND,
+                    blockType: BlockType.HAT,
                     arguments: {
                         NAME: {
                             type: ArgumentType.STRING,
-                            defaultValue: "foo"
                         }
                     }
                 },
                 {
-                    opcode: 'addStructProperty',
+                    opcode: 'createStructProperty',
                     text: formatMessage({
-                        id: 'jwStructs.blocks.addStructProperty',
-                        default: 'Add Property [NAME] to Struct [STRUCT] with a default value of [VALUE]',
+                        id: 'jwStructs.blocks.createStructProperty',
+                        default: 'Property [NAME] with default value [VALUE]',
                         description: 'Adds a property to a struct.'
                     }),
                     disableMonitor: true,
@@ -61,22 +61,18 @@ class jwStructs {
                             type: ArgumentType.STRING,
                             defaultValue: "foo"
                         },
-                        STRUCT: {
-                            type: ArgumentType.STRING,
-                            defaultValue: "bar",
-                        },
                         VALUE: {
                             type: ArgumentType.STRING,
-                            defaultValue: "foobar"
+                            defaultValue: "bar"
                         }
                     }
                 },
                 {
-                    opcode: 'createObject',
+                    opcode: 'newObject',
                     text: formatMessage({
-                        id: 'jwStructs.blocks.createObject',
-                        default: 'Create Object named [NAME] of Struct [STRUCT]',
-                        description: 'Creates an object of a struct.'
+                        id: 'jwStructs.blocks.newObject',
+                        default: 'set [NAME] to new [STRUCT]',
+                        description: 'Creates an object out of a struct.'
                     }),
                     disableMonitor: true,
                     blockType: BlockType.COMMAND,
@@ -87,7 +83,8 @@ class jwStructs {
                         },
                         STRUCT: {
                             type: ArgumentType.STRING,
-                            defaultValue: "bar"
+                            defaultValue: "None",
+                            menu: structs
                         }
                     }
                 },
@@ -108,6 +105,7 @@ class jwStructs {
                         OBJECT: {
                             type: ArgumentType.STRING,
                             defaultValue: "bar",
+                            menu: objects
                         },
                         VALUE: {
                             type: ArgumentType.STRING,
@@ -119,7 +117,7 @@ class jwStructs {
                     opcode: 'returnObjectProperty',
                     text: formatMessage({
                         id: 'jwStructs.blocks.returnObjectProperty',
-                        default: 'Return [PROPERTY] of [OBJECT]',
+                        default: '[PROPERTY] of [OBJECT]',
                         description: 'Returns a property of an object.'
                     }),
                     blockType: BlockType.REPORTER,
@@ -131,6 +129,7 @@ class jwStructs {
                         OBJECT: {
                             type: ArgumentType.STRING,
                             defaultValue: "bar",
+                            menu: objects
                         }
                     }
                 },
@@ -152,25 +151,21 @@ class jwStructs {
 
     createStruct(args, util) {
         let name = String(args.NAME);
-        if (!this.structs[name]) {
-            this.structs[name] = {};
-        }
+        this.structs[name] = {};
+        this.cur_struct = name;
+        return true
     }
-    addStructProperty(args, util) {
+    createStructProperty(args, util) {
         let name = String(args.NAME);
-        let struct = String(args.STRUCT);
         let value = String(args.VALUE);
-        if (this.structs[struct]) {
-            this.structs[struct][name] = value;
+        if (this.cur_struct) {
+            this.structs[this.cur_struct][name] = value;
         }
     }
     createObject(args, util) {
         let name = String(args.NAME);
         let struct = String(args.STRUCT);
-        if (this.structs[struct]) {
-            this.objects[name] = JSON.parse(JSON.stringify(this.structs[struct]));
-            this.cur_object = name;
-        }
+        this.objects[name] = this.structs[struct];
     }
     setObjectProperty(args, util) {
         let property = String(args.PROPERTY);
