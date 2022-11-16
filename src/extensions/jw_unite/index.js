@@ -198,8 +198,7 @@ class jwUnite {
                             type: ArgumentType.STRING,
                             defaultValue: "foo"
                         }
-                },
-                "---",
+                }},
                 {
                     opcode: 'lerpFunc',
                     text: formatMessage({
