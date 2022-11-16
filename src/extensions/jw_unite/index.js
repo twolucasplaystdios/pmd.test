@@ -184,6 +184,21 @@ class jwUnite {
                     disableMonitor: true,
                     blockType: BlockType.REPORTER
                 },
+                {
+                    opcode: 'stringify',
+                    text: formatMessage({
+                        id: 'jwUnite.blocks.stringify',
+                        default: 'stringify',
+                        description: 'Represents a new line character.'
+                    }),
+                    disableMonitor: true,
+                    blockType: BlockType.REPORTER
+                    arguments: {
+                        ONE: {
+                            type: ArgumentType.STRING,
+                            defaultValue: "foo"
+                        }
+                },
                 "---",
                 {
                     opcode: 'lerpFunc',
@@ -319,6 +334,7 @@ class jwUnite {
         return readline;
     }
     newLine() { return "\n" }
+    stringify(args, util) {return args.ONE}
 
     lerpFunc(args, util) {
         const one = isNaN(Number(args.ONE)) ? 0 : Number(args.ONE);
