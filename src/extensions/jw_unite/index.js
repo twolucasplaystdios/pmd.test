@@ -188,7 +188,7 @@ class jwUnite {
                     opcode: 'stringify',
                     text: formatMessage({
                         id: 'jwUnite.blocks.stringify',
-                        default: 'stringify',
+                        default: '[ONE] as string',
                         description: 'Represents a new line character.'
                     }),
                     disableMonitor: true,
