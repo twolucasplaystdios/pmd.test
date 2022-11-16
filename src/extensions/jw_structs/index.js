@@ -40,7 +40,8 @@ class jwStructs {
                         description: 'Creates a struct.'
                     }),
                     disableMonitor: true,
-                    blockType: BlockType.HAT,
+                    blockType: BlockType.COMMAND,
+                    branchCount: 1,
                     arguments: {
                         NAME: {
                             type: ArgumentType.STRING,
@@ -153,7 +154,7 @@ class jwStructs {
         let name = String(args.NAME);
         this.structs[name] = {};
         this.cur_struct = name;
-        return true
+        util.startBranch(1, false)
     }
     createStructProperty(args, util) {
         let name = String(args.NAME);
@@ -162,7 +163,7 @@ class jwStructs {
             this.structs[this.cur_struct][name] = value;
         }
     }
-    createObject(args, util) {
+    newObject(args, util) {
         let name = String(args.NAME);
         let struct = String(args.STRUCT);
         this.objects[name] = this.structs[struct];
