@@ -52,19 +52,19 @@ class jwStructs {
                     opcode: 'createStructProperty',
                     text: formatMessage({
                         id: 'jwStructs.blocks.createStructProperty',
-                        default: 'Property [NAME] with default value [VALUE]',
-                        description: 'Adds a property to a struct.'
+                        default: 'property [NAME] with value [VALUE]',
+                        description: 'Creates a property in a struct.'
                     }),
                     disableMonitor: true,
                     blockType: BlockType.COMMAND,
                     arguments: {
                         NAME: {
                             type: ArgumentType.STRING,
-                            defaultValue: "foo"
+                            defaultValue: 'property'
                         },
                         VALUE: {
                             type: ArgumentType.STRING,
-                            defaultValue: "bar"
+                            defaultValue: 'value'
                         }
                     }
                 },
