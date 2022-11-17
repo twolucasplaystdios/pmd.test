@@ -276,6 +276,7 @@ class jwUnite {
                         default: 'replace [STRING] with replacers',
                         description: 'Replaces all replacer names with their respective value'
                     }),
+                    
                     arguments: {
                         STRING: {
                             type: ArgumentType.STRING,
@@ -283,6 +284,7 @@ class jwUnite {
                         },
                     },
                     disableMonitor: true,
+                    branchCount: 1,
                     blockType: BlockType.REPORTER,
                 },
             ],
