@@ -30,6 +30,22 @@ class jwProto {
             color2: '#ffd45e',
             blocks: [
                 {
+                    opcode: 'labelHat',
+                    text: formatMessage({
+                        id: 'jwProto.blocks.labelHat',
+                        default: 'label [LABEL]',
+                        description: 'Label for some unused blocks.'
+                    }),
+                    disableMonitor: true,
+                    blockType: BlockType.EVENT,
+                    arguments: {
+                        LABEL: {
+                            type: ArgumentType.STRING,
+                            defaultValue: "label"
+                        }
+                    }
+                },
+                {
                     opcode: 'labelFunction',
                     text: formatMessage({
                         id: 'jwProto.blocks.labelFunction',
@@ -45,6 +61,45 @@ class jwProto {
                             defaultValue: "label"
                         }
                     }
+                },
+                {
+                    opcode: 'labelReporter',
+                    text: formatMessage({
+                        id: 'jwProto.blocks.labelReporter',
+                        default: 'label [LABEL] [VALUE]',
+                        description: 'Label for a value.'
+                    }),
+                    disableMonitor: true,
+                    blockType: BlockType.REPORTER,
+                    arguments: {
+                        LABEL: {
+                            type: ArgumentType.STRING,
+                            defaultValue: "label"
+                        },
+                        VALUE: {
+                            type: ArgumentType.STRING,
+                            defaultValue: "value"
+                        }
+                    }
+                },
+                {
+                    opcode: 'labelBoolean',
+                    text: formatMessage({
+                        id: 'jwProto.blocks.labelBoolean',
+                        default: 'label [LABEL] [VALUE]',
+                        description: 'Label for a boolean.'
+                    }),
+                    disableMonitor: true,
+                    blockType: BlockType.BOOLEAN,
+                    arguments: {
+                        LABEL: {
+                            type: ArgumentType.STRING,
+                            defaultValue: "label"
+                        },
+                        VALUE: {
+                            type: ArgumentType.BOOLEAN,
+                        }
+                    }
                 }
             ]
         };
@@ -52,6 +107,12 @@ class jwProto {
 
     labelFunction(args, util) {
         util.startBranch(1, false)
+    }
+    labelReporter(args, util) {
+        return args.VALUE
+    }
+    labelBoolean(args, util) {
+        return args.VALUE
     }
 }
 
