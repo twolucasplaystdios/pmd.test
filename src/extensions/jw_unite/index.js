@@ -30,6 +30,16 @@ class jwUnite {
             color2: '#4a98ff',
             blocks: [
                 {
+                    opcode: 'always',
+                    text: formatMessage({
+                        id: 'jwUnite.blocks.always',
+                        default: 'always',
+                        description: 'Runs the code every tick'
+                    }),
+                    disableMonitor: true,
+                    blockType: BlockType.EVENT
+                },
+                {
                     opcode: 'whenanything',
                     text: formatMessage({
                         id: 'jwUnite.blocks.whenanything',

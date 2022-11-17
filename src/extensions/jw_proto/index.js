@@ -37,7 +37,7 @@ class jwProto {
                         description: 'Label for some unused blocks.'
                     }),
                     disableMonitor: true,
-                    blockType: BlockType.EVENT,
+                    blockType: BlockType.HAT,
                     arguments: {
                         LABEL: {
                             type: ArgumentType.STRING,
@@ -105,6 +105,9 @@ class jwProto {
         };
     }
 
+    labelHat(args, util) {
+        return false
+    }
     labelFunction(args, util) {
         util.startBranch(1, false)
     }
