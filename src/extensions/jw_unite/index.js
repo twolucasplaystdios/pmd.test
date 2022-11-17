@@ -294,7 +294,6 @@ class jwUnite {
                         },
                     },
                     disableMonitor: true,
-                    branchCount: 1,
                     blockType: BlockType.REPORTER,
                 },
             ],
