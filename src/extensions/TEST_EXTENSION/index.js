@@ -1,10 +1,10 @@
 //THIS IS A TEST EXTENSION, AND AT NO POINT SHOULD IT BE ADDED TO THE EXTENSION MENU OR THE IMPORT LIST
 
-class TEST_EXTENSION {
+class TESTEXTENSION {
   getInfo() {
     return {
-      id: 'TEST_EXTENSION', // change this if you make an actual extension!
-      name: 'TEST_EXTENSION',
+      id: 'TESTEXTENSION', // change this if you make an actual extension!
+      name: 'TESTEXTENSION',
       blocks: [
         {
           opcode: 'logBranch',
@@ -21,4 +21,4 @@ class TEST_EXTENSION {
     }
   }
 }
-Scratch.extensions.register(new TEST_EXTENSION());
+Scratch.extensions.register(new TESTEXTENSION());
