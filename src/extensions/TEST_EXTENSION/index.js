@@ -15,7 +15,7 @@ class TESTEXTENSION {
       ]
     };
   }
-  logBranch(args) {
+  logBranch(args, util) {
     if (util.thread.peekStack() && util.target.blocks.getBlock(util.thread.peekStack()) && util.target.blocks.getBlock(util.thread.peekStack()).inputs.SUBSTACK.block) {
       console.log(util.target.blocks.getBlock(util.thread.peekStack()).inputs.SUBSTACK.block)
     }
