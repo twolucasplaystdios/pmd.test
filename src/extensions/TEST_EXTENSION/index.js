@@ -10,7 +10,7 @@ class TESTEXTENSION {
           opcode: 'logBranch',
           blockType: Scratch.BlockType.COMMAND,
           branchCount: 1,
-          text: 'Log value of first block in branch %1',
+          text: 'Log value of first block in branch %0',
         }
       ]
     };
