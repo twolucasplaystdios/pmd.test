@@ -15,9 +15,8 @@ class jwStructs {
          * @type {Runtime}
          */
         this.runtime = runtime;
-        this.structs = {"None": {}};
-        this.objects = {"None": {}};
-        this.cur_object = null;
+        this.structs = {};
+        this.objects = {};
         this.cur_struct = null;
     }
 
@@ -84,8 +83,7 @@ class jwStructs {
                         },
                         STRUCT: {
                             type: ArgumentType.STRING,
-                            defaultValue: "None",
-                            menu: "structs"
+                            defaultValue: "bar"
                         }
                     }
                 },
@@ -106,7 +104,6 @@ class jwStructs {
                         OBJECT: {
                             type: ArgumentType.STRING,
                             defaultValue: "bar",
-                            menu: "objects"
                         },
                         VALUE: {
                             type: ArgumentType.STRING,
@@ -130,24 +127,11 @@ class jwStructs {
                         OBJECT: {
                             type: ArgumentType.STRING,
                             defaultValue: "bar",
-                            menu: "objects"
                         }
                     }
                 },
-            ],
-            menus: {
-                structs: 'getStructs',
-                objects: 'getObjects'
-            }
+            ]
         };
-    }
-
-    getStructs() {
-        return Object.keys(this.structs);
-    }
-
-    getObjects() {
-        return Object.keys(this.objects);
     }
 
     createStruct(args, util) {
