@@ -17,7 +17,6 @@ class jwStructs {
         this.runtime = runtime;
         this.structs = {};
         this.objects = {};
-        this.cur_struct = null;
     }
 
     /**
@@ -40,7 +39,6 @@ class jwStructs {
                     }),
                     disableMonitor: true,
                     blockType: BlockType.COMMAND,
-                    branchCount: 1,
                     arguments: {
                         NAME: {
                             type: ArgumentType.STRING,
@@ -51,7 +49,7 @@ class jwStructs {
                     opcode: 'createStructProperty',
                     text: formatMessage({
                         id: 'jwStructs.blocks.createStructProperty',
-                        default: 'property [NAME] with value [VALUE]',
+                        default: 'property [NAME] in struct [STRUCT] with value [VALUE]',
                         description: 'Creates a property in a struct.'
                     }),
                     disableMonitor: true,
@@ -60,6 +58,10 @@ class jwStructs {
                         NAME: {
                             type: ArgumentType.STRING,
                             defaultValue: 'property'
+                        },
+                        STRUCT: {
+                            type: ArgumentType.STRING,
+                            defaultValue: 'struct'
                         },
                         VALUE: {
                             type: ArgumentType.STRING,
@@ -137,26 +139,27 @@ class jwStructs {
     createStruct(args, util) {
         let name = String(args.NAME);
         this.structs[name] = {};
-        this.cur_struct = name;
-        util.startBranch(1, false)
     }
     createStructProperty(args, util) {
         let name = String(args.NAME);
         let value = String(args.VALUE);
-        if (this.cur_struct) {
-            this.structs[this.cur_struct][name] = value;
+        let struct = String(args.STRUCT);
+        if (this.structs[struct] && !this.structs[struct][name]) {
+            this.structs[struct][name] = value;
         }
     }
     newObject(args, util) {
         let name = String(args.NAME);
         let struct = String(args.STRUCT);
-        this.objects[name] = this.structs[struct];
+        if (this.structs[struct]) {    
+            this.objects[name] = this.structs[struct];
+        }
     }
     setObjectProperty(args, util) {
         let property = String(args.PROPERTY);
         let object = String(args.OBJECT);
         let value = String(args.VALUE);
-        if (this.objects[object]) {
+        if (this.objects[object] && this.objects[object][property]) {
             this.objects[object][property] = value;
         }
     }
