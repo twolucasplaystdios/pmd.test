@@ -138,7 +138,9 @@ class jwStructs {
 
     createStruct(args, util) {
         let name = String(args.NAME);
-        this.structs[name] = {};
+        if (!this.structs[name]) {
+            this.structs[name] = {};
+        }
     }
     createStructProperty(args, util) {
         let name = String(args.NAME);
