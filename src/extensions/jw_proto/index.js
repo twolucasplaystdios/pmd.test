@@ -63,6 +63,22 @@ class jwProto {
                     }
                 },
                 {
+                    opcode: 'labelCommand',
+                    text: formatMessage({
+                        id: 'jwProto.blocks.labelCommand',
+                        default: 'label [LABEL]',
+                        description: 'Label for labeling.'
+                    }),
+                    disableMonitor: true,
+                    blockType: BlockType.COMMAND,
+                    arguments: {
+                        LABEL: {
+                            type: ArgumentType.STRING,
+                            defaultValue: "label"
+                        }
+                    }
+                },
+                {
                     opcode: 'labelReporter',
                     text: formatMessage({
                         id: 'jwProto.blocks.labelReporter',
@@ -110,6 +126,8 @@ class jwProto {
     }
     labelFunction(args, util) {
         util.startBranch(1, false)
+    }
+    labelCommand(args, util) {
     }
     labelReporter(args, util) {
         return args.VALUE
