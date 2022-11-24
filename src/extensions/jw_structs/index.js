@@ -132,6 +132,59 @@ class jwStructs {
                         }
                     }
                 },
+                "----",
+                {
+                    opcode: 'deleteStructs',
+                    text: formatMessage({
+                        id: 'jwStructs.blocks.deleteStructs',
+                        default: 'delete all structs',
+                        description: 'Deletes all structs.'
+                    }),
+                    disableMonitor: true,
+                    blockType: BlockType.COMMAND,
+                },
+                {
+                    opcode: 'deleteObjects',
+                    text: formatMessage({
+                        id: 'jwStructs.blocks.deleteObjects',
+                        default: 'delete all objects',
+                        description: 'Deletes all objects.'
+                    }),
+                    disableMonitor: true,
+                    blockType: BlockType.COMMAND,
+                },
+                {
+                    opcode: 'deleteStruct',
+                    text: formatMessage({
+                        id: 'jwStructs.blocks.deleteStruct',
+                        default: 'delete struct [NAME]',
+                        description: 'Deletes a struct.'
+                    }),
+                    disableMonitor: true,
+                    blockType: BlockType.COMMAND,
+                    arguments: {
+                        NAME: {
+                            type: ArgumentType.STRING,
+                            defaultValue: "foo"
+                        }
+                    }
+                },
+                {
+                    opcode: 'deleteObject',
+                    text: formatMessage({
+                        id: 'jwStructs.blocks.deleteObject',
+                        default: 'delete object [NAME]',
+                        description: 'Deletes an object.'
+                    }),
+                    disableMonitor: true,
+                    blockType: BlockType.COMMAND,
+                    arguments: {
+                        NAME: {
+                            type: ArgumentType.STRING,
+                            defaultValue: "foo"
+                        }
+                    }
+                }
             ]
         };
     }
@@ -170,6 +223,24 @@ class jwStructs {
         let object = String(args.OBJECT);
         if (this.objects[object]) {
             return this.objects[object][property];
+        }
+    }
+    deleteStructs(args, util) {
+        this.structs = {};
+    }
+    deleteObjects(args, util) {
+        this.objects = {};
+    }
+    deleteStruct(args, util) {
+        let name = String(args.NAME);
+        if (this.structs[name]) {
+            delete this.structs[name];
+        }
+    }
+    deleteObject(args, util) {
+        let name = String(args.NAME);
+        if (this.objects[name]) {
+            delete this.objects[name];
         }
     }
 }
