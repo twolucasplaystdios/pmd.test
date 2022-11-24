@@ -132,7 +132,7 @@ class jwStructs {
                         }
                     }
                 },
-                "----",
+                "---",
                 {
                     opcode: 'deleteStructs',
                     text: formatMessage({
