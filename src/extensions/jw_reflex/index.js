@@ -26,8 +26,8 @@ class jwReflex {
             id: 'jwReflex',
             name: 'Reflex',
             //blockIconURI: blockIconURI,
-            color1: '#000', //tbd
-            color2: '#000', // tbd
+            color1: '#000000', //tbd
+            color2: '#ffffff', // tbd
             blocks: [
                 {
                     opcode: 'createFlex',
