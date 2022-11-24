@@ -45,6 +45,8 @@ const builtinExtensions = {
     jwUnite: () => require("../extensions/jw_unite"),
     // jwProto: placeholders, labels, defenitons, we got em
     jwProto: () => require("../extensions/jw_proto"),
+    // jwReflex: vector positioning (UNRELEASED, DO NOT ADD TO GUI)
+    jwReflex: () => require("../extensions/jw_reflex"),
 
     // griffpatch: *silence*
     griffpatch: () => require("../extensions/griffpatch_box2d"),
