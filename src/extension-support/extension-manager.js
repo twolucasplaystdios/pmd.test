@@ -182,7 +182,7 @@ class ExtensionManager {
             return;
         }
 
-        const extension = (builtinExtensions[extensionURL] || injectExtensions[extensionURL])();
+        const extension = (builtinExtensions[extensionId] || injectExtensions[extensionId])();
         const extensionInstance = new extension(this.runtime);
         const serviceName = this._registerInternalExtension(extensionInstance);
         this._loadedExtensions.set(extensionId, serviceName);
