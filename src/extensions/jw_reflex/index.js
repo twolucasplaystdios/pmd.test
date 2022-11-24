@@ -53,11 +53,11 @@ class jwReflex {
                     arguments: {
                         FX: {
                             type: ArgumentType.NUMBER,
-                            default: 0.5
+                            default: 0
                         },
                         FY: {
                             type: ArgumentType.NUMBER,
-                            default: 0.5
+                            default: 0
                         }
                     },
                     filter: [TargetType.SPRITE]
@@ -100,9 +100,9 @@ class jwReflex {
                 paused: false,
             }
             setInterval(function() {
-                const flex = flexes[util.target.getName()]
+                const flex = this.flexes[util.target.getName()]
                 if (flex && !flex.paused) {
-                    util.target.setXY(((flex.fx-0.5)*vm.runtime.stageWidth)+flex.ox,(((1-flex.fy)-0.5)*vm.runtime.stageHeight)-flex.oy)
+                    util.target.setXY(((flex.fx/2)*vm.runtime.stageWidth)+flex.ox,(((1-flex.fy)/2)*vm.runtime.stageHeight)-flex.oy)
                 }
             }, 1000/60)
         }
