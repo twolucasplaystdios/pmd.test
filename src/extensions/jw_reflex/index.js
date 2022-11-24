@@ -99,8 +99,9 @@ class jwReflex {
 
                 paused: false,
             }
+            const name = util.target.getName()
             setInterval(function() {
-                const flex = this.flexes[util.target.getName()]
+                const flex = this.flexes[name]
                 if (flex && !flex.paused) {
                     util.target.setXY(((flex.fx/2)*vm.runtime.stageWidth)+flex.ox,(((1-flex.fy)/2)*vm.runtime.stageHeight)-flex.oy)
                 }
