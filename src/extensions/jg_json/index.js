@@ -10,9 +10,9 @@ function _valuetoraw(value) {
 
     // is the value a number? if so convert it to a number
     if (String(Number(value) == value)) value = Number(value)
-    
+
     // is the value a boolean? if so convert it to one
-    if (value == 'true' || value == 'false') value = value == 'true'
+    if (value.toLowerCase() == 'true' || value.toLowerCase() == 'false') value = value == 'true'
 
     return value;
 }
