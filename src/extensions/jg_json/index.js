@@ -348,6 +348,8 @@ class JgJSONBlocks {
         if (String(Number(value) == value)) value = Number(value)
         // is the value a boolean? if so convert it to one
         if (value == 'true' || value == 'false') value = value == 'true'
+        
+        return value;
     }
     _rawtovalue(value) {
         // is the value a number? if so convert value to one
@@ -533,7 +535,7 @@ class JgJSONBlocks {
             object = []
         }
 
-        return object.indexof(_valuetoraw(value), number);
+        return object.indexOf(_valuetoraw(value), number);
     }
 
     json_array_set(args, util) {
