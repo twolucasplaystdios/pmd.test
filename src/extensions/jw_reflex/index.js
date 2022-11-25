@@ -103,7 +103,7 @@ class jwReflex {
     _updateFlex(target) {
         const flex = this.flexes[target.getName()]
         if (flex && !flex.paused) {
-            target.setXY(((flex.fx/2)*vm.runtime.stageWidth)+flex.ox,(((1-flex.fy)/2)*vm.runtime.stageHeight)-flex.oy)
+            target.setXY((((flex.fx-1)/2)*vm.runtime.stageWidth)+flex.ox,(((1-flex.fy)/2)*vm.runtime.stageHeight)-flex.oy)
         }
     }
 
@@ -126,14 +126,14 @@ class jwReflex {
     }
 
     setFlexXY(args, util) {
-        if (util.target.isSprite() && Object.keys(this.flexes).includes(util.target.getName())) {
+        if (Object.keys(this.flexes).includes(util.target.getName())) {
             this.flexes[util.target.getName()].fx = Number(args.FX)
             this.flexes[util.target.getName()].fy = Number(args.FY)
         }
     }
 
     setOffsetXY(args, util) {
-        if (util.target.isSprite() && Object.keys(this.flexes).includes(util.target.getName())) {
+        if (Object.keys(this.flexes).includes(util.target.getName())) {
             this.flexes[util.target.getName()].ox = Number(args.OX)
             this.flexes[util.target.getName()].oy = Number(args.OY)
         }
