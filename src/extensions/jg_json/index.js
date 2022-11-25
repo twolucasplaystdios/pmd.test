@@ -250,7 +250,7 @@ class JgJSONBlocks {
                             defaultValue: "[\"A\", \"B\", \"C\"]"
                         },
                         index: {
-                            type: ArgumentType.STRING,
+                            type: ArgumentType.NUMBER,
                             defaultValue: 2
                         },
                         value: {
@@ -263,6 +263,28 @@ class JgJSONBlocks {
                         }
                     },
                     text: 'in array [array] set [index] to [value]'
+                }, {
+                    opcode: 'json_array_insert',
+                    blockType: BlockType.REPORTER,
+                    arguments: {
+                        array: {
+                            type: ArgumentType.STRING,
+                            defaultValue: "[\"A\", \"B\", \"C\"]"
+                        },
+                        index: {
+                            type: ArgumentType.NUMBER,
+                            defaultValue: 2
+                        },
+                        value: {
+                            type: ArgumentType.STRING,
+                            defaultValue: formatMessage({
+                                id: 'jgJSON.setValueToKeyInJSON_value',
+                                default: 'value',
+                                description: 'The value of the key you are setting.'
+                            })
+                        }
+                    },
+                    text: 'in array [array] insert [value] at [index]'
                 }, {
                     opcode: 'json_array_get',
                     blockType: BlockType.REPORTER,
@@ -557,6 +579,25 @@ class JgJSONBlocks {
         }
 
         object[index] = _valuetoraw(value)
+
+        return JSON.stringify(object);
+    }
+
+    json_array_insert(args, util) {
+        const array = args.array;
+        const index = args.index;
+        const value = args.value;
+
+        // is this json valid? if not create an empty one
+        let object;
+        try {
+            if (!array.startsWith('[')) throw new error('error lol')
+            object = JSON.parse(array)
+        } catch {
+            object = []
+        }
+
+        object.splice(index, 0, _valuetoraw(value))
 
         return JSON.stringify(object);
     }
