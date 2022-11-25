@@ -2,32 +2,6 @@ const Cast = require('../util/cast');
 const MathUtil = require('../util/math-util');
 const Timer = require('../util/timer');
 
-//stolen from griffpatch extension, sorry but i had to
-const _setXY = function (rt, x, y, force) {
-    if (rt.isStage) return;
-    if (rt.dragging && !force) return;
-    const oldX = rt.x;
-    const oldY = rt.y;
-    if (rt.renderer) {
-        // const position = rt.renderer.getFencedPositionOfDrawable(rt.drawableID, [x, y]);
-        rt.x = x; // position[0];
-        rt.y = y; // position[1];
-
-        rt.renderer.updateDrawableProperties(rt.drawableID, {
-            position: [x, y]
-        });
-        if (rt.visible) {
-            rt.emit(RenderedTarget.EVENT_TARGET_VISUAL_CHANGE, rt);
-            rt.runtime.requestRedraw();
-        }
-    } else {
-        rt.x = x;
-        rt.y = y;
-    }
-    rt.emit(RenderedTarget.EVENT_TARGET_MOVED, rt, oldX, oldY, force);
-    rt.runtime.requestTargetsUpdate(rt);
-};
-
 class Scratch3MotionBlocks {
     constructor (runtime) {
         /**
@@ -95,13 +69,13 @@ class Scratch3MotionBlocks {
         const radians = MathUtil.degToRad(90 - target.direction);
         const dx = steps * Math.cos(radians);
         const dy = steps * Math.sin(radians);
-        _setXY(util.target, target.x + dx, target.y + dy);
+        target.setXY(target.x + dx, target.y + dy);
     }
 
     goToXY (args, util) {
         const x = Cast.toNumber(args.X);
         const y = Cast.toNumber(args.Y);
-        _setXY(util.target, x, y)
+        util.target.setXY(x, y);
     }
 
     getTargetXY (targetName, util) {
@@ -128,7 +102,7 @@ class Scratch3MotionBlocks {
     goTo (args, util) {
         const targetXY = this.getTargetXY(args.TO, util);
         if (targetXY) {
-            _setXY(util.target, targetXY[0], targetXY[1]);
+            util.target.setXY(targetXY[0], targetXY[1]);
         }
     }
 
@@ -178,15 +152,14 @@ class Scratch3MotionBlocks {
                 const frac = timeElapsed / (util.stackFrame.duration * 1000);
                 const dx = frac * (util.stackFrame.endX - util.stackFrame.startX);
                 const dy = frac * (util.stackFrame.endY - util.stackFrame.startY);
-                _setXY(
-                    util.target,
+                util.target.setXY(
                     util.stackFrame.startX + dx,
                     util.stackFrame.startY + dy
                 );
                 util.yield();
             } else {
                 // Finished: move to final position.
-                _setXY(util.target, util.stackFrame.endX, util.stackFrame.endY);
+                util.target.setXY(util.stackFrame.endX, util.stackFrame.endY);
             }
         } else {
             // First time: save data for future use.
@@ -199,7 +172,7 @@ class Scratch3MotionBlocks {
             util.stackFrame.endY = Cast.toNumber(args.Y);
             if (util.stackFrame.duration <= 0) {
                 // Duration too short to glide.
-                _setXY(util.target, util.stackFrame.endX, util.stackFrame.endY);
+                util.target.setXY(util.stackFrame.endX, util.stackFrame.endY);
                 return;
             }
             util.yield();
@@ -269,7 +242,7 @@ class Scratch3MotionBlocks {
         target.setDirection(newDirection);
         // Keep within the stage.
         const fencedPosition = target.keepInFence(target.x, target.y);
-        _setXY(this.target, fencedPosition[0], fencedPosition[1]);
+        target.setXY(fencedPosition[0], fencedPosition[1]);
     }
 
     setRotationStyle (args, util) {
@@ -278,22 +251,22 @@ class Scratch3MotionBlocks {
 
     changeX (args, util) {
         const dx = Cast.toNumber(args.DX);
-        _setXY(util.target, util.target.x + dx, util.target.y);
+        util.target.setXY(util.target.x + dx, util.target.y);
     }
 
     setX (args, util) {
         const x = Cast.toNumber(args.X);
-        _setXY(util.target, x, util.target.y);
+        util.target.setXY(x, util.target.y);
     }
 
     changeY (args, util) {
         const dy = Cast.toNumber(args.DY);
-        _setXY(util.target, util.target.x, util.target.y + dy);
+        util.target.setXY(util.target.x, util.target.y + dy);
     }
 
     setY (args, util) {
         const y = Cast.toNumber(args.Y);
-        _setXY(util.target, util.target.x, y);
+        util.target.setXY(util.target.x, y);
     }
 
     getX (args, util) {
