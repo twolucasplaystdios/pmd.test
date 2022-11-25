@@ -239,7 +239,7 @@ class JgJSONBlocks {
                             defaultValue: "[\"A\", \"B\", \"C\"]"
                         },
                         index: {
-                            type: ArgumentType.STRING,
+                            type: ArgumentType.NUMBER,
                             defaultValue: 2
                         }
                     },
@@ -253,10 +253,12 @@ class JgJSONBlocks {
                             defaultValue: "[\"A\", \"B\", \"C\"]"
                         },
                         index1: {
-                            type: ArgumentType.NUMBER
+                            type: ArgumentType.NUMBER,
+                            defaultValue: 2
                         },
                         index2: {
-                            type: ArgumentType.NUMBER
+                            type: ArgumentType.NUMBER,
+                            defaultValue: 2
                         }
                     },
                     text: 'in array [array] get all items from [index1] to [index2]'
