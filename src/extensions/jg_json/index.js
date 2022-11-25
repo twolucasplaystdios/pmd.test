@@ -283,7 +283,7 @@ class JgJSONBlocks {
                     blockType: BlockType.COMMAND,
                     arguments: {
                         list: {
-                            type: Scratch.ArgumentType.STRING,
+                            type: ArgumentType.STRING,
                             defaultValue: 'select a list',
                             menu: 'lists'
                         },
@@ -298,7 +298,7 @@ class JgJSONBlocks {
                     blockType: BlockType.REPORTER,
                     arguments: {
                         list: {
-                            type: Scratch.ArgumentType.STRING,
+                            type: ArgumentType.STRING,
                             defaultValue: 'select a list',
                             menu: 'lists'
                         }
