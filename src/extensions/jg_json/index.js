@@ -348,7 +348,7 @@ class JgJSONBlocks {
         if (String(Number(value) == value)) value = Number(value)
         // is the value a boolean? if so convert it to one
         if (value == 'true' || value == 'false') value = value == 'true'
-        
+
         return value;
     }
     _rawtovalue(value) {
@@ -378,7 +378,7 @@ class JgJSONBlocks {
             object = {}
         }
 
-        return _rawtovalue(object[key]);
+        return JgJSONBlocks._rawtovalue(object[key]);
     }
     setValueToKeyInJSON(args) {
         const json = String(args.JSON);
@@ -393,7 +393,7 @@ class JgJSONBlocks {
             object = {}
         }
 
-        object[key] = _valuetoraw(value)
+        object[key] = JgJSONBlocks._valuetoraw(value)
 
         return JSON.stringify(object)
     }
@@ -503,7 +503,7 @@ class JgJSONBlocks {
             object = []
         }
 
-        return object.includes(_valuetoraw(value));
+        return object.includes(JgJSONBlocks._valuetoraw(value));
     }
 
     json_array_reverse(args, util) {
@@ -535,7 +535,7 @@ class JgJSONBlocks {
             object = []
         }
 
-        return object.indexOf(_valuetoraw(value), number);
+        return object.indexOf(JgJSONBlocks._valuetoraw(value), number);
     }
 
     json_array_set(args, util) {
@@ -552,7 +552,7 @@ class JgJSONBlocks {
             object = []
         }
 
-        object[index] = _valuetoraw(value)
+        object[index] = JgJSONBlocks._valuetoraw(value)
 
         return JSON.stringify(object);
     }
@@ -570,7 +570,7 @@ class JgJSONBlocks {
             object = []
         }
 
-        return _rawtovalue(object[index]);
+        return JgJSONBlocks._rawtovalue(object[index]);
     }
 
     json_array_getrange(args, util) {
@@ -603,7 +603,7 @@ class JgJSONBlocks {
             object = []
         }
 
-        object.push(_valuetoraw(value))
+        object.push(JgJSONBlocks._valuetoraw(value))
 
         return JSON.stringify(object);
     }
@@ -622,7 +622,7 @@ class JgJSONBlocks {
             object = []
         }
         content.value = object.map(x => {
-            return _rawtovalue(x)
+            return JgJSONBlocks._rawtovalue(x)
         })
     }
 
@@ -631,7 +631,7 @@ class JgJSONBlocks {
         const content = util.target.lookupOrCreateList(list.id, list.name).value
 
         content.map(x => {
-            return _valuetoraw(x)
+            return JgJSONBlocks._valuetoraw(x)
         })
 
         return JSON.stringify(content);
