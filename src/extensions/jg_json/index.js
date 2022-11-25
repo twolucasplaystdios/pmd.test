@@ -5,9 +5,9 @@ const ArgumentType = require('../../extension-support/argument-type');
 function _valuetoraw(value) {
     // is the value a valid json? if so convert to one else do nothing
     try {
-        value = JSON.parse(args.VALUE)
+        value = JSON.parse(value)
     } catch {
-        value = args.VALUE
+        value = value
     }
     // is the value a number? if so convert it to a number
     if (String(Number(value) == value)) value = Number(value)
