@@ -347,10 +347,10 @@ class JgJSONBlocks {
     }
 
     getAllLists() {
-        const variables = [
-            ...Object.values(vm.runtime.getTargetForStage().variables),
-            ...Object.values(vm.editingTarget.variables)
-        ];
+        const variables = [].concat(
+            Object.values(vm.runtime.getTargetForStage().variables),
+            Object.values(vm.editingTarget.variables)
+        );
         const lists = variables.filter(i => i.type === 'list');
         if (lists.length === 0) {
             return [
