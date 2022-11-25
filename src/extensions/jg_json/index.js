@@ -10,8 +10,10 @@ function _valuetoraw(value) {
         // well its not a json so what is it?
         if (String(Number(value)) == value) {
             value = Number(value)
-        } else if (value.toLowerCase() == 'true' || value.toLowerCase() == 'false') {
-            value = value == 'true'
+        } else if (value.toLowerCase() == 'true') {
+            value = true
+        } else if (value.toLowerCase() == 'false') {
+            value = false
         } else if (value.toLowerCase() == 'undefined') {
             value = undefined
         } else if (value.toLowerCase() == 'null') {
