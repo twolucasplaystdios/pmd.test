@@ -12,6 +12,10 @@ function _valuetoraw(value) {
             value = Number(value)
         } else if (value.toLowerCase() == 'true' || value.toLowerCase() == 'false') {
             value = value == 'true'
+        } else if (value.toLowerCase() == 'undefined') {
+            value = undefined
+        } else if (value.toLowerCase() == 'null') {
+            value = null
         }
     }
 
