@@ -6,11 +6,11 @@ function _valuetoraw(value) {
     // is the value a valid json? if so convert to one else do nothing
     try {
         value = JSON.parse(value)
-    } catch {
-        value = value
-    }
+    } catch {}
+
     // is the value a number? if so convert it to a number
     if (String(Number(value) == value)) value = Number(value)
+    
     // is the value a boolean? if so convert it to one
     if (value == 'true' || value == 'false') value = value == 'true'
 
