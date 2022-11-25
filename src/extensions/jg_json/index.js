@@ -337,20 +337,19 @@ class JgJSONBlocks {
         }));
     }
 
-    getValueFromJSON(args) {
-        const key = args.VALUE;
-        const json = args.JSON;
-
-        // is this json valid? if not create an empty one
-        let object;
+    _valuetoraw(value) {
+        // is the value a valid json? if so convert to one else do nothing
         try {
-            object = JSON.parse(json)
+            value = JSON.parse(args.VALUE)
         } catch {
-            object = {}
+            value = args.VALUE
         }
-
-        let value = object[key]
-
+        // is the value a number? if so convert it to a number
+        if (String(Number(value) == value)) value = Number(value)
+        // is the value a boolean? if so convert it to one
+        if (value == 'true' || value == 'false') value = value == 'true'
+    }
+    _rawtovalue(value) {
         // is the value a number? if so convert value to one
         if (typeof value == 'number') value = String(value)
 
@@ -364,10 +363,10 @@ class JgJSONBlocks {
 
         return value;
     }
-    setValueToKeyInJSON(args) {
-        const json = String(args.JSON);
-        const key = args.KEY;
-        let value;
+
+    getValueFromJSON(args) {
+        const key = args.VALUE;
+        const json = args.JSON;
 
         // is this json valid? if not create an empty one
         let object;
@@ -376,18 +375,23 @@ class JgJSONBlocks {
         } catch {
             object = {}
         }
-        // is the value a valid json? if so convert to one else do nothing
-        try {
-            value = JSON.parse(args.VALUE)
-        } catch {
-            value = args.VALUE
-        }
-        // is the value a number? if so convert it to a number
-        if (String(Number(value) == value)) value = Number(value)
-        // is the value a boolean? if so convert it to one
-        if (value == 'true' || value == 'false') value = value == 'true'
 
-        object[key] = value
+        return _rawtovalue(object[key]);
+    }
+    setValueToKeyInJSON(args) {
+        const json = String(args.JSON);
+        const key = args.KEY;
+        const value = args.VALUE;
+
+        // is this json valid? if not create an empty one
+        let object;
+        try {
+            object = JSON.parse(json)
+        } catch {
+            object = {}
+        }
+
+        object[key] = _valuetoraw(value)
 
         return JSON.stringify(object)
     }
@@ -497,7 +501,7 @@ class JgJSONBlocks {
             object = []
         }
 
-        return object.includes(value);
+        return object.includes(_valuetoraw(value));
     }
 
     json_array_reverse(args, util) {
@@ -529,13 +533,13 @@ class JgJSONBlocks {
             object = []
         }
 
-        return object.indexof(value, number);
+        return object.indexof(_valuetoraw(value), number);
     }
 
     json_array_set(args, util) {
         const array = args.array;
         const index = args.index;
-        let value = args.value;
+        const value = args.value;
 
         // is this json valid? if not create an empty one
         let object;
@@ -545,18 +549,8 @@ class JgJSONBlocks {
         } catch {
             object = []
         }
-        // is the value a valid json? if so convert to one else do nothing
-        try {
-            value = JSON.parse(args.value)
-        } catch {
-            value = args.value
-        }
-        // is the value a number? if so convert it to a number
-        if (String(Number(value) == value)) value = Number(value)
-        // is the value a boolean? if so convert it to one
-        if (value == 'true' || value == 'false') value = value == 'true'
 
-        object[index] = value
+        object[index] = _valuetoraw(value)
 
         return JSON.stringify(object);
     }
@@ -574,20 +568,7 @@ class JgJSONBlocks {
             object = []
         }
 
-        let value = object[index]
-
-        // is the value a number? if so convert value to one
-        if (typeof value == 'number') value = String(value)
-
-        // is the value a valid json? if so make it into a string
-        try {
-            value = JSON.stringify(value)
-        } catch {}
-
-        // is the value a boolean? if so make it into a string
-        if (typeof value == 'boolean') value = String(value)
-
-        return value;
+        return _rawtovalue(object[index]);
     }
 
     json_array_getrange(args, util) {
@@ -609,6 +590,7 @@ class JgJSONBlocks {
 
     json_array_push(args, util) {
         const array = args.array;
+        const value = args.item;
 
         // is this json valid? if not create an empty one
         let object;
@@ -619,19 +601,7 @@ class JgJSONBlocks {
             object = []
         }
 
-        let value;
-        // is the value a valid json? if so convert to one else do nothing
-        try {
-            value = JSON.parse(args.item)
-        } catch {
-            value = args.item
-        }
-        // is the value a number? if so convert it to a number
-        if (String(Number(value) == value)) value = Number(value)
-        // is the value a boolean? if so convert it to one
-        if (value == 'true' || value == 'false') value = value == 'true'
-
-        object.push(value)
+        object.push(_valuetoraw(value))
 
         return JSON.stringify(object);
     }
@@ -650,16 +620,7 @@ class JgJSONBlocks {
             object = []
         }
         content.value = object.map(x => {
-            let value = x
-
-            // is the value a number or boolean? if so convert value to one
-            if ((typeof value == 'number') || (typeof value == 'boolean')) value = String(value)
-    
-            // is the value a valid json? if so make it into a string
-            try {
-                value = JSON.stringify(value)
-            } catch {}
-            return value
+            return _rawtovalue(x)
         })
     }
 
@@ -668,18 +629,7 @@ class JgJSONBlocks {
         const content = util.target.lookupOrCreateList(list.id, list.name).value
 
         content.map(x => {
-            let value;
-            // is the value a valid json? if so convert to one else do nothing
-            try {
-                value = JSON.parse(x)
-            } catch {
-                value = x
-            }
-            // is the value a number? if so convert it to a number
-            if (String(Number(value) == value)) value = Number(value)
-            // is the value a boolean? if so convert it to one
-            if (value == 'true' || value == 'false') value = value == 'true'
-            return value
+            return _valuetoraw(x)
         })
 
         return JSON.stringify(content);
