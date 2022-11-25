@@ -89,6 +89,13 @@ class jwReflex {
 
     flexes = {}
 
+    _updateFlex(target) {
+        const flex = this.flexes[target.getName()]
+        if (flex && !flex.paused) {
+            target.setXY(((flex.fx/2)*vm.runtime.stageWidth)+flex.ox,(((1-flex.fy)/2)*vm.runtime.stageHeight)-flex.oy)
+        }
+    }
+
     createFlex(args, util) {
         if (util.target.isSprite() && !Object.keys(this.flexes).includes(util.target.getName())) {
             this.flexes[util.target.getName()] = {
@@ -99,13 +106,7 @@ class jwReflex {
 
                 paused: false,
             }
-            const flexes = () => this.flexes
-            setInterval(function() {
-                const flex = flexes[util.target.getName()]
-                if (flex && !flex.paused) {
-                    util.target.setXY(((flex.fx/2)*vm.runtime.stageWidth)+flex.ox,(((1-flex.fy)/2)*vm.runtime.stageHeight)-flex.oy)
-                }
-            }, 1000/60)
+            setInterval(function() {_updateFlex(util.target)}, 1000/30)
         }
         console.debug(this.flexes)
     }
