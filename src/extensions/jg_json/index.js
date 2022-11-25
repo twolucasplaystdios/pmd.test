@@ -612,7 +612,12 @@ class JgJSONBlocks {
     }
 
     json_array_tolist(args, util) {
-        const list = JSON.parse(args.list);
+        let list;
+        try {
+            list = JSON.parse(args.list);
+        } catch {
+            return
+        }
         const array = args.array;
         const content = util.target.lookupOrCreateList(list.id, list.name)
 
@@ -624,13 +629,20 @@ class JgJSONBlocks {
         } catch {
             object = []
         }
+
         content.value = object.map(x => {
+            console.log(x, _rawtovalue(x))
             return _rawtovalue(x)
         })
     }
 
     json_array_listtoarray(args, util) {
-        const list = JSON.parse(args.list);
+        let list;
+        try {
+            list = JSON.parse(args.list);
+        } catch {
+            return
+        }
         const content = util.target.lookupOrCreateList(list.id, list.name).value
 
         content.map(x => {
