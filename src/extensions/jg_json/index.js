@@ -6,27 +6,23 @@ function _valuetoraw(value) {
     // is the value a valid json? if so convert to one else do nothing
     try {
         value = JSON.parse(value)
-    } catch {}
-
-    // is the value a number? if so convert it to a number
-    if (String(Number(value) == value)) value = Number(value)
-
-    // is the value a boolean? if so convert it to one
-    if (value.toLowerCase() == 'true' || value.toLowerCase() == 'false') value = value == 'true'
+    } catch {
+        // well its not a json so what is it?
+        if (String(Number(value)) == value) {
+            value = Number(value)
+        } else if (value.toLowerCase() == 'true' || value.toLowerCase() == 'false') {
+            value = value == 'true'
+        }
+    }
 
     return value;
 }
 function _rawtovalue(value) {
-    // is the value a number? if so convert value to one
-    if (typeof value == 'number') value = String(value)
-
-    // is the value a valid json? if so make it into a string
     try {
         value = JSON.stringify(value)
-    } catch {}
-
-    // is the value a boolean? if so make it into a string
-    if (typeof value == 'boolean') value = String(value)
+    } catch {
+        value = String(value)
+    }
 
     return value;
 }
