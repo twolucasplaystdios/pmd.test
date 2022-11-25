@@ -42,6 +42,17 @@ class jwReflex {
                     filter: [TargetType.SPRITE]
                 },
                 {
+                    opcode: 'updateFlex',
+                    text: formatMessage({
+                        id: 'jwReflex.blocks.updateFlex',
+                        default: 'updates flex',
+                        description: 'Update position of sprite with flex data.'
+                    }),
+                    disableMonitor: true,
+                    blockType: BlockType.COMMAND
+                },
+                "---",
+                {
                     opcode: 'setFlexXY',
                     text: formatMessage({
                         id: 'jwReflex.blocks.setFlexXY',
@@ -106,9 +117,12 @@ class jwReflex {
 
                 paused: false,
             }
-            setInterval(function() {_updateFlex(util.target)}, 1000/30)
         }
         console.debug(this.flexes)
+    }
+
+    updateFlex(args, util) {
+        this._updateFlex(util.target)
     }
 
     setFlexXY(args, util) {
