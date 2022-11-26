@@ -108,8 +108,8 @@ class jwUnite {
                     opcode: 'thing_is_text',
                     text: formatMessage({
                         id: 'jwUnite.blocks.thing_is_text',
-                        default: '[TEXT1] is text?',
-                        description: 'Checks if something is text!'
+                        default: '[TEXT1] has text?',
+                        description: 'Checks if something has text!'
                     }),
                     disableMonitor: true,
                     blockType: BlockType.REPORTER,
@@ -128,8 +128,8 @@ class jwUnite {
                     opcode: 'thing_is_number',
                     text: formatMessage({
                         id: 'jwUnite.blocks.thing_is_number',
-                        default: '[TEXT1] is number?',
-                        description: 'Checks if something is a number!'
+                        default: '[TEXT1] has a number?',
+                        description: 'Checks if something has a number!'
                     }),
                     disableMonitor: true,
                     blockType: BlockType.REPORTER,
@@ -417,8 +417,8 @@ class jwUnite {
         return string
     }
 
-    thing_is_number(args, util) { return String(Number(args.TEXT1)) == args.TEXT1 }
-    thing_is_text(args, util) { return !String(Number(args.TEXT1)) == args.TEXT1 }
+    thing_is_number(args, util) {return /\d/.test(args.TEXT)}
+    thing_is_text(args, util) { return Number(args.TEXT1) === NaN }
 }
 
 module.exports = jwUnite;
