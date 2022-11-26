@@ -417,8 +417,22 @@ class jwUnite {
         return string
     }
 
-    thing_is_number(args, util) {return /\d/.test(args.TEXT)}
-    thing_is_text(args, util) { return Number(args.TEXT1) === NaN }
+    thing_is_number(args, util) {
+        // i hate js
+        // i also hate regex
+        // so im gonna do this the lazy way
+        const numbs = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "."]
+        const inp = args.TEXT1
+        for (const char of inp) {
+            if (numbs.includes(char)) return true
+        }
+        return false
+    }
+    thing_is_text(args, util) {
+        // WHY IS NAN NOT EQUAL TO ITSELF
+        // HOW IS NAN A NUMBER
+        return isNan(Number(args.TEXT1))
+    }
 }
 
 module.exports = jwUnite;
