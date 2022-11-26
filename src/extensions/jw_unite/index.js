@@ -105,6 +105,46 @@ class jwUnite {
                 },
                 "---",
                 {
+                    opcode: 'thing_is_text',
+                    text: formatMessage({
+                        id: 'jwUnite.blocks.thing_is_text',
+                        default: '[TEXT1] is text?',
+                        description: 'Checks if something is text!'
+                    }),
+                    disableMonitor: true,
+                    blockType: BlockType.REPORTER,
+                    arguments: {
+                        TEXT1: {
+                            type: ArgumentType.STRING,
+                            defaultValue: formatMessage({
+                                id: 'jwUnite.thing_is_text_whatToCheck',
+                                default: 'world',
+                                description: 'What to check.'
+                            })
+                        }
+                    }
+                },
+                {
+                    opcode: 'thing_is_number',
+                    text: formatMessage({
+                        id: 'jwUnite.blocks.thing_is_number',
+                        default: '[TEXT1] is number?',
+                        description: 'Checks if something is a number!'
+                    }),
+                    disableMonitor: true,
+                    blockType: BlockType.REPORTER,
+                    arguments: {
+                        TEXT1: {
+                            type: ArgumentType.STRING,
+                            defaultValue: formatMessage({
+                                id: 'jwUnite.thing_is_number_whatToCheck',
+                                default: '10',
+                                description: 'What to check.'
+                            })
+                        }
+                    }
+                },
+                {
                     opcode: 'indexOfTextInText',
                     text: formatMessage({
                         id: 'jwUnite.blocks.indexOfTextInText',
@@ -376,6 +416,9 @@ class jwUnite {
         }
         return string
     }
+
+    thing_is_number(args, util) { return String(Number(args.TEXT1)) == args.TEXT1 }
+    thing_is_text(args, util) { return !String(Number(args.TEXT1)) == args.TEXT1 }
 }
 
 module.exports = jwUnite;

@@ -34,6 +34,25 @@ function _rawtovalue(value) {
 
     return value;
 }
+function _validatejson(json) {
+    try {
+        json = JSON.parse(json)
+    } catch {
+        json = {}
+    }
+
+    return json
+}
+function _validatejsonarray(array) {
+    try {
+        if (!array.startsWith('[')) throw new error('error lol')
+        array = JSON.parse(array)
+    } catch {
+        array = []
+    }
+
+    return array
+}
 
 // const Cast = require('../../util/cast');
 
@@ -395,263 +414,125 @@ class JgJSONBlocks {
 
     getValueFromJSON(args) {
         const key = args.VALUE;
-        const json = args.JSON;
+        const json = _validatejson(args.JSON);
 
-        // is this json valid? if not create an empty one
-        let object;
-        try {
-            object = JSON.parse(json)
-        } catch {
-            object = {}
-        }
-
-        return _rawtovalue(object[key]);
+        return _rawtovalue(json[key]);
     }
     setValueToKeyInJSON(args) {
-        const json = String(args.JSON);
+        let json = _validatejson(args.JSON);
         const key = args.KEY;
         const value = args.VALUE;
 
-        // is this json valid? if not create an empty one
-        let object;
-        try {
-            object = JSON.parse(json)
-        } catch {
-            object = {}
-        }
+        json[key] = _valuetoraw(value)
 
-        object[key] = _valuetoraw(value)
-
-        return JSON.stringify(object)
+        return JSON.stringify(json)
     }
 
     json_has(args, util) {
-        const json = args.json;
+        const json = _validatejson(args.json);
         const key = args.key;
 
-        // is this json valid? if not create an empty one
-        let object;
-        try {
-            object = JSON.parse(json)
-        } catch {
-            object = {}
-        }
-
-        return object.hasOwnProperty(key);
+        return json.hasOwnProperty(key);
     }
 
     json_delete(args, util) {
-        const json = args.json;
+        let json = _validatejson(args.json);
         const key = args.key;
 
-        // is this json valid? if not create an empty one
-        let object;
-        try {
-            object = JSON.parse(json)
-        } catch {
-            object = {}
-        }
+        if (!json.hasOwnProperty(key)) return json
 
-        if (!object.hasOwnProperty(key)) return object
+        delete json[key]
 
-        delete object[key]
-
-        return object;
+        return json;
     }
 
     json_values(args, util) {
-        const json = args.json;
+        const json = _validatejson(args.json);
 
-        // is this json valid? if not create an empty one
-        let object;
-        try {
-            object = JSON.parse(json)
-        } catch {
-            object = {}
-        }
-
-        return JSON.stringify(Object.keys(object));
+        return JSON.stringify(Object.keys(json));
     }
 
     json_keys(args, util) {
-        const json = args.json;
+        const json = _validatejson(args.json);
 
-        // is this json valid? if not create an empty one
-        let object;
-        try {
-            object = JSON.parse(json)
-        } catch {
-            object = {}
-        }
-
-        return JSON.stringify(Object.values(object));
+        return JSON.stringify(Object.values(json));
     }
 
     json_array_length(args, util) {
-        const array = args.array;
+        const array = _validatejsonarray(args.array);
 
-        // is this json valid? if not create an empty one
-        let object;
-        try {
-            if (!array.startsWith('[')) throw new error('error lol')
-            object = JSON.parse(array)
-        } catch {
-            object = []
-        }
-
-        return object.length;
+        return array.length;
     }
 
     json_array_isempty(args, util) {
-        const array = args.array;
+        const array = _validatejsonarray(args.array);
 
-        // is this json valid? if not create an empty one
-        let object;
-        try {
-            if (!array.startsWith('[')) throw new error('error lol')
-            object = JSON.parse(array)
-        } catch {
-            object = []
-        }
-
-        return !object.length;
+        return !array.length;
     }
 
     json_array_contains(args, util) {
-        const array = args.array;
+        const array = _validatejsonarray(args.array);
         const value = args.value;
 
-        // is this json valid? if not create an empty one
-        let object;
-        try {
-            if (!array.startsWith('[')) throw new error('error lol')
-            object = JSON.parse(array)
-        } catch {
-            object = []
-        }
-
-        return object.includes(_valuetoraw(value));
+        return array.includes(_valuetoraw(value));
     }
 
     json_array_reverse(args, util) {
-        const array = args.array;
+        let array = _validatejsonarray(args.array);
 
-        // is this json valid? if not create an empty one
-        let object;
-        try {
-            if (!array.startsWith('[')) throw new error('error lol')
-            object = JSON.parse(array)
-        } catch {
-            object = []
-        }
-
-        return JSON.stringify(object.reverse());
+        return JSON.stringify(array.reverse());
     }
 
     json_array_indexof(args, util) {
-        const array = args.array;
+        const array = _validatejsonarray(args.array);
         const number = args.number;
         const value = args.value;
 
-        // is this json valid? if not create an empty one
-        let object;
-        try {
-            if (!array.startsWith('[')) throw new error('error lol')
-            object = JSON.parse(array)
-        } catch {
-            object = []
-        }
-
-        return object.indexOf(_valuetoraw(value), number);
+        return array.indexOf(_valuetoraw(value), number);
     }
 
     json_array_set(args, util) {
-        const array = args.array;
+        let array = _validatejsonarray(args.array);
         const index = args.index;
         const value = args.value;
 
-        // is this json valid? if not create an empty one
-        let object;
-        try {
-            if (!array.startsWith('[')) throw new error('error lol')
-            object = JSON.parse(array)
-        } catch {
-            object = []
-        }
+        array[index] = _valuetoraw(value)
 
-        object[index] = _valuetoraw(value)
-
-        return JSON.stringify(object);
+        return JSON.stringify(array);
     }
 
     json_array_insert(args, util) {
-        const array = args.array;
+        let array = _validatejsonarray(args.array);
         const index = args.index;
         const value = args.value;
 
-        // is this json valid? if not create an empty one
-        let object;
-        try {
-            if (!array.startsWith('[')) throw new error('error lol')
-            object = JSON.parse(array)
-        } catch {
-            object = []
-        }
+        array.splice(index, 0, _valuetoraw(value))
 
-        object.splice(index, 0, _valuetoraw(value))
-
-        return JSON.stringify(object);
+        return JSON.stringify(array);
     }
 
     json_array_get(args, util) {
-        const array = args.array;
+        const array = _validatejsonarray(args.array);
         const index = args.index;
 
-        // is this json valid? if not create an empty one
-        let object;
-        try {
-            if (!array.startsWith('[')) throw new error('error lol')
-            object = JSON.parse(array)
-        } catch {
-            object = []
-        }
-
-        return _rawtovalue(object[index]);
+        return _rawtovalue(array[index]);
     }
 
     json_array_getrange(args, util) {
-        const array = args.array;
+        let array = _validatejsonarray(args.array);
         const index1 = args.index1;
         const index2 = args.index2;
 
-        // is this json valid? if not create an empty one
-        let object;
-        try {
-            if (!array.startsWith('[')) throw new error('error lol')
-            object = JSON.parse(array)
-        } catch {
-            object = []
-        }
-
-        return JSON.stringify(object.slice(index1, index2));
+        return JSON.stringify(array.slice(index1, index2));
     }
 
     json_array_push(args, util) {
-        const array = args.array;
+        let array = _validatejsonarray(args.array);
         const value = args.item;
 
-        // is this json valid? if not create an empty one
-        let object;
-        try {
-            if (!array.startsWith('[')) throw new error('error lol')
-            object = JSON.parse(array)
-        } catch {
-            object = []
-        }
+        array.push(_valuetoraw(value))
 
-        object.push(_valuetoraw(value))
-
-        return JSON.stringify(object);
+        return JSON.stringify(array);
     }
 
     json_array_tolist(args, util) {
@@ -661,19 +542,10 @@ class JgJSONBlocks {
         } catch {
             return
         }
-        const array = args.array;
+        const array = _validatejsonarray(args.array);
         const content = util.target.lookupOrCreateList(list.id, list.name)
 
-        // is this json valid? if not create an empty one
-        let object
-        try {
-            if (!array.startsWith('[')) throw new error('error lol')
-            object = JSON.parse(array)
-        } catch {
-            object = []
-        }
-
-        content.value = object.map(x => {
+        content.value = array.map(x => {
             return _rawtovalue(x)
         })
     }
@@ -687,11 +559,9 @@ class JgJSONBlocks {
         }
         const content = util.target.lookupOrCreateList(list.id, list.name).value
 
-        content.map(x => {
+        return JSON.stringify(content.map(x => {
             return _valuetoraw(x)
-        })
-
-        return JSON.stringify(content);
+        }));
     }
 }
 
