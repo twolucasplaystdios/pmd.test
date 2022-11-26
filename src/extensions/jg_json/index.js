@@ -26,8 +26,8 @@ function _valuetoraw(value) {
 }
 function _rawtovalue(value) {
     try {
-        if (!(value.startsWith('{') || value.startsWith('['))) throw new error('not actualy a json!!!!!!!!!!')
         value = JSON.stringify(value)
+        if (!(value.startsWith('{') || value.startsWith('['))) throw new error('not actualy a json!!!!!!!!!!')
     } catch {
         value = String(value)
     }
