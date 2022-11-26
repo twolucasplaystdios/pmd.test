@@ -5,6 +5,7 @@ const ArgumentType = require('../../extension-support/argument-type');
 function _valuetoraw(value) {
     // is the value a valid json? if so convert to one else do nothing
     try {
+        if (!(value.startsWith('{') || value.startsWith('['))) throw new error('not actualy a json!!!!!!!!!!')
         value = JSON.parse(value)
     } catch {
         // well its not a json so what is it?
@@ -25,6 +26,7 @@ function _valuetoraw(value) {
 }
 function _rawtovalue(value) {
     try {
+        if (!(value.startsWith('{') || value.startsWith('['))) throw new error('not actualy a json!!!!!!!!!!')
         value = JSON.stringify(value)
     } catch {
         value = String(value)
