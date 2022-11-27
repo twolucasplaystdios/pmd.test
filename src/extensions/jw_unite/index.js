@@ -105,6 +105,17 @@ class jwUnite {
                 },
                 "---",
                 {
+                    opcode: 'mobile',
+                    text: formatMessage({
+                        id: 'jwUnite.blocks.mobile',
+                        default: 'mobile?',
+                        description: 'Returns true if the project is running on a mobile device'
+                    }),
+                    disableMonitor: true,
+                    blockType: BlockType.BOOLEAN,
+                },
+                "---",
+                {
                     opcode: 'thing_is_text',
                     text: formatMessage({
                         id: 'jwUnite.blocks.thing_is_text',
@@ -432,6 +443,9 @@ class jwUnite {
         // WHY IS NAN NOT EQUAL TO ITSELF
         // HOW IS NAN A NUMBER
         return isNan(Number(args.TEXT1))
+    }
+    mobile(args, util) {
+        return navigator.userAgent.includes("Mobile") || window.matchMedia("(max-width: 767px)").matches
     }
 }
 
