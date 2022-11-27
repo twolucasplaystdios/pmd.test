@@ -45,11 +45,12 @@ class jwReflex {
                     opcode: 'updateFlex',
                     text: formatMessage({
                         id: 'jwReflex.blocks.updateFlex',
-                        default: 'updates flex',
+                        default: 'update flex',
                         description: 'Update position of sprite with flex data.'
                     }),
                     disableMonitor: true,
-                    blockType: BlockType.COMMAND
+                    blockType: BlockType.COMMAND,
+                    filter: [TargetType.SPRITE]
                 },
                 "---",
                 {
@@ -74,6 +75,29 @@ class jwReflex {
                     filter: [TargetType.SPRITE]
                 },
                 {
+                    opcode: 'getFlexX',
+                    text: formatMessage({
+                        id: 'jwReflex.blocks.getFlexX',
+                        default: 'x flex position',
+                        description: 'Gets the flex positon\'s x value'
+                    }),
+                    disableMonitor: true,
+                    blockType: BlockType.REPORTER,
+                    filter: [TargetType.SPRITE]
+                },
+                {
+                    opcode: 'getFlexY',
+                    text: formatMessage({
+                        id: 'jwReflex.blocks.getFlexY',
+                        default: 'y flex position',
+                        description: 'Gets the flex positon\'s y value'
+                    }),
+                    disableMonitor: true,
+                    blockType: BlockType.REPORTER,
+                    filter: [TargetType.SPRITE]
+                },
+                "---",
+                {
                     opcode: 'setOffsetXY',
                     text: formatMessage({
                         id: 'jwReflex.blocks.setOffsetXY',
@@ -93,6 +117,28 @@ class jwReflex {
                         }
                     },
                     filter: [TargetType.SPRITE]
+                },
+                {
+                    opcode: 'getOffsetX',
+                    text: formatMessage({
+                        id: 'jwReflex.blocks.getOffsetX',
+                        default: 'x offset position',
+                        description: 'Gets the offset positon\'s x value'
+                    }),
+                    disableMonitor: true,
+                    blockType: BlockType.REPORTER,
+                    filter: [TargetType.SPRITE]
+                },
+                {
+                    opcode: 'getOffsetY',
+                    text: formatMessage({
+                        id: 'jwReflex.blocks.getOffsetY',
+                        default: 'y offset position',
+                        description: 'Gets the offset positon\'s y value'
+                    }),
+                    disableMonitor: true,
+                    blockType: BlockType.REPORTER,
+                    filter: [TargetType.SPRITE]
                 }
             ]
         };
@@ -103,7 +149,7 @@ class jwReflex {
     _updateFlex(target) {
         const flex = this.flexes[target.getName()]
         if (flex && !flex.paused) {
-            target.setXY((((flex.fx-1)/2)*vm.runtime.stageWidth)+flex.ox,(((1-flex.fy)/2)*vm.runtime.stageHeight)-flex.oy)
+            target.setXY((((flex.fx)/2)*vm.runtime.stageWidth)+flex.ox,(((flex.fy)/2)*vm.runtime.stageHeight)-flex.oy)
         }
     }
 
@@ -114,13 +160,10 @@ class jwReflex {
                 fy: 0,
                 ox: 0,
                 oy: 0,
-
-                paused: false,
             }
         }
         console.debug(this.flexes)
     }
-
     updateFlex(args, util) {
         this._updateFlex(util.target)
     }
@@ -131,12 +174,36 @@ class jwReflex {
             this.flexes[util.target.getName()].fy = Number(args.FY)
         }
     }
+    getFlexX(args, util) {
+        if (Object.keys(this.flexes).includes(util.target.getName())) {
+            return this.flexes[util.target.getName()].fx
+        }
+        return 0
+    }
+    getFlexY(args, util) {
+        if (Object.keys(this.flexes).includes(util.target.getName())) {
+            return this.flexes[util.target.getName()].fy
+        }
+        return 0
+    }
 
     setOffsetXY(args, util) {
         if (Object.keys(this.flexes).includes(util.target.getName())) {
             this.flexes[util.target.getName()].ox = Number(args.OX)
             this.flexes[util.target.getName()].oy = Number(args.OY)
         }
+    }
+    getOffsetX(args, util) {
+        if (Object.keys(this.flexes).includes(util.target.getName())) {
+            return this.flexes[util.target.getName()].ox
+        }
+        return 0
+    }
+    getOffsetY(args, util) {
+        if (Object.keys(this.flexes).includes(util.target.getName())) {
+            return this.flexes[util.target.getName()].oy
+        }
+        return 0
     }
 }
 
