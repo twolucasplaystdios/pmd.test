@@ -13,9 +13,9 @@ function _valuetoraw(value) {
             value = Number(value)
         } else if (String(Boolean(value)) == value) {
             value = Boolean(value)
-        } else if (value.toLowerCase() == 'undefined') {
+        } else if (value == 'undefined') {
             value = undefined
-        } else if (value.toLowerCase() == 'null') {
+        } else if (value == 'null') {
             value = null
         }
     }
