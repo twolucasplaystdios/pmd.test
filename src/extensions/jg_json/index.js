@@ -11,10 +11,8 @@ function _valuetoraw(value) {
         // well its not a json so what is it?
         if (String(Number(value)) == value) {
             value = Number(value)
-        } else if (value.toLowerCase() == 'true') {
-            value = true
-        } else if (value.toLowerCase() == 'false') {
-            value = false
+        } else if (String(Boolean(value)) == value) {
+            value = Boolean(value)
         } else if (value.toLowerCase() == 'undefined') {
             value = undefined
         } else if (value.toLowerCase() == 'null') {
@@ -25,10 +23,9 @@ function _valuetoraw(value) {
     return value;
 }
 function _rawtovalue(value) {
-    try {
+    if (!typeof value == 'object') {
         value = JSON.stringify(value)
-        if (!(value.startsWith('{') || value.startsWith('['))) throw new error('not actualy a json!!!!!!!!!!')
-    } catch {
+    } else {
         value = String(value)
     }
 
