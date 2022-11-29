@@ -204,6 +204,23 @@ class Scratch3MakeyMakeyBlocks {
                             defaultValue: this.DEFAULT_SEQUENCES[0]
                         }
                     }
+                },
+                "---",
+                {
+                    opcode: 'isMakeyKeyPressed',
+                    text: formatMessage({
+                        id: 'makeymakey.isKeyPressed',
+                        default: 'is [KEY] key pressed',
+                        description: 'is a keyboard key is pressed'
+                    }),
+                    blockType: BlockType.BOOLEAN,
+                    arguments: {
+                        KEY: {
+                            type: ArgumentType.STRING,
+                            menu: 'KEY',
+                            defaultValue: KEY_ID_SPACE
+                        }
+                    }
                 }
             ],
             menus: {
@@ -308,6 +325,16 @@ class Scratch3MakeyMakeyBlocks {
         }
         const isDown = util.ioQuery('keyboard', 'getKeyIsDown', [key]);
         return (isDown && this.frameToggle);
+    }
+
+    isMakeyKeyPressed (args, util) {
+        let key = args.KEY;
+        // Convert the key arg, if it is a KEY_ID, to the key name used by
+        // the Keyboard io module.
+        if (SCRATCH_KEY_NAME[args.KEY]) {
+            key = SCRATCH_KEY_NAME[args.KEY];
+        }
+        return util.ioQuery('keyboard', 'getKeyIsDown', [key]);
     }
 
     /*
