@@ -25,10 +25,9 @@ function _valuetoraw(value) {
     return value;
 }
 function _rawtovalue(value) {
-    try {
+    if (typeof value == 'object') {
         value = JSON.stringify(value)
-        if (!(value.startsWith('{') || value.startsWith('['))) throw new error('not actualy a json!!!!!!!!!!')
-    } catch {
+    } else {
         value = String(value)
     }
 
