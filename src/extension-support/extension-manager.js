@@ -55,6 +55,8 @@ const builtinExtensions = {
     // this is the real jwklong speaking, one word shall be said about this: A N G E R Y
     // Structs: hehe structs for oop (look at c)
     jwStructs: () => require("../extensions/jw_structs"),
+    // text: text stuff
+    Text: () => require("../extensions/jw_text"),
 };
 
 // CCW limited
