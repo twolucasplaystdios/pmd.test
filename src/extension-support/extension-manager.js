@@ -56,7 +56,7 @@ const builtinExtensions = {
     // Structs: hehe structs for oop (look at c)
     jwStructs: () => require("../extensions/jw_structs"),
     // text: text stuff
-    Text: () => require("../extensions/jw_text"),
+    Text: () => require("../extensions/text"),
 };
 
 // CCW limited
