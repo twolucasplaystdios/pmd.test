@@ -668,6 +668,13 @@ class JgJSONBlocks {
     json_array_join(args) {
         return _validatejsonarray(args.array).join(args.delimeter)
     }
+
+    json_validate(args) {
+        return JSON.stringify(_validatejson(args.json)) !== '{}' && args.json !== '{}'
+    }
+    json_array_validate(args) {
+        return JSON.stringify(_validatejsonarray(args.array)) !== '[]' && args.array !== '[]'
+    }
 }
 
 module.exports = JgJSONBlocks;
