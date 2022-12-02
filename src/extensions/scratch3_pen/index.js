@@ -64,6 +64,19 @@ class Scratch3PenBlocks {
          */
         this._penSkinId = -1;
 
+        /**
+         * The attribute of print text.
+         * @type {object}
+         */
+        this.printTextAttribute = {
+            bold: false,
+            underline: false,
+            italic: false,
+            size: '28',
+            font: 'Arial',
+            color: '#000000'
+        };
+
         this._onTargetCreated = this._onTargetCreated.bind(this);
         this._onTargetMoved = this._onTargetMoved.bind(this);
 
@@ -142,6 +155,14 @@ class Scratch3PenBlocks {
             this._penSkinId = this.runtime.renderer.createPenSkin();
             this._penDrawableId = this.runtime.renderer.createDrawable(StageLayering.PEN_LAYER);
             this.runtime.renderer.updateDrawableSkinId(this._penDrawableId, this._penSkinId);
+
+            this.bitmapCanvas = document.createElement('canvas');
+            this.bitmapCanvas.width = 480;
+            this.bitmapCanvas.height = 360;
+            this.bitmapSkinID = this.runtime.renderer.createBitmapSkin(this.bitmapCanvas, 1);
+            this.bitmapDrawableID = this.runtime.renderer.createDrawable(StageLayering.PEN_LAYER);
+            this.runtime.renderer.updateDrawableSkinId(this.bitmapDrawableID, this.bitmapSkinID);
+            this.runtime.renderer.updateDrawableVisible(this.bitmapDrawableID, false);
         }
         return this._penSkinId;
     }
@@ -317,6 +338,103 @@ class Scratch3PenBlocks {
                         description: 'render current costume on the background'
                     }),
                     filter: [TargetType.SPRITE]
+                },
+                {
+                    opcode: 'setPrintFont',
+                    blockType: BlockType.COMMAND,
+                    text: formatMessage({
+                        id: 'pen.setPrintFont',
+                        default: 'set print font to [FONT]',
+                        description: 'set print font'
+                    }),
+                    arguments: {
+                        FONT: {
+                            type: ArgumentType.STRING,
+                            defaultValue: 'Arial'
+                        }
+                    }
+                },
+                {
+                    opcode: 'setPrintFontSize',
+                    blockType: BlockType.COMMAND,
+                    text: formatMessage({
+                        id: 'pen.setPrintFontSize',
+                        default: 'set print font size to [SIZE]',
+                        description: 'set print font size'
+                    }),
+                    arguments: {
+                        SIZE: {
+                            type: ArgumentType.NUMBER,
+                            defaultValue: 24
+                        }
+                    }
+                },
+                {
+                    opcode: 'setPrintFontColor',
+                    blockType: BlockType.COMMAND,
+                    text: formatMessage({
+                        id: 'pen.setPrintFontColor',
+                        default: 'set print font color to [COLOR]',
+                        description: 'set print font color'
+                    }),
+                    arguments: {
+                        COLOR: {
+                            type: ArgumentType.COLOR
+                        }
+                    }
+                },
+                {
+                    opcode: 'printText',
+                    blockType: BlockType.COMMAND,
+                    text: formatMessage({
+                        id: 'pen.printText',
+                        default: 'print [TEXT] on x:[X] y:[Y]',
+                        description: 'print text'
+                    }),
+                    arguments: {
+                        TEXT: {
+                            type: ArgumentType.STRING,
+                            defaultValue: 'I love ClipCC!'
+                        },
+                        X: {
+                            type: ArgumentType.NUMBER,
+                            defaultValue: 0
+                        },
+                        Y: {
+                            type: ArgumentType.NUMBER,
+                            defaultValue: 0
+                        }
+                    }
+                },
+                {
+                    opcode: 'drawRect',
+                    blockType: BlockType.COMMAND,
+                    text: formatMessage({
+                        id: 'pen.drawRect',
+                        default: 'use [COLOR] to draw a square on x:[X] y:[Y] width:[WIDTH] height:[HEIGHT]',
+                        description: 'draw a square'
+                    }),
+                    arguments: {
+                        COLOR: {
+                            type: ArgumentType.COLOR
+                        },
+                        X: {
+                            type: ArgumentType.NUMBER,
+                            defaultValue: 0
+                        },
+                        Y: {
+                            type: ArgumentType.NUMBER,
+                            defaultValue: 0
+                        },
+                        WIDTH: {
+                            type: ArgumentType.NUMBER,
+                            defaultValue: 10
+                        },
+                        HEIGHT: {
+                            type: ArgumentType.NUMBER,
+                            defaultValue: 10
+                        }
+                    }
                 },
                 {
                     opcode: 'penDown',
@@ -511,6 +629,71 @@ class Scratch3PenBlocks {
             this.runtime.renderer.penClear(penSkinId);
             this.runtime.requestRedraw();
         }
+    }
+
+    setPrintFont (args) {
+        this.printTextAttribute.font = args.FONT;
+    }
+    setPrintFontSize (args) {
+        this.printTextAttribute.size = args.SIZE;
+    }
+    setPrintFontColor (args) {
+        const rgb = Cast.toRgbColorObject(args.COLOR);
+        const hex = Color.rgbToHex(rgb);
+        this.printTextAttribute.color = hex;
+    }
+
+    printText (args, util) {
+        const penSkinId = this._getPenLayerID(); // 获取画笔图层ID
+
+        const width = util.target.runtime.constructor.STAGE_WIDTH;
+        const height = util.target.runtime.constructor.STAGE_HEIGHT;
+        const ctx = this.bitmapCanvas.getContext('2d');
+        ctx.clearRect(0, 0, width, height);
+        ctx.save();
+        ctx.translate(width / 2, height / 2);
+        let resultFont = '';
+        resultFont += `${this.printTextAttribute.size}px `;
+        resultFont += this.printTextAttribute.font;
+        ctx.font = resultFont;
+
+        ctx.strokeStyle = this.printTextAttribute.color;
+        ctx.fillStyle = ctx.strokeStyle;
+
+        ctx.fillText(args.TEXT, args.X, -args.Y);
+        ctx.restore();
+
+        const printSkin = util.target.runtime.renderer._allSkins[this.bitmapSkinID];
+        const imageData = ctx.getImageData(0, 0, width, height);
+        printSkin._setTexture(imageData);
+        this.runtime.renderer.penStamp(penSkinId, this.bitmapDrawableID);
+
+        this.runtime.requestRedraw();
+    }
+
+    drawRect (args, util) {
+        const penSkinId = this._getPenLayerID(); // 获取画笔图层ID
+
+        const width = util.target.runtime.constructor.STAGE_WIDTH;
+        const height = util.target.runtime.constructor.STAGE_HEIGHT;
+        const ctx = this.bitmapCanvas.getContext('2d');
+        ctx.clearRect(0, 0, width, height);
+        ctx.save();
+        ctx.translate(width / 2, height / 2);
+
+        const rgb = Cast.toRgbColorObject(args.COLOR);
+        const hex = Color.rgbToHex(rgb);
+        ctx.fillStyle = hex;
+        ctx.strokeStyle = ctx.fillStyle;
+        ctx.fillRect(args.X, -args.Y, args.WIDTH, args.HEIGHT);
+        ctx.restore();
+
+        const printSkin = util.target.runtime.renderer._allSkins[this.bitmapSkinID];
+        const imageData = ctx.getImageData(0, 0, width, height);
+        printSkin._setTexture(imageData);
+        this.runtime.renderer.penStamp(penSkinId, this.bitmapDrawableID);
+
+        this.runtime.requestRedraw();
     }
 
     /**
