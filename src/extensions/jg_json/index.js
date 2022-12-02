@@ -106,7 +106,7 @@ class JgJSONBlocks {
                     opcode: 'setValueToKeyInJSON',
                     text: formatMessage({
                         id: 'jgJSON.blocks.setValueToKeyInJSON',
-                        default: 'set [VALUE] to [KEY] in [JSON]',
+                        default: 'set [KEY] to [VALUE] in [JSON]',
                         description: 'Returns the JSON with the key set to the value.'
                     }),
                     disableMonitor: true,
@@ -194,6 +194,37 @@ class JgJSONBlocks {
                     },
                     text: 'json [json] has key [key] ?'
                 },
+                "---Arrays",
+                {
+                    opcode: 'json_array_split',
+                    blockType: BlockType.REPORTER,
+                    arguments: {
+                        text: {
+                            type: ArgumentType.STRING,
+                            defaultValue: "A, B, C"
+                        },
+                        delimeter: {
+                            type: ArgumentType.STRING,
+                            defaultValue: ', '
+                        }
+                    },
+                    text: 'create an array from text [text] with delimeter [delimeter]'
+                }, 
+                {
+                    opcode: 'json_array_join',
+                    blockType: BlockType.REPORTER,
+                    arguments: {
+                        array: {
+                            type: ArgumentType.STRING,
+                            defaultValue: "[\"A\", \"B\", \"C\"]"
+                        },
+                        delimeter: {
+                            type: ArgumentType.STRING,
+                            defaultValue: ', '
+                        }
+                    },
+                    text: 'create text from array [array] with delimeter [delimeter]'
+                }, 
                 "---",
                 {
                     opcode: 'json_array_push',
@@ -416,7 +447,7 @@ class JgJSONBlocks {
                         }
                     },
                     text: 'set contents of list [list] to contents of array [array]'
-                }, 
+                }
             ],
             menus: {
                 lists: 'getAllLists'
@@ -606,6 +637,13 @@ class JgJSONBlocks {
         delete array[index]
 
         return JSON.stringify(array)
+    }
+
+    json_array_split(args) {
+        return JSON.stringify(args.text.split(args.delimeter))
+    }
+    json_array_join(args) {
+        return _validatejsonarray(args.array).join(args.delimeter)
     }
 }
 
