@@ -133,7 +133,48 @@ class JgJSONBlocks {
                             defaultValue: "{}"
                         }
                     }
-                },
+                }, 
+                {
+                    opcode: 'json_delete',
+                    blockType: BlockType.REPORTER,
+                    arguments: {
+                        json: {
+                            type: ArgumentType.STRING,
+                            defaultValue: "{}"
+                        },
+                        key: {
+                            type: ArgumentType.STRING,
+                            defaultValue: formatMessage({
+                                id: 'jgJSON.setValueToKeyInJSON_key',
+                                default: 'key',
+                                description: 'The key you are setting in the JSON.'
+                            })
+                        },
+                    },
+                    text: 'in json [json] delete key [key]'
+                }, 
+                {
+                    opcode: 'json_values',
+                    blockType: BlockType.REPORTER,
+                    arguments: {
+                        json: {
+                            type: ArgumentType.STRING,
+                            defaultValue: "{}"
+                        },
+                    },
+                    text: 'get all values from json [json]'
+                }, 
+                {
+                    opcode: 'json_keys',
+                    blockType: BlockType.REPORTER,
+                    arguments: {
+                        json: {
+                            type: ArgumentType.STRING,
+                            defaultValue: "{}"
+                        },
+                    },
+                    text: 'get all keys from json [json]'
+                }, 
                 {
                     opcode: 'json_has',
                     blockType: BlockType.BOOLEAN,
@@ -152,73 +193,17 @@ class JgJSONBlocks {
                         },
                     },
                     text: 'json [json] has key [key] ?'
-                }, {
-                    opcode: 'json_delete',
-                    blockType: BlockType.REPORTER,
-                    arguments: {
-                        json: {
-                            type: ArgumentType.STRING,
-                            defaultValue: "{}"
-                        },
-                        key: {
-                            type: ArgumentType.STRING,
-                            defaultValue: formatMessage({
-                                id: 'jgJSON.setValueToKeyInJSON_key',
-                                default: 'key',
-                                description: 'The key you are setting in the JSON.'
-                            })
-                        },
-                    },
-                    text: 'in json [json] delete key [key]'
-                }, {
-                    opcode: 'json_values',
-                    blockType: BlockType.REPORTER,
-                    arguments: {
-                        json: {
-                            type: ArgumentType.STRING,
-                            defaultValue: "{}"
-                        },
-                    },
-                    text: 'get all values from json [json]'
-                }, {
-                    opcode: 'json_keys',
-                    blockType: BlockType.REPORTER,
-                    arguments: {
-                        json: {
-                            type: ArgumentType.STRING,
-                            defaultValue: "{}"
-                        },
-                    },
-                    text: 'get all keys from json [json]'
-                }, {
-                    opcode: 'json_array_length',
+                },
+                "---",
+                {
+                    opcode: 'json_array_push',
                     blockType: BlockType.REPORTER,
                     arguments: {
                         array: {
                             type: ArgumentType.STRING,
                             defaultValue: "[\"A\", \"B\", \"C\"]"
-                        }
-                    },
-                    text: 'length of array [array]'
-                }, {
-                    opcode: 'json_array_isempty',
-                    blockType: BlockType.BOOLEAN,
-                    arguments: {
-                        array: {
-                            type: ArgumentType.STRING,
-                            defaultValue: "[\"A\", \"B\", \"C\"]"
-                        }
-                    },
-                    text: 'is array [array] empty?'
-                }, {
-                    opcode: 'json_array_contains',
-                    blockType: BlockType.BOOLEAN,
-                    arguments: {
-                        array: {
-                            type: ArgumentType.STRING,
-                            defaultValue: "[\"A\", \"B\", \"C\"]"
                         },
-                        value: {
+                        item: {
                             type: ArgumentType.STRING,
                             defaultValue: formatMessage({
                                 id: 'jgJSON.setValueToKeyInJSON_value',
@@ -227,41 +212,11 @@ class JgJSONBlocks {
                             })
                         }
                     },
-                    text: 'array [array] contains [value] ?'
-                }, {
-                    opcode: 'json_array_reverse',
-                    blockType: BlockType.REPORTER,
-                    arguments: {
-                        array: {
-                            type: ArgumentType.STRING,
-                            defaultValue: "[\"A\", \"B\", \"C\"]"
-                        }
-                    },
-                    text: 'reverse array [array]'
-                }, {
-                    opcode: 'json_array_indexof',
-                    blockType: BlockType.REPORTER,
-                    arguments: {
-                        array: {
-                            type: ArgumentType.STRING,
-                            defaultValue: "[\"A\", \"B\", \"C\"]"
-                        },
-                        number: {
-                            type: ArgumentType.NUMBER,
-                            defaultValue: 2
-                        },
-                        value: {
-                            type: ArgumentType.STRING,
-                            defaultValue: formatMessage({
-                                id: 'jgJSON.setValueToKeyInJSON_value',
-                                default: 'value',
-                                description: 'The value of the key you are setting.'
-                            })
-                        }
-                    },
-                    text: 'in array [array] get [number] index of [value]'
-                }, {
-                    opcode: 'json_array_set',
+                    text: 'in array [array] add [item]'
+                }, 
+                "---",
+                {
+                    opcode: 'json_array_delete',
                     blockType: BlockType.REPORTER,
                     arguments: {
                         array: {
@@ -272,17 +227,21 @@ class JgJSONBlocks {
                             type: ArgumentType.NUMBER,
                             defaultValue: 2
                         },
-                        value: {
+                    },
+                    text: 'in array [array] delete [index]'
+                },
+                {
+                    opcode: 'json_array_reverse',
+                    blockType: BlockType.REPORTER,
+                    arguments: {
+                        array: {
                             type: ArgumentType.STRING,
-                            defaultValue: formatMessage({
-                                id: 'jgJSON.setValueToKeyInJSON_value',
-                                default: 'value',
-                                description: 'The value of the key you are setting.'
-                            })
+                            defaultValue: "[\"A\", \"B\", \"C\"]"
                         }
                     },
-                    text: 'in array [array] set [index] to [value]'
-                }, {
+                    text: 'reverse array [array]'
+                }, 
+                {
                     opcode: 'json_array_insert',
                     blockType: BlockType.REPORTER,
                     arguments: {
@@ -304,7 +263,32 @@ class JgJSONBlocks {
                         }
                     },
                     text: 'in array [array] insert [value] at [index]'
-                }, {
+                },
+                {
+                    opcode: 'json_array_set',
+                    blockType: BlockType.REPORTER,
+                    arguments: {
+                        array: {
+                            type: ArgumentType.STRING,
+                            defaultValue: "[\"A\", \"B\", \"C\"]"
+                        },
+                        index: {
+                            type: ArgumentType.NUMBER,
+                            defaultValue: 2
+                        },
+                        value: {
+                            type: ArgumentType.STRING,
+                            defaultValue: formatMessage({
+                                id: 'jgJSON.setValueToKeyInJSON_value',
+                                default: 'value',
+                                description: 'The value of the key you are setting.'
+                            })
+                        }
+                    },
+                    text: 'in array [array] set [index] to [value]'
+                },  
+                "---",
+                {
                     opcode: 'json_array_get',
                     blockType: BlockType.REPORTER,
                     arguments: {
@@ -318,7 +302,62 @@ class JgJSONBlocks {
                         }
                     },
                     text: 'in array [array] get [index]'
-                }, {
+                }, 
+                {
+                    opcode: 'json_array_indexof',
+                    blockType: BlockType.REPORTER,
+                    arguments: {
+                        array: {
+                            type: ArgumentType.STRING,
+                            defaultValue: "[\"A\", \"B\", \"C\"]"
+                        },
+                        number: {
+                            type: ArgumentType.NUMBER,
+                            defaultValue: 2
+                        },
+                        value: {
+                            type: ArgumentType.STRING,
+                            defaultValue: formatMessage({
+                                id: 'jgJSON.setValueToKeyInJSON_value',
+                                default: 'value',
+                                description: 'The value of the key you are setting.'
+                            })
+                        }
+                    },
+                    text: 'in array [array] get [number] index of [value]'
+                }, 
+                {
+                    opcode: 'json_array_length',
+                    blockType: BlockType.REPORTER,
+                    arguments: {
+                        array: {
+                            type: ArgumentType.STRING,
+                            defaultValue: "[\"A\", \"B\", \"C\"]"
+                        }
+                    },
+                    text: 'length of array [array]'
+                }, 
+                {
+                    opcode: 'json_array_contains',
+                    blockType: BlockType.BOOLEAN,
+                    arguments: {
+                        array: {
+                            type: ArgumentType.STRING,
+                            defaultValue: "[\"A\", \"B\", \"C\"]"
+                        },
+                        value: {
+                            type: ArgumentType.STRING,
+                            defaultValue: formatMessage({
+                                id: 'jgJSON.setValueToKeyInJSON_value',
+                                default: 'value',
+                                description: 'The value of the key you are setting.'
+                            })
+                        }
+                    },
+                    text: 'array [array] contains [value] ?'
+                }, 
+                "---",
+                {
                     opcode: 'json_array_getrange',
                     blockType: BlockType.REPORTER,
                     arguments: {
@@ -336,25 +375,33 @@ class JgJSONBlocks {
                         }
                     },
                     text: 'in array [array] get all items from [index1] to [index2]'
-                }, {
-                    opcode: 'json_array_push',
-                    blockType: BlockType.REPORTER,
+                }, 
+                "---",
+                {
+                    opcode: 'json_array_isempty',
+                    blockType: BlockType.BOOLEAN,
                     arguments: {
                         array: {
                             type: ArgumentType.STRING,
                             defaultValue: "[\"A\", \"B\", \"C\"]"
-                        },
-                        item: {
-                            type: ArgumentType.STRING,
-                            defaultValue: formatMessage({
-                                id: 'jgJSON.setValueToKeyInJSON_value',
-                                default: 'value',
-                                description: 'The value of the key you are setting.'
-                            })
                         }
                     },
-                    text: 'in array [array] add [item]'
-                }, {
+                    text: 'is array [array] empty?'
+                }, 
+                "---",
+                {
+                    opcode: 'json_array_listtoarray',
+                    blockType: BlockType.REPORTER,
+                    arguments: {
+                        list: {
+                            type: ArgumentType.STRING,
+                            defaultValue: 'select a list',
+                            menu: 'lists'
+                        }
+                    },
+                    text: 'get contents of list [list] as array'
+                },
+                {
                     opcode: 'json_array_tolist',
                     blockType: BlockType.COMMAND,
                     arguments: {
@@ -369,18 +416,7 @@ class JgJSONBlocks {
                         }
                     },
                     text: 'set contents of list [list] to contents of array [array]'
-                }, {
-                    opcode: 'json_array_listtoarray',
-                    blockType: BlockType.REPORTER,
-                    arguments: {
-                        list: {
-                            type: ArgumentType.STRING,
-                            defaultValue: 'select a list',
-                            menu: 'lists'
-                        }
-                    },
-                    text: 'get contents of list [list] as array'
-                }
+                }, 
             ],
             menus: {
                 lists: 'getAllLists'
@@ -561,6 +597,15 @@ class JgJSONBlocks {
         return JSON.stringify(content.map(x => {
             return _valuetoraw(x)
         }));
+    }
+
+    json_array_delete(args, util) {
+        let array = _validatejsonarray(args.array)
+        const index = args.index
+
+        delete array[index]
+
+        return JSON.stringify(array)
     }
 }
 
