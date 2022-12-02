@@ -194,7 +194,7 @@ class JgJSONBlocks {
                     },
                     text: 'json [json] has key [key] ?'
                 },
-                "---Arrays",
+                "---Arrays---",
                 {
                     opcode: 'json_array_split',
                     blockType: BlockType.REPORTER,
