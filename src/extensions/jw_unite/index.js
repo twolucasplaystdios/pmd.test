@@ -123,7 +123,7 @@ class jwUnite {
                         description: 'Checks if something has text!'
                     }),
                     disableMonitor: true,
-                    blockType: BlockType.REPORTER,
+                    blockType: BlockType.BOOLEAN,
                     arguments: {
                         TEXT1: {
                             type: ArgumentType.STRING,
@@ -143,7 +143,7 @@ class jwUnite {
                         description: 'Checks if something has a number!'
                     }),
                     disableMonitor: true,
-                    blockType: BlockType.REPORTER,
+                    blockType: BlockType.BOOLEAN,
                     arguments: {
                         TEXT1: {
                             type: ArgumentType.STRING,
@@ -151,6 +151,37 @@ class jwUnite {
                                 id: 'jwUnite.thing_is_number_whatToCheck',
                                 default: '10',
                                 description: 'What to check.'
+                            })
+                        }
+                    }
+                },
+                {
+                    opcode: 'if_return_else_return',
+                    text: formatMessage({
+                        id: 'jwUnite.blocks.if_return_else_return',
+                        default: 'if [boolean] is true [TEXT1] is false [TEXT2]',
+                        description: 'Checks if something has a number!'
+                    }),
+                    disableMonitor: true,
+                    blockType: BlockType.REPORTER,
+                    arguments: {
+                        boolean: {
+                            type: ArgumentType.BOOLEAN
+                        },
+                        TEXT1: {
+                            type: ArgumentType.STRING,
+                            defaultValue: formatMessage({
+                                id: 'jwUnite.if_return_else_return_ifValue',
+                                default: 'the yay 😁',
+                                description: 'What to return if the boolean is true.'
+                            })
+                        },
+                        TEXT2: {
+                            type: ArgumentType.STRING,
+                            defaultValue: formatMessage({
+                                id: 'jwUnite.if_return_else_return_elseValue',
+                                default: 'the nooo 😭',
+                                description: 'What to return if the boolean is false.'
                             })
                         }
                     }
@@ -432,17 +463,19 @@ class jwUnite {
         // i hate js
         // i also hate regex
         // so im gonna do this the lazy way
-        const numbs = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "."]
-        const inp = args.TEXT1
-        for (const char of inp) {
-            if (numbs.includes(char)) return true
-        }
-        return false
+        // no. String(Number(value)) === value does infact do the job X)
+        // also what was originaly here was inificiant as hell
+        return String(Number(args.TEXT1)) == args.TEXT1 && !isNan(Number(args.TEXT1))
     }
     thing_is_text(args, util) {
         // WHY IS NAN NOT EQUAL TO ITSELF
         // HOW IS NAN A NUMBER
+        // because nan is how numbers say the value put into me is not a number
         return isNan(Number(args.TEXT1))
+    }
+
+    if_return_else_return(args) {
+        return args.boolean ? args.TEXT1 : args.TEXT2
     }
     mobile(args, util) {
         return navigator.userAgent.includes("Mobile") || window.matchMedia("(max-width: 767px)").matches
