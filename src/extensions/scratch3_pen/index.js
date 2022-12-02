@@ -394,7 +394,7 @@ class Scratch3PenBlocks {
                     arguments: {
                         TEXT: {
                             type: ArgumentType.STRING,
-                            defaultValue: 'I love ClipCC!'
+                            defaultValue: 'Foobars are yummy'
                         },
                         X: {
                             type: ArgumentType.NUMBER,
