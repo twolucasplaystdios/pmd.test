@@ -79,6 +79,18 @@ class JgJSONBlocks {
             color2: '#0EAF82',
             blocks: [
                 {
+                    opcode: 'json_validate',
+                    blockType: BlockType.BOOLEAN,
+                    arguments: {
+                        json: {
+                            type: ArgumentType.STRING,
+                            defaultValue: "{}"
+                        }
+                    },
+                    text: 'is json [json] valid?'
+                }, 
+                "---",
+                {
                     opcode: 'getValueFromJSON',
                     text: formatMessage({
                         id: 'jgJSON.blocks.getValueFromJSON',
@@ -194,7 +206,18 @@ class JgJSONBlocks {
                     },
                     text: 'json [json] has key [key] ?'
                 },
-                "---Arrays---",
+                "---",
+                {
+                    opcode: 'json_array_validate',
+                    blockType: BlockType.BOOLEAN,
+                    arguments: {
+                        array: {
+                            type: ArgumentType.STRING,
+                            defaultValue: "{}"
+                        }
+                    },
+                    text: 'is array [array] valid?'
+                }, 
                 {
                     opcode: 'json_array_split',
                     blockType: BlockType.REPORTER,
