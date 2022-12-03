@@ -273,6 +273,27 @@ class Scratch3PenBlocks {
         ];
     }
 
+    getLayerParam () {
+        return [
+            {
+                text: formatMessage({
+                    id: 'pen.layerMenu.front',
+                    default: 'front',
+                    description: 'label for front'
+                }),
+                value: LayerParam.FRONT
+            },
+            {
+                text: formatMessage({
+                    id: 'pen.layerMenu.back',
+                    default: 'back',
+                    description: 'label for back'
+                }),
+                value: LayerParam.BACK
+            }
+        ];
+    }
+
     /**
      * Clamp a pen color parameter to the range (0,100).
      * @param {number} value - the value to be clamped.
@@ -609,12 +630,32 @@ class Scratch3PenBlocks {
                         }
                     },
                     hideFromPalette: false
+                },
+                {
+                    opcode: 'goPenLayer',
+                    blockType: BlockType.COMMAND,
+                    text: formatMessage({
+                        id: 'pen.GoPenLayer',
+                        default: 'go to [OPTION] layer',
+                        description: 'go to front layer(pen)'
+                    }),
+                    arguments: {
+                        OPTION: {
+                            type: ArgumentType.STRING,
+                            menu: 'layerParam',
+                            defaultValue: LayerParam.FRONT
+                        }
+                    },
                 }
             ],
             menus: {
                 colorParam: {
                     acceptReporters: true,
                     items: this._initColorParam()
+                },
+                layerParam: {
+                    acceptReporters: false,
+                    items: this.getLayerParam()
                 }
             }
         };
@@ -981,6 +1022,19 @@ class Scratch3PenBlocks {
 
         this._updatePenColor(penState);
     }
+
+    goPenLayer (args) {
+        if (this.runtime.renderer) {
+            if (args.OPTION === 'front') {
+                this.runtime.renderer.setLayerGroupOrdering(StageLayering.LAYER_GROUPS_PEN);
+                this.runtime.renderer.setDrawableOrder(this._penDrawableId, Infinity, StageLayering.PEN_LAYER);
+            } else if (args.OPTION === 'back') {
+                this.runtime.renderer.setLayerGroupOrdering(StageLayering.LAYER_GROUPS);
+                this.runtime.renderer.setDrawableOrder(this._penDrawableId, -Infinity, StageLayering.PEN_LAYER);
+            }
+        }
+    }
+
 }
 
 module.exports = Scratch3PenBlocks;
