@@ -30,6 +30,16 @@ const ColorParam = {
 };
 
 /**
+ * Enum for layer parameter values.
+ * @readonly
+ * @enum {string}
+ */
+ const LayerParam = {
+    FRONT: 'front',
+    BACK: 'back'
+};
+
+/**
  * @typedef {object} PenState - the pen state associated with a particular target.
  * @property {Boolean} penDown - tracks whether the pen should draw for this target.
  * @property {number} color - the current color (hue) of the pen.
