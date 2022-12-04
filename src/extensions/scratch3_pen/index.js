@@ -1040,7 +1040,7 @@ class Scratch3PenBlocks {
                 this.runtime.renderer.setDrawableOrder(this._penDrawableId, Infinity, StageLayering.PEN_LAYER);
             } else if (args.OPTION === LayerParam.BACK) {
                 this.runtime.renderer.setLayerGroupOrdering(StageLayering.LAYER_GROUPS);
-                this.runtime.renderer.setDrawableOrder(this._penDrawableId, -Infinity, StageLayering.PEN_LAYER);
+                this.runtime.renderer.setDrawableOrder(this._penDrawableId, 0, StageLayering.PEN_LAYER);
             }
         }
     }
