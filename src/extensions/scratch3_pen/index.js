@@ -1036,11 +1036,13 @@ class Scratch3PenBlocks {
     goPenLayer (args) {
         if (this.runtime.renderer) {
             if (args.OPTION === LayerParam.FRONT) {
+                console.log('setting the layer order to', StageLayering.LAYER_GROUPS_pen)
                 this.runtime.renderer.setLayerGroupOrdering(StageLayering.LAYER_GROUPS_PEN);
                 this.runtime.renderer.setDrawableOrder(this._penDrawableId, Infinity, StageLayering.PEN_LAYER);
             } else if (args.OPTION === LayerParam.BACK) {
+                console.log('setting the layer order to', StageLayering.LAYER_GROUPS)
                 this.runtime.renderer.setLayerGroupOrdering(StageLayering.LAYER_GROUPS);
-                this.runtime.renderer.setDrawableOrder(this._penDrawableId, 0, StageLayering.PEN_LAYER);
+                this.runtime.renderer.setDrawableOrder(this._penDrawableId, -1, StageLayering.PEN_LAYER);
             }
         }
     }
