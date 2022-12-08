@@ -172,7 +172,7 @@ class jwUnite {
                             type: ArgumentType.STRING,
                             defaultValue: formatMessage({
                                 id: 'jwUnite.if_return_else_return_ifValue',
-                                default: 'the yay 😁',
+                                default: 'foo',
                                 description: 'What to return if the boolean is true.'
                             })
                         },
@@ -180,7 +180,7 @@ class jwUnite {
                             type: ArgumentType.STRING,
                             defaultValue: formatMessage({
                                 id: 'jwUnite.if_return_else_return_elseValue',
-                                default: 'the nooo 😭',
+                                default: 'bar',
                                 description: 'What to return if the boolean is false.'
                             })
                         }
