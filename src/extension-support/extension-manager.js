@@ -47,6 +47,8 @@ const builtinExtensions = {
     jwProto: () => require("../extensions/jw_proto"),
     // jwReflex: vector positioning (UNRELEASED, DO NOT ADD TO GUI)
     jwReflex: () => require("../extensions/jw_reflex"),
+    // Blockly 2: a faithful recreation of the original blockly blocks
+    blockly2: () => require("../extensions/blockly-2"),
 
     // griffpatch: *silence*
     griffpatch: () => require("../extensions/griffpatch_box2d"),
