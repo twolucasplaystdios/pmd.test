@@ -26,8 +26,8 @@ class Blockly2 {
             id: 'blockly2',
             name: 'Blockly',
             //blockIconURI: blockIconURI,
-            color1: '#999',
-            color2: '#777',
+            color1: '#999999',
+            color2: '#777777',
             blocks: [
                 {
                     opcode: 'MathNumber',
