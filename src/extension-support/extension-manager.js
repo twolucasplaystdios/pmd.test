@@ -179,18 +179,18 @@ class ExtensionManager {
             return;
         }
 
-        /** @TODO dupe handling for non-builtin extensions. See commit 670e51d33580e8a2e852b3b038bb3afc282f81b9 */
-        if (this.isExtensionLoaded(extensionId)) {
-            const message = `Rejecting attempt to load a second extension with ID ${extensionId}`;
-            log.warn(message);
-            return;
-        }
         const extensions = (builtinExtensions[extensionId] || injectExtensions[extensionId])();
         for (const extension of extensions) {
             const extensionInstance = new extension(this.runtime);
-            const serviceName = this._registerInternalExtension(extensionInstance);
-            this._loadedExtensions.set(extension.getInfo().id, serviceName);
-            this.runtime.compilerRegisterExtension(extensionId, extensionInstance);
+            /** @TODO dupe handling for non-builtin extensions. See commit 670e51d33580e8a2e852b3b038bb3afc282f81b9 */
+            if (this.isExtensionLoaded(extension.getInfo().id)) {
+                const message = `Rejecting attempt to load a second extension with ID ${extensionId}`;
+                log.warn(message);
+            } else {
+                const serviceName = this._registerInternalExtension(extensionInstance);
+                this._loadedExtensions.set(extension.getInfo().id, serviceName);
+                this.runtime.compilerRegisterExtension(extensionId, extensionInstance);
+            }
         }
     }
 
