@@ -34,21 +34,21 @@ const builtinExtensions = {
     // jgWebsiteRequests: fetch GET and POST requests to apis & websites
     jgWebsiteRequests: () => require("../extensions/jg_websiteRequests"),
     // jgJSON: handle JSON objects
-    jgJSON: () => require("../extensions/jg_json"),
+    jgJSON: () => [require("../extensions/jg_json")],
     // jgRuntime: edit stage and other stuff
-    jgRuntime: () => require("../extensions/jg_runtime"),
+    jgRuntime: () => [require("../extensions/jg_runtime")],
     // jgPrism: blocks for specific use cases or major convenience
-    jgPrism: () => require("../extensions/jg_prism"),
+    jgPrism: () => [require("../extensions/jg_prism")],
 
     // jw: hello it is i jwklong
     // jwUnite: literal features that should of been added in the first place
-    jwUnite: () => require("../extensions/jw_unite"),
+    jwUnite: () => [require("../extensions/jw_unite")],
     // jwProto: placeholders, labels, defenitons, we got em
-    jwProto: () => require("../extensions/jw_proto"),
+    jwProto: () => [require("../extensions/jw_proto")],
     // jwReflex: vector positioning (UNRELEASED, DO NOT ADD TO GUI)
-    jwReflex: () => require("../extensions/jw_reflex"),
+    jwReflex: () => [require("../extensions/jw_reflex")],
     // Blockly 2: a faithful recreation of the original blockly blocks
-    blockly2: () => require("../extensions/blockly-2"),
+    blockly2: () => [require("../extensions/blockly-2/math.js")],
 
     // griffpatch: *silence*
     griffpatch: () => require("../extensions/griffpatch_box2d"),
@@ -185,12 +185,13 @@ class ExtensionManager {
             log.warn(message);
             return;
         }
-
-        const extension = (builtinExtensions[extensionId] || injectExtensions[extensionId])();
-        const extensionInstance = new extension(this.runtime);
-        const serviceName = this._registerInternalExtension(extensionInstance);
-        this._loadedExtensions.set(extensionId, serviceName);
-        this.runtime.compilerRegisterExtension(extensionId, extensionInstance);
+        const extensions = (builtinExtensions[extensionId] || injectExtensions[extensionId])();
+        for (const extension of extensions) {
+            const extensionInstance = new extension(this.runtime);
+            const serviceName = this._registerInternalExtension(extensionInstance);
+            this._loadedExtensions.set(extension.getInfo().id, serviceName);
+            this.runtime.compilerRegisterExtension(extensionId, extensionInstance);
+        }
     }
 
     /**

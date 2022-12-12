@@ -9,7 +9,7 @@ const ArgumentType = require('../../extension-support/argument-type');
  * Class for Blocky2 blocks
  * @constructor
  */
-class Blockly2 {
+class Blockly2Math {
     constructor(runtime) {
         /**
          * The runtime instantiating this block package.
@@ -23,7 +23,7 @@ class Blockly2 {
      */
     getInfo() {
         return {
-            id: 'blockly2',
+            id: 'blockly2math',
             name: 'Blockly',
             //blockIconURI: blockIconURI,
             color1: '#999999',
@@ -97,4 +97,4 @@ class Blockly2 {
     }
 }
 
-module.exports = Blockly2;
+module.exports = Blockly2Math;
