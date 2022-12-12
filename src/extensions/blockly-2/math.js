@@ -208,14 +208,13 @@ class Blockly2Math {
     }
 
     Constant(args, util) {
-        switch (String(args.OP)) {
+        switch (String(args.CONST)) {
             case "π": return Math.PI
             case "e": return Math.E
             case "φ": return (1 + Math.sqrt(5)) / 2
             case "sqrt(2)": return Math.SQRT2
             case "sqrt(½)": return Math.SQRT1_2
             case "∞": return Infinity
-            default: return Number(args.ONE)
         }
     }
 }
