@@ -24,15 +24,15 @@ class Blockly2Math {
     getInfo() {
         return {
             id: 'blockly2math',
-            name: 'Blockly',
+            name: 'Math',
             //blockIconURI: blockIconURI,
-            color1: '#999999',
-            color2: '#777777',
+            color1: '#5b67a5',
+            color2: '#444d7c',
             blocks: [
                 {
-                    opcode: 'MathNumber',
+                    opcode: 'Number',
                     text: formatMessage({
-                        id: 'blockly2.blocks.MathNumber',
+                        id: 'blockly2math.blocks.Number',
                         default: '[NUMBER]',
                         description: 'Define a number'
                     }),
@@ -46,9 +46,9 @@ class Blockly2Math {
                     }
                 },
                 {
-                    opcode: 'MathOperation',
+                    opcode: 'Operation',
                     text: formatMessage({
-                        id: 'blockly2.blocks.MathOperation',
+                        id: 'blockly2math.blocks.Operation',
                         default: '[ONE][OP][TWO]',
                         description: 'Perform a basic math operation'
                     }),
@@ -62,7 +62,7 @@ class Blockly2Math {
                         OP: {
                             type: ArgumentType.STRING,
                             defaultValue: "+",
-                            menu: "MathOperation"
+                            menu: "Operation"
                         },
                         TWO: {
                             type: ArgumentType.NUMBER,
@@ -70,30 +70,73 @@ class Blockly2Math {
                         }
                     }
                 },
+                {
+                    opcode: 'AdvancedOperation',
+                    text: formatMessage({
+                        id: 'blockly2math.blocks.AdvancedOperation',
+                        default: '[OP][ONE]',
+                        description: 'Perform a advanced math operation'
+                    }),
+                    disableMonitor: true,
+                    blockType: BlockType.REPORTER,
+                    arguments: {
+                        ONE: {
+                            type: ArgumentType.NUMBER,
+                            defaultValue: 1
+                        },
+                        OP: {
+                            type: ArgumentType.STRING,
+                            defaultValue: "square root",
+                            menu: "AdvancedOperation"
+                        },
+                    }
+                },
             ],
             menus: {
-                MathOperation: [
+                Operation: [
                     "+",
                     "-",
                     "×",
                     "÷",
                     "^"
+                ],
+                AdvancedOperation: [
+                    "square root",
+                    "absolute",
+                    "-",
+                    "ln",
+                    "log10",
+                    "e^",
+                    "10^"
                 ]
             }
         };
     }
 
-    MathNumber(args, util) {
+    Number(args, util) {
         return Number(args.NUMBER)
     }
-    MathOperation(args, util) {
+    Operation(args, util) {
         switch (String(args.OP)) {
             case "+": return Number(args.ONE) + Number(args.TWO)
             case "-": return Number(args.ONE) - Number(args.TWO)
             case "×": return Number(args.ONE) * Number(args.TWO)
             case "÷": return Number(args.ONE) / Number(args.TWO)
             case "^": return Number(args.ONE) ** Number(args.TWO)
+            default: return Number(args.ONE)
         } 
+    }
+    AdvancedOperation(args, util) {
+        switch (String(args.OP)) {
+            case "square root": return Math.sqrt(Number(args.ONE))
+            case "absolute": return Math.abs(Number(args.ONE))
+            case "-": return 0 - Number(args.ONE)
+            case "ln": return Math.log(Number(args.ONE))
+            case "log10": return Math.log10(Number(args.ONE))
+            case "e^": return Math.exp(Number(args.ONE))
+            case "10^": return Math.pow(10, Number(args.ONE))
+            default: return Number(args.ONE)
+        }
     }
 }
 
