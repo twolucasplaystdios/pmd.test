@@ -91,6 +91,44 @@ class Blockly2Math {
                         },
                     }
                 },
+                {
+                    opcode: 'Function',
+                    text: formatMessage({
+                        id: 'blockly2math.blocks.Function',
+                        default: '[OP][ONE]',
+                        description: 'Perform a math function'
+                    }),
+                    disableMonitor: true,
+                    blockType: BlockType.REPORTER,
+                    arguments: {
+                        ONE: {
+                            type: ArgumentType.NUMBER,
+                            defaultValue: 1
+                        },
+                        OP: {
+                            type: ArgumentType.STRING,
+                            defaultValue: "sin",
+                            menu: "Function"
+                        },
+                    }
+                },
+                {
+                    opcode: 'Constant',
+                    text: formatMessage({
+                        id: 'blockly2math.blocks.Constant',
+                        default: '[CONST]',
+                        description: 'Retrieve a constant'
+                    }),
+                    disableMonitor: true,
+                    blockType: BlockType.REPORTER,
+                    arguments: {
+                        OP: {
+                            type: ArgumentType.STRING,
+                            defaultValue: "π",
+                            menu: "Constant"
+                        },
+                    }
+                },
             ],
             menus: {
                 Operation: [
@@ -108,6 +146,22 @@ class Blockly2Math {
                     "log10",
                     "e^",
                     "10^"
+                ],
+                Function: [
+                    "sin",
+                    "cos",
+                    "tan",
+                    "asin",
+                    "acos",
+                    "atan"
+                ],
+                Constant: [
+                    "π",
+                    "e",
+                    "φ",
+                    "sqrt(2)",
+                    "sqrt(½)",
+                    "∞"
                 ]
             }
         };
@@ -116,6 +170,7 @@ class Blockly2Math {
     Number(args, util) {
         return Number(args.NUMBER)
     }
+
     Operation(args, util) {
         switch (String(args.OP)) {
             case "+": return Number(args.ONE) + Number(args.TWO)
@@ -126,6 +181,7 @@ class Blockly2Math {
             default: return Number(args.ONE)
         } 
     }
+    
     AdvancedOperation(args, util) {
         switch (String(args.OP)) {
             case "square root": return Math.sqrt(Number(args.ONE))
@@ -135,6 +191,39 @@ class Blockly2Math {
             case "log10": return Math.log10(Number(args.ONE))
             case "e^": return Math.exp(Number(args.ONE))
             case "10^": return Math.pow(10, Number(args.ONE))
+            default: return Number(args.ONE)
+        }
+    }
+    
+    Function(args, util) {
+        switch (String(args.OP)) {
+            case "sin": return Math.sin(Number(args.ONE) / 180 * Math.PI)
+            case "tan": return Math.tan(Number(args.ONE) / 180 * Math.PI)
+            case "cos": return Math.cos(Number(args.ONE) / 180 * Math.PI)
+            case "asin": return Math.asin(Number(args.ONE)) / Math.PI * 180
+            case "atan": return Math.atan(Number(args.ONE)) / Math.PI * 180
+            case "acos": return Math.acos(Number(args.ONE)) / Math.PI * 180
+            default: return Number(args.ONE)
+        }
+    }
+
+    [
+        "π",
+        "e",
+        "φ",
+        "sqrt(2)",
+        "sqrt(½)",
+        "∞"
+    ]
+    
+    Constant(args, util) {
+        switch (String(args.OP)) {
+            case "π": return Math.PI
+            case "e": return Math.E
+            case "φ": return (1 + Math.sqrt(5)) / 2
+            case "sqrt(2)": return Math.SQRT2
+            case "sqrt(½)": return Math.SQRT1_2
+            case "∞": return Infinity
             default: return Number(args.ONE)
         }
     }
