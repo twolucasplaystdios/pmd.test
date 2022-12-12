@@ -153,7 +153,7 @@ class Blockly2Math {
                 {
                     opcode: 'IsOption2',
                     text: formatMessage({
-                        id: 'blockly2math.blocks.IsOption2is o',
+                        id: 'blockly2math.blocks.IsOption2',
                         default: '[ONE] is [OPTION] [TWO]?',
                         description: 'Check if numbers match condition'
                     }),
@@ -171,7 +171,7 @@ class Blockly2Math {
                         OPTION: {
                             type: ArgumentType.STRING,
                             defaultValue: "even",
-                            menu: "IsOption"
+                            menu: "IsOption2"
                         },
                     }
                 },
