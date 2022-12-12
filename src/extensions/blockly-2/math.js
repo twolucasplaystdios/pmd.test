@@ -295,7 +295,7 @@ class Blockly2Math {
         }
     }
 
-    _isprime(number) {
+    _isprime(n) {
         if (n == 2 || n == 3) {
             return true;
         }
