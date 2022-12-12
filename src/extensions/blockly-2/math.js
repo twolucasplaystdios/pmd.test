@@ -122,7 +122,7 @@ class Blockly2Math {
                     disableMonitor: true,
                     blockType: BlockType.REPORTER,
                     arguments: {
-                        OP: {
+                        CONST: {
                             type: ArgumentType.STRING,
                             defaultValue: "π",
                             menu: "Constant"
