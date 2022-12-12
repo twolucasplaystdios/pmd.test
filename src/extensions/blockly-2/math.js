@@ -129,6 +129,52 @@ class Blockly2Math {
                         },
                     }
                 },
+                {
+                    opcode: 'IsOption',
+                    text: formatMessage({
+                        id: 'blockly2math.blocks.IsOption',
+                        default: '[ONE] is [OPTION]?',
+                        description: 'Check if number match condition'
+                    }),
+                    disableMonitor: true,
+                    blockType: BlockType.BOOLEAN,
+                    arguments: {
+                        ONE: {
+                            type: ArgumentType.NUMBER,
+                            defaultValue: 1
+                        },
+                        OPTION: {
+                            type: ArgumentType.STRING,
+                            defaultValue: "even",
+                            menu: "IsOption"
+                        },
+                    }
+                },
+                {
+                    opcode: 'IsOption2',
+                    text: formatMessage({
+                        id: 'blockly2math.blocks.IsOption2is o',
+                        default: '[ONE] is [OPTION] [TWO]?',
+                        description: 'Check if numbers match condition'
+                    }),
+                    disableMonitor: true,
+                    blockType: BlockType.BOOLEAN,
+                    arguments: {
+                        ONE: {
+                            type: ArgumentType.NUMBER,
+                            defaultValue: 1
+                        },
+                        TWO: {
+                            type: ArgumentType.NUMBER,
+                            defaultValue: 1
+                        },
+                        OPTION: {
+                            type: ArgumentType.STRING,
+                            defaultValue: "even",
+                            menu: "IsOption"
+                        },
+                    }
+                },
             ],
             menus: {
                 Operation: [
@@ -162,6 +208,17 @@ class Blockly2Math {
                     "sqrt(2)",
                     "sqrt(½)",
                     "∞"
+                ],
+                IsOption: [
+                    "even",
+                    "odd",
+                    "prime",
+                    "whole",
+                    "positive",
+                    "negative",
+                ],
+                IsOption2: [
+                    "divisible by"
                 ]
             }
         };
@@ -215,7 +272,44 @@ class Blockly2Math {
             case "sqrt(2)": return Math.SQRT2
             case "sqrt(½)": return Math.SQRT1_2
             case "∞": return Infinity
+            default: return 0
         }
+    }
+
+    IsOption(args, util) {
+        switch (String(args.OPTION)) {
+            case "even": return Number(args.ONE) % 2 == 0
+            case "odd": return Number(args.ONE) % 2 == 1
+            case "prime": return this._isprime(Number(args.ONE))
+            case "whole": return Number(args.ONE) % 1 == 0
+            case "positive": return Number(args.ONE) > 0
+            case "negative": return Number(args.ONE) < 0
+            default: return false
+        }
+    }
+
+    IsOption2(args, util) {
+        switch (String(args.OPTION)) {
+            case "divisible by": return Number(args.ONE) % Number(args.TWO) == 0
+            default: return false
+        }
+    }
+
+    _isprime(number) {
+        if (n == 2 || n == 3) {
+            return true;
+        }
+
+        if (isNaN(n) || n <= 1 || n % 1 !== 0 || n % 2 === 0 || n % 3 === 0) {
+            return false;
+        }
+
+        for (var x = 6; x <= Math.sqrt(n) + 1; x += 6) {
+            if (n % (x - 1) === 0 || n % (x + 1) === 0) {
+                return false;
+            }
+        }
+        return true;
     }
 }
 
