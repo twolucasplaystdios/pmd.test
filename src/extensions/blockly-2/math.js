@@ -207,15 +207,6 @@ class Blockly2Math {
         }
     }
 
-    [
-        "π",
-        "e",
-        "φ",
-        "sqrt(2)",
-        "sqrt(½)",
-        "∞"
-    ]
-    
     Constant(args, util) {
         switch (String(args.OP)) {
             case "π": return Math.PI
