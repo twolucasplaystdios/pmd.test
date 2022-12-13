@@ -4,7 +4,58 @@ const maybeFormatMessage = require('../util/maybe-format-message');
 
 const BlockType = require('./block-type');
 const SecurityManager = require('./tw-security-manager');
+const builtinExtensions = {
+    // This is an example that isn't loaded with the other core blocks,
+    // but serves as a reference for loading core blocks as extensions.
+    coreExample: () => require('../blocks/scratch3_core_example'),
+    // These are the non-core built-in extensions.
+    pen: () => require('../extensions/scratch3_pen'),
+    wedo2: () => require('../extensions/scratch3_wedo2'),
+    music: () => require('../extensions/scratch3_music'),
+    microbit: () => require('../extensions/scratch3_microbit'),
+    text2speech: () => require('../extensions/scratch3_text2speech'),
+    translate: () => require('../extensions/scratch3_translate'),
+    videoSensing: () => require('../extensions/scratch3_video_sensing'),
+    ev3: () => require('../extensions/scratch3_ev3'),
+    makeymakey: () => require('../extensions/scratch3_makeymakey'),
+    boost: () => require('../extensions/scratch3_boost'),
+    gdxfor: () => require('../extensions/scratch3_gdx_for'),
 
+    // tw: core extension
+    tw: () => require('../extensions/tw'),
+
+    // jg: jeremyes esxsitenisonsnsn
+    // jgFiles: support for reading user files
+    jgFiles: () => require('../extensions/jg_files'),
+    // jgWebsiteRequests: fetch GET and POST requests to apis & websites
+    jgWebsiteRequests: () => require("../extensions/jg_websiteRequests"),
+    // jgJSON: handle JSON objects
+    jgJSON: () => require("../extensions/jg_json"),
+    // jgRuntime: edit stage and other stuff
+    jgRuntime: () => require("../extensions/jg_runtime"),
+    // jgPrism: blocks for specific use cases or major convenience
+    jgPrism: () => require("../extensions/jg_prism"),
+
+    // jw: hello it is i jwklong
+    // jwUnite: literal features that should of been added in the first place
+    jwUnite: () => require("../extensions/jw_unite"),
+    // jwProto: placeholders, labels, defenitons, we got em
+    jwProto: () => require("../extensions/jw_proto"),
+    // jwReflex: vector positioning (UNRELEASED, DO NOT ADD TO GUI)
+    jwReflex: () => require("../extensions/jw_reflex"),
+    // Blockly 2: a faithful recreation of the original blockly blocks
+    blockly2math: () => require("../extensions/blockly-2/math.js"),
+
+    // griffpatch: *silence*
+    griffpatch: () => require("../extensions/griffpatch_box2d"),
+
+    // jw: They'll think its made by jwklong >:) (but it's not (yet (maybe (probably not (but its made by ianyourgod)))))
+    // this is the real jwklong speaking, one word shall be said about this: A N G E R Y
+    // Structs: hehe structs for oop (look at c)
+    jwStructs: () => require("../extensions/jw_structs"),
+    // text: text stuff
+    Text: () => require("../extensions/text"),
+};
 const createExtensionService = extensionManager => {
     const service = {};
     service.registerExtensionServiceSync = extensionManager.registerExtensionServiceSync.bind(extensionManager);
