@@ -9,17 +9,6 @@ const SecurityManager = require('./tw-security-manager');
 // TODO: move these out into a separate repository?
 // TODO: change extension spec so that library info, including extension ID, can be collected through static methods
 
-const dispatch = require('../dispatch/central-dispatch');
-const log = require('../util/log');
-const maybeFormatMessage = require('../util/maybe-format-message');
-
-const BlockType = require('./block-type');
-const SecurityManager = require('./tw-security-manager');
-
-// These extensions are currently built into the VM repository but should not be loaded at startup.
-// TODO: move these out into a separate repository?
-// TODO: change extension spec so that library info, including extension ID, can be collected through static methods
-
 const builtinExtensions = {
     // This is an example that isn't loaded with the other core blocks,
     // but serves as a reference for loading core blocks as extensions.
