@@ -1,6 +1,8 @@
 const ArgumentType = require('../extension-support/argument-type');
 const BlockType = require('../extension-support/block-type');
 const TargetType = require('../extension-support/target-type');
+const Cast = require('../util/cast');
+const Color = require('../util/color');
 const AsyncLimiter = require('../util/async-limiter');
 
 /**
@@ -9,23 +11,27 @@ const AsyncLimiter = require('../util/async-limiter');
  * @returns {Promise<object[]>} Resolves with a list of extension objects when Scratch.extensions.register is called.
  */
 const createUnsandboxedExtensionAPI = vm => new Promise(resolve => {
-    // Create a new copy of global.Scratch per-extension
-    global.Scratch = Object.assign({}, global.Scratch || {});
-    global.Scratch.vm = vm;
-    global.Scratch.renderer = vm.runtime.renderer;
-    global.Scratch.ArgumentType = ArgumentType;
-    global.Scratch.BlockType = BlockType;
-    global.Scratch.TargetType = TargetType;
-
     const extensionObjects = [];
     const register = extensionObject => {
         extensionObjects.push(extensionObject);
         resolve(extensionObjects);
     };
-    global.Scratch.extensions = {
-        unsandboxed: true,
-        register
+
+    // Create a new copy of global.Scratch for each extension
+    const Scratch = {
+        vm,
+        renderer: vm.runtime.renderer,
+        ArgumentType,
+        BlockType,
+        TargetType,
+        Cast,
+        Color,
+        extensions: {
+            unsandboxed: true,
+            register
+        }
     };
+    global.Scratch = Object.assign({}, global.Scratch || {}, Scratch);
 
     global.ScratchExtensions = require('./tw-scratchx-compatibility-layer');
 });
