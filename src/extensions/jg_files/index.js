@@ -3,6 +3,18 @@ const BlockType = require('../../extension-support/block-type');
 const ArgumentType = require('../../extension-support/argument-type');
 // const Cast = require('../../util/cast');
 
+// copied from ../jg_json/index.js
+function _validatejsonarray(array) {
+    try {
+        if (!array.startsWith('[')) throw new error('error lol')
+        array = JSON.parse(array)
+    } catch {
+        array = []
+    }
+
+    return array
+}
+
 /**
  * Class for File blocks
  * @constructor
@@ -36,16 +48,6 @@ class JgFilesBlocks {
                     }),
                     disableMonitor: false,
                     blockType: BlockType.BOOLEAN
-                },
-                {
-                    opcode: 'askUserForFile',
-                    text: formatMessage({
-                        id: 'jgFiles.blocks.askUserForFile',
-                        default: 'ask user for a file',
-                        description: 'Block that returns the contents of a file the user provides. The block will return no text if it was rejected.'
-                    }),
-                    disableMonitor: true,
-                    blockType: BlockType.REPORTER
                 },
                 {
                     opcode: 'askUserForFileOfType',
@@ -95,37 +97,6 @@ class JgFilesBlocks {
                     }
                 }
             ]
-            // menus: {
-            // mouseButton: {
-            // items: [
-            // {
-            // text: formatMessage({
-            // id: 'tw.blocks.mouseButton.primary',
-            // default: '(0) primary',
-            // description: 'Dropdown item to select primary (usually left) mouse button'
-            // }),
-            // value: '0'
-            // },
-            // {
-            // text: formatMessage({
-            // id: 'tw.blocks.mouseButton.middle',
-            // default: '(1) middle',
-            // description: 'Dropdown item to select middle mouse button'
-            // }),
-            // value: '1'
-            // },
-            // {
-            // text: formatMessage({
-            // id: 'tw.blocks.mouseButton.secondary',
-            // default: '(2) secondary',
-            // description: 'Dropdown item to select secondary (usually right) mouse button'
-            // }),
-            // value: '2'
-            // }
-            // ],
-            // acceptReporters: true
-            // }
-            // }
         };
     }
 
@@ -137,7 +108,7 @@ class JgFilesBlocks {
         return new Promise((resolve, _) => {
             const fileReader = new FileReader();
             fileReader.onload = (e) => {
-                resolve(e.target.result);
+                resolve(JSON.stringify(e.target.result));
             }
             const input = document.createElement("input");
             input.type = "file";
@@ -149,10 +120,10 @@ class JgFilesBlocks {
             input.onchange = () => {
                 const file = input.files[0];
                 if (!file) {
-                    resolve("");
+                    resolve("[]");
                     return;
                 } else {
-                    fileReader.readAsText(file);
+                    fileReader.readAsArrayBuffer(file)
                 }
                 input.remove();
             }
@@ -162,10 +133,6 @@ class JgFilesBlocks {
             input.focus();
             input.click();
         })
-    }
-
-    askUserForFile(args, util) {
-        return this.__askUserForFile(null);
     }
 
     askUserForFileOfType(args, util) {
@@ -183,8 +150,14 @@ class JgFilesBlocks {
         let content = "";
         let fileName = "text.txt";
 
-        content = String(args.FILE_CONTENT);
-        fileName = String(args.FILE_NAME);
+        content = String(args.FILE_CONTENT) || content;
+        fileName = String(args.FILE_NAME) || fileName;
+
+        const array = _validatejsonarray(args.FILE_CONTENT)
+        if (array.length > 0 && typeof array[0] == 'number') {
+            content = array
+            fileName = (fileName == 'text.txt' ? 'raw.bin' : fileName)
+        }
 
         const blob = new Blob([content]);
         const a = document.createElement("a");

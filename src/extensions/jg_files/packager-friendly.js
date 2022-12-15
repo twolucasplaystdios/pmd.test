@@ -78,10 +78,10 @@ class JgFilesBlocks {
             input.onchange = () => {
                 const file = input.files[0];
                 if (!file) {
-                    resolve("");
+                    resolve("[]");
                     return;
                 } else {
-                    fileReader.readAsText(file);
+                    fileReader.readAsArrayBuffer(file)
                 }
                 input.remove();
             }
@@ -108,8 +108,14 @@ class JgFilesBlocks {
     downloadFile(args) {
         let content = "";
         let fileName = "text.txt";
-        content = String(args.FILE_CONTENT);
-        fileName = String(args.FILE_NAME);
+        content = String(args.FILE_CONTENT) || content;
+        fileName = String(args.FILE_NAME) || fileName;
+
+        const array = _validatejsonarray(args.FILE_CONTENT)
+        if (array.length > 0 && typeof array[0] == 'number') {
+            content = array
+        }
+
         const blob = new Blob([content]);
         const a = document.createElement("a");
         a.style.display = "none";
