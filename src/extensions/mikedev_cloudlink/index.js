@@ -1,5 +1,8 @@
 var servers = {};; // Server list
 let mWS = null;
+const formatMessage = require('format-message');
+const BlockType = require('../../extension-support/block-type');
+const ArgumentType = require('../../extension-support/argument-type');
 
 // Get the server URL list
 try {
@@ -61,7 +64,10 @@ function autoConvert(value) {
     // Leave as the original value if none of the above work
     return value;
 }
-
+/**
+ * Class for Proto blocks
+ * @constructor
+ */
 class CloudLink {
     constructor(runtime, extensionId) {
         // Extension stuff
