@@ -1200,7 +1200,7 @@ class Runtime extends EventEmitter {
             return this._convertSeparatorForScratchBlocks(blockInfo);
         }
 
-        if (blockInfo.startsWith('---')) {
+        if (typeof blockInfo == 'string' && blockInfo.startsWith('---')) {
             return this._convertLableForScratchBlocks(blockInfo.slice(3, blockInfo.length));
         }
 
