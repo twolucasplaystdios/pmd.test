@@ -1200,6 +1200,10 @@ class Runtime extends EventEmitter {
             return this._convertSeparatorForScratchBlocks(blockInfo);
         }
 
+        if (blockInfo.startsWith('---')) {
+            return this._convertLableForScratchBlocks(blockInfo.slice(3, blockInfo.length));
+        }
+
         if (blockInfo.blockType === BlockType.BUTTON) {
             return this._convertButtonForScratchBlocks(blockInfo);
         }
@@ -1369,6 +1373,20 @@ class Runtime extends EventEmitter {
         return {
             info: blockInfo,
             xml: '<sep gap="36"/>'
+        };
+    }
+
+    /**
+     * Generate generate the xml for a toolbox lable.
+     * @param {ExtensionBlockMetadata} blockInfo - the block to convert
+     * @param {CategoryInfo} categoryInfo - the category for this block
+     * @returns {ConvertedBlockInfo} - the converted & original block information
+     * @private
+     */
+    _convertLableForScratchBlocks (blockInfo) {
+        return {
+            info: blockInfo,
+            xml: `<label text="${blockInfo}"></label>`
         };
     }
 
