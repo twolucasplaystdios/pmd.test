@@ -1,4 +1,4 @@
-const html = require('../util/htmlparser2/lib');
+const html = require('../util/htmlparser/lib');
 const decodeHtml = require('decode-html');
 
 /**
