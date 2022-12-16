@@ -1,4 +1,4 @@
-const html = require('xml-js');
+const html = require('htmlparser2');
 const decodeHtml = require('decode-html');
 
 /**

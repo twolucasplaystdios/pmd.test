@@ -170,7 +170,7 @@ const adapter = function (e) {
     if (typeof e !== 'object') return;
     if (typeof e.xml !== 'object') return;
 
-    return domToBlocks(html.parseDOM(e.xml.outerHTML, {decodeEntities: true}));
+    return domToBlocks(JSON.parse(html.xml2json(e.xml.outerHTML, {compact: false, spaces: 0})).elements);
 };
 
 module.exports = adapter;
