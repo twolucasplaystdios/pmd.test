@@ -38,11 +38,7 @@
     "decode-html": "2.0.0",
     "diff-match-patch": "1.0.4",
     "format-message": "6.2.1",
-<<<<<<< HEAD
     "htmlparser2": "^3.10.0",
-=======
-    "htmlparser2": "3.10.0",
->>>>>>> parent of a441a17e (replaced htmlparser2 with xml-js)
     "immutable": "3.8.2",
     "jszip": "^3.1.5",
     "minilog": "3.1.0",
