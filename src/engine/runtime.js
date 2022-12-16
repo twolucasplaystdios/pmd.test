@@ -1200,9 +1200,8 @@ class Runtime extends EventEmitter {
             return this._convertSeparatorForScratchBlocks(blockInfo);
         }
 
-        if (typeof blockInfo == 'string') {
-            if (blockInfo.startsWith('---')) return this._convertLableForScratchBlocks(blockInfo.slice(3, blockInfo.length));
-        }
+        if (blockInfo.blockType === BlockType.LABLE) 
+            return this._convertLableForScratchBlocks(blockInfo);
 
         if (blockInfo.blockType === BlockType.BUTTON) {
             return this._convertButtonForScratchBlocks(blockInfo);
@@ -1386,7 +1385,7 @@ class Runtime extends EventEmitter {
     _convertLableForScratchBlocks (blockInfo) {
         return {
             info: blockInfo,
-            xml: `<label text="${blockInfo}"></label>`
+            xml: `<label text="${blockInfo.text}"></label>`
         };
     }
 

@@ -206,7 +206,10 @@ class JgJSONBlocks {
                     },
                     text: 'json [json] has key [key] ?'
                 },
-                "---Arrays",
+                {
+                    blockType: BlockType.LABLE,
+                    text: "Arrays"
+                },
                 {
                     opcode: 'json_array_validate',
                     blockType: BlockType.BOOLEAN,
