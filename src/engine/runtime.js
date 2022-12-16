@@ -1200,8 +1200,8 @@ class Runtime extends EventEmitter {
             return this._convertSeparatorForScratchBlocks(blockInfo);
         }
 
-        if (typeof blockInfo == 'string' && blockInfo.startsWith('---')) {
-            return this._convertLableForScratchBlocks(blockInfo.slice(3, blockInfo.length));
+        if (typeof blockInfo == 'string') {
+            if (blockInfo.startsWith('---')) return this._convertLableForScratchBlocks(blockInfo.slice(3, blockInfo.length));
         }
 
         if (blockInfo.blockType === BlockType.BUTTON) {
