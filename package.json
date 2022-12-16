@@ -38,7 +38,6 @@
     "decode-html": "2.0.0",
     "diff-match-patch": "1.0.4",
     "format-message": "6.2.1",
-    "htmlparser2": "3.10.0",
     "immutable": "3.8.2",
     "jszip": "^3.1.5",
     "minilog": "3.1.0",
@@ -46,7 +45,8 @@
     "scratch-sb1-converter": "0.2.7",
     "scratch-translate-extension-languages": "0.0.20191118205314",
     "text-encoding": "0.7.0",
-    "worker-loader": "^1.1.1"
+    "worker-loader": "^1.1.1",
+    "xml-js": "^1.6.11"
   },
   "peerDependencies": {
     "scratch-svg-renderer": "^0.2.0-prerelease"
@@ -67,8 +67,8 @@
     "format-message-cli": "6.2.0",
     "gh-pages": "1.2.0",
     "in-publish": "2.0.1",
-    "jsdoc": "3.6.6",
     "js-md5": "0.7.3",
+    "jsdoc": "3.6.6",
     "json": "^9.0.4",
     "lodash.defaultsdeep": "4.6.1",
     "pngjs": "3.3.3",
