@@ -1,5 +1,5 @@
 const mutationAdapter = require('./mutation-adapter');
-const html = require('../util/htmlparser2/lib');
+const html = require('htmlparser2');
 const uid = require('../util/uid');
 
 /**

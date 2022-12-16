@@ -1,6 +1,6 @@
 const test = require('tap').test;
 const Variable = require('../../src/engine/variable');
-const htmlparser = require('../../src/util/htmlparser2/lib');
+const htmlparser = require('htmlparser2');
 
 test('spec', t => {
     t.type(typeof Variable.SCALAR_TYPE, typeof Variable.LIST_TYPE);
