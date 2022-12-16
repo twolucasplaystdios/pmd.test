@@ -25,6 +25,7 @@ const builtinExtensions = {
     boost: () => require('../extensions/scratch3_boost'),
     gdxfor: () => require('../extensions/scratch3_gdx_for'),
 
+    // garbomuffin: *silence*
     // tw: core extension
     tw: () => require('../extensions/tw'),
 
@@ -51,6 +52,7 @@ const builtinExtensions = {
     blockly2math: () => require("../extensions/blockly-2/math.js"),
 
     // griffpatch: *silence*
+    // griffpatch: box 2d
     griffpatch: () => require("../extensions/griffpatch_box2d"),
 
     // jw: They'll think its made by jwklong >:) (but it's not (yet (maybe (probably not (but its made by ianyourgod)))))
@@ -59,6 +61,10 @@ const builtinExtensions = {
     jwStructs: () => require("../extensions/jw_structs"),
     // text: text stuff
     Text: () => require("../extensions/text"),
+
+    // MikeDev: *silence*
+    // cloudlink: cCloudlink is a free and open-source, websocket-powered API optimized for Scratch 3.0. C
+    cloudlink: () => require("../extensions/mikedev_cloudlink"),
 };
 
 // CCW limited
