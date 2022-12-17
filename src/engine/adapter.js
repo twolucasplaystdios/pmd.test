@@ -1,5 +1,4 @@
 const mutationAdapter = require('./mutation-adapter');
-const html = require('htmlparser2');
 const uid = require('../util/uid');
 
 /**
@@ -170,7 +169,12 @@ const adapter = function (e) {
     if (typeof e !== 'object') return;
     if (typeof e.xml !== 'object') return;
 
-    return domToBlocks(html.parseDOM(e.xml.outerHTML, {decodeEntities: true}));
+    const parser = new DOMParser();
+
+    const xmlString = "<warning>Beware of the tiger</warning>";
+    const doc1 = parser.parseFromString(xmlString, "application/xml");
+
+    return domToBlocks(doc1);
 };
 
 module.exports = adapter;
