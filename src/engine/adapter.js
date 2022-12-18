@@ -30,8 +30,8 @@ const domToBlock = function (blockDOM, blocks, isTopBlock, parent) {
         topLevel: isTopBlock, // If this block starts a stack.
         parent: parent, // Parent block ID, if available.
         shadow: blockDOM.name === 'shadow', // If this represents a shadow/slot.
-        x: blockDOM.attributes.x.value ??= null, // X position of script, if top-level.
-        y: blockDOM.attributes.y.value ??= null // Y position of script, if top-level.
+        x: blockDOM.attributes.x.value, // X position of script, if top-level.
+        y: blockDOM.attributes.y.value // Y position of script, if top-level.
     };
 
     // Add the block to the representation tree.
