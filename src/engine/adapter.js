@@ -173,7 +173,7 @@ const adapter = function (e) {
     const parser = new DOMParser();
     const doc = parser.parseFromString(e.xml.outerHTML, "application/xml");
 
-    return domToBlocks(doc);
+    return domToBlocks(doc.childNodes);
 };
 
 module.exports = adapter;
