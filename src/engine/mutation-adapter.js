@@ -40,10 +40,8 @@ const mutationAdpater = function (mutation) {
         mutationParsed = mutation;
     } else {
         const parser = new DOMParser();
-
-        const xmlString = mutation;
-        const doc1 = parser.parseFromString(xmlString, "application/xml");
-        mutationParsed = doc1[0];
+        const doc = parser.parseFromString(mutation, "application/xml");
+        mutationParsed = doc[0];
     }
     return mutatorTagToObject(mutationParsed);
 };

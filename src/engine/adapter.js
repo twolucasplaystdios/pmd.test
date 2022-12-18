@@ -170,9 +170,7 @@ const adapter = function (e) {
     if (typeof e.xml !== 'object') return;
 
     const parser = new DOMParser();
-
-    const xmlString = e.xml.outerHTML;
-    const doc1 = parser.parseFromString(xmlString, "application/xml");
+    const doc = parser.parseFromString(e.xml.outerHTML, "application/xml");
 
     return domToBlocks(doc1);
 };
