@@ -16,7 +16,7 @@ const domToBlock = function (blockDOM, blocks, isTopBlock, parent) {
         blockDOM.attributes.id.value = uid();
     }
 
-    // 😫
+    // make sure errors arnt thrown when there is no postion
     blockDOM.attributes.x ??= {}
     blockDOM.attributes.y ??= {}
 
@@ -69,8 +69,9 @@ const domToBlock = function (blockDOM, blocks, isTopBlock, parent) {
         {
             // Add the field to this block.
             const fieldName = xmlChild.attributes.name.value;
-            // Add id in case it is a variable field
+            // make sure the id exists and is valid nomatter what
             xmlChild.attributes.id ??= { value: uid() }
+            // Add id in case it is a variable field
             const fieldId = xmlChild.attributes.id.value;
             let fieldData = '';
             if (xmlChild.innerHTML) {
