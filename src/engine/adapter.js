@@ -142,6 +142,7 @@ const domToBlocks = function (blocksDOM) {
     const blocks = {};
     for (let i = 0; i < blocksDOM.length; i++) {
         const block = blocksDOM[i];
+        console.log(!block.tagName || !block.attributes, !block.tagName, !block.attributes)
         if (!block.tagName || !block.attributes) {
             continue;
         }
