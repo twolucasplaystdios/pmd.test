@@ -146,7 +146,6 @@ const domToBlock = function (blockDOM, blocks, isTopBlock, parent) {
  */
 const domToBlocks = function (blocksDOM) {
     // At this level, there could be multiple blocks adjacent in the DOM tree.
-    console.log(blocksDOM)
     const blocks = {};
     for (let i = 0; i < blocksDOM.length; i++) {
         const block = blocksDOM[i];
