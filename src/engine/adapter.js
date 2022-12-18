@@ -142,10 +142,10 @@ const domToBlocks = function (blocksDOM) {
     const blocks = {};
     for (let i = 0; i < blocksDOM.length; i++) {
         const block = blocksDOM[i];
-        if (!block.name || !block.attribs) {
+        if (!block.tagName || !block.attributes) {
             continue;
         }
-        const tagName = block.name.toLowerCase();
+        const tagName = block.tagName;
         if (tagName === 'block' || tagName === 'shadow') {
             domToBlock(block, blocks, true, null);
         }
