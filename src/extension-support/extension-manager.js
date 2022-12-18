@@ -3,6 +3,7 @@ const log = require('../util/log');
 const maybeFormatMessage = require('../util/maybe-format-message');
 
 const BlockType = require('./block-type');
+const SecurityManager = require('./tw-security-manager');
 
 // These extensions are currently built into the VM repository but should not be loaded at startup.
 // TODO: move these out into a separate repository?
@@ -112,7 +113,7 @@ const createExtensionService = extensionManager => {
 };
 
 class ExtensionManager {
-    constructor(runtime) {
+    constructor (vm) {
         /**
          * The ID number to provide to the next extension worker.
          * @type {int}
@@ -134,26 +135,34 @@ class ExtensionManager {
         this.pendingWorkers = [];
 
         /**
-         * Set of loaded extension URLs/IDs (equivalent for built-in extensions).
-         * @type {Set.<string>}
+         * Map of worker ID to the URL where it was loaded from.
+         * @type {Array<string>}
+         */
+        this.workerURLs = [];
+
+        /**
+         * Map of loaded extension URLs/IDs to service names.
+         * @type {Map.<string, string>}
          * @private
          */
         this._loadedExtensions = new Map();
 
         /**
-         * Controls how remote custom extensions are loaded.
-         * One of the strings:
-         *  - "worker" (default)
-         *  - "iframe"
+         * Responsible for determining security policies related to custom extensions.
          */
-        this.workerMode = 'worker';
+        this.securityManager = new SecurityManager();
+
+        /**
+         * @type {VirtualMachine}
+         */
+        this.vm = vm;
 
         /**
          * Keep a reference to the runtime so we can construct internal extension objects.
          * TODO: remove this in favor of extensions accessing the runtime as a service.
          * @type {Runtime}
          */
-        this.runtime = runtime;
+        this.runtime = vm.runtime;
 
         this.loadingAsyncExtensions = 0;
         this.asyncExtensionsLoadedCallbacks = [];
@@ -175,12 +184,22 @@ class ExtensionManager {
     }
 
     /**
+     * Determine whether an extension with a given ID is built in to the VM, such as pen.
+     * Note that "core extensions" like motion will return false here.
+     * @param {string} extensionId
+     * @returns {boolean}
+     */
+    isBuiltinExtension (extensionId) {
+        return Object.prototype.hasOwnProperty.call(builtinExtensions, extensionId);
+    }
+
+    /**
      * Synchronously load an internal extension (core or non-core) by ID. This call will
      * fail if the provided id is not does not match an internal extension.
      * @param {string} extensionId - the ID of an internal extension
      */
-    loadExtensionIdSync(extensionId) {
-        if (!builtinExtensions.hasOwnProperty(extensionId)) {
+    loadExtensionIdSync (extensionId) {
+        if (!this.isBuiltinExtension(extensionId)) {
             log.warn(`Could not find extension ${extensionId} in the built in extensions.`);
             return;
         }
@@ -199,84 +218,75 @@ class ExtensionManager {
         this.runtime.compilerRegisterExtension(extensionId, extensionInstance);
     }
 
+    _isValidExtensionURL (extensionURL) {
+        try {
+            const parsedURL = new URL(extensionURL);
+            return (
+                parsedURL.protocol === 'https:' ||
+                parsedURL.protocol === 'http:' ||
+                parsedURL.protocol === 'data:' ||
+                parsedURL.protocol === 'file:'
+            );
+        } catch (e) {
+            return false;
+        }
+    }
+
     /**
      * Load an extension by URL or internal extension ID
      * @param {string} extensionURL - the URL for the extension to load OR the ID of an internal extension
      * @returns {Promise} resolved once the extension is loaded and initialized or rejected on failure
      */
-    loadExtensionURL(extensionURL) {
-        if (builtinExtensions.hasOwnProperty(extensionURL) || injectExtensions.hasOwnProperty(extensionURL)) {
-            /** @TODO dupe handling for non-builtin extensions. See commit 670e51d33580e8a2e852b3b038bb3afc282f81b9 */
-            if (this.isExtensionLoaded(extensionURL)) {
-                const message = `Rejecting attempt to load a second extension with ID ${extensionURL}`;
-                log.warn(message);
-                return Promise.resolve();
-            }
-
-            const extension = builtinExtensions[extensionURL]();
-            const extensionInstance = new extension(this.runtime);
-            const serviceName = this._registerInternalExtension(extensionInstance);
-            this._loadedExtensions.set(extensionURL, serviceName);
-            this.runtime.compilerRegisterExtension(extensionURL, extensionInstance);
-            return Promise.resolve();
+    async loadExtensionURL (extensionURL) {
+        if (this.isBuiltinExtension(extensionURL)) {
+            this.loadExtensionIdSync(extensionURL);
+            return;
         }
 
-        /*
+        if (!this._isValidExtensionURL(extensionURL)) {
+            throw new Error(`Invalid extension URL: ${extensionURL}`);
+        }
+
+        this.runtime.setExternalCommunicationMethod('customExtensions', true);
+
         this.loadingAsyncExtensions++;
-        
+
+        const sandboxMode = await this.securityManager.getSandboxMode(extensionURL);
+
+        if (sandboxMode === 'unsandboxed') {
+            const {load} = require('./tw-unsandboxed-extension-runner');
+            const extensionObjects = await load(extensionURL, this.vm)
+                .catch(error => this._failedLoadingExtensionScript(error));
+            const fakeWorkerId = this.nextExtensionWorker++;
+            this.workerURLs[fakeWorkerId] = extensionURL;
+
+            for (const extensionObject of extensionObjects) {
+                const extensionInfo = extensionObject.getInfo();
+                const serviceName = `unsandboxed.${fakeWorkerId}.${extensionInfo.id}`;
+                dispatch.setServiceSync(serviceName, extensionObject);
+                dispatch.callSync('extensions', 'registerExtensionServiceSync', serviceName);
+                this._loadedExtensions.set(extensionInfo.id, serviceName);
+            }
+
+            this._finishedLoadingExtensionScript();
+            return;
+        }
+
+        /* eslint-disable max-len */
+        let ExtensionWorker;
+        if (sandboxMode === 'worker') {
+            ExtensionWorker = require('worker-loader?name=js/extension-worker/extension-worker.[hash].js!./extension-worker');
+        } else if (sandboxMode === 'iframe') {
+            ExtensionWorker = (await import(/* webpackChunkName: "iframe-extension-worker" */ './tw-iframe-extension-worker')).default;
+        } else {
+            throw new Error(`Invalid sandbox mode: ${sandboxMode}`);
+        }
+        /* eslint-enable max-len */
+
         return new Promise((resolve, reject) => {
             this.pendingExtensions.push({extensionURL, resolve, reject});
-            this.createExtensionWorker()
-                .then(worker => dispatch.addWorker(worker))
-                .catch(error => reject(error));
-        });
-        */
-        this.runtime.emit('EXTENSION_DATA_LOADING', true);
-
-        return this.runtime.loadOnlineExtensionsLibrary() // ccw remote extensions library
-            .then(lib => lib.default())
-            .then(({ default: remoteExtensions }) => {
-                const remoteExtensionConfig = remoteExtensions[extensionURL];
-                if (remoteExtensionConfig && remoteExtensionConfig.Extension) {
-                    return remoteExtensionConfig
-                        .Extension()
-                        .then(({ default: remoteExtension }) => {
-                            const extensionInstance = new remoteExtension(this.runtime);
-                            const serviceName = this._registerInternalExtension(extensionInstance);
-                            this._loadedExtensions.set(extensionURL, serviceName);
-                            return Promise.resolve();
-                        });
-                }
-
-                // eslint-disable-next-line no-console
-                log.warn(`ccw: [${extensionURL}] not found in remote extensions library,try load as URL`);
-                this.runtime.emit('EXTENSION_NOT_FOUND', extensionURL);
-
-                // TW
-                this.loadingAsyncExtensions++;
-                return new Promise((resolve, reject) => {
-                    this.pendingExtensions.push({ extensionURL, resolve, reject });
-                    this.createExtensionWorker()
-                        .then(worker => dispatch.addWorker(worker))
-                        .catch(error => reject(error));
-                });
-
-                // original
-                // return new Promise((resolve, reject) => {
-                //     // If we `require` this at the global level it breaks non-webpack targets, including tests
-                //     const ExtensionWorker = require('worker-loader?name=extension-worker.js!./extension-worker');
-
-                //     this.pendingExtensions.push({
-                //         extensionURL,
-                //         resolve,
-                //         reject
-                //     });
-                //     dispatch.addWorker(new ExtensionWorker());
-                // });
-            })
-            .finally(() => {
-                this.runtime.emit('EXTENSION_DATA_LOADING', false); // ccw end loading remote extension event
-            });
+            dispatch.addWorker(new ExtensionWorker());
+        }).catch(error => this._failedLoadingExtensionScript(error));
     }
 
     /**
@@ -287,8 +297,11 @@ class ExtensionManager {
         if (this.loadingAsyncExtensions === 0) {
             return;
         }
-        return new Promise(resolve => {
-            this.asyncExtensionsLoadedCallbacks.push(resolve);
+        return new Promise((resolve, reject) => {
+            this.asyncExtensionsLoadedCallbacks.push({
+                resolve,
+                reject
+            });
         });
     }
 
@@ -330,6 +343,7 @@ class ExtensionManager {
         const id = this.nextExtensionWorker++;
         const workerInfo = this.pendingExtensions.shift();
         this.pendingWorkers[id] = workerInfo;
+        this.workerURLs[id] = workerInfo.extensionURL;
         return [id, workerInfo.extensionURL];
     }
 
@@ -350,13 +364,26 @@ class ExtensionManager {
         dispatch.call(serviceName, 'getInfo').then(info => {
             this._loadedExtensions.set(info.id, serviceName);
             this._registerExtensionInfo(serviceName, info);
-
-            this.loadingAsyncExtensions--;
-            if (this.loadingAsyncExtensions === 0) {
-                this.asyncExtensionsLoadedCallbacks.forEach(i => i());
-                this.asyncExtensionsLoadedCallbacks = [];
-            }
+            this._finishedLoadingExtensionScript();
         });
+    }
+
+    _finishedLoadingExtensionScript () {
+        this.loadingAsyncExtensions--;
+        if (this.loadingAsyncExtensions === 0) {
+            this.asyncExtensionsLoadedCallbacks.forEach(i => i.resolve());
+            this.asyncExtensionsLoadedCallbacks = [];
+        }
+    }
+
+    _failedLoadingExtensionScript (error) {
+        // Don't set the current extension counter to 0, otherwise it will go negative if another
+        // extension finishes or fails to load.
+        this.loadingAsyncExtensions--;
+        this.asyncExtensionsLoadedCallbacks.forEach(i => i.reject(error));
+        this.asyncExtensionsLoadedCallbacks = [];
+        // Re-throw error so the promise still rejects.
+        throw error;
     }
 
     /**
@@ -614,12 +641,21 @@ class ExtensionManager {
         return blockInfo;
     }
 
-    // CCW Limited
-    injectExtension(extensionId, extension) {
-        if (builtinExtensions.hasOwnProperty(extensionId) || injectExtensions.hasOwnProperty(extensionId)) {
-            log.warn(`${extensionId} existed, replace it.`);
+    getExtensionURLs () {
+        const extensionURLs = {};
+        for (const [extensionId, serviceName] of this._loadedExtensions.entries()) {
+            if (builtinExtensions.hasOwnProperty(extensionId)) {
+                continue;
+            }
+
+            // Service names for extension workers are in the format "extension.WORKER_ID.EXTENSION_ID"
+            const workerId = +serviceName.split('.')[1];
+            const extensionURL = this.workerURLs[workerId];
+            if (typeof extensionURL === 'string') {
+                extensionURLs[extensionId] = extensionURL;
+            }
         }
-        injectExtensions[extensionId] = () => extension;
+        return extensionURLs;
     }
 }
 

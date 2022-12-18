@@ -453,6 +453,27 @@ class Runtime extends EventEmitter {
          * This mode is used by the TurboWarp Packager.
          */
         this.isPackaged = false;
+
+        /**
+         * Contains information about the external communication methods that the scripts inside the project
+         * can use to send data from inside the project to an external server.
+         * Do not update this directly. Use Runtime.setExternalCommunicationMethod() instead.
+         */
+        this.externalCommunicationMethods = {
+            cloudVariables: false,
+            customExtensions: false
+        };
+        this.on(Runtime.HAS_CLOUD_DATA_UPDATE, enabled => {
+            this.setExternalCommunicationMethod('cloudVariables', enabled);
+        });
+
+        /**
+         * If set to true, features such as reading colors from the user's webcam will be disabled
+         * when the project has access to any external communication method to protect user privacy.
+         * Requires TurboWarp/scratch-render.
+         * Do not update this directly. Use Runtime.setEnforcePrivacy() instead.
+         */
+        this.enforcePrivacy = true;
     }
 
     /**
@@ -1735,6 +1756,7 @@ class Runtime extends EventEmitter {
         this.renderer = renderer;
         this.renderer.setLayerGroupOrdering(StageLayering.LAYER_GROUPS);
         this.renderer.offscreenTouching = !this.runtimeOptions.fencing;
+        this.updatePrivacy();
     }
 
     /**
@@ -2522,10 +2544,9 @@ class Runtime extends EventEmitter {
      * Add an "addon block"
      * @param {object} options Options object
      * @param {string} options.procedureCode The ID of the block
-     * @param {function} options.callback The callback, called with (args, BlockUtility)
+     * @param {function} options.callback The callback, called with (args, BlockUtility). May return a promise.
      * @param {string[]} options.arguments Names of the arguments accepted
-     * @param {string} options.color Primary color
-     * @param {string} options.secondaryColor Secondary color
+     * @param {boolean} [hidden] True to not include this block in the block palette
      */
     addAddonBlock (options) {
         const procedureCode = options.procedureCode;
@@ -2537,31 +2558,36 @@ class Runtime extends EventEmitter {
             ...options
         };
 
-        const ID = 'a-b';
-        let blockInfo = this._blockInfo.find(i => i.id === ID);
-        if (!blockInfo) {
-            blockInfo = {
-                id: ID,
-                name: 'Addons',
-                color1: options.color,
-                color2: options.secondaryColor,
-                color3: options.secondaryColor,
-                blocks: [],
-                customFieldTypes: {},
-                menus: []
-            };
-            this._blockInfo.unshift(blockInfo);
+        if (!options.hidden) {
+            const ID = 'a-b';
+            let blockInfo = this._blockInfo.find(i => i.id === ID);
+            if (!blockInfo) {
+                // eslint-disable-next-line max-len
+                const ICON = '<svg xmlns="http://www.w3.org/2000/svg" width="48" height="48"><path d="M14.92 1.053A13.835 13.835 0 0 0 1.052 14.919v18.162a13.835 13.835 0 0 0 13.866 13.866h18.162a13.835 13.835 0 0 0 13.866-13.866V14.919A13.835 13.835 0 0 0 33.081 1.053zm16.6 12.746L41.72 24 31.52 34.201l-3.276-3.275L35.17 24l-6.926-6.926Zm-15.116.073 3.278 3.278L12.83 24l6.926 6.926L16.48 34.2 6.28 24Z" style="fill:#29beb8;fill-opacity:1;stroke:none;stroke-width:1.51371;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"/></svg>';
+                blockInfo = {
+                    id: ID,
+                    name: 'Addons',
+                    color1: '#29beb8',
+                    color2: '#3aa8a4',
+                    color3: '#3aa8a4',
+                    menuIconURI: `data:image/svg+xml;,${encodeURIComponent(ICON)}`,
+                    blocks: [],
+                    customFieldTypes: {},
+                    menus: []
+                };
+                this._blockInfo.unshift(blockInfo);
+            }
+            blockInfo.blocks.push({
+                info: {},
+                xml:
+                   '<block type="procedures_call" gap="16"><mutation generateshadows="true" warp="false"' +
+                    ` proccode="${xmlEscape(procedureCode)}"` +
+                    ` argumentnames="${xmlEscape(JSON.stringify(names))}"` +
+                    ` argumentids="${xmlEscape(JSON.stringify(ids))}"` +
+                    ` argumentdefaults="${xmlEscape(JSON.stringify(defaults))}"` +
+                    '></mutation></block>'
+            });
         }
-        blockInfo.blocks.push({
-            info: {},
-            xml:
-               '<block type="procedures_call" gap="16"><mutation generateshadows="true" warp="false"' +
-                ` proccode="${xmlEscape(procedureCode)}"` +
-                ` argumentnames="${xmlEscape(JSON.stringify(names))}"` +
-                ` argumentids="${xmlEscape(JSON.stringify(ids))}"` +
-                ` argumentdefaults="${xmlEscape(JSON.stringify(defaults))}"` +
-                '></mutation></block>'
-        });
 
         this.resetAllCaches();
     }
@@ -3161,6 +3187,36 @@ class Runtime extends EventEmitter {
      */
     updateCurrentMSecs () {
         this.currentMSecs = Date.now();
+    }
+
+    updatePrivacy () {
+        const enforceRestrictions = (
+            this.enforcePrivacy &&
+            Object.values(this.externalCommunicationMethods).some(i => i)
+        );
+        if (this.renderer && this.renderer.setPrivateSkinAccess) {
+            this.renderer.setPrivateSkinAccess(!enforceRestrictions);
+        }
+    }
+
+    /**
+     * @param {boolean} enabled True if restrictions should be enforced to protect user privacy.
+     */
+    setEnforcePrivacy (enabled) {
+        this.enforcePrivacy = enabled;
+        this.updatePrivacy();
+    }
+
+    /**
+     * @param {string} method Name of the method in Runtime.externalCommunicationMethods
+     * @param {boolean} enabled True if the feature is enabled.
+     */
+    setExternalCommunicationMethod (method, enabled) {
+        if (!Object.prototype.hasOwnProperty.call(this.externalCommunicationMethods, method)) {
+            throw new Error(`Unknown method: ${method}`);
+        }
+        this.externalCommunicationMethods[method] = enabled;
+        this.updatePrivacy();
     }
 }
 
