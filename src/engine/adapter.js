@@ -11,7 +11,8 @@ const uid = require('../util/uid');
  * @return {undefined}
  */
 const domToBlock = function (blockDOM, blocks, isTopBlock, parent) {
-    if (!blockDOM.attributes.id.nodeValue) {
+    if (!blockDOM.attributes.id) {
+        blockDOM.attributes.id = {}
         blockDOM.attributes.id.nodeValue = uid();
     }
 
