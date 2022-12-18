@@ -11,22 +11,22 @@ const uid = require('../util/uid');
  * @return {undefined}
  */
 const domToBlock = function (blockDOM, blocks, isTopBlock, parent) {
-    if (!blockDOM.attributes.id) {
-        blockDOM.attributes.id = uid();
+    if (!blockDOM.attributes.id.nodeValue) {
+        blockDOM.attributes.id.nodeValue = uid();
     }
 
     // Block skeleton.
     const block = {
-        id: blockDOM.attributes.id, // Block ID
-        opcode: blockDOM.attributes.type, // For execution, "event_whengreenflag".
+        id: blockDOM.attributes.id.nodeValue, // Block ID
+        opcode: blockDOM.attributes.type.nodeValue, // For execution, "event_whengreenflag".
         inputs: {}, // Inputs to this block and the blocks they point to.
         fields: {}, // Fields on this block and their values.
         next: null, // Next block in the stack, if one exists.
         topLevel: isTopBlock, // If this block starts a stack.
         parent: parent, // Parent block ID, if available.
         shadow: blockDOM.name === 'shadow', // If this represents a shadow/slot.
-        x: blockDOM.attributes.x, // X position of script, if top-level.
-        y: blockDOM.attributes.y // Y position of script, if top-level.
+        x: blockDOM.attributes.x.nodeValue, // X position of script, if top-level.
+        y: blockDOM.attributes.y.nodeValue // Y position of script, if top-level.
     };
 
     // Add the block to the representation tree.
