@@ -16,6 +16,10 @@ const domToBlock = function (blockDOM, blocks, isTopBlock, parent) {
         blockDOM.attributes.id.value = uid();
     }
 
+    // 😫
+    blockDOM.attributes.x ??= {}
+    blockDOM.attributes.y ??= {}
+
     // Block skeleton.
     const block = {
         id: blockDOM.attributes.id.value, // Block ID
