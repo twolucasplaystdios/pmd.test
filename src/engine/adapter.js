@@ -40,11 +40,11 @@ const domToBlock = function (blockDOM, blocks, isTopBlock, parent) {
         let childShadowNode = null;
         for (let j = 0; j < xmlChild.children.length; j++) {
             const grandChildNode = xmlChild.children[j];
-            if (!grandChildNode.name) {
+            if (!grandChildNode.tagName) {
                 // Non-XML tag node.
                 continue;
             }
-            const grandChildNodeName = grandChildNode.name.toLowerCase();
+            const grandChildNodeName = grandChildNode.tagName.toLowerCase();
             if (grandChildNodeName === 'block') {
                 childBlockNode = grandChildNode;
             } else if (grandChildNodeName === 'shadow') {
@@ -59,7 +59,7 @@ const domToBlock = function (blockDOM, blocks, isTopBlock, parent) {
 
         // Not all Blockly-type blocks are handled here,
         // as we won't be using all of them for Scratch.
-        switch (xmlChild.name.toLowerCase()) {
+        switch (xmlChild.tagName.toLowerCase()) {
         case 'field':
         {
             // Add the field to this block.
