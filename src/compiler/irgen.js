@@ -162,34 +162,25 @@ class ScriptTreeGenerator {
      */
     descendInput(block) {
         switch (block.opcode) {
-            case 'colour_picker': {
-                const color = block.fields.COLOUR.value;
-                const hex = color.substr(1);
-                if (/^[0-9a-f]{6,8}$/.test(hex)) {
-                    return {
-                        kind: 'constant',
-                        value: Number.parseInt(hex, 16)
-                    };
-                }
-                return {
-                    kind: 'constant',
-                    value: color
-                };
-            }
-            case 'math_angle':
-            case 'math_integer':
-            case 'math_number':
-            case 'math_positive_number':
-            case 'math_whole_number':
-                return {
-                    kind: 'constant',
-                    value: block.fields.NUM.value
-                };
-            case 'text':
-                return {
-                    kind: 'constant',
-                    value: block.fields.TEXT.value
-                };
+        case 'colour_picker':
+            return {
+                kind: 'constant',
+                value: block.fields.COLOUR.value
+            };
+        case 'math_angle':
+        case 'math_integer':
+        case 'math_number':
+        case 'math_positive_number':
+        case 'math_whole_number':
+            return {
+                kind: 'constant',
+                value: block.fields.NUM.value
+            };
+        case 'text':
+            return {
+                kind: 'constant',
+                value: block.fields.TEXT.value
+            };
 
             case 'argument_reporter_string_number': {
                 const name = block.fields.VALUE.value;
