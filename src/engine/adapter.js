@@ -11,22 +11,22 @@ const uid = require('../util/uid');
  * @return {undefined}
  */
 const domToBlock = function (blockDOM, blocks, isTopBlock, parent) {
-    if (!blockDOM.attribs.id) {
-        blockDOM.attribs.id = uid();
+    if (!blockDOM.attributes.id) {
+        blockDOM.attributes.id = uid();
     }
 
     // Block skeleton.
     const block = {
-        id: blockDOM.attribs.id, // Block ID
-        opcode: blockDOM.attribs.type, // For execution, "event_whengreenflag".
+        id: blockDOM.attributes.id, // Block ID
+        opcode: blockDOM.attributes.type, // For execution, "event_whengreenflag".
         inputs: {}, // Inputs to this block and the blocks they point to.
         fields: {}, // Fields on this block and their values.
         next: null, // Next block in the stack, if one exists.
         topLevel: isTopBlock, // If this block starts a stack.
         parent: parent, // Parent block ID, if available.
         shadow: blockDOM.name === 'shadow', // If this represents a shadow/slot.
-        x: blockDOM.attribs.x, // X position of script, if top-level.
-        y: blockDOM.attribs.y // Y position of script, if top-level.
+        x: blockDOM.attributes.x, // X position of script, if top-level.
+        y: blockDOM.attributes.y // Y position of script, if top-level.
     };
 
     // Add the block to the representation tree.
@@ -63,9 +63,9 @@ const domToBlock = function (blockDOM, blocks, isTopBlock, parent) {
         case 'field':
         {
             // Add the field to this block.
-            const fieldName = xmlChild.attribs.name;
+            const fieldName = xmlChild.attributes.name;
             // Add id in case it is a variable field
-            const fieldId = xmlChild.attribs.id;
+            const fieldId = xmlChild.attributes.id;
             let fieldData = '';
             if (xmlChild.children.length > 0 && xmlChild.children[0].data) {
                 fieldData = xmlChild.children[0].data;
@@ -79,7 +79,7 @@ const domToBlock = function (blockDOM, blocks, isTopBlock, parent) {
                 id: fieldId,
                 value: fieldData
             };
-            const fieldVarType = xmlChild.attribs.variabletype;
+            const fieldVarType = xmlChild.attributes.variabletype;
             if (typeof fieldVarType === 'string') {
                 block.fields[fieldName].variableType = fieldVarType;
             }
@@ -87,7 +87,7 @@ const domToBlock = function (blockDOM, blocks, isTopBlock, parent) {
         }
         case 'comment':
         {
-            block.comment = xmlChild.attribs.id;
+            block.comment = xmlChild.attributes.id;
             break;
         }
         case 'value':
@@ -100,24 +100,24 @@ const domToBlock = function (blockDOM, blocks, isTopBlock, parent) {
                 domToBlock(childShadowNode, blocks, false, block.id);
             }
             // Link this block's input to the child block.
-            const inputName = xmlChild.attribs.name;
+            const inputName = xmlChild.attributes.name;
             block.inputs[inputName] = {
                 name: inputName,
-                block: childBlockNode.attribs.id,
-                shadow: childShadowNode ? childShadowNode.attribs.id : null
+                block: childBlockNode.attributes.id,
+                shadow: childShadowNode ? childShadowNode.attributes.id : null
             };
             break;
         }
         case 'next':
         {
-            if (!childBlockNode || !childBlockNode.attribs) {
+            if (!childBlockNode || !childBlockNode.attributes) {
                 // Invalid child block.
                 continue;
             }
             // Recursively generate block structure for next block.
             domToBlock(childBlockNode, blocks, false, block.id);
             // Link next block to this block.
-            block.next = childBlockNode.attribs.id;
+            block.next = childBlockNode.attributes.id;
             break;
         }
         case 'mutation':
@@ -142,7 +142,7 @@ const domToBlocks = function (blocksDOM) {
     const blocks = {};
     for (let i = 0; i < blocksDOM.length; i++) {
         const block = blocksDOM[i];
-        console.log(!block.tagName || !block.attributes, !block.tagName, !block.attributes)
+
         if (!block.tagName || !block.attributes) {
             continue;
         }
