@@ -70,14 +70,14 @@ const domToBlock = function (blockDOM, blocks, isTopBlock, parent) {
             // Add the field to this block.
             const fieldName = xmlChild.attributes.name.value;
             // Add id in case it is a variable field
-            xmlChild.attributes.id ??= {}
+            xmlChild.attributes.id ??= { value: uid() }
             const fieldId = xmlChild.attributes.id.value;
             let fieldData = '';
-            if (xmlChild.children.length > 0 && xmlChild.children[0].data) {
-                fieldData = xmlChild.children[0].data;
+            if (xmlChild.innerHTML) {
+                fieldData = xmlChild.innerHTML;
             } else {
                 // If the child of the field with a data property
-                // doesn't exist, set the data to an empty string.
+                // doesn't exist, set the data to an empty string. 
                 fieldData = '';
             }
             block.fields[fieldName] = {
