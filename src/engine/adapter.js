@@ -70,7 +70,7 @@ const domToBlock = function (blockDOM, blocks, isTopBlock, parent) {
             // Add the field to this block.
             const fieldName = xmlChild.attributes.name.value;
             // Add id in case it is a variable field
-            xmlChild.attributes.id ??= { value: uid() }
+            xmlChild.attributes.id ??= {}
             const fieldId = xmlChild.attributes.id.value;
             let fieldData = '';
             if (xmlChild.children.length > 0 && xmlChild.children[0].data) {
@@ -85,7 +85,7 @@ const domToBlock = function (blockDOM, blocks, isTopBlock, parent) {
                 id: fieldId,
                 value: fieldData
             };
-            xmlChild.attributes.variabletype ??= { value: null }
+            xmlChild.attributes.variabletype ??= {}
             const fieldVarType = xmlChild.attributes.variabletype.value;
             if (typeof fieldVarType === 'string') {
                 block.fields[fieldName].variableType = fieldVarType;
