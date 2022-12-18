@@ -1217,6 +1217,7 @@ class Runtime extends EventEmitter {
      * @private
      */
     _convertForScratchBlocks (blockInfo, categoryInfo) {
+        console.log(blockInfo)
         if (blockInfo === '---') {
             return this._convertSeparatorForScratchBlocks(blockInfo);
         }
