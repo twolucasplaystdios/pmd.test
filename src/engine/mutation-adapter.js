@@ -41,7 +41,7 @@ const mutationAdpater = function (mutation) {
     } else {
         const parser = new DOMParser();
 
-        const xmlString = "<warning>Beware of the tiger</warning>";
+        const xmlString = mutation;
         const doc1 = parser.parseFromString(xmlString, "application/xml");
         mutationParsed = doc1[0];
     }
