@@ -7,6 +7,7 @@ const mutatorTagToObject = function (dom) {
     const obj = Object.create(null);
     obj.tagName = dom.tagName;
     obj.children = [];
+    dom.attributes ??= { length: 0 }
     for (let idx = 0; idx < dom.attributes.length; idx++) {
         const attrib = dom.attributes[idx]
         const attribName = attrib.name
