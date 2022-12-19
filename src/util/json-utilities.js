@@ -1,5 +1,5 @@
-class jsonUtilities {
-    validateJSON(json) {
+module.exports = {
+    validateJSON: (json) => {
         try {
             json = JSON.parse(json)
         } catch {
@@ -7,8 +7,8 @@ class jsonUtilities {
         }
 
         return json
-    }
-    validateArray(array) {
+    },
+    validateArray: (array) => {
         try {
             if (!array.startsWith('[')) throw new error('error lol')
             array = JSON.parse(array)
@@ -17,9 +17,9 @@ class jsonUtilities {
         }
 
         return array
-    }
+    },
 
-    stringToEqivalint(value) {
+    stringToEqivalint: (value) => {
         // is the value a valid json? if so convert to one else do nothing
         try {
             if (!(value.startsWith('{') || value.startsWith('['))) throw new error('not actualy a json!!!!!!!!!!')
@@ -40,8 +40,8 @@ class jsonUtilities {
         }
 
         return value;
-    }
-    valueToString(value) {
+    },
+    valueToString: (value) => {
         if (typeof value == 'object') {
             value = JSON.stringify(value)
         } else {
@@ -51,5 +51,3 @@ class jsonUtilities {
         return value;
     }
 }
-
-module.exports = jsonUtilities
