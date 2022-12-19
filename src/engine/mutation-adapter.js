@@ -6,18 +6,17 @@ const decodeHtml = require('decode-html');
  * @return {object} Object representing useful parts of this mutation.
  */
 const mutatorTagToObject = function (dom) {
-    console.log(dom)
     const obj = Object.create(null);
     obj.tagName = dom.tagName;
     obj.children = [];
     for (const prop in dom.attributes) {
-        console.log(prop)
-        if (prop.name === 'xmlns') continue;
-        obj[prop] = dom.attributes[prop].value;
+        const attrib = dom.attributes[prop]
+        if (attrib.name === 'xmlns') continue;
+        obj[prop] = attrib.value;
         // Note: the capitalization of block info in the following lines is important.
         // The lowercase is read in from xml which normalizes case. The VM uses camel case everywhere else.
         // your mom uses camal case everywhere else
-        if (prop === 'blockinfo') {
+        if (attrib.name === 'blockinfo') {
             obj.blockInfo = JSON.parse(obj.blockinfo);
             delete obj.blockinfo;
         }
