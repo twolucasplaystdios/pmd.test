@@ -16,7 +16,6 @@ const mutatorTagToObject = function (dom) {
         obj[attribName] = attrib.value;
         // Note: the capitalization of block info in the following lines is important.
         // The lowercase is read in from xml which normalizes case. The VM uses camel case everywhere else.
-        // your mom uses camal case everywhere else
         if (attribName === 'blockinfo') {
             obj.blockInfo = JSON.parse(obj.blockinfo);
             delete obj.blockinfo;
