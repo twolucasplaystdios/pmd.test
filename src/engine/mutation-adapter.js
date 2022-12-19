@@ -5,6 +5,7 @@
  */
 const mutatorTagToObject = function (dom) {
     const obj = Object.create(null);
+    if (!dom.tagName) throw new Error('con not parse dom because it is invalid', dom)
     obj.tagName = dom.tagName;
     obj.children = [];
     try {
