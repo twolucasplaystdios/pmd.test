@@ -45,6 +45,7 @@ const mutationAdpater = function (mutation) {
         const doc = parser.parseFromString(mutation, "application/xml");
         mutationParsed = doc;
     }
+    console.log(mutatorTagToObject(mutationParsed))
     return mutatorTagToObject(mutationParsed);
 };
 
