@@ -7,9 +7,8 @@ const mutatorTagToObject = function (dom) {
     const obj = Object.create(null);
     obj.tagName = dom.tagName;
     obj.children = [];
-    for (const prop in dom.attributes) {
-        const attrib = dom.attributes[prop]
-        if ((!typeof attrib == 'object') || !attrib.name) continue
+    for (let idx = 0; idx < dom.attributes.length; idx++) {
+        const attrib = dom.attributes[idx]
         const attribName = attrib.name
         if (attribName === 'xmlns') continue;
         obj[attribName] = attrib.value;
