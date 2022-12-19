@@ -11,6 +11,7 @@ const mutatorTagToObject = function (dom) {
     obj.tagName = dom.tagName;
     obj.children = [];
     for (const prop in dom.attributes) {
+        console.log(prop)
         if (prop === 'xmlns') continue;
         obj[prop] = decodeHtml(dom.attributes[prop]);
         // Note: the capitalization of block info in the following lines is important.
