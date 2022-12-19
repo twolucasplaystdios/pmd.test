@@ -2,10 +2,10 @@ const formatMessage = require('format-message');
 const BlockType = require('../../extension-support/block-type');
 const ArgumentType = require('../../extension-support/argument-type');
 const { 
-    validateJSON: _validatejson, 
-    validateArray: _validatejsonarray, 
-    stringToEqivalint: _valuetoraw, 
-    valueToString: _rawtovalue 
+    validateJSON, 
+    validateArray, 
+    stringToEqivalint, 
+    valueToString
 } = require('../../util/json-utilities')
 
 // const Cast = require('../../util/cast');
@@ -461,29 +461,29 @@ class JgJSONBlocks {
 
     getValueFromJSON(args) {
         const key = args.VALUE;
-        const json = _validatejson(args.JSON);
+        const json = validateJSON(args.JSON);
 
-        return _rawtovalue(json[key]);
+        return valueToString(json[key]);
     }
     setValueToKeyInJSON(args) {
-        let json = _validatejson(args.JSON);
+        let json = validateJSON(args.JSON);
         const key = args.KEY;
         const value = args.VALUE;
 
-        json[key] = _valuetoraw(value)
+        json[key] = stringToEqivalint(value)
 
         return JSON.stringify(json)
     }
 
     json_has(args, util) {
-        const json = _validatejson(args.json);
+        const json = validateJSON(args.json);
         const key = args.key;
 
         return json.hasOwnProperty(key);
     }
 
     json_delete(args, util) {
-        let json = _validatejson(args.json);
+        let json = validateJSON(args.json);
         const key = args.key;
 
         if (!json.hasOwnProperty(key)) return json
@@ -494,79 +494,79 @@ class JgJSONBlocks {
     }
 
     json_values(args, util) {
-        const json = _validatejson(args.json);
+        const json = validateJSON(args.json);
 
         return JSON.stringify(Object.keys(json));
     }
 
     json_keys(args, util) {
-        const json = _validatejson(args.json);
+        const json = validateJSON(args.json);
 
         return JSON.stringify(Object.values(json));
     }
 
     json_array_length(args, util) {
-        const array = _validatejsonarray(args.array);
+        const array = validateArray(args.array);
 
         return array.length;
     }
 
     json_array_isempty(args, util) {
-        const array = _validatejsonarray(args.array);
+        const array = validateArray(args.array);
 
         return !array.length;
     }
 
     json_array_contains(args, util) {
-        const array = _validatejsonarray(args.array);
+        const array = validateArray(args.array);
         const value = args.value;
 
-        return array.includes(_valuetoraw(value));
+        return array.includes(stringToEqivalint(value));
     }
 
     json_array_reverse(args, util) {
-        let array = _validatejsonarray(args.array);
+        let array = validateArray(args.array);
 
         return JSON.stringify(array.reverse());
     }
 
     json_array_indexof(args, util) {
-        const array = _validatejsonarray(args.array);
+        const array = validateArray(args.array);
         const number = args.number;
         const value = args.value;
 
-        return array.indexOf(_valuetoraw(value), number);
+        return array.indexOf(stringToEqivalint(value), number);
     }
 
     json_array_set(args, util) {
-        let array = _validatejsonarray(args.array);
+        let array = validateArray(args.array);
         const index = args.index;
         const value = args.value;
 
-        array[index] = _valuetoraw(value)
+        array[index] = stringToEqivalint(value)
 
         return JSON.stringify(array);
     }
 
     json_array_insert(args, util) {
-        let array = _validatejsonarray(args.array);
+        let array = validateArray(args.array);
         const index = args.index;
         const value = args.value;
 
-        array.splice(index, 0, _valuetoraw(value))
+        array.splice(index, 0, stringToEqivalint(value))
 
         return JSON.stringify(array);
     }
 
     json_array_get(args, util) {
-        const array = _validatejsonarray(args.array);
+        const array = validateArray(args.array);
         const index = args.index;
 
-        return _rawtovalue(array[index]);
+        return valueToString(array[index]);
     }
 
     json_array_getrange(args, util) {
-        let array = _validatejsonarray(args.array);
+        let array = validateArray(args.array);
         const index1 = args.index1;
         const index2 = args.index2;
 
@@ -574,10 +574,10 @@ class JgJSONBlocks {
     }
 
     json_array_push(args, util) {
-        let array = _validatejsonarray(args.array);
+        let array = validateArray(args.array);
         const value = args.item;
 
-        array.push(_valuetoraw(value))
+        array.push(stringToEqivalint(value))
 
         return JSON.stringify(array);
     }
@@ -589,11 +589,11 @@ class JgJSONBlocks {
         } catch {
             return
         }
-        const array = _validatejsonarray(args.array);
+        const array = validateArray(args.array);
         const content = util.target.lookupOrCreateList(list.id, list.name)
 
         content.value = array.map(x => {
-            return _rawtovalue(x)
+            return valueToString(x)
         })
     }
 
@@ -607,12 +607,12 @@ class JgJSONBlocks {
         const content = util.target.lookupOrCreateList(list.id, list.name).value
 
         return JSON.stringify(content.map(x => {
-            return _valuetoraw(x)
+            return stringToEqivalint(x)
         }));
     }
 
     json_array_delete(args, util) {
-        let array = _validatejsonarray(args.array)
+        let array = validateArray(args.array)
         const index = args.index
 
         delete array[index]
@@ -624,14 +624,14 @@ class JgJSONBlocks {
         return JSON.stringify(args.text.split(args.delimeter))
     }
     json_array_join(args) {
-        return _validatejsonarray(args.array).join(args.delimeter)
+        return validateArray(args.array).join(args.delimeter)
     }
 
     json_validate(args) {
-        return JSON.stringify(_validatejson(args.json)) !== '{}' && args.json !== '{}'
+        return JSON.stringify(validateJSON(args.json)) !== '{}' && args.json !== '{}'
     }
     json_array_validate(args) {
-        return JSON.stringify(_validatejsonarray(args.array)) !== '[]' && args.array !== '[]'
+        return JSON.stringify(validateArray(args.array)) !== '[]' && args.array !== '[]'
     }
 }
 
