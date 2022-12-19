@@ -1,5 +1,3 @@
-const decodeHtml = require('decode-html');
-
 /**
  * Convert a part of a mutation DOM to a mutation VM object, recursively.
  * @param {object} dom DOM object for mutation tag.
@@ -11,6 +9,7 @@ const mutatorTagToObject = function (dom) {
     obj.children = [];
     for (const prop in dom.attributes) {
         const attrib = dom.attributes[prop]
+        if ((!typeof attrib == 'object') || !attrib.name) continue
         const attribName = attrib.name
         if (attribName === 'xmlns') continue;
         obj[attribName] = attrib.value;

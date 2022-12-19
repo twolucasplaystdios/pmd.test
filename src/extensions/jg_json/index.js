@@ -1,57 +1,12 @@
 const formatMessage = require('format-message');
 const BlockType = require('../../extension-support/block-type');
 const ArgumentType = require('../../extension-support/argument-type');
-
-function _valuetoraw(value) {
-    // is the value a valid json? if so convert to one else do nothing
-    try {
-        if (!(value.startsWith('{') || value.startsWith('['))) throw new error('not actualy a json!!!!!!!!!!')
-        value = JSON.parse(value)
-    } catch {
-        // well its not a json so what is it?
-        if (String(Number(value)) == value) {
-            value = Number(value)
-        } else if (value.toLowerCase() == 'true') {
-            value = true
-        } else if (value.toLowerCase() == 'false') {
-            value = false
-        } else if (value == 'undefined') {
-            value = undefined
-        } else if (value == 'null') {
-            value = null
-        }
-    }
-
-    return value;
-}
-function _rawtovalue(value) {
-    if (typeof value == 'object') {
-        value = JSON.stringify(value)
-    } else {
-        value = String(value)
-    }
-
-    return value;
-}
-function _validatejson(json) {
-    try {
-        json = JSON.parse(json)
-    } catch {
-        json = {}
-    }
-
-    return json
-}
-function _validatejsonarray(array) {
-    try {
-        if (!array.startsWith('[')) throw new error('error lol')
-        array = JSON.parse(array)
-    } catch {
-        array = []
-    }
-
-    return array
-}
+const { 
+    validateJSON: _validatejson, 
+    validateArray: _validatejsonarray, 
+    stringToEqivalint: _valuetoraw, 
+    valueToString: _rawtovalue 
+} = require('../../util/json-utilities')
 
 // const Cast = require('../../util/cast');
 
