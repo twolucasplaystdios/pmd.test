@@ -6,6 +6,7 @@ const decodeHtml = require('decode-html');
  * @return {object} Object representing useful parts of this mutation.
  */
 const mutatorTagToObject = function (dom) {
+    console.log(dom)
     const obj = Object.create(null);
     obj.tagName = dom.name;
     obj.children = [];
