@@ -7,17 +7,21 @@ const mutatorTagToObject = function (dom) {
     const obj = Object.create(null);
     obj.tagName = dom.tagName;
     obj.children = [];
-    for (let idx = 0; idx < dom.attributes.length; idx++) {
-        const attrib = dom.attributes[idx]
-        const attribName = attrib.name
-        if (attribName === 'xmlns') continue;
-        obj[attribName] = attrib.value;
-        // Note: the capitalization of block info in the following lines is important.
-        // The lowercase is read in from xml which normalizes case. The VM uses camel case everywhere else.
-        if (attribName === 'blockinfo') {
-            obj.blockInfo = JSON.parse(obj.blockinfo);
-            delete obj.blockinfo;
+    try {
+        for (let idx = 0; idx < dom.attributes.length; idx++) {
+            const attrib = dom.attributes[idx]
+            const attribName = attrib.name
+            if (attribName === 'xmlns') continue;
+            obj[attribName] = attrib.value;
+            // Note: the capitalization of block info in the following lines is important.
+            // The lowercase is read in from xml which normalizes case. The VM uses camel case everywhere else.
+            if (attribName === 'blockinfo') {
+                obj.blockInfo = JSON.parse(obj.blockinfo);
+                delete obj.blockinfo;
+            }
         }
+    } catch (err) {
+        console.warn('failed to parse mutator attributes: ', err, dom)
     }
     for (let i = 0; i < dom.children.length; i++) {
         obj.children.push(
