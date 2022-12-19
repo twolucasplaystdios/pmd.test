@@ -2,18 +2,7 @@ const formatMessage = require('format-message');
 const BlockType = require('../../extension-support/block-type');
 const ArgumentType = require('../../extension-support/argument-type');
 // const Cast = require('../../util/cast');
-
-// copied from ../jg_json/index.js
-function _validatejsonarray(array) {
-    try {
-        if (!array.startsWith('[')) throw new error('error lol')
-        array = JSON.parse(array)
-    } catch {
-        array = []
-    }
-
-    return array
-}
+const { validateArray } = require('../../util/json-utilities')
 
 /**
  * Class for File blocks
@@ -153,7 +142,7 @@ class JgFilesBlocks {
         content = String(args.FILE_CONTENT) || content;
         fileName = String(args.FILE_NAME) || fileName;
 
-        const array = _validatejsonarray(args.FILE_CONTENT)
+        const array = validateArray(args.FILE_CONTENT)
         if (array.length > 0 && typeof array[0] == 'number') {
             content = array
             fileName = (fileName == 'text.txt' ? 'raw.bin' : fileName)

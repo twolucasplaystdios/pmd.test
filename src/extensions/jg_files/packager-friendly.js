@@ -1,3 +1,4 @@
+const { validateArray } = require('../../util/json-utilities')
 class JgFilesBlocks {
     constructor(runtime, id) {
         //cq: ignore
@@ -111,7 +112,7 @@ class JgFilesBlocks {
         content = String(args.FILE_CONTENT) || content;
         fileName = String(args.FILE_NAME) || fileName;
 
-        const array = _validatejsonarray(args.FILE_CONTENT)
+        const array = validateArray(args.FILE_CONTENT)
         if (array.length > 0 && typeof array[0] == 'number') {
             content = array
         }
