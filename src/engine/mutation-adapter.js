@@ -12,8 +12,8 @@ const mutatorTagToObject = function (dom) {
     obj.children = [];
     for (const prop in dom.attributes) {
         console.log(prop)
-        if (prop === 'xmlns') continue;
-        obj[prop] = decodeHtml(dom.attributes[prop]);
+        if (prop.name === 'xmlns') continue;
+        obj[prop] = dom.attributes[prop].value;
         // Note: the capitalization of block info in the following lines is important.
         // The lowercase is read in from xml which normalizes case. The VM uses camel case everywhere else.
         // your mom uses camal case everywhere else
