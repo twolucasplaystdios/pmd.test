@@ -14,10 +14,11 @@ const mutatorTagToObject = function (dom) {
     const obj = Object.create(null);
     obj.tagName = dom.tagName;
     obj.children = [];
-    if (!Boolean(dom.tagName)) 
+    if (!Boolean(dom.tagName)) {
         console.warn('invalid dom; skiping to reading children')
         parseChildren(obj)
-
+        return obj
+    }
     for (let idx = 0; idx < dom.attributes.length; idx++) {
         const attrib = dom.attributes[idx]
         const attribName = attrib.name
