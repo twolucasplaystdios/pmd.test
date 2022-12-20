@@ -4,7 +4,7 @@
  * @return {object} Object representing useful parts of this mutation.
  */
 const mutatorTagToObject = function (dom) {
-    function parseChildren(obj) {
+    function parseChildren(obj, dom) {
         for (let i = 0; i < dom.children.length; i++) {
             obj.children.push(
                 mutatorTagToObject(dom.children[i])
@@ -16,7 +16,7 @@ const mutatorTagToObject = function (dom) {
     obj.children = [];
     if (!Boolean(dom.tagName)) {
         console.warn('invalid dom; skiping to reading children')
-        parseChildren(obj)
+        parseChildren(obj, dom)
         return obj
     }
     for (let idx = 0; idx < dom.attributes.length; idx++) {
@@ -32,7 +32,7 @@ const mutatorTagToObject = function (dom) {
         }
     }
 
-    parseChildren(obj)
+    parseChildren(obj, dom)
     return obj;
 };
 
