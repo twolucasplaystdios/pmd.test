@@ -12,7 +12,7 @@ const mutatorTagToObject = function (dom) {
         }
         return obj.children[0]
     }
-    const obj = Object.create(null);
+    let obj = Object.create(null);
     obj.tagName = dom.tagName;
     obj.children = [];
     if (!Boolean(dom.tagName)) {
