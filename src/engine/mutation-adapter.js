@@ -4,32 +4,34 @@
  * @return {object} Object representing useful parts of this mutation.
  */
 const mutatorTagToObject = function (dom) {
+    function parseChildren(obj) {
+        for (let i = 0; i < dom.children.length; i++) {
+            obj.children.push(
+                mutatorTagToObject(dom.children[i])
+            );
+        }
+    }
     const obj = Object.create(null);
-    if (!Boolean(dom.tagName)) 
-        throw new Error('can not parse dom because it is invalid')
     obj.tagName = dom.tagName;
     obj.children = [];
-    try {
-        for (let idx = 0; idx < dom.attributes.length; idx++) {
-            const attrib = dom.attributes[idx]
-            const attribName = attrib.name
-            if (attribName === 'xmlns') continue;
-            obj[attribName] = attrib.value;
-            // Note: the capitalization of block info in the following lines is important.
-            // The lowercase is read in from xml which normalizes case. The VM uses camel case everywhere else.
-            if (attribName === 'blockinfo') {
-                obj.blockInfo = JSON.parse(obj.blockinfo);
-                delete obj.blockinfo;
-            }
+    if (!Boolean(dom.tagName)) 
+        console.warn('invalid dom; skiping to reading children')
+        parseChildren(obj)
+
+    for (let idx = 0; idx < dom.attributes.length; idx++) {
+        const attrib = dom.attributes[idx]
+        const attribName = attrib.name
+        if (attribName === 'xmlns') continue;
+        obj[attribName] = attrib.value;
+        // Note: the capitalization of block info in the following lines is important.
+        // The lowercase is read in from xml which normalizes case. The VM uses camel case everywhere else.
+        if (attribName === 'blockinfo') {
+            obj.blockInfo = JSON.parse(obj.blockinfo);
+            delete obj.blockinfo;
         }
-    } catch (err) {
-        console.warn('failed to parse mutator attributes: ', err, dom)
     }
-    for (let i = 0; i < dom.children.length; i++) {
-        obj.children.push(
-            mutatorTagToObject(dom.children[i])
-        );
-    }
+
+    parseChildren(obj)
     return obj;
 };
 
