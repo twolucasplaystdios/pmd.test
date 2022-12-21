@@ -466,7 +466,7 @@ class JgJSONBlocks {
         return valueToString(json[key]);
     }
     setValueToKeyInJSON(args) {
-        let json = validateJSON(args.JSON);
+        let json = validateJSON(args.JSON).object;
         const key = args.KEY;
         const value = args.VALUE;
 
@@ -476,14 +476,14 @@ class JgJSONBlocks {
     }
 
     json_has(args, util) {
-        const json = validateJSON(args.json);
+        const json = validateJSON(args.json).object;
         const key = args.key;
 
         return json.hasOwnProperty(key);
     }
 
     json_delete(args, util) {
-        let json = validateJSON(args.json);
+        let json = validateJSON(args.json).object;
         const key = args.key;
 
         if (!json.hasOwnProperty(key)) return json
@@ -494,44 +494,44 @@ class JgJSONBlocks {
     }
 
     json_values(args, util) {
-        const json = validateJSON(args.json);
+        const json = validateJSON(args.json).object;
 
         return JSON.stringify(Object.keys(json));
     }
 
     json_keys(args, util) {
-        const json = validateJSON(args.json);
+        const json = validateJSON(args.json).object;
 
         return JSON.stringify(Object.values(json));
     }
 
     json_array_length(args, util) {
-        const array = validateArray(args.array);
+        const array = validateArray(args.array).array;
 
         return array.length;
     }
 
     json_array_isempty(args, util) {
-        const array = validateArray(args.array);
+        const array = validateArray(args.array).array;
 
         return !array.length;
     }
 
     json_array_contains(args, util) {
-        const array = validateArray(args.array);
+        const array = validateArray(args.array).array;
         const value = args.value;
 
         return array.includes(stringToEqivalint(value));
     }
 
     json_array_reverse(args, util) {
-        let array = validateArray(args.array);
+        let array = validateArray(args.array).array;
 
         return JSON.stringify(array.reverse());
     }
 
     json_array_indexof(args, util) {
-        const array = validateArray(args.array);
+        const array = validateArray(args.array).array;
         const number = args.number;
         const value = args.value;
 
@@ -539,7 +539,7 @@ class JgJSONBlocks {
     }
 
     json_array_set(args, util) {
-        let array = validateArray(args.array);
+        let array = validateArray(args.array).array;
         const index = args.index;
         const value = args.value;
 
@@ -549,7 +549,7 @@ class JgJSONBlocks {
     }
 
     json_array_insert(args, util) {
-        let array = validateArray(args.array);
+        let array = validateArray(args.array).array;
         const index = args.index;
         const value = args.value;
 
@@ -559,14 +559,14 @@ class JgJSONBlocks {
     }
 
     json_array_get(args, util) {
-        const array = validateArray(args.array);
+        const array = validateArray(args.array).array;
         const index = args.index;
 
         return valueToString(array[index]);
     }
 
     json_array_getrange(args, util) {
-        let array = validateArray(args.array);
+        let array = validateArray(args.array).array;
         const index1 = args.index1;
         const index2 = args.index2;
 
@@ -574,7 +574,7 @@ class JgJSONBlocks {
     }
 
     json_array_push(args, util) {
-        let array = validateArray(args.array);
+        let array = validateArray(args.array).array;
         const value = args.item;
 
         array.push(stringToEqivalint(value))
@@ -589,7 +589,7 @@ class JgJSONBlocks {
         } catch {
             return
         }
-        const array = validateArray(args.array);
+        const array = validateArray(args.array).array;
         const content = util.target.lookupOrCreateList(list.id, list.name)
 
         content.value = array.map(x => {
@@ -612,7 +612,7 @@ class JgJSONBlocks {
     }
 
     json_array_delete(args, util) {
-        let array = validateArray(args.array)
+        let array = validateArray(args.array).array
         const index = args.index
 
         delete array[index]
@@ -624,14 +624,14 @@ class JgJSONBlocks {
         return JSON.stringify(args.text.split(args.delimeter))
     }
     json_array_join(args) {
-        return validateArray(args.array).join(args.delimeter)
+        return validateArray(args.array).join(args.delimeter).array
     }
 
     json_validate(args) {
-        return JSON.stringify(validateJSON(args.json)) !== '{}' && args.json !== '{}'
+        return validateJSON(args.json).isValid
     }
     json_array_validate(args) {
-        return JSON.stringify(validateArray(args.array)) !== '[]' && args.array !== '[]'
+        return validateArray(args.array).isValid
     }
 }
 
