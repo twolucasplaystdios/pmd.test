@@ -1,4 +1,4 @@
-const { validateArray } = require('../../util/json-blocks-utilities')
+const { validateArray } = require('../../util/json-block-utilities')
 class JgFilesBlocks {
     constructor(runtime, id) {
         //cq: ignore
