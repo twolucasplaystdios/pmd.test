@@ -171,7 +171,7 @@ class JgJSONBlocks {
                     arguments: {
                         array: {
                             type: ArgumentType.STRING,
-                            defaultValue: "{}"
+                            defaultValue: "[]"
                         }
                     },
                     text: 'is array [array] valid?'
