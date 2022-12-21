@@ -2,7 +2,7 @@ const formatMessage = require('format-message');
 const BlockType = require('../../extension-support/block-type');
 const ArgumentType = require('../../extension-support/argument-type');
 // const Cast = require('../../util/cast');
-const { validateArray } = require('../../util/json-utilities')
+const { validateArray } = require('../../util/json-blocks-utilities')
 
 /**
  * Class for File blocks
