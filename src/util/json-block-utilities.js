@@ -7,6 +7,7 @@ module.exports = {
         let valid = false
         let object = {}
         try {
+            if (!array.startsWith('{')) throw new Error('error lol')
             object = JSON.parse(json)
             valid = true
         } catch {}
