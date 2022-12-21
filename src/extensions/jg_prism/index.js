@@ -234,7 +234,7 @@ class JgPrismBlocks {
     getAudioVolume() {
         return this.audioPlayer.volume * 100;
     }
-    evaluate(args) {
+    evaluate(args, util) {
         if (!(this.isJSPermissionGranted)) {
             this.isJSPermissionGranted = confirm("Allow this project to run custom unsafe code?");
         }
@@ -246,7 +246,7 @@ class JgPrismBlocks {
             }
         }
     }
-    evaluate2(args) {
+    evaluate2(args, util) {
         if (!(this.isJSPermissionGranted)) {
             this.isJSPermissionGranted = confirm("Allow this project to run custom unsafe code?");
         }
