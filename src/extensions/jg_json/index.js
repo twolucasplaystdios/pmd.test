@@ -6,7 +6,7 @@ const {
     validateArray, 
     stringToEqivalint, 
     valueToString
-} = require('../../util/json-utilities')
+} = require('../../util/json-block-utilities')
 
 // const Cast = require('../../util/cast');
 
