@@ -465,13 +465,13 @@ class jwUnite {
         // so im gonna do this the lazy way
         // no. String(Number(value)) === value does infact do the job X)
         // also what was originaly here was inificiant as hell
-        return String(Number(args.TEXT1)) == args.TEXT1 && !isNan(Number(args.TEXT1))
+        return String(Number(args.TEXT1)) == args.TEXT1 && !isNaN(Number(args.TEXT1))
     }
     thing_is_text(args, util) {
         // WHY IS NAN NOT EQUAL TO ITSELF
         // HOW IS NAN A NUMBER
         // because nan is how numbers say the value put into me is not a number
-        return isNan(Number(args.TEXT1))
+        return isNaN(Number(args.TEXT1))
     }
 
     if_return_else_return(args) {
