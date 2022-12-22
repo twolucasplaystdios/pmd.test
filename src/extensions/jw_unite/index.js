@@ -405,12 +405,27 @@ class jwUnite {
                     '^',
                     'root',
                     'log'
-                ]
+                ]/*
+                sprites: {
+                    items: 'getAllSprites',
+                    acceptReporters: true
+                }
+                */
             }
         };
     }
+    /*
+    getAllSprites() {
+        return this.runtime.targets.map(x => {
+            return {
+                text: x.sprite ? x.sprite.name : `Unkown ${x.id}`,
+                value: x.id
+            }
+        })
+    */
 
     replacers = {}
+    knownLinks = {}
 
     whenanything(args, util) {
         return Boolean(args.ANYTHING || false)
