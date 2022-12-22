@@ -65,7 +65,7 @@ const builtinExtensions = {
 
     // MikeDev: *silence*
     // cloudlink: cCloudlink is a free and open-source, websocket-powered API optimized for Scratch 3.0. C
-    cloudlink: () => require("../extensions/cloudlink"),
+    CloudLink: () => require("../extensions/cloudlink"),
 };
 
 // CCW limited
