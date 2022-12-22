@@ -506,9 +506,10 @@ class jwUnite {
                 id: x.id, 
                 name: x.sprite ? x.sprite.name : "Unkown",
                 variables: Object.values(x.variables).reduce((obj, value) => {
+                    if (!value.name) return obj
                     obj[value.name] = value.value
                     return obj
-                })
+                }, {})
             }
         })
         // get the target with variable x set to y
