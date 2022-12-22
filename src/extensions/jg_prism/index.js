@@ -238,36 +238,36 @@ class JgPrismBlocks {
         if (!(this.isJSPermissionGranted)) {
             this.isJSPermissionGranted = confirm("Allow this project to run custom unsafe code?");
         }
-        if (this.isJSPermissionGranted) {
-            try {
-                eval(String(args.JAVASCRIPT));
-            } catch (e) {
-                alert(e);
-            }
+        // otherwise
+        try {
+            eval(String(args.JAVASCRIPT));
+        } catch (e) {
+            alert(e);
+            console.error(e)
         }
     }
     evaluate2(args, util) {
         if (!(this.isJSPermissionGranted)) {
             this.isJSPermissionGranted = confirm("Allow this project to run custom unsafe code?");
-        }
-        if (this.isJSPermissionGranted) {
-            let result = "";
-            try {
-                result = eval(String(args.JAVASCRIPT));
-            } catch (e) {
-                result = e;
-            }
-            let canJsonParse = true;
-            try {
-                JSON.parse(result);
-            } catch {
-                canJsonParse = false;
-            }
-            if (canJsonParse) return JSON.parse(result);
-            else return result;
-        } else {
             return "";
         }
+        // otherwise
+        let result = "";
+        try {
+            result = eval(String(args.JAVASCRIPT));
+        } catch (e) {
+            result = e;
+            console.error(e)
+        }
+        let canJsonParse = true;
+        try {
+            JSON.parse(result);
+        } catch {
+            canJsonParse = false;
+        }
+        if (canJsonParse) return JSON.parse(result);
+        // otherwise
+        return result;
     }
     screenshotStage() {
         return new Promise((resolve, _) => {

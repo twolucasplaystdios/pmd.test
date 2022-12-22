@@ -56,6 +56,25 @@ class jwUnite {
                 },
                 "---",
                 {
+                    opcode: 'getspritewithattrib',
+                    text: formatMessage({
+                        id: 'jwUnite.blocks.getspritewithattrib',
+                        default: 'get sprite with [var] set to [val]',
+                        description: 'Reports the first sprite with a variable set to a value'
+                    }),
+                    disableMonitor: true,
+                    blockType: BlockType.REPORTER,
+                    arguments: {
+                        var: {
+                            type: ArgumentType.STRING,
+                        },
+                        val: {
+                            type: ArgumentType.STRING,
+                        },
+                    }
+                },
+                "---",
+                {
                     opcode: 'backToGreenFlag',
                     text: formatMessage({
                         id: 'jwUnite.blocks.backToGreenFlag',
@@ -479,6 +498,36 @@ class jwUnite {
     }
     mobile(args, util) {
         return navigator.userAgent.includes("Mobile") || window.matchMedia("(max-width: 767px)").matches
+    }
+    getspritewithattrib(args, util) {
+        // strip out usless data
+        const sprites = util.runtime.targets.map(x => {
+            return {
+                id: x.id, 
+                name: x.sprite ? x.sprite.name : "Unkown",
+                variables: Object.values(x.variables).reduce((obj, value) => {
+                    obj[value.name] = value.value
+                    return obj
+                })
+            }
+        })
+        // get the target with variable x set to y
+        let res = "No sprites found"
+        for (
+            // define the index and the sprite
+            let idx = 1, sprite = sprites[0]; 
+            // standard for loop thing
+            idx < sprites.length;
+            // set sprite to a new item  
+            sprite = sprites[idx++]
+        ) {
+            if (sprite.variables[args.var] == args.val) {
+                res = `{"id": "${sprite.id}", "name": "${sprite.name}"}`
+                break
+            }
+        }
+        
+        return res
     }
 }
 
