@@ -67,10 +67,12 @@ class jwUnite {
                     arguments: {
                         var: {
                             type: ArgumentType.STRING,
+                            defaultValue: "my variable"
                         },
                         val: {
                             type: ArgumentType.STRING,
-                        },
+                            defaultValue: "0"
+                        }
                     }
                 },
                 "---",
@@ -507,7 +509,7 @@ class jwUnite {
                 name: x.sprite ? x.sprite.name : "Unkown",
                 variables: Object.values(x.variables).reduce((obj, value) => {
                     if (!value.name) return obj
-                    obj[value.name] = value.value
+                    obj[value.name] = String(value.value)
                     return obj
                 }, {})
             }
