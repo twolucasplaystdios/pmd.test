@@ -361,6 +361,30 @@ class jwUnite {
                         }
                     }
                 },
+                {
+                    opcode: 'constrainnumber',
+                    text: formatMessage({
+                        id: 'jwUnite.blocks.constrainnumber',
+                        default: 'constrain [inp] min [min] max [max]',
+                        description: 'Constrains a number to a specified minimum and maximum'
+                    }),
+                    disableMonitor: true,
+                    blockType: BlockType.REPORTER,
+                    arguments: {
+                        inp: {
+                            type: ArgumentType.NUMBER,
+                            defaultValue: 50
+                        },
+                        min: {
+                            type: ArgumentType.NUMBER,
+                            defaultValue: 1,
+                        },
+                        max: {
+                            type: ArgumentType.NUMBER,
+                            defaultValue: 100
+                        }
+                    }
+                },
                 "---",
                 {
                     opcode: 'setReplacer',
@@ -546,6 +570,10 @@ class jwUnite {
         }
         
         return res
+    }
+
+    constrainnumber(args) {
+        return Math.min(Math.max(args.min, args.inp), args.max)
     }
 }
 
