@@ -62,10 +62,6 @@ const builtinExtensions = {
     jwStructs: () => require("../extensions/jw_structs"),
     // text: text stuff
     Text: () => require("../extensions/text"),
-
-    // MikeDev: *silence*
-    // cloudlink: cCloudlink is a free and open-source, websocket-powered API optimized for Scratch 3.0. C
-    CloudLink: () => require("../extensions/cloudlink"),
 };
 
 // CCW limited
