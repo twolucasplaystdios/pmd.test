@@ -71,7 +71,7 @@ module.exports = {
      * @param {any} value the value to convert.
      */
     valueToString: (value) => {
-        console.log('your fat')
+        
         if (typeof value == 'object') {
             value = JSON.stringify(value)
         } else {
