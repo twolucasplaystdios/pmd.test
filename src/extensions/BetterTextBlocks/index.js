@@ -1,4 +1,11 @@
-class Scratch3TextBlocks{
+const formatMessage = require('format-message');
+const BlockType = require('../../extension-support/block-type');
+const ArgumentType = require('../../extension-support/argument-type');
+/**
+ * Class for Text blocks
+ * @constructor
+ */
+class text{
     constructor (runtime){
         /**
          * The runtime instantiating this block package.
@@ -21,8 +28,8 @@ class Scratch3TextBlocks{
         return {
             id: 'text',
             name: 'Animated Text',
-            blockIconURI: blockIconURI,
-            menuIconURI: menuIconURI,
+            blockIconURI: null,
+            menuIconURI: null,
             blocks: [{
                 opcode: 'setText',
                 text: formatMessage({
@@ -605,4 +612,4 @@ class Scratch3TextBlocks{
     
 }
 
-module.exports = Scratch3TextBlocks
+module.exports = text
