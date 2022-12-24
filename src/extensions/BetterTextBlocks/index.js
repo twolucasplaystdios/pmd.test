@@ -650,4 +650,4 @@ class Scratch3TextBlocks{
     }
 }
 
-module.exports = text
+module.exports = Scratch3TextBlocks
