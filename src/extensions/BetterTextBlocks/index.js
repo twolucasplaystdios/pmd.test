@@ -237,25 +237,25 @@ class text{
                 FONT: {
                     items: [{
                         text: 'Sans Serif',
-                        value: SANS_SERIF_ID
+                        value: 'Sans Serif'
                     }, {
                         text: 'Serif',
-                        value: SERIF_ID
+                        value: 'Serif'
                     }, {
                         text: 'Handwriting',
-                        value: HANDWRITING_ID
+                        value: 'Handwriting'
                     }, {
                         text: 'Marker',
-                        value: MARKER_ID
+                        value: 'Marker'
                     }, {
                         text: 'Curly',
-                        value: CURLY_ID
+                        value: 'Curly'
                     }, {
                         text: 'Pixel',
-                        value: PIXEL_ID
+                        value: 'Pixel'
                     }, {
                         text: 'random font',
-                        value: RANDOM_ID
+                        value: 'random font'
                     }]
                 },
                 ALIGN: {
