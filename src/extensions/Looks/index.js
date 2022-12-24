@@ -27,7 +27,7 @@ class TurboWarpBlocks {
                 {
                     opcode: 'transformSprite',
                     text: formatMessage({
-                        id: 'tw.blocks.transformSprite',
+                        id: 'Looks.blocks.transformSprite',
                         default: 'transform sprite [skewX] [skewY]',
                         description: 'Block that returns the last key that was pressed'
                     }),

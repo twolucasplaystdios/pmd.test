@@ -1,11 +1,19 @@
 const formatMessage = require('format-message');
 const BlockType = require('../../extension-support/block-type');
 const ArgumentType = require('../../extension-support/argument-type');
-/**
- * Class for Text blocks
- * @constructor
- */
-class text{
+const DefaultAnimateText = 'Look at me im animated!'
+const DefaultText = 'Hello World!'
+const FontIds = {
+    SANS_SERIF: 'Sans Serif', 
+    SERIF: 'Serif', 
+    HANDWRITING: 'Handwriting', 
+    MARKER: 'Marker', 
+    CURLY: 'Curly', 
+    PIXEL: 'Pixel',
+    RANDOM: 'random'
+}
+
+class Scratch3TextBlocks{
     constructor (runtime){
         /**
          * The runtime instantiating this block package.
@@ -22,121 +30,139 @@ class text{
         return 'Scratch.text';
     }
     static get DEFAULT_TEXT_STATE (){
-        return ({skinId: null, text: 'Welcome to my project!', font: 'Handwriting', color: 'hsla(225, 15%, 40%, 1', size: 24, maxWidth: 480, align: 'center', strokeWidth: 0, strokeColor: 'black', rainbow: false, visible: false, targetSize: null, fullText: null});
+        return {
+            skinId: null, 
+            text: 'Welcome to my project!',
+            font: 'Handwriting', 
+            color: 'hsla(225, 15%, 40%, 1', 
+            size: 24, 
+            maxWidth: 480, 
+            align: 'center', 
+            strokeWidth: 0, 
+            strokeColor: 'black', 
+            rainbow: false, 
+            visible: false, 
+            targetSize: null, 
+            fullText: null
+        };
     }
     getInfo () {
         return {
             id: 'text',
             name: 'Animated Text',
-            blockIconURI: null,
-            menuIconURI: null,
-            blocks: [{
-                opcode: 'setText',
-                text: formatMessage({
-                    id: 'text.setText',
-                    default: 'show text [TEXT]',
-                    description: ''
-                }),
-                blockType: BlockType.COMMAND,
-                arguments: {
-                    TEXT: {
-                        type: ArgumentType.STRING,
-                        defaultValue: 'Hello World!'
+            blocks: [
+                {
+                    opcode: 'setText',
+                    text: formatMessage({
+                        id: 'text.setText',
+                        default: 'show text [TEXT]',
+                        description: ''
+                    }),
+                    blockType: BlockType.COMMAND,
+                    arguments: {
+                        TEXT: {
+                            type: ArgumentType.STRING,
+                            defaultValue: DefaultText
+                        }
                     }
-                }
-            }, {
-                opcode: 'animateText',
-                text: formatMessage({
-                    id: 'text.animateText',
-                    default: '[ANIMATE] text [TEXT]',
-                    description: ''
-                }),
-                blockType: BlockType.COMMAND,
-                arguments: {
-                    ANIMATE: {
-                        type: ArgumentType.STRING,
-                        menu: 'ANIMATE',
-                        defaultValue: 'rainbow'
-                    },
-                    TEXT: {
-                        type: ArgumentType.STRING,
-                        defaultValue: "rainbow"
+                }, 
+                {
+                    opcode: 'animateText',
+                    text: formatMessage({
+                        id: 'text.animateText',
+                        default: '[ANIMATE] text [TEXT]',
+                        description: ''
+                    }),
+                    blockType: BlockType.COMMAND,
+                    arguments: {
+                        ANIMATE: {
+                            type: ArgumentType.STRING,
+                            menu: 'ANIMATE',
+                            defaultValue: 'rainbow'
+                        },
+                        TEXT: {
+                            type: ArgumentType.STRING,
+                            defaultValue: DefaultAnimateText
+                        }
                     }
-                }
-            }, {
-                opcode: 'clearText',
-                text: formatMessage({
-                    id: 'text.clearText',
-                    default: 'show sprite',
-                    description: ''
-                }),
-                blockType: BlockType.COMMAND,
-                arguments: {}
-            }, '---', {
-                opcode: 'setFont',
-                text: formatMessage({
-                    id: 'text.setFont',
-                    default: 'set font to [FONT]',
-                    description: ''
-                }),
-                blockType: BlockType.COMMAND,
-                arguments: {
-                    FONT: {
-                        type: ArgumentType.STRING,
-                        menu: 'FONT',
-                        defaultValue: 'Pixel'
+                }, 
+                {
+                    opcode: 'clearText',
+                    text: formatMessage({
+                        id: 'text.clearText',
+                        default: 'show sprite',
+                        description: ''
+                    }),
+                    blockType: BlockType.COMMAND,
+                    arguments: {}
+                }, 
+                '---', 
+                {
+                    opcode: 'setFont',
+                    text: formatMessage({
+                        id: 'text.setFont',
+                        default: 'set font to [FONT]',
+                        description: ''
+                    }),
+                    blockType: BlockType.COMMAND,
+                    arguments: {
+                        FONT: {
+                            type: ArgumentType.STRING,
+                            menu: 'FONT',
+                            defaultValue: FontIds.PIXEL
+                        }
                     }
-                }
-            }, {
-                opcode: 'setColor',
-                text: formatMessage({
-                    id: 'text.setColor',
-                    default: 'set text color to [COLOR]',
-                    description: ''
-                }),
-                blockType: BlockType.COMMAND,
-                arguments: {
-                    COLOR: {
-                        type: ArgumentType.COLOR
+                }, 
+                {
+                    opcode: 'setColor',
+                    text: formatMessage({
+                        id: 'text.setColor',
+                        default: 'set text color to [COLOR]',
+                        description: ''
+                    }),
+                    blockType: BlockType.COMMAND,
+                    arguments: {
+                        COLOR: {
+                            type: ArgumentType.COLOR
+                        }
                     }
-                }
-            }, 
-            {
-                opcode: 'setSize',
-                text: formatMessage({
-                    id: 'text.setSize',
-                    default: 'set text size to [SIZE]',
-                    description: ''
-                }),
-                blockType: BlockType.COMMAND,
-                arguments: {
-                    SIZE: {
-                        type: ArgumentType.NUMBER,
-                        defaultValue: 30
+                }, 
+                {
+                    opcode: 'setSize',
+                    text: formatMessage({
+                        id: 'text.setSize',
+                        default: 'set text size to [SIZE]',
+                        description: ''
+                    }),
+                    blockType: BlockType.COMMAND,
+                    arguments: {
+                        SIZE: {
+                            type: ArgumentType.NUMBER,
+                            defaultValue: 30
+                        }
                     }
-                }
-            },
-            {
-                opcode: 'setWidth',
-                text: formatMessage({
-                    id: 'text.setWidth',
-                    default: 'set width to [WIDTH] aligned [ALIGN]',
-                    description: ''
-                }),
-                blockType: BlockType.COMMAND,
-                arguments: {
-                    WIDTH: {
-                        type: ArgumentType.NUMBER,
-                        defaultValue: 200
-                    },
-                    ALIGN: {
-                        type: ArgumentType.STRING,
-                        defaultValue: 'left',
-                        menu: 'ALIGN'
+                },
+                {
+                    opcode: 'setWidth',
+                    text: formatMessage({
+                        id: 'text.setWidth',
+                        default: 'set width to [WIDTH] aligned [ALIGN]',
+                        description: ''
+                    }),
+                    blockType: BlockType.COMMAND,
+                    arguments: {
+                        WIDTH: {
+                            type: ArgumentType.NUMBER,
+                            defaultValue: 200
+                        },
+                        ALIGN: {
+                            type: ArgumentType.STRING,
+                            defaultValue: 'left',
+                            menu: 'ALIGN'
+                        }
                     }
-                }
-            },
-            {
+                },
+                {
                     opcode: 'setAlign',
                     text: formatMessage({
                         id: 'text.setAlign',
@@ -235,56 +261,73 @@ class text{
             ],
             menus: {
                 FONT: {
-                    items: [{
-                        text: 'Sans Serif',
-                        value: 'Sans Serif'
-                    }, {
-                        text: 'Serif',
-                        value: 'Serif'
-                    }, {
-                        text: 'Handwriting',
-                        value: 'Handwriting'
-                    }, {
-                        text: 'Marker',
-                        value: 'Marker'
-                    }, {
-                        text: 'Curly',
-                        value: 'Curly'
-                    }, {
-                        text: 'Pixel',
-                        value: 'Pixel'
-                    }, {
-                        text: 'random font',
-                        value: 'random font'
-                    }]
+                    items: [
+                        {
+                            text: 'Sans Serif',
+                            value: FontIds.SANS_SERIF
+                        }, 
+                        {
+                            text: 'Serif',
+                            value: FontIds.SERIF
+                        }, 
+                        {
+                            text: 'Handwriting',
+                            value: FontIds.HANDWRITING
+                        }, 
+                        {
+                            text: 'Marker',
+                            value: FontIds.MARKER
+                        }, 
+                        {
+                            text: 'Curly',
+                            value: FontIds.CURLY
+                        }, 
+                        {
+                            text: 'Pixel',
+                            value: FontIds.PIXEL
+                        }, 
+                        {
+                            text: 'random font',
+                            value: FontIds.RANDOM
+                        }
+                    ]
                 },
                 ALIGN: {
-                    items: [{
-                        text: 'left',
-                        value: 'left'
-                    }, {
-                        text: 'center',
-                        value: 'center'
-                    }, {
-                        text: 'right',
-                        value: 'right'
-                    }]
+                    items: [
+                        {
+                            text: 'left',
+                            value: 'left'
+                        }, 
+                        {
+                            text: 'center',
+                            value: 'center'
+                        }, 
+                        {
+                            text: 'right',
+                            value: 'right'
+                        }
+                    ]
                 },
                 ANIMATE: {
-                    items: [{
-                        text: 'type',
-                        value: 'type'
-                    }, {
-                        text: 'rainbow',
-                        value: 'rainbow'
-                    }, {
-                        text: 'zoom',
-                        value: 'zoom'
-                    }]
+                    items: [
+                        {
+                            text: 'type',
+                            value: 'type'
+                        }, 
+                        {
+                            text: 'rainbow',
+                            value: 'rainbow'
+                        }, 
+                        {
+                            text: 'zoom',
+                            value: 'zoom'
+                        }
+                    ]
                 }
             }
         };
     }
+    FONT_IDS = Object.values(FontIds);
     setText (args, util) {
         const textState = this._getTextState(util.target);
 
@@ -345,7 +388,7 @@ class text{
     setFont (args, util) {
         const textState = this._getTextState(util.target);
 
-        if (args.FONT === RANDOM_ID) {
+        if (args.FONT === FontIds.RANDOM) {
             textState.font = this._randomFontOtherThan(textState.font);
         } else {
             textState.font = args.FONT;
@@ -605,11 +648,6 @@ class text{
             textState.skinId = null;
         }
     }
-    get FONT_IDS (){
-        return ['Sans Serif', 'Serif', 'Handwriting', 'Marker', 'Curly', 'Pixel'];
-    }
-    
-    
 }
 
 module.exports = text
