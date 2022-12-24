@@ -62,7 +62,7 @@ const builtinExtensions = {
     jwStructs: () => require("../extensions/jw_structs"),
     // gsa: theyl think ianyourgod did added this but no it was me all along!!!!!!!!!!!!!!!
     // text: text stuff
-    Text: () => require("../extensions/BetterTextBlocks"),
+    text: () => require("../extensions/BetterTextBlocks"),
 };
 
 // CCW limited
