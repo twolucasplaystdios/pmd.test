@@ -15,7 +15,7 @@ const FontIds = {
 
 console.warn('FUCKING TELL ME WHERE GOD DAMIT')
 
-class Scratch3TextBlocks{
+class text{
     constructor (runtime){
         /**
          * The runtime instantiating this block package.
@@ -652,4 +652,4 @@ class Scratch3TextBlocks{
     }
 }
 
-module.exports = Scratch3TextBlocks
+module.exports = text
