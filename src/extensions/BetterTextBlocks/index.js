@@ -295,7 +295,7 @@ class text{
         this._renderText(util.target); // Yield until the next tick.
 
 
-        return Promise.resolve();
+        
     }
     clearText (args, util) {
         const target = util.target;
@@ -308,7 +308,7 @@ class text{
         const costume = target.getCostumes()[target.currentCostume];
         this.runtime.renderer.updateDrawableSkinId(target.drawableID, costume.skinId); // Yield until the next tick.
 
-        return Promise.resolve();
+        
     }
     stopAll () {
 
@@ -328,7 +328,7 @@ class text{
         this._renderText(util.target); // Yield until the next tick.
 
 
-        return Promise.resolve();
+        
     }
     addLine (args, util) {
         const textState = this._getTextState(util.target);
@@ -340,7 +340,7 @@ class text{
         this._renderText(util.target); // Yield until the next tick.
 
 
-        return Promise.resolve();
+        
     }
     setFont (args, util) {
         const textState = this._getTextState(util.target);
