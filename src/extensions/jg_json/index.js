@@ -490,7 +490,7 @@ class JgJSONBlocks {
 
         delete json[key]
 
-        return json;
+        return JSON.stringify(json);
     }
 
     json_values(args, util) {
