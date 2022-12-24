@@ -13,6 +13,8 @@ const FontIds = {
     RANDOM: 'random'
 }
 
+console.warn('FUCKING TELL ME WHERE GOD DAMIT')
+
 class Scratch3TextBlocks{
     constructor (runtime){
         /**
