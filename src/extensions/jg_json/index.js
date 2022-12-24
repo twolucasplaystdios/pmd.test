@@ -462,7 +462,7 @@ class JgJSONBlocks {
     getValueFromJSON(args) {
         console.log('your fat')
         const key = args.VALUE;
-        const json = validateJSON(args.JSON);
+        const json = validateJSON(args.JSON).object;
 
         return valueToString(json[key]);
     }
