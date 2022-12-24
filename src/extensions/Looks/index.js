@@ -1,13 +1,12 @@
 const formatMessage = require('format-message');
 const BlockType = require('../../extension-support/block-type');
 const ArgumentType = require('../../extension-support/argument-type');
-const Cast = require('../../util/cast');
 
 /**
  * Class for TurboWarp blocks
  * @constructor
  */
-class TurboWarpBlocks {
+class LooksCategoryModifer {
     constructor (runtime) {
         /**
          * The runtime instantiating this block package.
@@ -52,4 +51,4 @@ class TurboWarpBlocks {
     }
 }
 
-module.exports = TurboWarpBlocks;
+module.exports = LooksCategoryModifer;

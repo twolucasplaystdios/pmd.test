@@ -28,26 +28,22 @@ class text{
         this.runtime.on('targetWasCreated', this._onTargetCreated);
         this.runtime.on('PROJECT_STOP_ALL', this.stopAll.bind(this));
     }
-    static get STATE_KEY (){
-        return 'Scratch.text';
-    }
-    static get DEFAULT_TEXT_STATE (){
-        return {
-            skinId: null, 
-            text: 'Welcome to my project!',
-            font: 'Handwriting', 
-            color: 'hsla(225, 15%, 40%, 1', 
-            size: 24, 
-            maxWidth: 480, 
-            align: 'center', 
-            strokeWidth: 0, 
-            strokeColor: 'black', 
-            rainbow: false, 
-            visible: false, 
-            targetSize: null, 
-            fullText: null
-        };
-    }
+    STATE_KEY = 'Scratch.text';
+    DEFAULT_TEXT_STATE = {
+        skinId: null, 
+        text: 'Welcome to my project!',
+        font: 'Handwriting', 
+        color: 'hsla(225, 15%, 40%, 1', 
+        size: 24, 
+        maxWidth: 480, 
+        align: 'center', 
+        strokeWidth: 0, 
+        strokeColor: 'black', 
+        rainbow: false, 
+        visible: false, 
+        targetSize: null, 
+        fullText: null
+    };
     getInfo () {
         return {
             id: 'text',
@@ -578,7 +574,7 @@ class text{
         let textState = target.getCustomState(this.STATE_KEY);
 
         if (!textState) {
-            textState = Clone.simple(this.DEFAULT_TEXT_STATE);
+            textState = this.DEFAULT_TEXT_STATE;
             target.setCustomState(this.STATE_KEY, textState);
         }
 
@@ -613,7 +609,7 @@ class text{
             const sourceTextState = sourceTarget.getCustomState(this.STATE_KEY);
 
             if (sourceTextState) {
-                newTarget.setCustomState(this.STATE_KEY, Clone.simple(sourceTextState));
+                newTarget.setCustomState(this.STATE_KEY, sourceTextState);
                 const newTargetState = newTarget.getCustomState(this.STATE_KEY); // Note here that clones do not share skins with their original target. This is a subtle but important
                 // departure from the rest of Scratch, where clones always stay in sync with the originals costume.
                 // The "rule" is anything that can be done with the blocks is clone-specific, since that is where you make clones,
