@@ -1,6 +1,7 @@
 const formatMessage = require('format-message');
 const BlockType = require('../../extension-support/block-type');
 const ArgumentType = require('../../extension-support/argument-type');
+const Cast = require('../../util/cast');
 const DefaultAnimateText = 'Look at me im animated!'
 const DefaultText = 'Hello World!'
 const FontIds = {
