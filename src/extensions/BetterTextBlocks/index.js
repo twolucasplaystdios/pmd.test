@@ -575,11 +575,11 @@ class text{
         });
     }
     _getTextState (target) {
-        let textState = target.getCustomState(text.STATE_KEY);
+        let textState = target.getCustomState(this.STATE_KEY);
 
         if (!textState) {
-            textState = Clone.simple(text.DEFAULT_TEXT_STATE);
-            target.setCustomState(text.STATE_KEY, textState);
+            textState = Clone.simple(this.DEFAULT_TEXT_STATE);
+            target.setCustomState(this.STATE_KEY, textState);
         }
 
         return textState;
@@ -590,7 +590,7 @@ class text{
         // https://github.com/LLK/scratch-flash/blob/2e4a402ceb205a0428…7f54b26eebe1c2e6da6c0/src/scratch/ScratchSprite.as#L579-L585
 
         if (typeof text === 'number' && Math.abs(text) >= 0.01 && text % 1 !== 0) {
-            text = text.toFixed(2);
+            text = this.toFixed(2);
         }
 
         text = Cast.toString(text);
@@ -610,11 +610,11 @@ class text{
       
 
         if (sourceTarget) {
-            const sourceTextState = sourceTarget.getCustomState(text.STATE_KEY);
+            const sourceTextState = sourceTarget.getCustomState(this.STATE_KEY);
 
             if (sourceTextState) {
-                newTarget.setCustomState(text.STATE_KEY, Clone.simple(sourceTextState));
-                const newTargetState = newTarget.getCustomState(text.STATE_KEY); // Note here that clones do not share skins with their original target. This is a subtle but important
+                newTarget.setCustomState(this.STATE_KEY, Clone.simple(sourceTextState));
+                const newTargetState = newTarget.getCustomState(this.STATE_KEY); // Note here that clones do not share skins with their original target. This is a subtle but important
                 // departure from the rest of Scratch, where clones always stay in sync with the originals costume.
                 // The "rule" is anything that can be done with the blocks is clone-specific, since that is where you make clones,
                 // but anything outside of the blocks (costume/sounds) are shared.
