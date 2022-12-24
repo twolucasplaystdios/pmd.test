@@ -41,7 +41,7 @@ class text{
                 arguments: {
                     TEXT: {
                         type: ArgumentType.STRING,
-                        defaultValue: DefaultText
+                        defaultValue: 'Hello World!'
                     }
                 }
             }, {
