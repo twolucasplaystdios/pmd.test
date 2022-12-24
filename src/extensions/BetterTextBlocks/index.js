@@ -60,7 +60,7 @@ class text{
                     },
                     TEXT: {
                         type: ArgumentType.STRING,
-                        defaultValue: DefaultAnimateText
+                        defaultValue: "rainbow"
                     }
                 }
             }, {
@@ -530,11 +530,11 @@ class text{
         });
     }
     _getTextState (target) {
-        let textState = target.getCustomState(Scratch3TextBlocks.STATE_KEY);
+        let textState = target.getCustomState(text.STATE_KEY);
 
         if (!textState) {
-            textState = Clone.simple(Scratch3TextBlocks.DEFAULT_TEXT_STATE);
-            target.setCustomState(Scratch3TextBlocks.STATE_KEY, textState);
+            textState = Clone.simple(text.DEFAULT_TEXT_STATE);
+            target.setCustomState(text.STATE_KEY, textState);
         }
 
         return textState;
@@ -565,11 +565,11 @@ class text{
       
 
         if (sourceTarget) {
-            const sourceTextState = sourceTarget.getCustomState(Scratch3TextBlocks.STATE_KEY);
+            const sourceTextState = sourceTarget.getCustomState(text.STATE_KEY);
 
             if (sourceTextState) {
-                newTarget.setCustomState(Scratch3TextBlocks.STATE_KEY, Clone.simple(sourceTextState));
-                const newTargetState = newTarget.getCustomState(Scratch3TextBlocks.STATE_KEY); // Note here that clones do not share skins with their original target. This is a subtle but important
+                newTarget.setCustomState(text.STATE_KEY, Clone.simple(sourceTextState));
+                const newTargetState = newTarget.getCustomState(text.STATE_KEY); // Note here that clones do not share skins with their original target. This is a subtle but important
                 // departure from the rest of Scratch, where clones always stay in sync with the originals costume.
                 // The "rule" is anything that can be done with the blocks is clone-specific, since that is where you make clones,
                 // but anything outside of the blocks (costume/sounds) are shared.
