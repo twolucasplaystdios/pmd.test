@@ -497,13 +497,13 @@ class JgJSONBlocks {
     json_values(args, util) {
         const json = validateJSON(args.json).object;
 
-        return JSON.stringify(Object.keys(json));
+        return JSON.stringify(Object.values(json));
     }
 
     json_keys(args, util) {
         const json = validateJSON(args.json).object;
 
-        return JSON.stringify(Object.values(json));
+        return JSON.stringify(Object.keys(json));
     }
 
     json_array_length(args, util) {
