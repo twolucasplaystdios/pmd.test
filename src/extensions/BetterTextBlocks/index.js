@@ -292,7 +292,7 @@ class text{
         textState.visible = true;
         textState.animating = false;
 
-        this._renderText(util.target); // Yield until the next tick.
+         // Yield until the next tick.
 
 
         
@@ -306,7 +306,7 @@ class text{
 
         textState.animating = false;
         const costume = target.getCostumes()[target.currentCostume];
-        this.runtime.renderer.updateDrawableSkinId(target.drawableID, costume.skinId); // Yield until the next tick.
+         // Yield until the next tick.
 
         
     }
@@ -325,7 +325,7 @@ class text{
         textState.visible = true;
         textState.animating = false;
 
-        this._renderText(util.target); // Yield until the next tick.
+         // Yield until the next tick.
 
 
         
@@ -337,7 +337,7 @@ class text{
         textState.visible = true;
         textState.animating = false;
 
-        this._renderText(util.target); // Yield until the next tick.
+         // Yield until the next tick.
 
 
         
@@ -351,7 +351,7 @@ class text{
             textState.font = args.FONT;
         }
 
-        this._renderText(util.target);
+        
     }
     _randomFontOtherThan (currentFont) {
         const otherFonts = this.FONT_IDS.filter(id => id !== currentFont);
@@ -362,7 +362,7 @@ class text{
 
         textState.color = args.COLOR;
 
-        this._renderText(util.target);
+        
     }
     setWidth (args, util) {
         const textState = this._getTextState(util.target);
@@ -370,14 +370,14 @@ class text{
         textState.maxWidth = Cast.toNumber(args.WIDTH);
         textState.align = args.ALIGN;
 
-        this._renderText(util.target);
+        
     }
     setSize (args, util) {
         const textState = this._getTextState(util.target);
 
         textState.size = Cast.toNumber(args.SIZE);
 
-        this._renderText(util.target);
+        
     }
     setAlign (args, util) {
         const textState = this._getTextState(util.target);
@@ -385,14 +385,14 @@ class text{
         textState.maxWidth = Cast.toNumber(args.WIDTH);
         textState.align = args.ALIGN;
 
-        this._renderText(util.target);
+        
     }
     setOutlineWidth (args, util) {
         const textState = this._getTextState(util.target);
 
         textState.strokeWidth = Cast.toNumber(args.WIDTH);
 
-        this._renderText(util.target);
+        
     }
     setOutlineColor (args, util) {
         const textState = this._getTextState(util.target);
@@ -400,7 +400,7 @@ class text{
         textState.strokeColor = args.COLOR;
         textState.visible = true;
 
-        this._renderText(util.target);
+        
     }
     _animateText (args, util) {
 
