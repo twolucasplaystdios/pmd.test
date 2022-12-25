@@ -2,6 +2,8 @@ const formatMessage = require('format-message');
 const BlockType = require('../../extension-support/block-type');
 const ArgumentType = require('../../extension-support/argument-type');
 const Cast = require('../../util/cast');
+const Timer = require('../../util/timer');
+const Clone = require('../util/clone');
 const DefaultAnimateText = 'Look at me im animated!'
 const DefaultText = 'Hello World!'
 const FontIds = {
@@ -575,7 +577,7 @@ class text{
         let textState = target.getCustomState(this.STATE_KEY);
 
         if (!textState) {
-            textState = this.DEFAULT_TEXT_STATE;
+            textState = Clone.simple(this.DEFAULT_TEXT_STATE);
             target.setCustomState(this.STATE_KEY, textState);
         }
 
@@ -610,7 +612,7 @@ class text{
             const sourceTextState = sourceTarget.getCustomState(this.STATE_KEY);
 
             if (sourceTextState) {
-                newTarget.setCustomState(this.STATE_KEY, sourceTextState);
+                newTarget.setCustomState(this.STATE_KEY, Clone.simple(sourceTextState));
                 const newTargetState = newTarget.getCustomState(this.STATE_KEY); // Note here that clones do not share skins with their original target. This is a subtle but important
                 // departure from the rest of Scratch, where clones always stay in sync with the originals costume.
                 // The "rule" is anything that can be done with the blocks is clone-specific, since that is where you make clones,
