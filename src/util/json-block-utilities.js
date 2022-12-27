@@ -79,5 +79,19 @@ module.exports = {
         }
 
         return value;
+    },
+
+    /**
+     * Check if a regex is valid or not
+     * @param {any} value the value to convert.
+     */
+    validateRegex: (value) => {
+        let valid = false
+        try {
+            new RegExp(value)
+            valid = true
+        } catch {}
+
+        return valid;
     }
 }

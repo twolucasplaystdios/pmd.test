@@ -1,6 +1,7 @@
 const formatMessage = require('format-message');
 const BlockType = require('../../extension-support/block-type');
 const ArgumentType = require('../../extension-support/argument-type');
+const { validateRegex } = require('../../util/json-block-utilities')
 // const Cast = require('../../util/cast');
 
 const blockIconURI = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAUAAAAFACAMAAAD6TlWYAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAPUExURQAAAP+xNQDiGgCU/wAAAJEQGGoAAAAFdFJOU/////8A+7YOUwAAAAlwSFlzAAAOwwAADsMBx2+oZAAABA5JREFUeF7t0EtuW0EUA9F8vP81Z8JRAwzbLuk5COoMBb1LdP34EGJAyICQASEDQgaEDAgZEDIgZEDIgJABIQNCBoQMCBkQMiBkQMiAkAEhA0IGhAwIGRAyIGRAyICQASEDQgaEDAgZEHos4M+HZfbtDAgZEDIgZEDIgJABIQNCBoQMCBkQMiBkQMiAkAEhA0IGhAwIGRAyIGRAyICQASEDQgaEDAgZEDIgZEDIgJABIQNCBoQMCBkQMiBkQMiAkAEhA0IGhAwIGRAyIGRAyICQASEDQgaEDAgZEDIgZEDIgJABIQNCBoQMCBkQMiBkQMiAkAEhA0IGhAwIGRAyIGRAyICQASEDQgaEDAgZEDIgZEDIgJABIQNCBoQMCBkQMiBkQMiAkAEhA0IGhAwIGRAyIGRAyICQASEDQgaEDAgZEDIgZEDIgJABIQNCBoQMCBkQMiBkQMiAkAEhA0KPBfxfGRAyIGRAyICQASEDQgaEDAgZEDIgZEDIgJABIQNCBoQMCBkQMiBkQMiAkAEhA0IGhAwIGRAyIGRAyICQASEDQgaEZsBfh/z8z/r9SfnsywwIGRAyIGRAyICQASEDQp8OeMrfvk06vEzOXjPgIWevGfCQs9cMeMjZawY85Ow1Ax5y9poBDzl7zYCHnL2GA57y2dvlvW+TmcmARWYmAxaZmQxYZGYyYJGZyYBFZiYDFpmZDFhkZnp5wFPOvFze+TaZmQxYZGYyYJGZyYBFZiYDFpmZDFhkZjJgkZnJgEVmprcHPOXsl+V9j8lsZcAhs5UBh8xWBhwyWxlwyGxlwCGzlQGHzFYGHDJbPR7wlJlreddjMlsZcMhsZcAhs5UBh8xWBhwyWxlwyGxlwCGzlQGHzFbfHvCU2SrvekxmKwMOma0MOGS2MuCQ2cqAQ2YrAw6ZrQw4ZLYy4JDZyoBDZisDDpmtDDhktjLgkNnKgENmKwMOma0MOGS2MuCQ2erbA2bmWt71mMxWBhwyWxlwyGxlwCGzlQGHzFYGHDJbGXDIbGXAIbPV4wFz9svyrsdktjLgkNnKgENmKwMOma0MOGS2MuCQ2cqAQ2YrAw6Zrd4eMGdeLu97m8xMBiwyMxmwyMxkwCIzkwGLzEwGLDIzGbDIzGTAIjPTywPms7fLO98mM5MBi8xMBiwyMxmwyMxkwCIzkwGLzEwGLDIzGbDIzIQD5m/fJu99mZy9ZsBDzl4z4CFnrxnwkLPXDHjI2WsGPOTsNQMecvaaAQ85e+3TAfPzPysdruWzLzMgZEDIgJABIQNCBoQMCM2A+jsDQgaEDAgZEDIgZEDIgJABIQNCBoQMCBkQMiBkQMiAkAEhA0IGhAwIGRAyIGRAyICQASEDQgaEDAgZEDIgZEDIgMjHxx+IPExM0h8siAAAAABJRU5ErkJggg=="
@@ -231,6 +232,62 @@ class jwUnite {
                                 id: 'jwUnite.indexof_textToSearch',
                                 default: 'Hello world!',
                                 description: 'The text to search in.'
+                            })
+                        }
+                    }
+                },
+                {
+                    opcode: 'regextest',
+                    text: formatMessage({
+                        id: 'jwUnite.blocks.getLettersFromIndexToIndexInText',
+                        default: 'test [text] with regex [reg]',
+                        description: 'tests a string to see if its valid for this regex'
+                    }),
+                    disableMonitor: true,
+                    blockType: BlockType.BOOLEAN,
+                    arguments: {
+                        text: {
+                            type: ArgumentType.STRING,
+                            defaultValue: formatMessage({
+                                id: 'jwUnite.getLettersFromIndexToIndexInText_text',
+                                default: 'foo bar',
+                                description: 'the text to test'
+                            })
+                        },
+                        reg: {
+                            type: ArgumentType.STRING,
+                            defaultValue: formatMessage({
+                                id: 'jwUnite.getLettersFromIndexToIndexInText_text',
+                                default: '/foo/g',
+                                description: 'the regex to test the text with'
+                            })
+                        }
+                    }
+                },
+                {
+                    opcode: 'regexmatch',
+                    text: formatMessage({
+                        id: 'jwUnite.blocks.getLettersFromIndexToIndexInText',
+                        default: 'match [text] with regex [reg]',
+                        description: 'gets all regex matxhes on a string'
+                    }),
+                    disableMonitor: true,
+                    blockType: BlockType.REPORTER,
+                    arguments: {
+                        text: {
+                            type: ArgumentType.STRING,
+                            defaultValue: formatMessage({
+                                id: 'jwUnite.getLettersFromIndexToIndexInText_text',
+                                default: 'foo bar',
+                                description: 'the text to test'
+                            })
+                        },
+                        reg: {
+                            type: ArgumentType.STRING,
+                            defaultValue: formatMessage({
+                                id: 'jwUnite.getLettersFromIndexToIndexInText_text',
+                                default: '/foo/g',
+                                description: 'the regex to test the text with'
                             })
                         }
                     }
@@ -574,6 +631,18 @@ class jwUnite {
 
     constrainnumber(args) {
         return Math.min(Math.max(args.min, args.inp), args.max)
+    }
+
+    regextest(args) {
+        if (!validateRegex(args.reg)) return false
+        const regex = new RegExp(args.reg)
+        return regex.test(args.text)
+    }
+    regexmatch(args) {
+        if (!validateRegex(args.reg)) return "[]"
+        const regex = new RegExp(args.reg)
+        const matches = args.text.match(regex)
+        return JSON.stringify(matches ? matches : [])
     }
 }
 

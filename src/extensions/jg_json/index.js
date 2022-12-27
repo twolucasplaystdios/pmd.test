@@ -5,7 +5,8 @@ const {
     validateJSON, 
     validateArray, 
     stringToEqivalint, 
-    valueToString
+    valueToString,
+    validateRegex 
 } = require('../../util/json-block-utilities')
 
 // const Cast = require('../../util/cast');
@@ -622,6 +623,7 @@ class JgJSONBlocks {
     }
 
     json_array_split(args) {
+        if (validateRegex(args.delimeter)) args.delimeter = new RegExp(args.delimeter)
         return JSON.stringify(args.text.split(args.delimeter))
     }
     json_array_join(args) {
