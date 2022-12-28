@@ -37,7 +37,8 @@ class SecurityManager {
      */
     canLoadExtensionFromProject (extensionURL) {
         // Default to false for security
-        return Promise.resolve(false);
+        // set to true so that custom extensions can be used
+        return Promise.resolve(true);
     }
 }
 
