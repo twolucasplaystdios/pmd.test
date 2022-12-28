@@ -7,15 +7,16 @@ const ArgumentType = require('../../extension-support/argument-type');
  * Class for Structs
  * @constructor
  */
+
 class jwStructs {
     constructor(runtime) {
-        console.log("Welcome to the Structs extension!");
+        console.log("Welcome to the OOP extension!");
         /**
          * The runtime instantiating this block package.
          * @type {Runtime}
          */
         this.runtime = runtime;
-        this.structs = {};
+        this.classes = {};
         this.objects = {};
     }
 
@@ -23,7 +24,7 @@ class jwStructs {
      * @returns {object} metadata for this extension and its blocks.
      */
     getInfo() {
-        console.log("Getting info for the Structs extension!");
+        console.log("Getting info for the OOP extension!");
         return {
             id: 'jwStructs',
             name: 'Structs',
@@ -31,157 +32,190 @@ class jwStructs {
             color2: '#4a98ff',
             blocks: [
                 {
-                    opcode: 'createStruct',
-                    text: formatMessage({
-                        id: 'jwStructs.blocks.createStruct',
-                        default: 'create struct [NAME]',
-                        description: 'Creates a struct.'
-                    }),
-                    disableMonitor: true,
+                    opcode: 'createClass',
                     blockType: BlockType.COMMAND,
+                    text: formatMessage({
+                        id: 'jwStructs.createClass',
+                        default: 'Create class [NAME]',
+                        description: 'Create a class'
+                    }),
                     arguments: {
                         NAME: {
                             type: ArgumentType.STRING,
+                            defaultValue: 'MyClass'
                         }
                     }
                 },
                 {
-                    opcode: 'createStructProperty',
-                    text: formatMessage({
-                        id: 'jwStructs.blocks.createStructProperty',
-                        default: 'property [NAME] in struct [STRUCT] with value [VALUE]',
-                        description: 'Creates a property in a struct.'
-                    }),
-                    disableMonitor: true,
+                    opcode: 'createClassProperty',
                     blockType: BlockType.COMMAND,
+                    text: formatMessage({
+                        id: 'jwStructs.createClassProperty',
+                        default: 'Create class property [NAME] with value [VALUE] in class [CLASS]',
+                        description: 'Create a class property'
+                    }),
                     arguments: {
                         NAME: {
                             type: ArgumentType.STRING,
-                            defaultValue: 'property'
-                        },
-                        STRUCT: {
-                            type: ArgumentType.STRING,
-                            defaultValue: 'struct'
+                            defaultValue: 'myProperty'
                         },
                         VALUE: {
                             type: ArgumentType.STRING,
-                            defaultValue: 'value'
-                        }
-                    }
-                },
-                {
-                    opcode: 'newObject',
-                    text: formatMessage({
-                        id: 'jwStructs.blocks.newObject',
-                        default: 'set [NAME] to new [STRUCT]',
-                        description: 'Creates an object out of a struct.'
-                    }),
-                    disableMonitor: true,
-                    blockType: BlockType.COMMAND,
-                    arguments: {
-                        NAME: {
-                            type: ArgumentType.STRING,
-                            defaultValue: "foo"
+                            defaultValue: 'myValue'
                         },
-                        STRUCT: {
+                        CLASS: {
                             type: ArgumentType.STRING,
-                            defaultValue: "bar"
-                        }
-                    }
-                },
-                {
-                    opcode: 'setObjectProperty',
-                    text: formatMessage({
-                        id: 'jwStructs.blocks.setObjectProperty',
-                        default: 'Set [PROPERTY] of [OBJECT] to [VALUE]',
-                        description: 'Sets a property of an object.'
-                    }),
-                    disableMonitor: true,
-                    blockType: BlockType.COMMAND,
-                    arguments: {
-                        PROPERTY: {
-                            type: ArgumentType.STRING,
-                            defaultValue: "foo",
-                        },
-                        OBJECT: {
-                            type: ArgumentType.STRING,
-                            defaultValue: "bar",
-                        },
-                        VALUE: {
-                            type: ArgumentType.STRING,
-                            defaultValue: "foobar"
-                        }
-                    }
-                },
-                {
-                    opcode: 'returnObjectProperty',
-                    text: formatMessage({
-                        id: 'jwStructs.blocks.returnObjectProperty',
-                        default: '[PROPERTY] of [OBJECT]',
-                        description: 'Returns a property of an object.'
-                    }),
-                    blockType: BlockType.REPORTER,
-                    arguments: {
-                        PROPERTY: {
-                            type: ArgumentType.STRING,
-                            defaultValue: "foo",
-                        },
-                        OBJECT: {
-                            type: ArgumentType.STRING,
-                            defaultValue: "bar",
+                            defaultValue: 'MyClass'
                         }
                     }
                 },
                 "---",
                 {
-                    opcode: 'deleteStructs',
-                    text: formatMessage({
-                        id: 'jwStructs.blocks.deleteStructs',
-                        default: 'delete all structs',
-                        description: 'Deletes all structs.'
-                    }),
-                    disableMonitor: true,
+                    opcode: 'newObject',
                     blockType: BlockType.COMMAND,
-                },
-                {
-                    opcode: 'deleteObjects',
                     text: formatMessage({
-                        id: 'jwStructs.blocks.deleteObjects',
-                        default: 'delete all objects',
-                        description: 'Deletes all objects.'
+                        id: 'jwStructs.newObject',
+                        default: 'Create object [NAME] from class [CLASS]',
+                        description: 'Create a new object'
                     }),
-                    disableMonitor: true,
-                    blockType: BlockType.COMMAND,
-                },
-                {
-                    opcode: 'deleteStruct',
-                    text: formatMessage({
-                        id: 'jwStructs.blocks.deleteStruct',
-                        default: 'delete struct [NAME]',
-                        description: 'Deletes a struct.'
-                    }),
-                    disableMonitor: true,
-                    blockType: BlockType.COMMAND,
                     arguments: {
                         NAME: {
                             type: ArgumentType.STRING,
-                            defaultValue: "foo"
+                            defaultValue: 'myObject'
+                        },
+                        CLASS: {
+                            type: ArgumentType.STRING,
+                            defaultValue: 'MyClass'
+                        }
+                    }
+                },
+                {
+                    opcode: 'setObjectProperty',
+                    blockType: BlockType.COMMAND,
+                    text: formatMessage({
+                        id: 'jwStructs.setObjectProperty',
+                        default: 'Set property [PROPERTY] of object [OBJECT] to [VALUE]',
+                        description: 'Set a property of an object'
+                    }),
+                    arguments: {
+                        PROPERTY: {
+                            type: ArgumentType.STRING,
+                            defaultValue: 'myProperty'
+                        },
+                        OBJECT: {
+                            type: ArgumentType.STRING,
+                            defaultValue: 'myObject'
+                        },
+                        VALUE: {
+                            type: ArgumentType.STRING,
+                            defaultValue: 'myValue'
+                        }
+                    }
+                },
+                {
+                    opcode: 'returnObjectProperty',
+                    blockType: BlockType.REPORTER,
+                    text: formatMessage({
+                        id: 'jwStructs.returnObjectProperty',
+                        default: 'Property [PROPERTY] of object [OBJECT]',
+                        description: 'Return a property of an object'
+                    }),
+                    arguments: {
+                        PROPERTY: {
+                            type: ArgumentType.STRING,
+                            defaultValue: 'myProperty'
+                        },
+                        OBJECT: {
+                            type: ArgumentType.STRING,
+                            defaultValue: 'myObject'
+                        }
+                    }
+                },
+                "---",
+                {
+                    opcode: 'createClassMethod',
+                    blockType: BlockType.HAT,
+                    text: formatMessage({
+                        id: 'jwStructs.createClassMethod',
+                        default: 'When method [NAME] is called in class [CLASS]',
+                        description: 'Create a class method'
+                    }),
+                    arguments: {
+                        NAME: {
+                            type: ArgumentType.STRING,
+                            defaultValue: 'myMethod'
+                        },
+                        CLASS: {
+                            type: ArgumentType.STRING,
+                            defaultValue: 'MyClass'
+                        }
+                    }
+                },
+                {
+                    opcode: 'callObjectMethod',
+                    blockType: BlockType.COMMAND,
+                    text: formatMessage({
+                        id: 'jwStructs.callObjectMethod',
+                        default: 'Call method [NAME] of object [OBJECT]',
+                        description: 'Call a method of an object'
+                    }),
+                    arguments: {
+                        NAME: {
+                            type: ArgumentType.STRING,
+                            defaultValue: 'myMethod'
+                        },
+                        OBJECT: {
+                            type: ArgumentType.STRING,
+                            defaultValue: 'myObject'
+                        }
+                    }
+                },
+                "---",
+                {
+                    opcode: 'deleteClasses',
+                    blockType: BlockType.COMMAND,
+                    text: formatMessage({
+                        id: 'jwStructs.deleteClasses',
+                        default: 'Delete all classes',
+                        description: 'Delete all classes'
+                    })
+                },
+                {
+                    opcode: 'deleteObjects',
+                    blockType: BlockType.COMMAND,
+                    text: formatMessage({
+                        id: 'jwStructs.deleteObjects',
+                        default: 'Delete all objects',
+                        description: 'Delete all objects'
+                    })
+                },
+                {
+                    opcode: 'deleteClass',
+                    blockType: BlockType.COMMAND,
+                    text: formatMessage({
+                        id: 'jwStructs.deleteClass',
+                        default: 'Delete class [CLASS]',
+                        description: 'Delete a class'
+                    }),
+                    arguments: {
+                        CLASS: {
+                            type: ArgumentType.STRING,
+                            defaultValue: 'MyClass'
                         }
                     }
                 },
                 {
                     opcode: 'deleteObject',
-                    text: formatMessage({
-                        id: 'jwStructs.blocks.deleteObject',
-                        default: 'delete object [NAME]',
-                        description: 'Deletes an object.'
-                    }),
-                    disableMonitor: true,
                     blockType: BlockType.COMMAND,
+                    text: formatMessage({
+                        id: 'jwStructs.deleteObject',
+                        default: 'Delete object [OBJECT]',
+                        description: 'Delete an object'
+                    }),
                     arguments: {
-                        NAME: {
+                        OBJECT: {
                             type: ArgumentType.STRING,
-                            defaultValue: "foo"
+                            defaultValue: 'myObject'
                         }
                     }
                 }
@@ -189,58 +223,89 @@ class jwStructs {
         };
     }
 
-    createStruct(args, util) {
-        let name = String(args.NAME);
-        if (!this.structs[name]) {
-            this.structs[name] = {};
+    createClass(args,util) {
+        var name = args.NAME;
+        if (name in this.classes) {
+            return;
+        }
+        this.classes[name] = {
+            properties: {},
+            methods: {}
+        };
+    }
+
+    createClassProperty(args,util) {
+        var name = args.NAME;
+        var value = args.VALUE;
+        var className = args.CLASS;
+        if (className in this.classes) {
+            this.classes[className].properties[name] = value;
         }
     }
-    createStructProperty(args, util) {
-        let name = String(args.NAME);
-        let value = String(args.VALUE);
-        let struct = String(args.STRUCT);
-        if (this.structs[struct] && !this.structs[struct][name]) {
-            this.structs[struct][name] = value;
+
+    newObject(args,util) {
+        var name = args.NAME;
+        var className = args.CLASS;
+        if (className in this.classes) {
+            this.objects[name] = this.classes[className];
         }
     }
-    newObject(args, util) {
-        let name = String(args.NAME);
-        let struct = String(args.STRUCT);
-        if (this.structs[struct]) {    
-            this.objects[name] = this.structs[struct];
+
+    setObjectProperty(args,util) {
+        var property = args.PROPERTY;
+        var object = args.OBJECT;
+        var value = args.VALUE;
+        if (object in this.objects) {
+            this.objects[object].properties[property] = value;
         }
     }
-    setObjectProperty(args, util) {
-        let property = String(args.PROPERTY);
-        let object = String(args.OBJECT);
-        let value = String(args.VALUE);
-        if (this.objects[object] && this.objects[object][property]) {
-            this.objects[object][property] = value;
+
+    returnObjectProperty(args,util) {
+        var property = args.PROPERTY;
+        var object = args.OBJECT;
+        if (object in this.objects) {
+            return this.objects[object].properties[property];
         }
     }
-    returnObjectProperty(args, util) {
-        let property = String(args.PROPERTY);
-        let object = String(args.OBJECT);
-        if (this.objects[object]) {
-            return this.objects[object][property];
+
+    createClassMethod(args,util) {
+        var name = args.NAME;
+        var className = args.CLASS;
+        if (className in this.classes) {
+            this.classes[className].methods[name] = util.stackFrame;
         }
     }
-    deleteStructs(args, util) {
-        this.structs = {};
+
+    callObjectMethod(args,util) {
+        var name = args.NAME;
+        var object = args.OBJECT;
+        if (object in this.objects) {
+            var method = this.objects[object].methods[name];
+            if (method) {
+                util.startBranch(1,method);
+            }
+        }
     }
-    deleteObjects(args, util) {
+
+    deleteClasses(args,util) {
+        this.classes = {};
+    }
+
+    deleteObjects(args,util) {
         this.objects = {};
     }
-    deleteStruct(args, util) {
-        let name = String(args.NAME);
-        if (this.structs[name]) {
-            delete this.structs[name];
+
+    deleteClass(args,util) {
+        var className = args.CLASS;
+        if (className in this.classes) {
+            delete this.classes[className];
         }
     }
-    deleteObject(args, util) {
-        let name = String(args.NAME);
-        if (this.objects[name]) {
-            delete this.objects[name];
+
+    deleteObject(args,util) {
+        var object = args.OBJECT;
+        if (object in this.objects) {
+            delete this.objects[object];
         }
     }
 }
