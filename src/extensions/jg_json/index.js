@@ -627,7 +627,7 @@ class JgJSONBlocks {
         return JSON.stringify(args.text.split(args.delimeter))
     }
     json_array_join(args) {
-        return validateArray(args.array).join(args.delimeter).array
+        return validateArray(args.array).array.join(args.delimeter).array
     }
 
     json_validate(args) {
