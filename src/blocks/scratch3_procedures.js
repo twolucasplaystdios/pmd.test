@@ -1,4 +1,3 @@
-const Cast = require('../util/cast');
 class Scratch3ProcedureBlocks {
     constructor (runtime) {
         /**
@@ -29,6 +28,7 @@ class Scratch3ProcedureBlocks {
     }
 
     call (args, util) {
+        // const isGlobal = Cast.toBoolean(args.mutation.global);
         const procedureCode = args.mutation.proccode;
         const paramNamesIdsAndDefaults = util.getProcedureParamNamesIdsAndDefaults(procedureCode);
 
@@ -50,7 +50,7 @@ class Scratch3ProcedureBlocks {
                 util.pushParam(paramNames[i], paramDefaults[i]);
             }
         }
-        
+        util.stackFrame.executed = util.currentBlockId;
         util.startProcedure(procedureCode);
     }
 
@@ -62,6 +62,10 @@ class Scratch3ProcedureBlocks {
     argumentReporterStringNumber (args, util) {
         const value = util.getParam(args.VALUE);
         if (value === null) {
+            // tw: support legacy block
+            if (String(args.VALUE).toLowerCase() === 'last key pressed') {
+                return util.ioQuery('keyboard', 'getLastKeyPressed');
+            }
             // When the parameter is not found in the most recent procedure
             // call, the default is always 0.
             return 0;
@@ -72,6 +76,14 @@ class Scratch3ProcedureBlocks {
     argumentReporterBoolean (args, util) {
         const value = util.getParam(args.VALUE);
         if (value === null) {
+            // tw: implement is compiled? and is turbowarp?
+            const lowercaseValue = String(args.VALUE).toLowerCase();
+            if (util.target.runtime.compilerOptions.enabled && lowercaseValue === 'is compiled?') {
+                return true;
+            }
+            if (lowercaseValue === 'is turbowarp?' || lowercaseValue === 'is umi?') {
+                return true;
+            }
             // When the parameter is not found in the most recent procedure
             // call, the default is always 0.
             return 0;
