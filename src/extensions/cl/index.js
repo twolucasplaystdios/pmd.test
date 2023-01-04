@@ -61,7 +61,6 @@ function autoConvert(value) {
 	// Leave as the original value if none of the above work
 	return value;
 }
-
 /*
  * Class for Proto blocks
  * @constructor
@@ -148,7 +147,7 @@ class CloudLink {
 
 	getInfo () {
 		return {
-			"id": 'cl',
+			"id": 'cloudlink',
 			"name": 'CloudLink',
 			"blockIconURI": this.cl_block,
 			"menuIconURI": this.cl_icon,
@@ -1700,4 +1699,15 @@ class CloudLink {
 	};
 };
 
-module.exports = CloudLink;
+(function() {
+	var extensionClass = CloudLink;
+	if (typeof window === "undefined" || !window.vm) {
+		Scratch.extensions.register(new extensionClass());
+		console.log("CloudLink 4.0 loaded. Detecting sandboxed mode, performance will suffer. Please load CloudLink in Unsandboxed mode.");
+	} else {
+		var extensionInstance = new extensionClass(window.vm.extensionManager.runtime);
+		var serviceName = window.vm.extensionManager._registerInternalExtension(extensionInstance);
+		window.vm.extensionManager._loadedExtensions.set(extensionInstance.getInfo().id, serviceName);
+		console.log("CloudLink 4.0 loaded. Detecting unsandboxed mode.");
+	};
+})()
