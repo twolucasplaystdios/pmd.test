@@ -60,6 +60,8 @@ const builtinExtensions = {
     // this is the real jwklong speaking, one word shall be said about this: A N G E R Y
     // Structs: hehe structs for oop (look at c)
     jwStructs: () => require("../extensions/jw_structs"),
+    //mikedev: ghytfhygfvbl
+    cl: () => require("../extensions/cl"),
     // gsa: theyl think ianyourgod did added this but no it was me all along!!!!!!!!!!!!!!!
     // text: text stuff
     text: () => require("../extensions/BetterTextBlocks"),
