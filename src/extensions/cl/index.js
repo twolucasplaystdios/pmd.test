@@ -148,7 +148,7 @@ class CloudLink {
 
 	getInfo () {
 		return {
-			"id": 'cloudlink',
+			"id": 'cl',
 			"name": 'CloudLink',
 			"blockIconURI": this.cl_block,
 			"menuIconURI": this.cl_icon,
