@@ -47,6 +47,8 @@ const builtinExtensions = {
     jwUnite: () => require("../extensions/jw_unite"),
     // jwProto: placeholders, labels, defenitons, we got em
     jwProto: () => require("../extensions/jw_proto"),
+    // jwPostLit: postlit real????
+    jwPostLit: () => require("../extensions/jw_postlit"),
     // jwReflex: vector positioning (UNRELEASED, DO NOT ADD TO GUI)
     jwReflex: () => require("../extensions/jw_reflex"),
     // Blockly 2: a faithful recreation of the original blockly blocks
