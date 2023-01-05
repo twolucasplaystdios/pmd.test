@@ -23,7 +23,7 @@ class jwPostLit {
      */
     getInfo() {
         return {
-            id: 'jwPostlit',
+            id: 'jwPostLit',
             name: 'postLit',
             //blockIconURI: blockIconURI,
             color1: '#14f789',
