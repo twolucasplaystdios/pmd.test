@@ -1221,8 +1221,8 @@ class Runtime extends EventEmitter {
             return this._convertSeparatorForScratchBlocks(blockInfo);
         }
 
-        if (blockInfo.blockType === BlockType.LABLE) 
-            return this._convertLableForScratchBlocks(blockInfo);
+        if (blockInfo.blockType === BlockType.LABEL) 
+            return this._convertLabelForScratchBlocks(blockInfo);
 
         if (blockInfo.blockType === BlockType.BUTTON) {
             return this._convertButtonForScratchBlocks(blockInfo);
@@ -1403,7 +1403,7 @@ class Runtime extends EventEmitter {
      * @returns {ConvertedBlockInfo} - the converted & original block information
      * @private
      */
-    _convertLableForScratchBlocks (blockInfo) {
+    _convertLabelForScratchBlocks (blockInfo) {
         return {
             info: blockInfo,
             xml: `<label text="${blockInfo.text}"></label>`

@@ -163,7 +163,7 @@ class JgJSONBlocks {
                     text: 'json [json] has key [key] ?'
                 },
                 {
-                    blockType: BlockType.LABLE,
+                    blockType: BlockType.LABEL,
                     text: "Arrays"
                 },
                 {
