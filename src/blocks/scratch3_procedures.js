@@ -1,3 +1,4 @@
+const Cast = require('../util/cast');
 class Scratch3ProcedureBlocks {
     constructor(runtime) {
         /**
@@ -24,10 +25,9 @@ class Scratch3ProcedureBlocks {
         // No-op: execute the blocks.
     }
 
-    call(args, util) {
-        if (!util.stackFrame.executed) {
-            const procedureCode = args.mutation.proccode;
-            const paramNamesIdsAndDefaults = util.getProcedureParamNamesIdsAndDefaults(procedureCode);
+    call (args, util) {
+        const procedureCode = args.mutation.proccode;
+        const paramNamesIdsAndDefaults = util.getProcedureParamNamesIdsAndDefaults(procedureCode);
 
             // If null, procedure could not be found, which can happen if custom
             // block is dragged between sprites without the definition.
@@ -65,15 +65,13 @@ class Scratch3ProcedureBlocks {
 
             util.startProcedure(procedureCode);
         }
+        
+        util.startProcedure(procedureCode);
     }
 
     argumentReporterStringNumber(args, util) {
         const value = util.getParam(args.VALUE);
         if (value === null) {
-            // tw: support legacy block
-            if (String(args.VALUE).toLowerCase() === 'last key pressed') {
-                return util.ioQuery('keyboard', 'getLastKeyPressed');
-            }
             // When the parameter is not found in the most recent procedure
             // call, the default is always 0.
             return 0;
@@ -84,14 +82,6 @@ class Scratch3ProcedureBlocks {
     argumentReporterBoolean(args, util) {
         const value = util.getParam(args.VALUE);
         if (value === null) {
-            // tw: implement is compiled? and is turbowarp?
-            const lowercaseValue = String(args.VALUE).toLowerCase();
-            if (util.target.runtime.compilerOptions.enabled && lowercaseValue === 'is compiled?') {
-                return true;
-            }
-            if (lowercaseValue === 'is turbowarp?' || lowercaseValue === 'is penguinmod or turbowarp?') {
-                return true;
-            }
             // When the parameter is not found in the most recent procedure
             // call, the default is always 0.
             return 0;
