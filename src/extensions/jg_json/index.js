@@ -163,13 +163,10 @@ class JgJSONBlocks {
                     text: 'json [json] has key [key] ?'
                 },
                 {
-<<<<<<< HEAD
                     blockType: BlockType.LABEL,
                     text: "Arrays"
                 },
                 {
-=======
->>>>>>> parent of 42990e22 (Update index.js)
                     opcode: 'json_array_validate',
                     blockType: BlockType.BOOLEAN,
                     arguments: {
