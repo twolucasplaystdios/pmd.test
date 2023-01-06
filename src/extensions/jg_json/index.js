@@ -163,10 +163,13 @@ class JgJSONBlocks {
                     text: 'json [json] has key [key] ?'
                 },
                 {
+<<<<<<< HEAD
                     blockType: BlockType.LABEL,
                     text: "Arrays"
                 },
                 {
+=======
+>>>>>>> parent of 42990e22 (Update index.js)
                     opcode: 'json_array_validate',
                     blockType: BlockType.BOOLEAN,
                     arguments: {
@@ -178,7 +181,7 @@ class JgJSONBlocks {
                     text: 'is array [array] valid?'
                 }, 
                 {
-                    opcode: 'json_arraysplit',
+                    opcode: 'json_array_split',
                     blockType: BlockType.REPORTER,
                     arguments: {
                         text: {
@@ -193,7 +196,7 @@ class JgJSONBlocks {
                     text: 'create an array from text [text] with delimeter [delimeter]'
                 }, 
                 {
-                    opcode: 'json_arrayjoin',
+                    opcode: 'json_array_join',
                     blockType: BlockType.REPORTER,
                     arguments: {
                         array: {
@@ -209,7 +212,7 @@ class JgJSONBlocks {
                 }, 
                 "---",
                 {
-                    opcode: 'json_arraypush',
+                    opcode: 'json_array_push',
                     blockType: BlockType.REPORTER,
                     arguments: {
                         array: {
@@ -229,7 +232,7 @@ class JgJSONBlocks {
                 }, 
                 "---",
                 {
-                    opcode: 'json_arraydelete',
+                    opcode: 'json_array_delete',
                     blockType: BlockType.REPORTER,
                     arguments: {
                         array: {
@@ -244,7 +247,7 @@ class JgJSONBlocks {
                     text: 'in array [array] delete [index]'
                 },
                 {
-                    opcode: 'json_arrayreverse',
+                    opcode: 'json_array_reverse',
                     blockType: BlockType.REPORTER,
                     arguments: {
                         array: {
@@ -255,7 +258,7 @@ class JgJSONBlocks {
                     text: 'reverse array [array]'
                 }, 
                 {
-                    opcode: 'json_arrayinsert',
+                    opcode: 'json_array_insert',
                     blockType: BlockType.REPORTER,
                     arguments: {
                         array: {
@@ -278,7 +281,7 @@ class JgJSONBlocks {
                     text: 'in array [array] insert [value] at [index]'
                 },
                 {
-                    opcode: 'json_arrayset',
+                    opcode: 'json_array_set',
                     blockType: BlockType.REPORTER,
                     arguments: {
                         array: {
@@ -302,7 +305,7 @@ class JgJSONBlocks {
                 },  
                 "---",
                 {
-                    opcode: 'json_arrayget',
+                    opcode: 'json_array_get',
                     blockType: BlockType.REPORTER,
                     arguments: {
                         array: {
@@ -317,7 +320,7 @@ class JgJSONBlocks {
                     text: 'in array [array] get [index]'
                 }, 
                 {
-                    opcode: 'json_arrayindexof',
+                    opcode: 'json_array_indexof',
                     blockType: BlockType.REPORTER,
                     arguments: {
                         array: {
@@ -340,7 +343,7 @@ class JgJSONBlocks {
                     text: 'in array [array] get [number] index of [value]'
                 }, 
                 {
-                    opcode: 'json_arraylength',
+                    opcode: 'json_array_length',
                     blockType: BlockType.REPORTER,
                     arguments: {
                         array: {
@@ -351,7 +354,7 @@ class JgJSONBlocks {
                     text: 'length of array [array]'
                 }, 
                 {
-                    opcode: 'json_arraycontains',
+                    opcode: 'json_array_contains',
                     blockType: BlockType.BOOLEAN,
                     arguments: {
                         array: {
@@ -371,7 +374,7 @@ class JgJSONBlocks {
                 }, 
                 "---",
                 {
-                    opcode: 'json_arraygetrange',
+                    opcode: 'json_array_getrange',
                     blockType: BlockType.REPORTER,
                     arguments: {
                         array: {
@@ -391,7 +394,7 @@ class JgJSONBlocks {
                 }, 
                 "---",
                 {
-                    opcode: 'json_arrayisempty',
+                    opcode: 'json_array_isempty',
                     blockType: BlockType.BOOLEAN,
                     arguments: {
                         array: {
@@ -403,7 +406,7 @@ class JgJSONBlocks {
                 }, 
                 "---",
                 {
-                    opcode: 'json_arraylisttoarray',
+                    opcode: 'json_array_listtoarray',
                     blockType: BlockType.REPORTER,
                     arguments: {
                         list: {
@@ -415,7 +418,7 @@ class JgJSONBlocks {
                     text: 'get contents of list [list] as array'
                 },
                 {
-                    opcode: 'json_arraytolist',
+                    opcode: 'json_array_tolist',
                     blockType: BlockType.COMMAND,
                     arguments: {
                         list: {
@@ -507,32 +510,32 @@ class JgJSONBlocks {
         return JSON.stringify(Object.keys(json));
     }
 
-    json_arraylength(args, util) {
+    json_array_length(args, util) {
         const array = validateArray(args.array).array;
 
         return array.length;
     }
 
-    json_arrayisempty(args, util) {
+    json_array_isempty(args, util) {
         const array = validateArray(args.array).array;
 
         return !array.length;
     }
 
-    json_arraycontains(args, util) {
+    json_array_contains(args, util) {
         const array = validateArray(args.array).array;
         const value = args.value;
 
         return array.includes(stringToEqivalint(value));
     }
 
-    json_arrayreverse(args, util) {
+    json_array_reverse(args, util) {
         let array = validateArray(args.array).array;
 
         return JSON.stringify(array.reverse());
     }
 
-    json_arrayindexof(args, util) {
+    json_array_indexof(args, util) {
         const array = validateArray(args.array).array;
         const number = args.number;
         const value = args.value;
@@ -540,7 +543,7 @@ class JgJSONBlocks {
         return array.indexOf(stringToEqivalint(value), number);
     }
 
-    json_arrayset(args, util) {
+    json_array_set(args, util) {
         let array = validateArray(args.array).array;
         const index = args.index;
         const value = args.value;
@@ -550,7 +553,7 @@ class JgJSONBlocks {
         return JSON.stringify(array);
     }
 
-    json_arrayinsert(args, util) {
+    json_array_insert(args, util) {
         let array = validateArray(args.array).array;
         const index = args.index;
         const value = args.value;
@@ -560,14 +563,14 @@ class JgJSONBlocks {
         return JSON.stringify(array);
     }
 
-    json_arrayget(args, util) {
+    json_array_get(args, util) {
         const array = validateArray(args.array).array;
         const index = args.index;
 
         return valueToString(array[index]);
     }
 
-    json_arraygetrange(args, util) {
+    json_array_getrange(args, util) {
         let array = validateArray(args.array).array;
         const index1 = args.index1;
         const index2 = args.index2;
@@ -575,7 +578,7 @@ class JgJSONBlocks {
         return JSON.stringify(array.slice(index1, index2));
     }
 
-    json_arraypush(args, util) {
+    json_array_push(args, util) {
         let array = validateArray(args.array).array;
         const value = args.item;
 
@@ -584,7 +587,7 @@ class JgJSONBlocks {
         return JSON.stringify(array);
     }
 
-    json_arraytolist(args, util) {
+    json_array_tolist(args, util) {
         let list;
         try {
             list = JSON.parse(args.list);
@@ -599,7 +602,7 @@ class JgJSONBlocks {
         })
     }
 
-    json_arraylisttoarray(args, util) {
+    json_array_listtoarray(args, util) {
         let list;
         try {
             list = JSON.parse(args.list);
@@ -613,7 +616,7 @@ class JgJSONBlocks {
         }));
     }
 
-    json_arraydelete(args, util) {
+    json_array_delete(args, util) {
         let array = validateArray(args.array).array
         const index = args.index
 
@@ -622,18 +625,18 @@ class JgJSONBlocks {
         return JSON.stringify(array.filter(x => Boolean(x)))
     }
 
-    json_arraysplit(args) {
+    json_array_split(args) {
         if (validateRegex(args.delimeter)) args.delimeter = new RegExp(args.delimeter)
         return JSON.stringify(args.text.split(args.delimeter))
     }
-    json_arrayjoin(args) {
+    json_array_join(args) {
         return validateArray(args.array).array.join(args.delimeter)
     }
 
     json_validate(args) {
         return validateJSON(args.json).isValid
     }
-    json_arrayvalidate(args) {
+    json_array_validate(args) {
         return validateArray(args.array).isValid
     }
 }
