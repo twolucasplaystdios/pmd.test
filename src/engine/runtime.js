@@ -18,6 +18,7 @@ const StageLayering = require('./stage-layering');
 const Variable = require('./variable');
 const xmlEscape = require('../util/xml-escape');
 const ScratchLinkWebSocket = require('../util/scratch-link-websocket');
+const { validateJSON } = require('../util/json-block-utilities');
 
 // Virtual I/O devices.
 const Clock = require('../io/clock');
@@ -2958,6 +2959,8 @@ class Runtime extends EventEmitter {
      * @return {?Target} Target representing a sprite of the given name.
      */
     getSpriteTargetByName (spriteName) {
+        let json = validateJSON(spriteName)
+        if (json.id) return this.getTargetById(json.id)
         for (let i = 0; i < this.targets.length; i++) {
             const target = this.targets[i];
             if (target.isStage) {
