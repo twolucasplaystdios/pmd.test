@@ -3,7 +3,7 @@ const BlockType = require('../../extension-support/block-type');
 const ArgumentType = require('../../extension-support/argument-type');
 // const Cast = require('../../util/cast');
 
-const prefix = "https://postlit.dev/"
+const prefix = "https://corsproxy.jwklong.repl.co/proxy?url=https://postlit.dev/"
 
 /**
  * Class for PostLit blocks
