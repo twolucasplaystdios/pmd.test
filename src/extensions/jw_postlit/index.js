@@ -56,7 +56,7 @@ class jwPostLit {
     signIn(args, util) {
         const username = String(args.USER)
         const password = String(args.PASS)
-        var response = await fetch("https://postlit.dev/signin/", {
+        var response = fetch("https://postlit.dev/signin/", {
             method: 'POST',
             headers: {
                 'Accept': 'application/json',
@@ -67,7 +67,7 @@ class jwPostLit {
                 password: password
             })
         })
-        var data = await response.json()
+        var data = response.json()
         if (data.success) {
             this.token = data.token
             console.log("zamn it signed in pretty cool, heres the token: " + this.token)
