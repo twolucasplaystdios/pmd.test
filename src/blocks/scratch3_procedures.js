@@ -26,8 +26,9 @@ class Scratch3ProcedureBlocks {
     }
 
     call (args, util) {
-        const procedureCode = args.mutation.proccode;
-        const paramNamesIdsAndDefaults = util.getProcedureParamNamesIdsAndDefaults(procedureCode);
+        if (!util.stackFrame.executed) {
+            const procedureCode = args.mutation.proccode;
+            const paramNamesIdsAndDefaults = util.getProcedureParamNamesIdsAndDefaults(procedureCode);
 
             // If null, procedure could not be found, which can happen if custom
             // block is dragged between sprites without the definition.
@@ -65,8 +66,6 @@ class Scratch3ProcedureBlocks {
 
             util.startProcedure(procedureCode);
         }
-        
-        util.startProcedure(procedureCode);
     }
 
     argumentReporterStringNumber(args, util) {
