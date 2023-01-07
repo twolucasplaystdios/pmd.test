@@ -19,7 +19,10 @@ class jwPostLit {
         this.runtime = runtime;
     }
 
-    token = ''
+    loginData = {
+        username: '',
+        token: ''
+    }
 
     /**
      * @returns {object} metadata for this extension and its blocks.
@@ -32,6 +35,10 @@ class jwPostLit {
             color1: '#14f789',
             color2: '#0fd173',
             blocks: [
+                {
+                    text: "Sign In",
+                    blockType: BlockType.LABEL
+                },
                 {
                     opcode: 'signIn',
                     text: formatMessage({
@@ -51,6 +58,36 @@ class jwPostLit {
                             defaultValue: "password"
                         }
                     }
+                },
+                {
+                    opcode: 'currentUsername',
+                    text: formatMessage({
+                        id: 'jwPostLit.blocks.currentUsername',
+                        default: 'username',
+                        description: 'Username for your postLit account.'
+                    }),
+                    disableMonitor: true,
+                    blockType: BlockType.REPORTER,
+                },
+                {
+                    opcode: 'currentToken',
+                    text: formatMessage({
+                        id: 'jwPostLit.blocks.currentToken',
+                        default: 'token',
+                        description: 'Token for your postLit account.'
+                    }),
+                    disableMonitor: true,
+                    blockType: BlockType.REPORTER,
+                },
+                {
+                    opcode: 'isSignedIn',
+                    text: formatMessage({
+                        id: 'jwPostLit.blocks.isSignedIn',
+                        default: 'signed in?',
+                        description: 'Checks if you are currently signed into a postLit account.'
+                    }),
+                    disableMonitor: true,
+                    blockType: BlockType.BOOLEAN,
                 }
             ]
         };
@@ -73,13 +110,25 @@ class jwPostLit {
                 }
             })
         })
-        console.log(response)
         var data = await response.json()
-        console.log(data)
         if (data.success) {
-            this.token = data.token
-            console.log("zamn it signed in pretty cool, heres the token: " + this.token)
+            this.loginData = {
+                username: username,
+                token: data.token
+            }
         }
+    }
+
+    currentUsername(args, util) {
+        return this.loginData.username
+    }
+
+    currentToken(args, util) {
+        return this.loginData.token
+    }
+
+    isSignedIn(args, util) {
+        return this.loginData.token !== ''
     }
 }
 
