@@ -3,12 +3,8 @@ const BlockType = require('../../extension-support/block-type');
 const ArgumentType = require('../../extension-support/argument-type');
 // const Cast = require('../../util/cast');
 
-const proxy = ""
+const proxy = "https://proxy.jwklong.repl.co"
 const prefix = "https://postlit.dev/"
-
-const fetch = (...args) => import('node-fetch').then(({
-    default: fetch
-}) => fetch(...args));
 
 /**
  * Class for PostLit blocks
