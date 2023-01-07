@@ -6,6 +6,10 @@ const ArgumentType = require('../../extension-support/argument-type');
 const proxy = ""
 const prefix = "https://postlit.dev/"
 
+const fetch = (...args) => import('node-fetch').then(({
+    default: fetch
+}) => fetch(...args));
+
 /**
  * Class for PostLit blocks
  * @constructor
