@@ -171,7 +171,7 @@ class jwPostLit {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({
-                url: prefix + "signin",
+                url: prefix + "post",
                 headers: {
                     token: this.loginData.token
                 },
