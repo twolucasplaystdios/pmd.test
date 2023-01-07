@@ -24,6 +24,8 @@ class jwPostLit {
         token: ''
     }
 
+    latestPost = ''
+
     /**
      * @returns {object} metadata for this extension and its blocks.
      */
@@ -72,7 +74,7 @@ class jwPostLit {
                         description: 'Username for your postLit account.'
                     }),
                     disableMonitor: true,
-                    blockType: BlockType.REPORTER,
+                    blockType: BlockType.REPORTER
                 },
                 {
                     opcode: 'currentToken',
@@ -82,7 +84,7 @@ class jwPostLit {
                         description: 'Token for your postLit account.'
                     }),
                     disableMonitor: true,
-                    blockType: BlockType.REPORTER,
+                    blockType: BlockType.REPORTER
                 },
                 {
                     opcode: 'isSignedIn',
@@ -92,7 +94,7 @@ class jwPostLit {
                         description: 'Checks if you are currently signed into a postLit account.'
                     }),
                     disableMonitor: true,
-                    blockType: BlockType.BOOLEAN,
+                    blockType: BlockType.BOOLEAN
                 },
                 "---",
                 {
@@ -119,6 +121,16 @@ class jwPostLit {
                             defaultValue: "post"
                         }
                     }
+                },
+                {
+                    opcode: 'getLatestPost',
+                    text: formatMessage({
+                        id: 'jwPostLit.blocks.getLatestPost',
+                        default: 'latest post',
+                        description: 'Gets the ID of the latest post made with the create post block.'
+                    }),
+                    disableMonitor: false,
+                    blockType: BlockType.REPORTER
                 }
             ]
         };
@@ -164,7 +176,7 @@ class jwPostLit {
 
     createPost(args, util) {
         const string = String(args.STRING)
-        fetch(proxy, {
+        var response = await fetch(proxy, {
             method: 'POST',
             headers: {
                 'Accept': 'application/json',
@@ -180,6 +192,14 @@ class jwPostLit {
                 }
             })
         })
+        const data = await response.json()
+        if (data.success) {
+            this.latestPost = data.success.split("/")[1]
+        }
+    }
+
+    getLatestPost(args, util) {
+        return this.latestPost
     }
 }
 
