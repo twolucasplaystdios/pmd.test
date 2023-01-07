@@ -93,6 +93,32 @@ class jwPostLit {
                     }),
                     disableMonitor: true,
                     blockType: BlockType.BOOLEAN,
+                },
+                "---",
+                {
+                    opcode: 'categoryPosts',
+                    text: formatMessage({
+                        id: 'jwPostLit.blocks.categoryPosts',
+                        default: 'Posts',
+                        description: 'Blocks to create and get data from posts'
+                    }),
+                    blockType: BlockType.LABEL
+                },
+                {
+                    opcode: 'createPost',
+                    text: formatMessage({
+                        id: 'jwPostLit.blocks.createPost',
+                        default: 'create post [STRING]',
+                        description: 'Create a post.'
+                    }),
+                    disableMonitor: true,
+                    blockType: BlockType.COMMAND,
+                    arguments: {
+                        STRING: {
+                            type: ArgumentType.STRING,
+                            defaultValue: "post"
+                        }
+                    }
                 }
             ]
         };
@@ -134,6 +160,26 @@ class jwPostLit {
 
     isSignedIn(args, util) {
         return this.loginData.token !== ''
+    }
+
+    createPost(args, util) {
+        const string = String(args.STRING)
+        fetch(proxy, {
+            method: 'POST',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                url: prefix + "signin",
+                headers: {
+                    token: this.loginData.token
+                },
+                body: {
+                    content: string
+                }
+            })
+        })
     }
 }
 
