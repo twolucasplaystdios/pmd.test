@@ -174,7 +174,7 @@ class jwPostLit {
         return this.loginData.token !== ''
     }
 
-    createPost(args, util) {
+    async createPost(args, util) {
         const string = String(args.STRING)
         var response = await fetch(proxy, {
             method: 'POST',
