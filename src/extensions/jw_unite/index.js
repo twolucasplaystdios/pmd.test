@@ -141,8 +141,8 @@ class jwUnite {
                     opcode: 'thing_is_text',
                     text: formatMessage({
                         id: 'jwUnite.blocks.thing_is_text',
-                        default: '[TEXT1] has text?',
-                        description: 'Checks if something has text!'
+                        default: '[TEXT1] is text?',
+                        description: 'Checks if something is text!'
                     }),
                     disableMonitor: true,
                     blockType: BlockType.BOOLEAN,
@@ -161,8 +161,8 @@ class jwUnite {
                     opcode: 'thing_is_number',
                     text: formatMessage({
                         id: 'jwUnite.blocks.thing_is_number',
-                        default: '[TEXT1] has a number?',
-                        description: 'Checks if something has a number!'
+                        default: '[TEXT1] is number?',
+                        description: 'Checks if something is a number!'
                     }),
                     disableMonitor: true,
                     blockType: BlockType.BOOLEAN,
@@ -182,7 +182,7 @@ class jwUnite {
                     text: formatMessage({
                         id: 'jwUnite.blocks.if_return_else_return',
                         default: 'if [boolean] is true [TEXT1] is false [TEXT2]',
-                        description: 'Checks if something has a number!'
+                        description: 'Returns a value based on wether or not the boolean is true or false'
                     }),
                     disableMonitor: true,
                     blockType: BlockType.REPORTER,
