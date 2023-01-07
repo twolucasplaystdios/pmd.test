@@ -74,7 +74,7 @@ class jwPostLit {
             })
         })
         console.log(response)
-        var data = response.json()
+        var data = await response.json()
         console.log(data)
         if (data.success) {
             this.token = data.token
