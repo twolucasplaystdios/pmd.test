@@ -126,13 +126,40 @@ class jwPostLit {
                     opcode: 'getLatestPost',
                     text: formatMessage({
                         id: 'jwPostLit.blocks.getLatestPost',
-                        default: 'latest post',
+                        default: 'latest post id',
                         description: 'Gets the ID of the latest post made with the create post block.'
                     }),
                     disableMonitor: false,
                     blockType: BlockType.REPORTER
+                },
+                "---",
+                {
+                    opcode: 'getPost',
+                    text: formatMessage({
+                        id: 'jwPostLit.blocks.getPost',
+                        default: 'get post [ID] [WANTS]',
+                        description: 'Gets some data from a post.'
+                    }),
+                    disableMonitor: true,
+                    blockType: BlockType.REPORTER,
+                    arguments: {
+                        ID: {
+                            type: ArgumentType.STRING,
+                            defaultValue: 'id'
+                        },
+                        WANTS: {
+                            type: ArgumentType.STRING,
+                            defaultValue: 'json',
+                            menu: 'getPostWants'
+                        },
+                    }
                 }
-            ]
+            ],
+            menus: {
+                getPostWants: [
+                    'json'
+                ]
+            }
         };
     }
 
@@ -194,12 +221,41 @@ class jwPostLit {
         })
         const data = await response.json()
         if (data.success) {
-            this.latestPost = data.success.split("/")[1]
+            this.latestPost = data.success.split("/")[2]
         }
     }
 
     getLatestPost(args, util) {
         return this.latestPost
+    }
+
+    async getPost(args, util) {
+        const id = String(args.ID)
+        const wants = String(args.WANTS)
+        var response = await fetch(proxy, {
+            method: 'POST',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                url: prefix + "posts/" + id + "/data",
+                headers: {
+                    cookie: "token="+this.loginData.token
+                },
+                body: {}
+            })
+        })
+        const data = await response.json()
+        if (data.success) {
+            switch (wants) {
+                case 'json':
+                    return JSON.stringify(data)
+                default:
+                    return ''
+            }
+        }
+        return ''
     }
 }
 
