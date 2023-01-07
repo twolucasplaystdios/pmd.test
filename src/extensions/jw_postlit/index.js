@@ -36,7 +36,12 @@ class jwPostLit {
             color2: '#0fd173',
             blocks: [
                 {
-                    text: "Sign In",
+                    opcode: 'categorySignIn',
+                    text: formatMessage({
+                        id: 'jwPostLit.blocks.categorySignIn',
+                        default: 'Sign In',
+                        description: 'Sign in to postLit.'
+                    }),
                     blockType: BlockType.LABEL
                 },
                 {
