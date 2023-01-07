@@ -240,6 +240,7 @@ class jwPostLit {
             },
             body: JSON.stringify({
                 url: prefix + "posts/" + id + "/data",
+                method: 'GET',
                 headers: {
                     cookie: "token="+this.loginData.token
                 },
