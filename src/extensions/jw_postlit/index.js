@@ -3,6 +3,7 @@ const BlockType = require('../../extension-support/block-type');
 const ArgumentType = require('../../extension-support/argument-type');
 // const Cast = require('../../util/cast');
 
+const proxy = ""
 const prefix = "https://postlit.dev/"
 
 /**
@@ -58,15 +59,18 @@ class jwPostLit {
     async signIn(args, util) {
         const username = String(args.USER)
         const password = String(args.PASS)
-        var response = await fetch(prefix + "signin", {
+        var response = await fetch(proxy, {
             method: 'POST',
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({
-                username: username,
-                password: password
+                url: prefix + "signin",
+                body: {
+                    username: username,
+                    password: password
+                }
             })
         })
         var data = response.json()
