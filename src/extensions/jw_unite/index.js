@@ -239,7 +239,7 @@ class jwUnite {
                 {
                     opcode: 'regextest',
                     text: formatMessage({
-                        id: 'jwUnite.blocks.getLettersFromIndexToIndexInText',
+                        id: 'jwUnite.blocks.regextest',
                         default: 'test [text] with regex [reg]',
                         description: 'tests a string to see if its valid for this regex'
                     }),
@@ -249,7 +249,7 @@ class jwUnite {
                         text: {
                             type: ArgumentType.STRING,
                             defaultValue: formatMessage({
-                                id: 'jwUnite.getLettersFromIndexToIndexInText_text',
+                                id: 'jwUnite.regextest_text',
                                 default: 'foo bar',
                                 description: 'the text to test'
                             })
@@ -257,7 +257,7 @@ class jwUnite {
                         reg: {
                             type: ArgumentType.STRING,
                             defaultValue: formatMessage({
-                                id: 'jwUnite.getLettersFromIndexToIndexInText_text',
+                                id: 'jwUnite.regextest_regex',
                                 default: '/foo/g',
                                 description: 'the regex to test the text with'
                             })
@@ -267,7 +267,7 @@ class jwUnite {
                 {
                     opcode: 'regexmatch',
                     text: formatMessage({
-                        id: 'jwUnite.blocks.getLettersFromIndexToIndexInText',
+                        id: 'jwUnite.blocks.regexmatch',
                         default: 'match [text] with regex [reg]',
                         description: 'gets all regex matxhes on a string'
                     }),
@@ -277,7 +277,7 @@ class jwUnite {
                         text: {
                             type: ArgumentType.STRING,
                             defaultValue: formatMessage({
-                                id: 'jwUnite.getLettersFromIndexToIndexInText_text',
+                                id: 'jwUnite.regexmatch_text',
                                 default: 'foo bar',
                                 description: 'the text to test'
                             })
@@ -285,9 +285,45 @@ class jwUnite {
                         reg: {
                             type: ArgumentType.STRING,
                             defaultValue: formatMessage({
-                                id: 'jwUnite.getLettersFromIndexToIndexInText_text',
+                                id: 'jwUnite.regexmatch_regex',
                                 default: '/foo/g',
                                 description: 'the regex to test the text with'
+                            })
+                        }
+                    }
+                },
+                {
+                    opcode: 'replaceAll',
+                    text: formatMessage({
+                        id: 'jwUnite.blocks.replaceAll',
+                        default: 'in [text] replace all [term] with [res]',
+                        description: 'replaces all of somthing with something in a string'
+                    }),
+                    disableMonitor: true,
+                    blockType: BlockType.REPORTER,
+                    arguments: {
+                        text: {
+                            type: ArgumentType.STRING,
+                            defaultValue: formatMessage({
+                                id: 'jwUnite.replaceAll_text',
+                                default: 'foo bar',
+                                description: 'the text to test'
+                            })
+                        },
+                        term: {
+                            type: ArgumentType.STRING,
+                            defaultValue: formatMessage({
+                                id: 'jwUnite.replaceAll_replacy',
+                                default: 'foo',
+                                description: 'what text to replace'
+                            })
+                        },
+                        res: {
+                            type: ArgumentType.STRING,
+                            defaultValue: formatMessage({
+                                id: 'jwUnite.replaceAll_replacer',
+                                default: 'bar',
+                                description: 'the text to replace with'
                             })
                         }
                     }
@@ -643,6 +679,9 @@ class jwUnite {
         const regex = new RegExp(args.reg)
         const matches = args.text.match(regex)
         return JSON.stringify(matches ? matches : [])
+    }
+    replaceAll(args) {
+        return args.text.replaceAll(args.term, args.res)
     }
 }
 
