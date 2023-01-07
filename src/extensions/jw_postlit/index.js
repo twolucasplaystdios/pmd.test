@@ -174,6 +174,7 @@ class jwPostLit {
             },
             body: JSON.stringify({
                 url: prefix + "signin",
+                method: 'POST',
                 body: {
                     username: username,
                     password: password
@@ -211,6 +212,7 @@ class jwPostLit {
             },
             body: JSON.stringify({
                 url: prefix + "post",
+                method: 'POST',
                 headers: {
                     cookie: "token="+this.loginData.token
                 },
@@ -240,7 +242,6 @@ class jwPostLit {
             },
             body: JSON.stringify({
                 url: prefix + "posts/" + id + "/data",
-                method: 'GET',
                 headers: {
                     cookie: "token="+this.loginData.token
                 },
