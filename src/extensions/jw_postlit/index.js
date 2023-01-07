@@ -73,7 +73,9 @@ class jwPostLit {
                 }
             })
         })
+        console.log(response)
         var data = response.json()
+        console.log(data)
         if (data.success) {
             this.token = data.token
             console.log("zamn it signed in pretty cool, heres the token: " + this.token)
