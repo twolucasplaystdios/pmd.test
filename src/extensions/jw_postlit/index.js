@@ -32,8 +32,8 @@ class jwPostLit {
             id: 'jwPostLit',
             name: 'postLit',
             //blockIconURI: blockIconURI,
-            color1: '#14f789',
-            color2: '#0fd173',
+            color2: '#14f789',
+            color1: '#0fd173',
             blocks: [
                 {
                     opcode: 'categorySignIn',
