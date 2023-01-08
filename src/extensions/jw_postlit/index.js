@@ -73,7 +73,7 @@ class jwPostLit {
                         default: 'username',
                         description: 'Username for your postLit account.'
                     }),
-                    disableMonitor: true,
+                    disableMonitor: false,
                     blockType: BlockType.REPORTER
                 },
                 {
@@ -83,7 +83,7 @@ class jwPostLit {
                         default: 'token',
                         description: 'Token for your postLit account.'
                     }),
-                    disableMonitor: true,
+                    disableMonitor: false,
                     blockType: BlockType.REPORTER
                 },
                 {
@@ -93,7 +93,7 @@ class jwPostLit {
                         default: 'signed in?',
                         description: 'Checks if you are currently signed into a postLit account.'
                     }),
-                    disableMonitor: true,
+                    disableMonitor: false,
                     blockType: BlockType.BOOLEAN
                 },
                 "---",
@@ -151,6 +151,38 @@ class jwPostLit {
                             type: ArgumentType.STRING,
                             defaultValue: 'json',
                             menu: 'getPostWants'
+                        },
+                    }
+                },
+                {
+                    opcode: 'likePost',
+                    text: formatMessage({
+                        id: 'jwPostLit.blocks.likePost',
+                        default: 'like post [ID]',
+                        description: 'Like a post.'
+                    }),
+                    disableMonitor: true,
+                    blockType: BlockType.COMMAND,
+                    arguments: {
+                        ID: {
+                            type: ArgumentType.STRING,
+                            defaultValue: 'id'
+                        },
+                    }
+                },
+                {
+                    opcode: 'unlikePost',
+                    text: formatMessage({
+                        id: 'jwPostLit.blocks.unlikePost',
+                        default: 'unlike post [ID]',
+                        description: 'Unlike a post.'
+                    }),
+                    disableMonitor: true,
+                    blockType: BlockType.COMMAND,
+                    arguments: {
+                        ID: {
+                            type: ArgumentType.STRING,
+                            defaultValue: 'id'
                         },
                     }
                 }
@@ -242,7 +274,6 @@ class jwPostLit {
         const id = String(args.ID)
         const wants = String(args.WANTS)
         const url = prefix + "posts/" + id + "/data/"
-        console.log(url)
         var response = await fetch(proxy, {
             method: 'POST',
             headers: {
@@ -257,7 +288,6 @@ class jwPostLit {
             })
         })
         const data = await response.json()
-        console.log(data)
         switch (wants) {
             case 'json':
                 return JSON.stringify(data)
@@ -278,6 +308,48 @@ class jwPostLit {
             default:
                 return ''
         }
+    }
+    
+    likePost(args, util) {
+        const id = String(args.ID)
+        fetch(proxy, {
+            method: 'POST',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            body: {
+                url: prefix + "like",
+                method: "POST",
+                headers: {
+                    cookie: "token="+this.loginData.token
+                },
+                body: {
+                    post: id
+                }
+            }
+        })
+    }
+    
+    unlikePost(args, util) {
+        const id = String(args.ID)
+        fetch(proxy, {
+            method: 'POST',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            body: {
+                url: prefix + "unlike",
+                method: "POST",
+                headers: {
+                    cookie: "token="+this.loginData.token
+                },
+                body: {
+                    post: id
+                }
+            }
+        })
     }
 }
 
