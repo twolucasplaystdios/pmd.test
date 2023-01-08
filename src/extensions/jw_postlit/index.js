@@ -234,7 +234,7 @@ class jwPostLit {
     async getPost(args, util) {
         const id = String(args.ID)
         const wants = String(args.WANTS)
-        const url = prefix + "posts/" + id + "/data"
+        const url = prefix + "posts/" + id + "/data/"
         console.log(url)
         var response = await fetch(proxy, {
             method: 'POST',
