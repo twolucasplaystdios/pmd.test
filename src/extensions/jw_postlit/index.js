@@ -247,7 +247,6 @@ class jwPostLit {
                 headers: {
                     cookie: "token="+this.loginData.token
                 },
-                body: {}
             })
         })
         console.log(await response.text())
