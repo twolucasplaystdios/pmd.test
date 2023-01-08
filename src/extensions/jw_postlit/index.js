@@ -243,7 +243,7 @@ class jwPostLit {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({
-                url: ,
+                url: url,
                 headers: {
                     cookie: "token="+this.loginData.token
                 },
