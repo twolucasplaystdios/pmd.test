@@ -234,6 +234,8 @@ class jwPostLit {
     async getPost(args, util) {
         const id = String(args.ID)
         const wants = String(args.WANTS)
+        const url = prefix + "posts/" + id + "/data"
+        console.log(url)
         var response = await fetch(proxy, {
             method: 'POST',
             headers: {
@@ -241,14 +243,16 @@ class jwPostLit {
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({
-                url: prefix + "posts/" + id + "/data",
+                url: ,
                 headers: {
                     cookie: "token="+this.loginData.token
                 },
                 body: {}
             })
         })
+        console.log(await response.text())
         const data = await response.json()
+        console.log(data)
         if (data.success) {
             switch (wants) {
                 case 'json':
