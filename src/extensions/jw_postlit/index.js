@@ -157,7 +157,14 @@ class jwPostLit {
             ],
             menus: {
                 getPostWants: [
-                    'json'
+                    'json',
+                    'author',
+                    'content',
+                    'time',
+                    'comments',
+                    'likes',
+                    'likers',
+                    'reposts'
                 ]
             }
         };
@@ -254,6 +261,20 @@ class jwPostLit {
         switch (wants) {
             case 'json':
                 return JSON.stringify(data)
+            case 'author':
+                return data.author
+            case 'content':
+                return data.content
+            case 'time':
+                return data.time
+            case 'comments':
+                return data.comments
+            case 'likes':
+                return (data.likes || []).length
+            case 'likers':
+                return JSON.stringify(data.likes || [])
+            case 'reposts':
+                return data.reposts || 0
             default:
                 return ''
         }
