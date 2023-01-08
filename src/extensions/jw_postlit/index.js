@@ -249,7 +249,6 @@ class jwPostLit {
                 },
             })
         })
-        console.log(await response.text())
         const data = await response.json()
         console.log(data)
         if (data.success) {
