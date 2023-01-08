@@ -251,15 +251,12 @@ class jwPostLit {
         })
         const data = await response.json()
         console.log(data)
-        if (data.success) {
-            switch (wants) {
-                case 'json':
-                    return JSON.stringify(data)
-                default:
-                    return ''
-            }
+        switch (wants) {
+            case 'json':
+                return JSON.stringify(data)
+            default:
+                return ''
         }
-        return ''
     }
 }
 
