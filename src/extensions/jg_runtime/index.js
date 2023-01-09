@@ -181,7 +181,7 @@ class JgRuntimeBlocks {
     }
     addCostumeUrl(args, util) {
         fetch(args.URL, { mode: 'no-cors' }).then(res => res.arrayBuffer().then(buffer => {
-            const type = res.headers.keys('content-type')
+            const type = res.headers.keys()
             for (const k in Array.from(type)) {
                 console.log(k)
             }
