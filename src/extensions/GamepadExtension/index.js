@@ -62,11 +62,11 @@ const DEADZONE = 0.1;
         blocks: [
           {
             opcode: 'gamepadConnected',
-            blockType: Scratch.BlockType.BOOLEAN,
+            blockType: BlockType.BOOLEAN,
             text: 'is gamepad [pad] connected?',
             arguments: {
               pad: {
-                type: Scratch.ArgumentType.NUMBER,
+                type: ArgumentType.NUMBER,
                 defaultValue: '1',
                 menu: 'padMenu'
               }
@@ -74,16 +74,16 @@ const DEADZONE = 0.1;
           },
           {
             opcode: 'buttonDown',
-            blockType: Scratch.BlockType.BOOLEAN,
+            blockType: BlockType.BOOLEAN,
             text: 'button [b] of pad [i] pressed?',
             arguments: {
               b: {
-                type: Scratch.ArgumentType.NUMBER,
+                type: ArgumentType.NUMBER,
                 defaultValue: '1',
                 menu: 'buttonMenu'
               },
               i: {
-                type: Scratch.ArgumentType.NUMBER,
+                type: ArgumentType.NUMBER,
                 defaultValue: '1',
                 menu: 'padMenu'
               }
@@ -91,16 +91,16 @@ const DEADZONE = 0.1;
           },
           {
             opcode: 'axisValue',
-            blockType: Scratch.BlockType.REPORTER,
+            blockType: BlockType.REPORTER,
             text: 'value of axis [b] on pad [i]',
             arguments: {
               b: {
-                type: Scratch.ArgumentType.NUMBER,
+                type: ArgumentType.NUMBER,
                 defaultValue: '1',
                 menu: 'axisMenu'
               },
               i: {
-                type: Scratch.ArgumentType.NUMBER,
+                type: ArgumentType.NUMBER,
                 defaultValue: '1',
                 menu: 'padMenu'
               },
@@ -111,16 +111,16 @@ const DEADZONE = 0.1;
 
           {
             opcode: 'axisDirection',
-            blockType: Scratch.BlockType.REPORTER,
+            blockType: BlockType.REPORTER,
             text: 'direction of axes [axis] on pad [pad]',
             arguments: {
               axis: {
-                type: Scratch.ArgumentType.NUMBER,
+                type: ArgumentType.NUMBER,
                 defaultValue: '1',
                 menu: 'axesGroupMenu'
               },
               pad: {
-                type: Scratch.ArgumentType.NUMBER,
+                type: ArgumentType.NUMBER,
                 defaultValue: '1',
                 menu: 'padMenu'
               }
@@ -128,16 +128,16 @@ const DEADZONE = 0.1;
           },
           {
             opcode: 'axisMagnitude',
-            blockType: Scratch.BlockType.REPORTER,
+            blockType: BlockType.REPORTER,
             text: 'magnitude of axes [axis] on pad [pad]',
             arguments: {
               axis: {
-                type: Scratch.ArgumentType.NUMBER,
+                type: ArgumentType.NUMBER,
                 defaultValue: '1',
                 menu: 'axesGroupMenu'
               },
               pad: {
-                type: Scratch.ArgumentType.NUMBER,
+                type: ArgumentType.NUMBER,
                 defaultValue: '1',
                 menu: 'padMenu'
               }
@@ -147,20 +147,20 @@ const DEADZONE = 0.1;
           /*
           {
             opcode: 'buttonPressedReleased',
-            blockType: Scratch.BlockType.HAT,
+            blockType: BlockType.HAT,
             text: 'button [b] [pr] of pad [i]',
             arguments: {
               b: {
-                type: Scratch.ArgumentType.NUMBER,
+                type: ArgumentType.NUMBER,
                 defaultValue: '1'
               },
               pr: {
-                type: Scratch.ArgumentType.NUMBER,
+                type: ArgumentType.NUMBER,
                 defaultValue: '1',
                 menu: 'pressReleaseMenu'
               },
               i: {
-                type: Scratch.ArgumentType.NUMBER,
+                type: ArgumentType.NUMBER,
                 defaultValue: '1',
                 menu: 'padMenu'
               },
@@ -169,15 +169,15 @@ const DEADZONE = 0.1;
 
           {
             opcode: 'axisMoved',
-            blockType: Scratch.BlockType.HAT,
+            blockType: BlockType.HAT,
             text: 'axis [b] of pad [i] moved',
             arguments: {
               b: {
-                type: Scratch.ArgumentType.NUMBER,
+                type: ArgumentType.NUMBER,
                 defaultValue: '1'
               },
               i: {
-                type: Scratch.ArgumentType.NUMBER,
+                type: ArgumentType.NUMBER,
                 defaultValue: '1',
                 menu: 'padMenu'
               },
@@ -189,23 +189,23 @@ const DEADZONE = 0.1;
 
           {
             opcode: 'rumble',
-            blockType: Scratch.BlockType.COMMAND,
+            blockType: BlockType.COMMAND,
             text: 'rumble strong [s] and weak [w] for [t] sec. on pad [i]',
             arguments: {
               s: {
-                type: Scratch.ArgumentType.NUMBER,
+                type: ArgumentType.NUMBER,
                 defaultValue: '0.25'
               },
               w: {
-                type: Scratch.ArgumentType.NUMBER,
+                type: ArgumentType.NUMBER,
                 defaultValue: '0.5'
               },
               t: {
-                type: Scratch.ArgumentType.NUMBER,
+                type: ArgumentType.NUMBER,
                 defaultValue: '0.25'
               },
               i: {
-                type: Scratch.ArgumentType.NUMBER,
+                type: ArgumentType.NUMBER,
                 defaultValue: '1',
                 menu: 'padMenu'
               },
