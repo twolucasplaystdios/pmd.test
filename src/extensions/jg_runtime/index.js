@@ -184,9 +184,8 @@ class JgRuntimeBlocks {
             if (!(
                 (blob.type === 'image/png') || 
                 (blob.type === 'image/svg+xml')
-            )) throw new Error('invalid mime type: '+blob.type)
+            )) throw new Error('invalid mime type: "'+blob.type+'"')
             
-
             const assetType = blob.type === 'image/png'
                 ? this.runtime.storage.AssetType.ImageBitmap 
                 : this.runtime.storage.AssetType.ImageVector
@@ -194,9 +193,10 @@ class JgRuntimeBlocks {
             const dataType = blob.type === 'image/png' 
                 ? this.runtime.storage.DataFormat.PNG 
                 : this.runtime.storage.DataFormat.SVG
-
+            
             console.log(blob)
-            blob.arrayBuffer().then(buffer => {
+            blob.arrayBuffer()
+            .then(buffer => {
                 console.log(buffer)
                 const asset = this.runtime.storage.createAsset(assetType, dataType, buffer, null, true)
                 loadCostumeFromAsset({asset: asset}, this.runtime, 3)
