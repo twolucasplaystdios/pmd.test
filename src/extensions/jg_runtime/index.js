@@ -1,7 +1,7 @@
 const formatMessage = require('format-message');
 const BlockType = require('../../extension-support/block-type');
 const ArgumentType = require('../../extension-support/argument-type');
-const {loadCostumeFromAsset} = require('../../import/load-costume.js');
+const {loadCostume} = require('../../import/load-costume.js');
 // const Cast = require('../../util/cast');
 
 /**
@@ -194,12 +194,11 @@ class JgRuntimeBlocks {
                 ? this.runtime.storage.DataFormat.PNG 
                 : this.runtime.storage.DataFormat.SVG
             
-            console.log(blob)
             blob.arrayBuffer()
             .then(buffer => {
-                console.log(buffer)
                 const asset = this.runtime.storage.createAsset(assetType, dataType, buffer, null, true)
-                loadCostumeFromAsset({asset: asset}, this.runtime, 3)
+                const name = asset.assetId + '.' + asset.dataFormat
+                loadCostume(name, {asset: asset}, this.runtime, 3)
             })
             .catch(err => {
                 console.error('failed to load costume because: ' + err)
