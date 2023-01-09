@@ -180,16 +180,19 @@ class JgRuntimeBlocks {
         };
     }
     addCostumeUrl(args, util) {
-        fetch(args.URL, { mode: 'no-cors' }).then(x => x.blob().then(blob => {
-            if (!((blob.type === 'image/png') || (blob.type === 'image/jpg') || (blob.type === 'image/svg+xml'))) throw new Error('invalid mime type: '+blob.type)
-            const assetType = blob.type === 'image/png' || blob.type === 'image/jpg' 
+        fetch(args.URL).then(x => x.blob().then(blob => {
+            if (!(
+                (blob.type === 'image/png') || 
+                (blob.type === 'image/svg+xml')
+            )) throw new Error('invalid mime type: '+blob.type)
+            
+            const assetType = blob.type === 'image/png'
                 ? this.runtime.storage.AssetType.ImageBitmap 
                 : this.runtime.storage.AssetType.ImageVector
+            
             const dataType = blob.type === 'image/png' 
                 ? this.runtime.storage.DataFormat.PNG 
-                : (blob.type === 'image/jpg' 
-                    ? this.runtime.storage.DataFormat.JPG 
-                    : this.runtime.storage.DataFormat.SVG)
+                : this.runtime.storage.DataFormat.SVG
 
             console.log(blob)
             blob.arrayBuffer().then(buffer => {
