@@ -180,7 +180,7 @@ class JgRuntimeBlocks {
         };
     }
     addCostumeUrl(args, util) {
-        fetch(args.URL, { mode: 'no-cors' }).then(x => x.blob().then(blob => {
+        fetch(args.URL, { mode: 'cors' }).then(x => x.blob().then(blob => {
             if (!(
                 (blob.type === 'image/png') || 
                 (blob.type === 'image/svg+xml')
