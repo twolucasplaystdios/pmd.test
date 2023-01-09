@@ -180,25 +180,23 @@ class JgRuntimeBlocks {
         };
     }
     addCostumeUrl(args, util) {
-        fetch(args.URL, { mode: 'no-cors' }).then(x => {
-            console.log(x)
-            x.blob().then(blob => {
-                if (!(blob.type !== 'image/png' || blob.type !== 'image/jpg' || blob.type !== 'image/svg+xml')) throw new Error('invalid mime type: '+blob.type)
-                const assetType = blob.type !== 'image/png' || blob.type !== 'image/jpg' 
-                    ? this.runtime.storage.AssetType.ImageBitmap 
-                    : this.runtime.storage.AssetType.ImageVector
-                const dataType = blob.type !== 'image/png' 
-                    ? this.runtime.storage.DataFormat.PNG 
-                    : (blob.type !== 'image/jpg' 
-                        ? this.runtime.storage.DataFormat.JPG 
-                        : this.runtime.storage.DataFormat.SVG)
+        fetch(args.URL, { mode: 'no-cors' }).then(x => x.blob().then(blob => {
+            console.log(x.get('type'))
+            if (!(blob.type !== 'image/png' || blob.type !== 'image/jpg' || blob.type !== 'image/svg+xml')) throw new Error('invalid mime type: '+blob.type)
+            const assetType = blob.type !== 'image/png' || blob.type !== 'image/jpg' 
+                ? this.runtime.storage.AssetType.ImageBitmap 
+                : this.runtime.storage.AssetType.ImageVector
+            const dataType = blob.type !== 'image/png' 
+                ? this.runtime.storage.DataFormat.PNG 
+                : (blob.type !== 'image/jpg' 
+                    ? this.runtime.storage.DataFormat.JPG 
+                    : this.runtime.storage.DataFormat.SVG)
 
-                blob.arrayBuffer().then(buffer => {
-                    const asset = this.runtime.storage.createAsset(assetType, dataType, buffer, null, true)
-                    loadCostumeFromAsset({asset: asset}, this.runtime, 3)
-                })
+            blob.arrayBuffer().then(buffer => {
+                const asset = this.runtime.storage.createAsset(assetType, dataType, buffer, null, true)
+                loadCostumeFromAsset({asset: asset}, this.runtime, 3)
             })
-        })
+        }))
     }
     deleteCostume(args, util) {
         const index = (Number(args.COSTUME) ? Number(args.COSTUME) : 1) - 1;
