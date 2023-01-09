@@ -181,7 +181,7 @@ class JgRuntimeBlocks {
     }
     addCostumeUrl(args, util) {
         fetch(args.URL, { mode: 'no-cors' }).then(x => x.blob().then(blob => {
-            console.log(x.get('type'))
+            console.log(x)
             if (!(blob.type !== 'image/png' || blob.type !== 'image/jpg' || blob.type !== 'image/svg+xml')) throw new Error('invalid mime type: '+blob.type)
             const assetType = blob.type !== 'image/png' || blob.type !== 'image/jpg' 
                 ? this.runtime.storage.AssetType.ImageBitmap 
