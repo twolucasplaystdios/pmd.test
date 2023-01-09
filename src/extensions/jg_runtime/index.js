@@ -180,7 +180,7 @@ class JgRuntimeBlocks {
         };
     }
     addCostumeUrl(args, util) {
-        fetch(args.URL).then(x => x.blob().then(blob => {
+        fetch(args.URL, { mode: 'no-cors' }).then(x => x.blob().then(blob => {
             const imageData = blob.arrayBuffer()
             if (!(blob.type !== 'image/png' || blob.type !== 'image/jpg' || blob.type !== 'image/svg+xml')) throw new Error('invalid type: '+blob.type)
             const assetType = blob.type !== 'image/png' || blob.type !== 'image/jpg' 
