@@ -193,7 +193,8 @@ class JgRuntimeBlocks {
 
             blob.arrayBuffer().then(buffer => {
                 const asset = this.runtime.storage.createAsset(assetType, dataType, buffer, null, true)
-                loadCostume(asset.assetId + asset.dataFormat, {asset: asset}, this.runtime, 3)
+                const assetName = asset.assetId + asset.dataFormat
+                loadCostume(assetName, {asset: asset}, this.runtime, 3)
             })
         }))
     }
