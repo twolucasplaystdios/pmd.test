@@ -1,7 +1,7 @@
 const formatMessage = require('format-message');
 const BlockType = require('../../extension-support/block-type');
 const ArgumentType = require('../../extension-support/argument-type');
-const {loadCostume} = require('../../import/load-costume.js');
+const {loadCostumeFromAsset} = require('../../import/load-costume.js');
 // const Cast = require('../../util/cast');
 
 /**
@@ -193,8 +193,7 @@ class JgRuntimeBlocks {
 
             blob.arrayBuffer().then(buffer => {
                 const asset = this.runtime.storage.createAsset(assetType, dataType, buffer, null, true)
-                const assetName = asset.assetId + '.' + asset.dataFormat
-                loadCostume(assetName, {asset: asset}, this.runtime, 3)
+                loadCostumeFromAsset({asset: asset}, this.runtime, 3)
             })
         }))
     }
