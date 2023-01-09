@@ -180,22 +180,20 @@ class JgRuntimeBlocks {
         };
     }
     addCostumeUrl(args, util) {
-        fetch(args.URL, { mode: 'no-cors' }).then(x => x.blob().then(blob => {
-            console.log(x.headers.get('type'))
-            if (!(blob.type !== 'image/png' || blob.type !== 'image/jpg' || blob.type !== 'image/svg+xml')) throw new Error('invalid mime type: '+blob.type)
-            const assetType = blob.type !== 'image/png' || blob.type !== 'image/jpg' 
+        fetch(args.URL, { mode: 'no-cors' }).then(res => res.arrayBuffer().then(buffer => {
+            const type = res.headers.get('content-type')
+            if (!(type !== 'image/png' || type !== 'image/jpg' || type !== 'image/svg+xml')) throw new Error('invalid mime type: '+blob.type)
+            const assetType = type !== 'image/png' || type !== 'image/jpg' 
                 ? this.runtime.storage.AssetType.ImageBitmap 
                 : this.runtime.storage.AssetType.ImageVector
-            const dataType = blob.type !== 'image/png' 
+            const dataType = type !== 'image/png' 
                 ? this.runtime.storage.DataFormat.PNG 
-                : (blob.type !== 'image/jpg' 
+                : (type !== 'image/jpg' 
                     ? this.runtime.storage.DataFormat.JPG 
                     : this.runtime.storage.DataFormat.SVG)
 
-            blob.arrayBuffer().then(buffer => {
-                const asset = this.runtime.storage.createAsset(assetType, dataType, buffer, null, true)
-                loadCostumeFromAsset({asset: asset}, this.runtime, 3)
-            })
+            const asset = this.runtime.storage.createAsset(assetType, dataType, buffer, null, true)
+            loadCostumeFromAsset({asset: asset}, this.runtime, 3)
         }))
     }
     deleteCostume(args, util) {
