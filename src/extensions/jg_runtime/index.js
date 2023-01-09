@@ -181,9 +181,9 @@ class JgRuntimeBlocks {
     }
     addCostumeUrl(args, util) {
         fetch(args.URL, { mode: 'no-cors' }).then(res => res.arrayBuffer().then(buffer => {
-            const type = res.headers.entries('content-type')
-            for (const v in type) {
-                console.log(v)
+            const type = res.headers.keys('content-type')
+            for (let k = 'nah'; k !== null; k = type.next()) {
+                console.log(k)
             }
             if (!(type !== 'image/png' || type !== 'image/jpg' || type !== 'image/svg+xml')) throw new Error('invalid mime type: '+blob.type)
             const assetType = type !== 'image/png' || type !== 'image/jpg' 
