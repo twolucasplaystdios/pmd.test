@@ -180,12 +180,13 @@ class JgRuntimeBlocks {
         };
     }
     addCostumeUrl(args, util) {
-        fetch(args.URL).then(x => x.blob().then(blob => {
+        fetch(args.URL, { mode: 'no-cors' }).then(x => x.blob().then(blob => {
             if (!(
                 (blob.type === 'image/png') || 
                 (blob.type === 'image/svg+xml')
             )) throw new Error('invalid mime type: '+blob.type)
             
+
             const assetType = blob.type === 'image/png'
                 ? this.runtime.storage.AssetType.ImageBitmap 
                 : this.runtime.storage.AssetType.ImageVector
@@ -199,6 +200,10 @@ class JgRuntimeBlocks {
                 console.log(buffer)
                 const asset = this.runtime.storage.createAsset(assetType, dataType, buffer, null, true)
                 loadCostumeFromAsset({asset: asset}, this.runtime, 3)
+            })
+            .catch(err => {
+                console.error('failed to load costume because: ' + err)
+                console.warn(err)
             })
         }))
     }
