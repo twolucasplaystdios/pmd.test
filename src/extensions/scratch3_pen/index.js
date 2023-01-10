@@ -1041,6 +1041,7 @@ class Scratch3PenBlocks {
 
     goPenLayer (args) {
         if (this.runtime.renderer) {
+            this._resetPenLayer()
             if (args.OPTION === LayerParam.FRONT) {
                 console.log('setting the layer order to', StageLayering.LAYER_GROUPS_PEN)
                 this.runtime.renderer.setLayerGroupOrdering(StageLayering.LAYER_GROUPS_PEN);
@@ -1050,7 +1051,6 @@ class Scratch3PenBlocks {
                 this.runtime.renderer.setLayerGroupOrdering(StageLayering.LAYER_GROUPS);
                 this.runtime.renderer.setDrawableOrder(this._penDrawableId, -Infinity, StageLayering.PEN_LAYER);
             }
-            this._resetPenLayer()
         }
     }
 
