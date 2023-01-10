@@ -167,8 +167,8 @@ class Scratch3PenBlocks {
             this.runtime.renderer.updateDrawableSkinId(this._penDrawableId, this._penSkinId);
 
             this.bitmapCanvas = document.createElement('canvas');
-            this.bitmapCanvas.width = 480;
-            this.bitmapCanvas.height = 360;
+            this.bitmapCanvas.width = this.runtime.stageWidth;
+            this.bitmapCanvas.height = this.runtime.stageHeight;
             this.bitmapSkinID = this.runtime.renderer.createBitmapSkin(this.bitmapCanvas, 1);
             this.bitmapDrawableID = this.runtime.renderer.createDrawable(StageLayering.PEN_LAYER);
             this.runtime.renderer.updateDrawableSkinId(this.bitmapDrawableID, this.bitmapSkinID);

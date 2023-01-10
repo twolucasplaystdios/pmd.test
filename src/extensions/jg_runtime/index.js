@@ -180,7 +180,7 @@ class JgRuntimeBlocks {
         };
     }
     addCostumeUrl(args, util) {
-        fetch("https://api.allorigins.wim/raw?url=${encodeURIComponent(String(args.URL))}", { method: 'GET' }).then(x => x.blob().then(blob => {
+        fetch(args.URL, { method: 'GET' }).then(x => x.blob().then(blob => {
             if (!(
                 (blob.type === 'image/png') || 
                 (blob.type === 'image/svg+xml')
