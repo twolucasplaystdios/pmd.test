@@ -340,7 +340,7 @@ class Scratch3PenBlocks {
 
     _resetPenLayer() {
         this._penSkinId = -1
-        this._bitmapCanvas.remove()
+        this.bitmapCanvas.remove()
         this._getPenLayerID()
     }
 
