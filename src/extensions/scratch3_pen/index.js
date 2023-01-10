@@ -338,6 +338,12 @@ class Scratch3PenBlocks {
         return 1.0 - (transparency / 100.0);
     }
 
+    _resetPenLayer() {
+        this._penSkinId = -1
+        this._bitmapCanvas.remove()
+        this._getPenLayerID()
+    }
+
     /**
      * @returns {object} metadata for this extension and its blocks.
      */
@@ -1035,15 +1041,14 @@ class Scratch3PenBlocks {
 
     goPenLayer (args) {
         if (this.runtime.renderer) {
+            this._resetPenLayer()
             if (args.OPTION === LayerParam.FRONT) {
                 console.log('setting the layer order to', StageLayering.LAYER_GROUPS_PEN)
                 this.runtime.renderer.setLayerGroupOrdering(StageLayering.LAYER_GROUPS_PEN);
-                this._getPenLayerID()
                 this.runtime.renderer.setDrawableOrder(this._penDrawableId, Infinity, StageLayering.PEN_LAYER);
-            } else if (args.OPTION === LayerParam.BACK) {
+            } else {
                 console.log('setting the layer order to', StageLayering.LAYER_GROUPS)
                 this.runtime.renderer.setLayerGroupOrdering(StageLayering.LAYER_GROUPS);
-                this._getPenLayerID()
                 this.runtime.renderer.setDrawableOrder(this._penDrawableId, -Infinity, StageLayering.PEN_LAYER);
             }
         }
