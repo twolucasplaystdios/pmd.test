@@ -9,6 +9,9 @@ class text {
          * @type {Runtime}
          */
         this.runtime = runtime;
+        this.alignment = ['center', 'center']
+        this.font = 'Arial'
+        this.size = '28px'
     }
     getInfo () {
         return {
@@ -16,14 +19,47 @@ class text {
             name: 'Better Text Engine',
             blocks: [
                 {
-                    opcode: 'setText',
+                    opcode: 'setFont',
+                    text: 'set font to [font]',
+                    blockType: BlockType.COMMAND,
+                    arguments: {
+                        font: {
+                            type: ArgumentType.STRING,
+                            menu: 'FONT',
+                            defaultValue: 'Arial'
+                        }
+                    }
+                },
+                {
+                    opcode: 'setHorizAlignment',
+                    text: 'set the horizontal alignment to [align]',
+                    blockType: BlockType.COMMAND,
+                    arguments: {
+                        align: {
+                            type: ArgumentType.STRING,
+                            menu: 'ALIGNHORIZ'
+                        }
+                    }
+                },
+                {
+                    opcode: 'setVertAlignment',
+                    text: 'set the vertical alignment to [align]',
+                    blockType: BlockType.COMMAND,
+                    arguments: {
+                        align: {
+                            type: ArgumentType.STRING,
+                            menu: 'ALIGNVERT'
+                        }
+                    }
+                },
+                {
+                    opcode: 'displayText',
                     text: 'print text [TEXT]',
                     blockType: BlockType.COMMAND,
                     arguments: {
                         TEXT: {
                             type: ArgumentType.STRING,
-                            menu: 'FONT',
-                            //defaultValue: 'Hello World'
+                            defaultValue: 'Hello World'
                         }
                     }
                 }
@@ -33,7 +69,23 @@ class text {
                     items: 'getAllFonts',
                     acceptReporters: true
                 },
-                ALIGN: {
+                ALIGNVERT: {
+                    items: [
+                        {
+                            text: 'up',
+                            value: 'up'
+                        }, 
+                        {
+                            text: 'center',
+                            value: 'center'
+                        }, 
+                        {
+                            text: 'down',
+                            value: 'down'
+                        }
+                    ]
+                },
+                ALIGNHORIZ: {
                     items: [
                         {
                             text: 'left',
@@ -67,30 +119,18 @@ class text {
 
         return res
     }
-    setText (args, util) {
-        const textState = this._getTextState(util.target);
-
-        textState.text = this._formatText(args.TEXT);
-        textState.visible = true;
-        textState.animating = false;
-
-         // Yield until the next tick.
-
-
-        
+    setFont(args, util) {
+        if (!document.fonts.check(this.size+' '+args.font)) return
+        this.font = args.font
     }
-    clearText (args, util) {
-        const target = util.target;
-
-        const textState = this._getTextState(target);
-
-        textState.visible = false; // Set state so that clones can know not to render text
-
-        textState.animating = false;
-        const costume = target.getCostumes()[target.currentCostume];
-         // Yield until the next tick.
-
-        
+    setHorizAlignment(args, util) {
+        this.alignment[0] = args.align
+    }
+    setVertAlignment(args, util) {
+        this.alignment[1] = args.align
+    }
+    displayText(args, util) {
+        console.log(this.font, this.alignment, args)
     }
 }
 
