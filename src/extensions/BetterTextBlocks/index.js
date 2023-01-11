@@ -22,13 +22,17 @@ class text {
                     arguments: {
                         TEXT: {
                             type: ArgumentType.STRING,
-                            defaultValue: 'Hello World'
+                            menu: 'FONT',
+                            //defaultValue: 'Hello World'
                         }
                     }
                 }
             ],
             menus: {
-                FONT: 'getAllFonts',
+                FONT: {
+                    items: 'getAllFonts',
+                    acceptReporters: true
+                },
                 ALIGN: {
                     items: [
                         {
