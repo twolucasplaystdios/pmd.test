@@ -55,7 +55,15 @@ class text {
 
     getAllFonts() {
         let fonts = document.fonts.values()
-        for (let font = fonts.next(); !font.done; font = fonts.next()) console.log(font)
+        let res = []
+        let font = fonts.next()
+        while (!font.done) {
+            console.log(font)
+            res.push(String(font))
+            font = fonts.next()
+        }
+
+        return res
     }
     setText (args, util) {
         const textState = this._getTextState(util.target);
