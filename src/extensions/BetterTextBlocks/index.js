@@ -58,8 +58,10 @@ class text {
         let res = []
         let font = fonts.next()
         while (!font.done) {
-            console.log(font)
-            res.push(String(font))
+            res.push({
+                text: font.value.family,
+                value: font.value.family
+            })
             font = fonts.next()
         }
 
