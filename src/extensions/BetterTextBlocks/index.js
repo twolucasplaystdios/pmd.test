@@ -54,7 +54,7 @@ class text {
     }
 
     getAllFonts() {
-        let fonts = documents.fonts.values()
+        let fonts = document.fonts.values()
         for (let font = fonts.next(); !font.done; font = fonts.next()) console.log(font)
     }
     setText (args, util) {
