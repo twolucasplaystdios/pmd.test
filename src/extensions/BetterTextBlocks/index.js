@@ -1,5 +1,6 @@
 const BlockType = require('../../extension-support/block-type');
 const ArgumentType = require('../../extension-support/argument-type');
+const Looks = require('../../blocks/scratch3_looks');
 
 class text {
     constructor (runtime){
@@ -8,11 +9,20 @@ class text {
          * @type {Runtime}
          */
         this.runtime = runtime;
-        this.defaults = runtime.renderer.getTextBubbleProps()
+        const { skinId } = this._getBubbleState(runtime._editingTarget)
+        this.defaults = runtime.renderer.getTextBubbleProps(skinId)
     }
 
     _doesFontSuport(size, font) {
         return document.fonts.check(size+'px '+font)
+    }
+    _getBubbleState (target) {
+        let bubbleState = target.getCustomState(Looks.STATE_KEY);
+        if (!bubbleState) {
+            bubbleState = Clone.simple(Looks.DEFAULT_BUBBLE_STATE);
+            target.setCustomState(Looks.STATE_KEY, bubbleState);
+        }
+        return bubbleState;
     }
 
     getInfo () {
