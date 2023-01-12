@@ -8,9 +8,6 @@ class text {
          * @type {Runtime}
          */
         this.runtime = runtime;
-        this.alignment = ['center', 'center']
-        this.font = 'Arial'
-        this.size = '28px'
     }
     getInfo () {
         return {
