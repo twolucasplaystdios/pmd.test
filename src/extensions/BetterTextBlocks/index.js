@@ -8,7 +8,13 @@ class text {
          * @type {Runtime}
          */
         this.runtime = runtime;
+        this.defaults = runtime.renderer.getTextBubbleProps()
     }
+
+    _doesFontSuport(size, font) {
+        return document.fonts.check(size+'px '+font)
+    }
+
     getInfo () {
         return {
             id: 'text',
@@ -22,29 +28,7 @@ class text {
                         font: {
                             type: ArgumentType.STRING,
                             menu: 'FONT',
-                            defaultValue: 'Arial'
-                        }
-                    }
-                },
-                {
-                    opcode: 'setHorizAlignment',
-                    text: 'set the horizontal alignment to [align]',
-                    blockType: BlockType.COMMAND,
-                    arguments: {
-                        align: {
-                            type: ArgumentType.STRING,
-                            menu: 'ALIGNHORIZ'
-                        }
-                    }
-                },
-                {
-                    opcode: 'setVertAlignment',
-                    text: 'set the vertical alignment to [align]',
-                    blockType: BlockType.COMMAND,
-                    arguments: {
-                        align: {
-                            type: ArgumentType.STRING,
-                            menu: 'ALIGNVERT'
+                            defaultValue: this.defaults.FONT
                         }
                     }
                 },
@@ -55,26 +39,7 @@ class text {
                     arguments: {
                         size: {
                             type: ArgumentType.NUMBER,
-                            menu: 28
-                        }
-                    }
-                },
-                {
-                    opcode: 'displayText',
-                    text: 'print text [TEXT] at X: [x], Y: [y]',
-                    blockType: BlockType.COMMAND,
-                    arguments: {
-                        TEXT: {
-                            type: ArgumentType.STRING,
-                            defaultValue: 'Hello World'
-                        },
-                        x: {
-                            type: ArgumentType.NUMBER,
-                            defaultValue: 0
-                        },
-                        y: {
-                            type: ArgumentType.NUMBER,
-                            defaultValue: 0
+                            menu: this.default.FONT_SIZE
                         }
                     }
                 }
@@ -83,38 +48,6 @@ class text {
                 FONT: {
                     items: 'getAllFonts',
                     acceptReporters: true
-                },
-                ALIGNVERT: {
-                    items: [
-                        {
-                            text: 'up',
-                            value: 'up'
-                        }, 
-                        {
-                            text: 'center',
-                            value: 'center'
-                        }, 
-                        {
-                            text: 'down',
-                            value: 'down'
-                        }
-                    ]
-                },
-                ALIGNHORIZ: {
-                    items: [
-                        {
-                            text: 'left',
-                            value: 'left'
-                        }, 
-                        {
-                            text: 'center',
-                            value: 'center'
-                        }, 
-                        {
-                            text: 'right',
-                            value: 'right'
-                        }
-                    ]
                 }
             }
         };
@@ -135,14 +68,14 @@ class text {
         return res
     }
     setFont(args, util) {
-        if (!document.fonts.check(this.size+' '+args.font)) return
-    }
-    setHorizAlignment(args, util) {
-    }
-    setVertAlignment(args, util) {
+        const props = runtime.renderer.getTextBubbleProps()
+        if (!this._doesFontSuport(props.FONT_SIZE, args.font)) return
+        runtime.renderer.setTextBubbleProp('FONT', args.font)
     }
     setSize(args, util) {
-        if (!document.fonts.check(args.size+'px '+this.font)) return
+        const props = runtime.renderer.getTextBubbleProps()
+        if (!this._doesFontSuport(args.size, props.FONT)) return
+        runtime.renderer.setTextBubbleProp('FONT_SIZE', args.size)
     }
 }
 
