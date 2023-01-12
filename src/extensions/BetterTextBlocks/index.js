@@ -1,6 +1,5 @@
 const BlockType = require('../../extension-support/block-type');
 const ArgumentType = require('../../extension-support/argument-type');
-const Cast = require('../../util/cast');
 
 class text {
     constructor (runtime){
@@ -53,13 +52,32 @@ class text {
                     }
                 },
                 {
+                    opcode: 'setSize',
+                    text: 'set the text size to [size]',
+                    blockType: BlockType.COMMAND,
+                    arguments: {
+                        size: {
+                            type: ArgumentType.NUMBER,
+                            menu: 28
+                        }
+                    }
+                },
+                {
                     opcode: 'displayText',
-                    text: 'print text [TEXT]',
+                    text: 'print text [TEXT] at X: [x], Y: [y]',
                     blockType: BlockType.COMMAND,
                     arguments: {
                         TEXT: {
                             type: ArgumentType.STRING,
                             defaultValue: 'Hello World'
+                        },
+                        x: {
+                            type: ArgumentType.NUMBER,
+                            defaultValue: 0
+                        },
+                        y: {
+                            type: ArgumentType.NUMBER,
+                            defaultValue: 0
                         }
                     }
                 }
@@ -129,8 +147,12 @@ class text {
     setVertAlignment(args, util) {
         this.alignment[1] = args.align
     }
+    setSize(args, util) {
+        if (!document.fonts.check(args.size+'px '+this.font)) return
+        this.size = args.size+'px'
+    }
     displayText(args, util) {
-        console.log(this.font, this.alignment, args)
+        console.log(this.font, this.size, this.alignment, args)
     }
 }
 
