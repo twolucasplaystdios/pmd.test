@@ -21,7 +21,7 @@ class text {
             id: 'text',
             name: 'text bubble control',
             blocks: [
-                {
+                { 
                     opcode: 'setFont',
                     text: 'set font to [font]',
                     blockType: BlockType.COMMAND,
