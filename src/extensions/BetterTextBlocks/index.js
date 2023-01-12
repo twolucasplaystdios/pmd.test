@@ -8,6 +8,7 @@ class text {
          * The runtime instantiating this block package.
          * @type {Runtime}
          */ 
+        this.looks = new Looks(runtime)
         this.runtime = runtime;
         this.defaults = runtime.renderer.getBubbleDefaults()
         console.log(this)
@@ -70,16 +71,16 @@ class text {
         return res
     }
     setFont(args, util) {
-        const state = Looks._getBubbleState(util.target)
+        const state = this.looks._getBubbleState(util.target)
         if (!this._doesFontSuport(state.props.FONT_SIZE, args.font)) return
         state.props.FONT = args.font
-        util.target.setCustomState(Looks.STATE_KEY, state);
+        util.target.setCustomState(this.looks.STATE_KEY, state);
     }
     setSize(args, util) {
-        const state = Looks._getBubbleState(util.target)
+        const state = this.looks._getBubbleState(util.target)
         if (!this._doesFontSuport(args.size, state.props.FONT)) return
         state.props.FONT_SIZE = args.font
-        util.target.setCustomState(Looks.STATE_KEY, state);
+        util.target.setCustomState(this.looks.STATE_KEY, state);
     }
 }
 
