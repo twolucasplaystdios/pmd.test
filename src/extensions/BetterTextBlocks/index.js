@@ -11,7 +11,6 @@ class text {
          */
         this.runtime = runtime;
         const state = this._getBubbleState(runtime._editingTarget)
-        console.log(state)
         this.defaults = runtime.renderer.getTextBubbleProps(state.skinId)
     }
 
