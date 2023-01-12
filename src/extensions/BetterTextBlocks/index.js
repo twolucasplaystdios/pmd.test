@@ -15,7 +15,7 @@ class text {
     getInfo () {
         return {
             id: 'text',
-            name: 'Better Text Engine',
+            name: 'text bubble control',
             blocks: [
                 {
                     opcode: 'setFont',
@@ -139,20 +139,13 @@ class text {
     }
     setFont(args, util) {
         if (!document.fonts.check(this.size+' '+args.font)) return
-        this.font = args.font
     }
     setHorizAlignment(args, util) {
-        this.alignment[0] = args.align
     }
     setVertAlignment(args, util) {
-        this.alignment[1] = args.align
     }
     setSize(args, util) {
         if (!document.fonts.check(args.size+'px '+this.font)) return
-        this.size = args.size+'px'
-    }
-    displayText(args, util) {
-        console.log(this.font, this.size, this.alignment, args)
     }
 }
 
