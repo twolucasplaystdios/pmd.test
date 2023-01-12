@@ -48,7 +48,8 @@ class Scratch3LooksBlocks {
             skinId: null,
             text: '',
             type: 'say',
-            usageId: null
+            usageId: null,
+            props: this.runtime.renderer.getBubbleDefaults()
         };
     }
 
@@ -228,7 +229,7 @@ class Scratch3LooksBlocks {
         }
 
         if (bubbleState.skinId) {
-            this.runtime.renderer.updateTextSkin(bubbleState.skinId, type, text, onSpriteRight, [0, 0]);
+            this.runtime.renderer.updateTextSkin(bubbleState.skinId, type, text, onSpriteRight, bubbleState.props);
         } else {
             target.onTargetVisualChange = this._onTargetChanged;
             bubbleState.drawableId = this.runtime.renderer.createDrawable(StageLayering.SPRITE_LAYER);

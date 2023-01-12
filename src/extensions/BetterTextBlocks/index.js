@@ -1,5 +1,6 @@
 const BlockType = require('../../extension-support/block-type');
 const ArgumentType = require('../../extension-support/argument-type');
+const Looks = require('../../blocks/scratch3_looks');
 
 class text {
     constructor (runtime){
@@ -68,16 +69,16 @@ class text {
         return res
     }
     setFont(args, util) {
-        const props = util.target.getTextBubbleProps()
-        if (!this._doesFontSuport(props.FONT_SIZE, args.font)) return
-        props.FONT = args.font
-        util.target.setTextBubbleProps(props)
+        const state = Looks._getBubbleState(util.target)
+        if (!this._doesFontSuport(state.props.FONT_SIZE, args.font)) return
+        state.props.FONT = args.font
+        util.target.setCustomState(Looks.STATE_KEY, state);
     }
     setSize(args, util) {
-        const props = util.target.getTextBubbleProps()
-        if (!this._doesFontSuport(args.size, props.FONT)) return
-        props.FONT_SIZE = args.font
-        util.target.setTextBubbleProps(props)
+        const state = Looks._getBubbleState(util.target)
+        if (!this._doesFontSuport(args.size, state.props.FONT)) return
+        state.props.FONT_SIZE = args.font
+        util.target.setCustomState(Looks.STATE_KEY, state);
     }
 }
 

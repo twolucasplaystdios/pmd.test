@@ -168,8 +168,6 @@ class RenderedTarget extends Target {
         this.onTargetVisualChange = null;
 
         this.interpolationData = null;
-        
-        this._textBubble = runtime.renderer.getBubbleDefaults()
     }
 
     /**
@@ -1122,12 +1120,6 @@ class RenderedTarget extends Target {
                 this.runtime.requestRedraw();
             }
         }
-    }
-    setTextBubbleProps(value) {
-        this._textBubble = value
-    }
-    getTextBubbleProps() {
-        return this._textBubble
     }
 }
 
