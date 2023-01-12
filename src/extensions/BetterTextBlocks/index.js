@@ -68,14 +68,16 @@ class text {
         return res
     }
     setFont(args, util) {
-        const props = runtime.renderer.getTextBubbleProps()
+        const props = util.target.getTextBubbleProps()
         if (!this._doesFontSuport(props.FONT_SIZE, args.font)) return
-        runtime.renderer.setTextBubbleProp('FONT', args.font)
+        props.FONT = args.font
+        util.target.setTextBubbleProps(props)
     }
     setSize(args, util) {
-        const props = runtime.renderer.getTextBubbleProps()
+        const props = util.target.getTextBubbleProps()
         if (!this._doesFontSuport(args.size, props.FONT)) return
-        runtime.renderer.setTextBubbleProp('FONT_SIZE', args.size)
+        props.FONT_SIZE = args.font
+        util.target.setTextBubbleProps(props)
     }
 }
 
