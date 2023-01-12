@@ -10,6 +10,7 @@ class text {
          */ 
         this.runtime = runtime;
         this.defaults = runtime.renderer.getBubbleDefaults()
+        console.log(this)
     }
 
     _doesFontSuport(size, font) {
