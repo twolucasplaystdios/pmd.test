@@ -12,6 +12,7 @@ class text {
         this.runtime = runtime;
         const { skinId } = this._getBubbleState(runtime._editingTarget)
         this.defaults = runtime.renderer.getTextBubbleProps(skinId)
+        console.log('hj', skinId, this.defaults)
     }
 
     _doesFontSuport(size, font) {
