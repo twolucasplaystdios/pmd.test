@@ -49,7 +49,7 @@ class text {
             ],
             menus: {
                 FONT: {
-                    items: 'getAllFonts',
+                    items: this.getAllFonts(),
                     acceptReporters: true
                 }
             }
