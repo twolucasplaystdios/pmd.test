@@ -8,7 +8,7 @@ class text {
         /**
          * The runtime instantiating this block package.
          * @type {Runtime}
-         */
+         */ 
         this.runtime = runtime;
         const state = this._getBubbleState(runtime._editingTarget)
         this.defaults = runtime.renderer.getTextBubbleProps(state.skinId)
