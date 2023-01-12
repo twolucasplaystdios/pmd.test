@@ -10,9 +10,9 @@ class text {
          * @type {Runtime}
          */
         this.runtime = runtime;
-        const { skinId } = this._getBubbleState(runtime._editingTarget)
-        this.defaults = runtime.renderer.getTextBubbleProps(skinId)
-        console.log('hj', skinId, this.defaults)
+        const state = this._getBubbleState(runtime._editingTarget)
+        this.defaults = runtime.renderer.getTextBubbleProps(state.skinId)
+        console.log('hj', state, this.defaults)
     }
 
     _doesFontSuport(size, font) {
