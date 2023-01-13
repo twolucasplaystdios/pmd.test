@@ -931,13 +931,13 @@ class JSGenerator {
             this.source += `target.setSize(${this.descendInput(node.size).asNumber()});\n`;
             break;
         case 'looks.setFont':
-            this.source += `runtime.ext_scratch3_looks.setFont({ font: ${this.descendInput(node.font).asString()}, size: ${this.descendInput(node.size).asNumber()} })`
+            this.source += `runtime.ext_scratch3_looks.setFont({ font: ${this.descendInput(node.font).asString()}, size: ${this.descendInput(node.size).asNumber()} });\n`
             break;
         case 'looks.setColor':
-            this.source += `runtime.ext_scratch3_looks.setColor({ prop: ${sanitize(node.prop)}, size: ${this.descendInput(node.color).asColor()} })`
+            this.source += `runtime.ext_scratch3_looks.setColor({ prop: ${sanitize(node.prop)}, size: ${this.descendInput(node.color).asColor()} });\n`
             break;
         case 'looks.setShape':
-            this.source += `runtime.ext_scratch3_looks.setShape({ prop: ${sanitize(node.prop)}, size: ${this.descendInput(node.color).asColor()} })`
+            this.source += `runtime.ext_scratch3_looks.setShape({ prop: ${sanitize(node.prop)}, size: ${this.descendInput(node.color).asColor()} });\n`
             break;
         case 'looks.show':
             this.source += 'target.setVisible(true);\n';
