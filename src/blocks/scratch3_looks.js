@@ -28,6 +28,7 @@ class Scratch3LooksBlocks {
         this._onResetBubbles = this._onResetBubbles.bind(this);
         this._onTargetWillExit = this._onTargetWillExit.bind(this);
         this._updateBubble = this._updateBubble.bind(this);
+        this.styleDefault = this.runtime.renderer.getBubbleDefaults()
 
         // Reset all bubbles on start/stop
         this.runtime.on('PROJECT_STOP_ALL', this._onResetBubbles);
@@ -49,7 +50,7 @@ class Scratch3LooksBlocks {
             text: '',
             type: 'say',
             usageId: null,
-            props: this.runtime.renderer.getBubbleDefaults()
+            props: this.styleDefault
         };
     }
 
