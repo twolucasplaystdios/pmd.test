@@ -14,17 +14,18 @@ class text {
         console.log(this)
     }
 
-    _getLineHeight(font) {
-        var temp = document.createElement(el.nodeName), ret;
-        temp.setAttribute("style", "margin:0; padding:0; "
-            + "font-family:" + (el.style.fontFamily || "inherit") + "; "
-            + "font-size:" + (el.style.fontSize || "inherit"));
+    _getLineHeight(size, font) {
+        var temp = document.createElement('span'), ret;
+        temp.setAttribute("style", `
+            margin:0; 
+            padding:0;
+            font-family: ${font};
+            font-size: ${size}`);
         temp.innerHTML = "A";
+        temp.style.display = 'none'
     
-        el.parentNode.appendChild(temp);
         ret = temp.clientHeight;
-        temp.parentNode.removeChild(temp);
-    
+        temp.remove()
         return ret;
     }
     _doesFontSuport(size, font) {
