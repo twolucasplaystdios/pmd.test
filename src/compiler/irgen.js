@@ -973,13 +973,13 @@ class ScriptTreeGenerator {
             case "looks_setColor": 
                 return {
                     kind: 'looks.setColor',
-                    prop: block.fields.prop.value.toLowerCase(),
+                    prop: block.fields.prop.value,
                     color: this.descendInputOfBlock(block, 'color')
                 };
             case "looks_setShape": 
                 return {
                     kind: 'looks.setShape',
-                    prop: block.fields.prop.value.toLowerCase(),
+                    prop: block.fields.prop.value,
                     value: this.descendInputOfBlock(block, 'color')
                 };
             case 'looks_show':
