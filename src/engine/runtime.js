@@ -2620,7 +2620,7 @@ class Runtime extends EventEmitter {
             return;
         }
 
-        const jsonText = lineWithMagic.substr(0, lineWithMagic.length - COMMENT_CONFIG_MAGIC.length);
+        const jsonText = lineWithMagic.slice(0, lineWithMagic.length - COMMENT_CONFIG_MAGIC.length);
         let parsed;
         try {
             parsed = ExtendedJSON.parse(jsonText);

@@ -1,4 +1,5 @@
 const Cast = require('../util/cast');
+const Color = require('../util/color');
 const Clone = require('../util/clone');
 const RenderedTarget = require('../sprites/rendered-target');
 const uid = require('../util/uid');
@@ -281,7 +282,7 @@ class Scratch3LooksBlocks {
         }
 
         // Limit the length of the string.
-        text = String(text).substr(0, this.SAY_BUBBLE_LIMIT);
+        text = String(text).slice(0, this.SAY_BUBBLE_LIMIT);
 
         return text;
     }
@@ -373,6 +374,7 @@ class Scratch3LooksBlocks {
     setColor(args, util) {
         const state = this._getBubbleState(util.target)
         if (!state.props) state.props = this.defaultBubble
+        if (typeof args.color === 'number') Color.decimalToHex(args.color)
 
         state.props.COLORS[args.prop] = args.color
         util.target.setCustomState(Scratch3LooksBlocks.STATE_KEY, state);

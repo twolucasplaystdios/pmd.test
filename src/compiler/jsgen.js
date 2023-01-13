@@ -159,7 +159,7 @@ class ConstantInput {
     asColor () {
         // Attempt to parse hex code at compilation time
         if (/^#[0-9a-f]{6,8}$/i.test(this.constantValue)) {
-            const hex = this.constantValue.substr(1);
+            const hex = this.constantValue.slice(1);
             return Number.parseInt(hex, 16).toString();
         }
         return this.asUnknown();
