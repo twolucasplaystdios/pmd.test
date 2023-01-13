@@ -40,23 +40,6 @@ class Scratch3LooksBlocks {
         this.runtime.on(Scratch3LooksBlocks.SAY_OR_THINK, this._updateBubble);
     }
 
-    /**
-     * The default bubble state, to be used when a target has no existing bubble state.
-     * @type {BubbleState}
-     */
-    static get DEFAULT_BUBBLE_STATE () {
-        return {
-            drawableId: null,
-            onSpriteRight: true,
-            skinId: null,
-            text: '',
-            type: 'say',
-            usageId: null,
-            // @todo make this read from renderer
-            props: this.defaultBubble
-        };
-    }
-
     static defaultBubble = {
         MAX_LINE_WIDTH: 170, // Maximum width, in Scratch pixels, of a single line of text
         
@@ -76,6 +59,23 @@ class Scratch3LooksBlocks {
             BUBBLE_STROKE: 'rgba(0, 0, 0, 0.15)',
             TEXT_FILL: '#575E75'
         },
+    }
+
+    /**
+     * The default bubble state, to be used when a target has no existing bubble state.
+     * @type {BubbleState}
+     */
+    static get DEFAULT_BUBBLE_STATE () {
+        return {
+            drawableId: null,
+            onSpriteRight: true,
+            skinId: null,
+            text: '',
+            type: 'say',
+            usageId: null,
+            // @todo make this read from renderer
+            props: this.defaultBubble
+        };
     }
 
     /**
@@ -362,6 +362,7 @@ class Scratch3LooksBlocks {
     setFont(args, util) {
         const state = this._getBubbleState(util.target)
         if (!this._doesFontSuport(state.props.FONT_SIZE, args.font)) return
+        if (!state.props) state.props = this.defaultBubble
         
         state.props.FONT = args.font
         state.props.FONT_SIZE = args.size
@@ -371,6 +372,7 @@ class Scratch3LooksBlocks {
     }
     setColor(args, util) {
         const state = this._getBubbleState(util.target)
+        if (!state.props) state.props = this.defaultBubble
 
         state.props.COLORS[args.prop] = args.color
         util.target.setCustomState(Scratch3LooksBlocks.STATE_KEY, state);
@@ -381,6 +383,7 @@ class Scratch3LooksBlocks {
             return
         }
         const state = this._getBubbleState(util.target)
+        if (!state.props) state.props = this.defaultBubble
 
         state.props[args.prop] = args.color
         util.target.setCustomState(Scratch3LooksBlocks.STATE_KEY, state);
