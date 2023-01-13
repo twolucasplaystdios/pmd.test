@@ -14,6 +14,19 @@ class text {
         console.log(this)
     }
 
+    _getLineHeight(font) {
+        var temp = document.createElement(el.nodeName), ret;
+        temp.setAttribute("style", "margin:0; padding:0; "
+            + "font-family:" + (el.style.fontFamily || "inherit") + "; "
+            + "font-size:" + (el.style.fontSize || "inherit"));
+        temp.innerHTML = "A";
+    
+        el.parentNode.appendChild(temp);
+        ret = temp.clientHeight;
+        temp.parentNode.removeChild(temp);
+    
+        return ret;
+    }
     _doesFontSuport(size, font) {
         const check = size+'px '+font
         return document.fonts.check(check)
@@ -74,6 +87,7 @@ class text {
                 text: font.value.family,
                 value: font.value.family
             })
+            console.log(font.value)
             font = fonts.next()
         }
 
