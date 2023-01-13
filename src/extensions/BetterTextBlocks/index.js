@@ -97,12 +97,14 @@ class text {
     setFont(args, util) {
         const state = this._getBubbleState(util.target)
         if (!this._doesFontSuport(state.props.FONT_SIZE, args.font)) return
+        state.props.LINE_HIEGHT = this._getLineHeight(state.props.FONT_SIZE, args.font)
         state.props.FONT = args.font
         util.target.setCustomState(Scratch3LooksBlocks.STATE_KEY, state);
     }
     setSize(args, util) {
         const state = this._getBubbleState(util.target)
         if (!this._doesFontSuport(args.size, state.props.FONT)) return
+        state.props.LINE_HIEGHT = this._getLineHeight(args.size, state.props.FONT)
         state.props.FONT_SIZE = args.size
         util.target.setCustomState(Scratch3LooksBlocks.STATE_KEY, state);
     }
