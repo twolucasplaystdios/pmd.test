@@ -102,20 +102,18 @@ class text {
         if (!this._doesFontSuport(state.props.FONT_SIZE, args.font)) return
         state.props.LINE_HIEGHT = this._getLineHeight(state.props.FONT_SIZE, args.font)
         state.props.FONT = args.font
-        document.fonts.get(state.props.FONT).then(font => {
-            state.props.FONT_HEIGHT_RATIO = this._percentToRatio(font.sizeAdjust)
-            util.target.setCustomState(Scratch3LooksBlocks.STATE_KEY, state);
-        })
+        // @TODO make this get the actual font ratio
+        state.props.FONT_HEIGHT_RATIO = 1
+        util.target.setCustomState(Scratch3LooksBlocks.STATE_KEY, state);
     }
     setSize(args, util) {
         const state = this._getBubbleState(util.target)
         if (!this._doesFontSuport(args.size, state.props.FONT)) return
         state.props.LINE_HIEGHT = this._getLineHeight(args.size, state.props.FONT)
         state.props.FONT_SIZE = args.size
-        document.fonts.get(state.props.FONT).then(font => {
-            state.props.FONT_HEIGHT_RATIO = this._percentToRatio(font.sizeAdjust)
-            util.target.setCustomState(Scratch3LooksBlocks.STATE_KEY, state);
-        })
+        // @TODO make this get the actual font ratio
+        state.props.FONT_HEIGHT_RATIO = 1
+        util.target.setCustomState(Scratch3LooksBlocks.STATE_KEY, state);
     }
 }
 
