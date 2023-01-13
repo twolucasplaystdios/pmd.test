@@ -1,7 +1,7 @@
 const BlockType = require('../../extension-support/block-type');
 const ArgumentType = require('../../extension-support/argument-type');
 const Scratch3LooksBlocks = require('../../blocks/scratch3_looks');
-const Clone = require('../../util/clone');  
+const Clone = require('../../util/clone');
 
 class text {
     constructor (runtime){
@@ -63,7 +63,7 @@ class text {
                 },
                 {
                     opcode: 'setSize',
-                    text: 'set the text size to [size]',
+                    text: 'set text size to [size]',
                     blockType: BlockType.COMMAND,
                     arguments: {
                         size: {
@@ -74,16 +74,48 @@ class text {
                 },
                 {
                     opcode: 'setMinMaxBubbleSize',
-                    text: 'set bubble width constraints min: [min], max: [max]',
+                    text: 'set [mm] width to [num]',
                     blockType: BlockType.COMMAND,
                     arguments: {
-                        min: {
-                            type: ArgumentType.NUMBER,
-                            defaultValue: this.defaults.MIN_WIDTH
+                        mm: {
+                            type: ArgumentType.STRING,
+                            menu: 'minmax',
+                            defaultValue: 'minimum'
                         },
-                        max: {
+                        num: {
                             type: ArgumentType.NUMBER,
-                            defaultValue: this.defaults.MAX_LINE_WIDTH
+                            defaultValue: 0
+                        }
+                    }
+                },
+                {
+                    opcode: 'setColor',
+                    text: 'set [prop] color to [color]',
+                    blockType: BlockType.COMMAND,
+                    arguments: {
+                        prop: {
+                            type: ArgumentType.STRING,
+                            menu: 'colorProps',
+                            defaultValue: 'boarder'
+                        },
+                        color: {
+                            type: ArgumentType.COLOR
+                        }
+                    }
+                },
+                {
+                    opcode: 'setShape',
+                    text: 'set [prop] to [color]',
+                    blockType: BlockType.COMMAND,
+                    arguments: {
+                        prop: {
+                            type: ArgumentType.STRING,
+                            menu: 'shapeProps',
+                            defaultValue: 'boarder'
+                        },
+                        color: {
+                            type: ArgumentType.NUMBER,
+                            defaultValue: 0
                         }
                     }
                 }
@@ -92,6 +124,54 @@ class text {
                 FONT: {
                     items: this.getAllFonts(),
                     acceptReporters: true
+                },
+                minmax: {
+                    items: [
+                        {
+                            text: 'minimum',
+                            value: 'MIN_WIDTH'
+                        },
+                        {
+                            text: 'maximum',
+                            value: 'MAX_LINE_WIDTH'
+                        }
+                    ]
+                },
+                colorProps: {
+                    menu: [
+                        {
+                            text: 'boarder',
+                            value: 'BUBBLE_STROKE'
+                        },
+                        {
+                            text: 'fill',
+                            value: 'BUBBLE_FILL'
+                        },
+                        {
+                            text: 'text',
+                            value: 'TEXT_FILL'
+                        }
+                    ]
+                },
+                shapeProps: {
+                    menu: [
+                        {
+                            text: "boarder line width",
+                            value: "STROKE_WIDTH"
+                        },
+                        {
+                            text: "padding",
+                            value: "PADDING"
+                        },
+                        {
+                            text: "corner radius",
+                            value: "CORNER_RADIUS"
+                        },
+                        {
+                            text: "tail height",
+                            value: "TAIL_HEIGHT"
+                        }
+                    ]
                 }
             }
         };
@@ -137,12 +217,22 @@ class text {
     setMinMaxBubbleSize(args, util) {
         const state = this._getBubbleState(util.target)
 
-        state.props.MIN_WIDTH = args.min
-        state.props.MAX_LINE_WIDTH = args.max
+        state.props[args.mm] = args.num
 
-        state.props.LINE_HIEGHT = this._getLineHeight(args.size, state.props.FONT)
-        // @TODO make this get the actual font ratio
-        state.props.FONT_HEIGHT_RATIO = 1
+        util.target.setCustomState(Scratch3LooksBlocks.STATE_KEY, state);
+    }
+    setColor(args, util) {
+        const state = this._getBubbleState(util.target)
+
+        state.props.COLORS[args.prop] = args.color
+
+        util.target.setCustomState(Scratch3LooksBlocks.STATE_KEY, state);
+    }
+    setShape(args, util) {
+        const state = this._getBubbleState(util.target)
+
+        state.props[args.prop] = args.color
+
         util.target.setCustomState(Scratch3LooksBlocks.STATE_KEY, state);
     }
 }
