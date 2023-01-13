@@ -30,7 +30,7 @@ class Scratch3LooksBlocks {
         this._updateBubble = this._updateBubble.bind(this);
         
         this.SAY_BUBBLE_LIMITdefault = 330
-        this.SAY_BUBBLE_LIMIT = this.defaultBubble.texlim
+        this.SAY_BUBBLE_LIMIT = this.SAY_BUBBLE_LIMITdefault
 
         // Reset all bubbles on start/stop
         this.runtime.on('PROJECT_STOP_ALL', this._onResetBubbles);
