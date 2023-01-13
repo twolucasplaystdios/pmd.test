@@ -15,7 +15,7 @@ class text {
     }
 
     _percentToRatio(percent) {
-        return Number(percent.slice(-1)) / 100
+        return percent / 100
     }
     _getLineHeight(size, font) {
         var temp = document.createElement('span'), ret;
@@ -51,40 +51,17 @@ class text {
             blocks: [
                 { 
                     opcode: 'setFont',
-                    text: 'set font to [font]',
+                    text: 'set font to [font] with font size [size]',
                     blockType: BlockType.COMMAND,
                     arguments: {
                         font: {
                             type: ArgumentType.STRING,
                             menu: 'FONT',
                             defaultValue: this.defaults.FONT
-                        }
-                    }
-                },
-                {
-                    opcode: 'setSize',
-                    text: 'set text size to [size]',
-                    blockType: BlockType.COMMAND,
-                    arguments: {
+                        },
                         size: {
                             type: ArgumentType.NUMBER,
                             defaultValue: this.defaults.FONT_SIZE
-                        }
-                    }
-                },
-                {
-                    opcode: 'setMinMaxBubbleSize',
-                    text: 'set [mm] width to [num]',
-                    blockType: BlockType.COMMAND,
-                    arguments: {
-                        mm: {
-                            type: ArgumentType.STRING,
-                            menu: 'minmax',
-                            defaultValue: 'minimum'
-                        },
-                        num: {
-                            type: ArgumentType.NUMBER,
-                            defaultValue: 0
                         }
                     }
                 },
@@ -125,18 +102,6 @@ class text {
                     items: this.getAllFonts(),
                     acceptReporters: true
                 },
-                minmax: {
-                    items: [
-                        {
-                            text: 'minimum',
-                            value: 'MIN_WIDTH'
-                        },
-                        {
-                            text: 'maximum',
-                            value: 'MAX_LINE_WIDTH'
-                        }
-                    ]
-                },
                 colorProps: {
                     items: [
                         {
@@ -156,11 +121,19 @@ class text {
                 shapeProps: {
                     items: [
                         {
+                            text: 'minimum width',
+                            value: 'MIN_WIDTH'
+                        },
+                        {
+                            text: 'maximum width',
+                            value: 'MAX_LINE_WIDTH'
+                        },
+                        {
                             text: "boarder line width",
                             value: "STROKE_WIDTH"
                         },
                         {
-                            text: "padding",
+                            text: "padding size",
                             value: "PADDING"
                         },
                         {
@@ -170,6 +143,10 @@ class text {
                         {
                             text: "tail height",
                             value: "TAIL_HEIGHT"
+                        },
+                        {
+                            text: "font pading percent",
+                            value: "FONT_HEIGHT_RATIO"
                         }
                     ]
                 }
@@ -200,7 +177,6 @@ class text {
 
         state.props.LINE_HIEGHT = this._getLineHeight(state.props.FONT_SIZE, args.font)
         // @TODO make this get the actual font ratio
-        state.props.FONT_HEIGHT_RATIO = 1
         util.target.setCustomState(Scratch3LooksBlocks.STATE_KEY, state);
     }
     setSize(args, util) {
@@ -211,13 +187,6 @@ class text {
 
         state.props.LINE_HIEGHT = this._getLineHeight(args.size, state.props.FONT)
         // @TODO make this get the actual font ratio
-        state.props.FONT_HEIGHT_RATIO = 1
-        util.target.setCustomState(Scratch3LooksBlocks.STATE_KEY, state);
-    }
-    setMinMaxBubbleSize(args, util) {
-        const state = this._getBubbleState(util.target)
-
-        state.props[args.mm] = args.num
         util.target.setCustomState(Scratch3LooksBlocks.STATE_KEY, state);
     }
     setColor(args, util) {
