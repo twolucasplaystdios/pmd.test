@@ -138,7 +138,7 @@ class text {
                     ]
                 },
                 colorProps: {
-                    menu: [
+                    items: [
                         {
                             text: 'boarder',
                             value: 'BUBBLE_STROKE'
@@ -154,7 +154,7 @@ class text {
                     ]
                 },
                 shapeProps: {
-                    menu: [
+                    items: [
                         {
                             text: "boarder line width",
                             value: "STROKE_WIDTH"
