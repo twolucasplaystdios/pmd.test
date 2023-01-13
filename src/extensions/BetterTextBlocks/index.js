@@ -23,7 +23,7 @@ class text {
             margin:0; 
             padding:0;
             font-family: ${font};
-            font-size: ${size}`);
+            font-size: ${size};`);
         temp.innerHTML = "A";
         temp.style.display = 'none'
     
@@ -71,6 +71,21 @@ class text {
                             defaultValue: this.defaults.FONT_SIZE
                         }
                     }
+                },
+                {
+                    opcode: 'setMinMaxBubbleSize',
+                    text: 'set bubble width constraints min: [min], max: [max]',
+                    blockType: BlockType.COMMAND,
+                    arguments: {
+                        min: {
+                            type: ArgumentType.NUMBER,
+                            defaultValue: this.defaults.MIN_WIDTH
+                        },
+                        max: {
+                            type: ArgumentType.NUMBER,
+                            defaultValue: this.defaults.MAX_LINE_WIDTH
+                        }
+                    }
                 }
             ],
             menus: {
@@ -100,8 +115,10 @@ class text {
     setFont(args, util) {
         const state = this._getBubbleState(util.target)
         if (!this._doesFontSuport(state.props.FONT_SIZE, args.font)) return
-        state.props.LINE_HIEGHT = this._getLineHeight(state.props.FONT_SIZE, args.font)
+        
         state.props.FONT = args.font
+
+        state.props.LINE_HIEGHT = this._getLineHeight(state.props.FONT_SIZE, args.font)
         // @TODO make this get the actual font ratio
         state.props.FONT_HEIGHT_RATIO = 1
         util.target.setCustomState(Scratch3LooksBlocks.STATE_KEY, state);
@@ -109,8 +126,21 @@ class text {
     setSize(args, util) {
         const state = this._getBubbleState(util.target)
         if (!this._doesFontSuport(args.size, state.props.FONT)) return
-        state.props.LINE_HIEGHT = this._getLineHeight(args.size, state.props.FONT)
+
         state.props.FONT_SIZE = args.size
+
+        state.props.LINE_HIEGHT = this._getLineHeight(args.size, state.props.FONT)
+        // @TODO make this get the actual font ratio
+        state.props.FONT_HEIGHT_RATIO = 1
+        util.target.setCustomState(Scratch3LooksBlocks.STATE_KEY, state);
+    }
+    setMinMaxBubbleSize(args, util) {
+        const state = this._getBubbleState(util.target)
+
+        state.props.MIN_WIDTH = args.min
+        state.props.MAX_LINE_WIDTH = args.max
+
+        state.props.LINE_HIEGHT = this._getLineHeight(args.size, state.props.FONT)
         // @TODO make this get the actual font ratio
         state.props.FONT_HEIGHT_RATIO = 1
         util.target.setCustomState(Scratch3LooksBlocks.STATE_KEY, state);
