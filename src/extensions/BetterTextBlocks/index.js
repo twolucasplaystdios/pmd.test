@@ -50,7 +50,7 @@ class text {
                     arguments: {
                         size: {
                             type: ArgumentType.NUMBER,
-                            menu: this.defaults.FONT_SIZE
+                            defaultValue: this.defaults.FONT_SIZE
                         }
                     }
                 }
