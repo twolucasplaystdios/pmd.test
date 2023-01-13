@@ -15,7 +15,8 @@ class text {
     }
 
     _doesFontSuport(size, font) {
-        return document.fonts.check(size+'px '+font)
+        const check = size+'px '+font
+        return document.fonts.check(check)
     }
     _getBubbleState (target) {
         let bubbleState = target.getCustomState(Scratch3LooksBlocks.STATE_KEY);
@@ -87,7 +88,7 @@ class text {
     setSize(args, util) {
         const state = this._getBubbleState(util.target)
         if (!this._doesFontSuport(args.size, state.props.FONT)) return
-        state.props.FONT_SIZE = args.font
+        state.props.FONT_SIZE = args.size
         util.target.setCustomState(Scratch3LooksBlocks.STATE_KEY, state);
     }
 }
