@@ -28,6 +28,8 @@ class Scratch3LooksBlocks {
         this._onResetBubbles = this._onResetBubbles.bind(this);
         this._onTargetWillExit = this._onTargetWillExit.bind(this);
         this._updateBubble = this._updateBubble.bind(this);
+        
+        this.SAY_BUBBLE_LIMITdefault = 330
         this.SAY_BUBBLE_LIMIT = this.defaultBubble.texlim
 
         // Reset all bubbles on start/stop
@@ -74,7 +76,6 @@ class Scratch3LooksBlocks {
             BUBBLE_STROKE: 'rgba(0, 0, 0, 0.15)',
             TEXT_FILL: '#575E75'
         },
-        texlim: 330
     }
 
     /**
@@ -127,7 +128,7 @@ class Scratch3LooksBlocks {
 
     _resetBubbles (target) {
         const state = this._getBubbleState(target)
-        this.SAY_BUBBLE_LIMIT = this.defaultBubble.texlim
+        this.SAY_BUBBLE_LIMIT = this.SAY_BUBBLE_LIMITdefault
         state.props = this.defaultBubble
     }
 
