@@ -1,6 +1,7 @@
 const BlockType = require('../../extension-support/block-type');
 const ArgumentType = require('../../extension-support/argument-type');
 const Scratch3LooksBlocks = require('../../blocks/scratch3_looks');
+const Clone = require('../../util/clone'); 
 
 class text {
     constructor (runtime){
