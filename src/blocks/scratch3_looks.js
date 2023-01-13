@@ -253,7 +253,7 @@ class Scratch3LooksBlocks {
         } else {
             target.onTargetVisualChange = this._onTargetChanged;
             bubbleState.drawableId = this.runtime.renderer.createDrawable(StageLayering.SPRITE_LAYER);
-            bubbleState.skinId = this.runtime.renderer.createTextSkin(type, text, bubbleState.onSpriteRight, [0, 0]);
+            bubbleState.skinId = this.runtime.renderer.createTextSkin(type, text, bubbleState.onSpriteRight, bubbleState.props);
             this.runtime.renderer.updateDrawableSkinId(bubbleState.drawableId, bubbleState.skinId);
         }
 

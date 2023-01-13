@@ -111,7 +111,7 @@ class text {
                         prop: {
                             type: ArgumentType.STRING,
                             menu: 'shapeProps',
-                            defaultValue: 'boarder'
+                            defaultValue: 'boarder line width'
                         },
                         color: {
                             type: ArgumentType.NUMBER,
@@ -201,7 +201,6 @@ class text {
         state.props.LINE_HIEGHT = this._getLineHeight(state.props.FONT_SIZE, args.font)
         // @TODO make this get the actual font ratio
         state.props.FONT_HEIGHT_RATIO = 1
-        util.target.setCustomState(Scratch3LooksBlocks.STATE_KEY, state);
     }
     setSize(args, util) {
         const state = this._getBubbleState(util.target)
@@ -212,28 +211,21 @@ class text {
         state.props.LINE_HIEGHT = this._getLineHeight(args.size, state.props.FONT)
         // @TODO make this get the actual font ratio
         state.props.FONT_HEIGHT_RATIO = 1
-        util.target.setCustomState(Scratch3LooksBlocks.STATE_KEY, state);
     }
     setMinMaxBubbleSize(args, util) {
         const state = this._getBubbleState(util.target)
 
         state.props[args.mm] = args.num
-
-        util.target.setCustomState(Scratch3LooksBlocks.STATE_KEY, state);
     }
     setColor(args, util) {
         const state = this._getBubbleState(util.target)
 
         state.props.COLORS[args.prop] = args.color
-
-        util.target.setCustomState(Scratch3LooksBlocks.STATE_KEY, state);
     }
     setShape(args, util) {
         const state = this._getBubbleState(util.target)
 
         state.props[args.prop] = args.color
-
-        util.target.setCustomState(Scratch3LooksBlocks.STATE_KEY, state);
     }
 }
 
