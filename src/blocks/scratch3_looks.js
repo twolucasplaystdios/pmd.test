@@ -28,6 +28,7 @@ class Scratch3LooksBlocks {
         this._onResetBubbles = this._onResetBubbles.bind(this);
         this._onTargetWillExit = this._onTargetWillExit.bind(this);
         this._updateBubble = this._updateBubble.bind(this);
+        this.SAY_BUBBLE_LIMIT = this.defaultBubble.texlim
 
         // Reset all bubbles on start/stop
         this.runtime.on('PROJECT_STOP_ALL', this._onResetBubbles);
@@ -50,27 +51,32 @@ class Scratch3LooksBlocks {
             type: 'say',
             usageId: null,
             // @todo make this read from renderer
-            props: {
-                MAX_LINE_WIDTH: 170, // Maximum width, in Scratch pixels, of a single line of text
-            
-                MIN_WIDTH: 50, // Minimum width, in Scratch pixels, of a text bubble
-                STROKE_WIDTH: 4, // Thickness of the stroke around the bubble. Only half's visible because it's drawn under the fill
-                PADDING: 10, // Padding around the text area
-                CORNER_RADIUS: 16, // Radius of the rounded corners
-                TAIL_HEIGHT: 12, // Height of the speech bubble's "tail". Probably should be a constant.
-            
-                FONT: 'Helvetica', // Font to render the text with
-                FONT_SIZE: 14, // Font size, in Scratch pixels
-                FONT_HEIGHT_RATIO: 0.9, // Height, in Scratch pixels, of the text, as a proportion of the font's size
-                LINE_HEIGHT: 16, // Spacing between each line of text
-            
-                COLORS: {
-                    BUBBLE_FILL: 'white',
-                    BUBBLE_STROKE: 'rgba(0, 0, 0, 0.15)',
-                    TEXT_FILL: '#575E75'
-                }
-            }
+            props: this.defaultBubble
         };
+    }
+
+    static get defaultBubble () {
+        return {
+            MAX_LINE_WIDTH: 170, // Maximum width, in Scratch pixels, of a single line of text
+        
+            MIN_WIDTH: 50, // Minimum width, in Scratch pixels, of a text bubble
+            STROKE_WIDTH: 4, // Thickness of the stroke around the bubble. Only half's visible because it's drawn under the fill
+            PADDING: 10, // Padding around the text area
+            CORNER_RADIUS: 16, // Radius of the rounded corners
+            TAIL_HEIGHT: 12, // Height of the speech bubble's "tail". Probably should be a constant.
+        
+            FONT: 'Helvetica', // Font to render the text with
+            FONT_SIZE: 14, // Font size, in Scratch pixels
+            FONT_HEIGHT_RATIO: 0.9, // Height, in Scratch pixels, of the text, as a proportion of the font's size
+            LINE_HEIGHT: 16, // Spacing between each line of text
+        
+            COLORS: {
+                BUBBLE_FILL: 'white',
+                BUBBLE_STROKE: 'rgba(0, 0, 0, 0.15)',
+                TEXT_FILL: '#575E75'
+            },
+            texlim: 330
+        }
     }
 
     /**
@@ -89,14 +95,6 @@ class Scratch3LooksBlocks {
         // There are currently many places in the codebase which explicitly refer to this event by the string 'SAY',
         // so keep this as the string 'SAY' for now rather than changing it to 'SAY_OR_THINK' and breaking things.
         return 'SAY';
-    }
-
-    /**
-     * Limit for say bubble string.
-     * @const {string}
-     */
-    static get SAY_BUBBLE_LIMIT () {
-        return 330;
     }
 
     /**
@@ -127,6 +125,12 @@ class Scratch3LooksBlocks {
             target.setCustomState(Scratch3LooksBlocks.STATE_KEY, bubbleState);
         }
         return bubbleState;
+    }
+
+    _resetBubbles (target) {
+        const state = this._getBubbleState(target)
+        this.SAY_BUBBLE_LIMIT = this.defaultBubble.texlim
+        state.props = this.defaultBubble
     }
 
     /**
@@ -278,7 +282,7 @@ class Scratch3LooksBlocks {
         }
 
         // Limit the length of the string.
-        text = String(text).substr(0, Scratch3LooksBlocks.SAY_BUBBLE_LIMIT);
+        text = String(text).substr(0, this.SAY_BUBBLE_LIMIT);
 
         return text;
     }
@@ -298,6 +302,27 @@ class Scratch3LooksBlocks {
         bubbleState.usageId = uid();
         this._renderBubble(target);
     }
+    _percentToRatio(percent) {
+        return percent / 100
+    }
+    _getLineHeight(size, font) {
+        var temp = document.createElement('span'), ret;
+        temp.setAttribute("style", `
+            margin:0; 
+            padding:0;
+            font-family: ${font};
+            font-size: ${size};`);
+        temp.innerHTML = "A";
+        temp.style.display = 'none'
+    
+        ret = temp.clientHeight;
+        temp.remove()
+        return ret;
+    }
+    _doesFontSuport(size, font) {
+        const check = size+'px '+font
+        return document.fonts.check(check)
+    }
 
     /**
      * Retrieve the block primitives implemented by this package.
@@ -309,6 +334,9 @@ class Scratch3LooksBlocks {
             looks_sayforsecs: this.sayforsecs,
             looks_think: this.think,
             looks_thinkforsecs: this.thinkforsecs,
+            looks_setFont: this.setFont,
+            looks_setColor: this.setColor,
+            looks_setShape: this.setShape,
             looks_show: this.show,
             looks_hide: this.hide,
             looks_hideallsprites: () => {}, // legacy no-op block
@@ -330,6 +358,33 @@ class Scratch3LooksBlocks {
             looks_costumenumbername: this.getCostumeNumberName,
             looks_backdropnumbername: this.getBackdropNumberName
         };
+    }
+
+    setFont(args, util) {
+        const state = this._getBubbleState(util.target)
+        if (!this._doesFontSuport(state.props.FONT_SIZE, args.font)) return
+        
+        state.props.FONT = args.font
+        state.props.FONT_SIZE = args.size
+
+        state.props.LINE_HIEGHT = this._getLineHeight(state.props.FONT_SIZE, args.font)
+        util.target.setCustomState(Scratch3LooksBlocks.STATE_KEY, state);
+    }
+    setColor(args, util) {
+        const state = this._getBubbleState(util.target)
+
+        state.props.COLORS[args.prop] = args.color
+        util.target.setCustomState(Scratch3LooksBlocks.STATE_KEY, state);
+    }
+    setShape(args, util) {
+        if (args.prop === 'texlim') {
+            this.SAY_BUBBLE_LIMIT = Math.max(args.color, 1)
+            return
+        }
+        const state = this._getBubbleState(util.target)
+
+        state.props[args.prop] = args.color
+        util.target.setCustomState(Scratch3LooksBlocks.STATE_KEY, state);
     }
 
     getMonitored () {
@@ -580,6 +635,7 @@ class Scratch3LooksBlocks {
 
     clearEffects (args, util) {
         util.target.clearEffects();
+        this._resetBubbles(util.target)
     }
 
     changeSize (args, util) {

@@ -887,7 +887,7 @@ class JSGenerator {
             }
             break;
         case 'looks.clearEffects':
-            this.source += 'target.clearEffects();\n';
+            this.source += 'target.clearEffects();\nruntime.ext_scratch3_looks._resetBubbles(target)\n';
             break;
         case 'looks.changeEffect':
             if (this.target.effects.hasOwnProperty(node.effect)) {
@@ -929,6 +929,15 @@ class JSGenerator {
             break;
         case 'looks.setSize':
             this.source += `target.setSize(${this.descendInput(node.size).asNumber()});\n`;
+            break;
+        case 'looks.setFont':
+            this.source += `runtime.ext_scratch3_looks.setFont({ font: ${this.descendInput(node.font).asString()}, size: ${this.descendInput(node.size).asNumber()} })`
+            break;
+        case 'looks.setColor':
+            this.source += `runtime.ext_scratch3_looks.setColor({ prop: ${sanitize(node.prop)}, size: ${this.descendInput(node.color).asColor()} })`
+            break;
+        case 'looks.setShape':
+            this.source += `runtime.ext_scratch3_looks.setShape({ prop: ${sanitize(node.prop)}, size: ${this.descendInput(node.color).asColor()} })`
             break;
         case 'looks.show':
             this.source += 'target.setVisible(true);\n';

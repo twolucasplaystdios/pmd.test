@@ -964,6 +964,24 @@ class ScriptTreeGenerator {
                     kind: 'looks.setSize',
                     size: this.descendInputOfBlock(block, 'SIZE')
                 };
+            case "looks_setFont": 
+                return {
+                    kind: 'looks.setFont',
+                    font: this.descendInputOfBlock(block, 'font'),
+                    size: this.descendInputOfBlock(block, 'size')
+                }
+            case "looks_setColor": 
+                return {
+                    kind: 'looks.setColor',
+                    prop: block.fields.prop.value.toLowerCase(),
+                    color: this.descendInputOfBlock(block, 'color')
+                };
+            case "looks_setShape": 
+                return {
+                    kind: 'looks.setShape',
+                    prop: block.fields.prop.value.toLowerCase(),
+                    value: this.descendInputOfBlock(block, 'color')
+                };
             case 'looks_show':
                 return {
                     kind: 'looks.show'

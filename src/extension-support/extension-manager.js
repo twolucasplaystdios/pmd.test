@@ -67,7 +67,6 @@ const builtinExtensions = {
     // gsa: theyl think ianyourgod did added this but no it was me all along!!!!!!!!!!!!!!!
     // text: text stuff
     GamepadExtension: () => require("../extensions/GamepadExtension"),
-    text: () => require("../extensions/BetterTextBlocks"),
 };
 
 /**
