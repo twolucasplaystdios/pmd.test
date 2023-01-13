@@ -971,6 +971,7 @@ class ScriptTreeGenerator {
                     size: this.descendInputOfBlock(block, 'size')
                 }
             case "looks_setColor": 
+                console.log(block)
                 return {
                     kind: 'looks.setColor',
                     prop: block.fields.prop.value.toLowerCase(),
