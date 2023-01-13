@@ -1,6 +1,6 @@
 const BlockType = require('../../extension-support/block-type');
 const ArgumentType = require('../../extension-support/argument-type');
-const Looks = require('../../blocks/scratch3_looks');
+const Scratch3LooksBlocks = require('../../blocks/scratch3_looks');
 
 class text {
     constructor (runtime){
@@ -8,7 +8,6 @@ class text {
          * The runtime instantiating this block package.
          * @type {Runtime}
          */ 
-        this.looks = new Looks(runtime)
         this.runtime = runtime;
         this.defaults = runtime.renderer.getBubbleDefaults()
         console.log(this)
@@ -16,6 +15,14 @@ class text {
 
     _doesFontSuport(size, font) {
         return document.fonts.check(size+'px '+font)
+    }
+    _getBubbleState (target) {
+        let bubbleState = target.getCustomState(Scratch3LooksBlocks.STATE_KEY);
+        if (!bubbleState) {
+            bubbleState = Clone.simple(Scratch3LooksBlocks.DEFAULT_BUBBLE_STATE);
+            target.setCustomState(Scratch3LooksBlocks.STATE_KEY, bubbleState);
+        }
+        return bubbleState;
     }
 
     getInfo () {
@@ -71,16 +78,16 @@ class text {
         return res
     }
     setFont(args, util) {
-        const state = this.looks._getBubbleState(util.target)
+        const state = this._getBubbleState(util.target)
         if (!this._doesFontSuport(state.props.FONT_SIZE, args.font)) return
         state.props.FONT = args.font
-        util.target.setCustomState(this.looks.STATE_KEY, state);
+        util.target.setCustomState(Scratch3LooksBlocks.STATE_KEY, state);
     }
     setSize(args, util) {
-        const state = this.looks._getBubbleState(util.target)
+        const state = this._getBubbleState(util.target)
         if (!this._doesFontSuport(args.size, state.props.FONT)) return
         state.props.FONT_SIZE = args.font
-        util.target.setCustomState(this.looks.STATE_KEY, state);
+        util.target.setCustomState(Scratch3LooksBlocks.STATE_KEY, state);
     }
 }
 
