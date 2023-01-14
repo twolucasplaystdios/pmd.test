@@ -1,4 +1,4 @@
-/*jshint esversion : 11, node : true, asi : true, loopfunc : true*/
+/*jshint -W024, esversion : 11, node : true, asi : true, loopfunc : true*/
 const dispatch = require('../dispatch/central-dispatch');
 const log = require('../util/log');
 const maybeFormatMessage = require('../util/maybe-format-message');
@@ -638,8 +638,8 @@ class ExtensionManager {
         }
         return extensionURLs;
     }
-    for (II = 0; II < injectExtensions.length; II++) {
-  		injectExtensions[II] = () => extension;
+    for (let S of injectExtensions) {
+  		injectExtensions[S] = () => extension;
 		}
 }
 
