@@ -1357,6 +1357,32 @@ class ScriptTreeGenerator {
                     true: this.descendInputOfBlock(block, 'TEXT1'),
                     false: this.descendInputOfBlock(block, 'TEXT2'),
                 }
+            all the names so you dont have to get them 
+            sensing.regextest
+            sensing.thing.is.number
+            sensing.mobile
+            sensing.thing.is.text
+            sensing.getspritewithattrib
+
+            operator.regexmatch
+            operator.replaceAll
+            operator.getLettersFromIndexToIndexInText
+            operator.readLineInMultilineText
+            operator.newLine
+            operator.stringify
+            operator.lerpFunc
+            operator.advMath
+            operator.constrainnumber
+            operator.trueBoolean
+            operator.falseBoolean
+            operator.randomBoolean
+            operator.indexOfTextInText
+
+            event.whenanything
+            event.always
+
+            control.backToGreenFlag
+            control.if.return.else.return
             */
 
             default: {
