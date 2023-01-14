@@ -23,6 +23,7 @@ class jwProto {
      */
     getInfo() {
         return {
+            autoLoad: true,
             id: 'jwProto',
             name: 'Proto',
             //blockIconURI: blockIconURI,

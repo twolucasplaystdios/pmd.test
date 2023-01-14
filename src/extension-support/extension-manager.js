@@ -168,6 +168,10 @@ class ExtensionManager {
         dispatch.setService('extensions', createExtensionService(this)).catch(e => {
             log.error(`ExtensionManager was unable to register extension service: ${JSON.stringify(e)}`);
         });
+
+        let exts = Object.keys(builtinExtensions)
+        for (let index = 0; index < exts.length; index++) 
+            this.loadExtensionURL(exts[index])
     }
 
     /**
