@@ -170,7 +170,7 @@ class ExtensionManager {
         });
 
         Object.values(builtinExtensions).forEach(value => {
-            let extension = new value(this.runtime)
+            let extension = new value()(this.runtime)
             let info = extension.getInfo()
             if (info.autoLoad)
                 this.loadExtensionURL(exts[index])
