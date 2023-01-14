@@ -638,7 +638,7 @@ class ExtensionManager {
         }
         return extensionURLs;
     }
-    for (II = 0; II < injectExtensions.length; II++) {
+    for (II = 0, II < injectExtensions.length, II++) {
   		injectExtensions[II] = () => extension;
 		}
 }
