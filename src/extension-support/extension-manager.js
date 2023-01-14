@@ -1,4 +1,4 @@
-/*jshint esversion : 11, node : true, asi : true, loopfunc : true*/
+/*jshint -W024, esversion : 11, node : true, asi : true, loopfunc : true*/
 const dispatch = require('../dispatch/central-dispatch');
 const log = require('../util/log');
 const maybeFormatMessage = require('../util/maybe-format-message');
@@ -469,7 +469,7 @@ class ExtensionManager {
      */
     _prepareMenuInfo (serviceName, menus) {
         const menuNames = Object.getOwnPropertyNames(menus);
-        for (let i = 0; i < menuNames.length; i++) {
+        for (var i = 0; i < menuNames.length; i++) {
             const menuName = menuNames[i];
             let menuInfo = menus[menuName];
 
@@ -638,9 +638,9 @@ class ExtensionManager {
         }
         return extensionURLs;
     }
-    for (let S = 0; S < injectExtensions.length; S++) {
-        injectExtensions[S] = () => extension;
-    }
+    for (let S of injectExtensions) {
+  		injectExtensions[S] = () => extension;
+		}
 }
 
 module.exports = ExtensionManager;
