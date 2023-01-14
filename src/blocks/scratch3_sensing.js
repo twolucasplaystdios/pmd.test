@@ -1,6 +1,7 @@
 const Cast = require('../util/cast');
 const Timer = require('../util/timer');
 const getMonitorIdForBlockWithArgs = require('../util/get-monitor-id');
+const { validateRegex } = require('../../util/json-block-utilities')
 
 class Scratch3SensingBlocks {
     constructor (runtime) {
