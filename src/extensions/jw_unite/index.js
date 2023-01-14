@@ -17,6 +17,7 @@ class jwUnite {
          * @type {Runtime}
          */
         this.runtime = runtime;
+        alert('unite is deprecated, please use the blocks in the toolbox')
     }
 
     /**
