@@ -69,6 +69,10 @@ const builtinExtensions = {
     GamepadExtension: () => require("../extensions/GamepadExtension"),
 };
 
+const preload = [
+  "jwProto"
+]
+
 /**
  * @typedef {object} ArgumentInfo - Information about an extension block argument
  * @property {ArgumentType} type - the type of value this argument can take
@@ -169,11 +173,8 @@ class ExtensionManager {
             log.error(`ExtensionManager was unable to register extension service: ${JSON.stringify(e)}`);
         });
 
-        Object.values(builtinExtensions).map(v => v()).forEach(value => {
-            let extension = new value(this.runtime)
-            let info = extension.getInfo()
-            if (info.autoLoad)
-                this.loadExtensionURL(exts[index])
+        preload.forEach(value => {
+            this.loadExtensionURL(value)
         })
     }
 
