@@ -1,6 +1,6 @@
 const Cast = require('../util/cast.js');
 const MathUtil = require('../util/math-util.js');
-const { validateRegex } = require('../../util/json-block-utilities')
+const { validateRegex } = require('../util/json-block-utilities')
 
 class Scratch3OperatorsBlocks {
     constructor (runtime) {
