@@ -24,18 +24,28 @@ class Scratch3EventBlocks {
      */
     getPrimitives () {
         return {
-            event_whenanything: this.whenAnything,
+            event_whenanything: this.whenanything,
             event_whentouchingobject: this.touchingObject,
             event_broadcast: this.broadcast,
             event_broadcastandwait: this.broadcastAndWait,
             event_whengreaterthan: this.hatGreaterThanPredicate,
+            event_always: this.always,
         };
+    }
+
+    always() { return true }
+
+    whenanything(args, util) {
+        return Boolean(args.ANYTHING || false)
     }
 
     getHats () {
         return {
             event_whenflagclicked: {
                 restartExistingThreads: true
+            },
+            event_always: {
+                restartExistingThreads: false
             },
             event_whenkeypressed: {
                 restartExistingThreads: false
@@ -65,10 +75,6 @@ class Scratch3EventBlocks {
                 restartExistingThreads: true
             }
         };
-    }
-
-    whenAnything (args, util) {
-        return args.BOOL
     }
 
     touchingObject (args, util) {

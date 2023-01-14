@@ -35,7 +35,88 @@ class Scratch3OperatorsBlocks {
             operator_round: this.round,
             operator_mathop: this.mathop,
             operator_advlog: this.advlog,
+            operator_regexmatch: this.regexmatch,
+            operator_replaceAll: this.replaceAll,
+            operator_getLettersFromIndexToIndexInText: this.getLettersFromIndexToIndexInText,
+            operator_readLineInMultilineText: this.readLineInMultilineText,
+            operator_newLine: this.newLine,
+            operator_stringify: this.stringify,
+            operator_lerpFunc: this.lerpFunc,
+            operator_advMath: this.advMath,
+            operator_constrainnumber: this.constrainnumber,
+            operator_trueBoolean: this.true,
+            operator_falseBoolean: this.false,
+            operator_randomBoolean: this.randomBoolean,
+            operator_indexOfTextInText: this.indexOfTextInText,
         };
+    }
+
+    indexOfTextInText(args, util) {
+        const lookfor = String(args.TEXT1);
+        const searchin = String(args.TEXT2);
+        let index = 0;
+        if (searchin.includes(lookfor)) {
+            index = searchin.indexOf(lookfor) + 1;
+        }
+        return index;
+    }
+
+    true() {return true}
+    false() {return false}
+    randomBoolean() {return Boolean(Math.round(Math.random()))}
+
+    constrainnumber(args) {
+        return Math.min(Math.max(args.min, args.inp), args.max)
+    }
+
+    lerpFunc(args, util) {
+        const one = isNaN(Number(args.ONE)) ? 0 : Number(args.ONE);
+        const two = isNaN(Number(args.TWO)) ? 0 : Number(args.TWO);
+        const amount = isNaN(Number(args.AMOUNT)) ? 0 : Number(args.AMOUNT);
+        let lerped = one;
+        lerped += ((two - one) / (amount / (amount * amount)));
+        return lerped;
+    }
+    advMath(args, util) {
+        const one = isNaN(Number(args.ONE)) ? 0 : Number(args.ONE)
+        const two = isNaN(Number(args.TWO)) ? 0 : Number(args.TWO)
+        const operator = String(args.OPTION)
+        switch(operator) {
+            case "^": return one ** two
+            case "root": return one ** 1/two
+            case "log": return Math.log(two) / Math.log(one)
+            default: return 0
+        }
+    }
+
+    stringify(args, util) {return args.ONE}
+
+    newLine() { return "\n" }
+
+    readLineInMultilineText(args, util) {
+        const line = (Number(args.LINE) ? Number(args.LINE) : 1) - 1;
+        const text = String(args.TEXT);
+        const readline = text.split("\n")[line] || "";
+        return readline;
+    }
+
+    getLettersFromIndexToIndexInText(args, util) {
+        const index1 = (Number(args.INDEX1) ? Number(args.INDEX1) : 1) - 1;
+        const index2 = (Number(args.INDEX2) ? Number(args.INDEX2) : 1) - 1;
+        const string = String(args.TEXT);
+        const substring = string.substring(index1, index2);
+        return substring;
+    }
+
+    replaceAll(args) {
+        return args.text.replaceAll(args.term, args.res)
+    }
+
+    regexmatch(args) {
+        if (!validateRegex(args.reg)) return "[]"
+        const regex = new RegExp(args.reg)
+        const matches = args.text.match(regex)
+        return JSON.stringify(matches ? matches : [])
     }
 
     add (args) {

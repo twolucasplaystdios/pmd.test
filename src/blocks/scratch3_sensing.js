@@ -72,8 +72,68 @@ class Scratch3SensingBlocks {
             sensing_askandwait: this.askAndWait,
             sensing_answer: this.getAnswer,
             sensing_username: this.getUsername,
-            sensing_userid: () => {} // legacy no-op block
+            sensing_userid: () => {}, // legacy no-op block
+            sensing_regextest: this.regextest,
+            sensing_thing_is_number: this.thing_is_number,
+            sensing_mobile: this.mobile,
+            sensing_thing_is_text: this.thing_is_text,
+            sensing_getspritewithattrib: this.getspritewithattrib,
         };
+    }
+
+    getspritewithattrib(args, util) {
+        // strip out usless data
+        const sprites = util.runtime.targets.map(x => {
+            return {
+                id: x.id, 
+                name: x.sprite ? x.sprite.name : "Unkown",
+                variables: Object.values(x.variables).reduce((obj, value) => {
+                    if (!value.name) return obj
+                    obj[value.name] = String(value.value)
+                    return obj
+                }, {})
+            }
+        })
+        // get the target with variable x set to y
+        let res = "No sprites found"
+        for (
+            // define the index and the sprite
+            let idx = 1, sprite = sprites[0]; 
+            // standard for loop thing
+            idx < sprites.length;
+            // set sprite to a new item  
+            sprite = sprites[idx++]
+        ) {
+            if (sprite.variables[args.var] == args.val) {
+                res = `{"id": "${sprite.id}", "name": "${sprite.name}"}`
+                break
+            }
+        }
+        
+        return res
+    }
+    thing_is_number(args, util) {
+        // i hate js
+        // i also hate regex
+        // so im gonna do this the lazy way
+        // no. String(Number(value)) === value does infact do the job X)
+        // also what was originaly here was inificiant as hell
+        return String(Number(args.TEXT1)) == args.TEXT1 && !isNaN(Number(args.TEXT1))
+    }
+    thing_is_text(args, util) {
+        // WHY IS NAN NOT EQUAL TO ITSELF
+        // HOW IS NAN A NUMBER
+        // because nan is how numbers say the value put into me is not a number
+        return isNaN(Number(args.TEXT1))
+    }
+    mobile(args, util) {
+        return navigator.userAgent.includes("Mobile") || window.matchMedia("(max-width: 767px)").matches
+    }
+
+    regextest(args) {
+        if (!validateRegex(args.reg)) return false
+        const regex = new RegExp(args.reg)
+        return regex.test(args.text)
     }
 
     getMonitored () {
