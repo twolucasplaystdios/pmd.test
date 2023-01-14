@@ -169,9 +169,12 @@ class ExtensionManager {
             log.error(`ExtensionManager was unable to register extension service: ${JSON.stringify(e)}`);
         });
 
-        let exts = Object.keys(builtinExtensions)
-        for (let index = 0; index < exts.length; index++) 
+        Object.keys(builtinExtensions).forEach(value => {
+            let extension = new value(this.runtime)
+            let info = extension.getInfo()
+            if (!info.autoLoad) continue
             this.loadExtensionURL(exts[index])
+        })
     }
 
     /**
