@@ -1232,6 +1232,133 @@ class ScriptTreeGenerator {
                     kind: 'timer.reset'
                 };
 
+            /*
+            can someone set up the jsgen for these, i dont want to rn
+            case "sensing_regextest":
+                return {
+                    kind: "sensing.regextest",
+                    regex: this.descendInputOfBlock(block, 'reg'),
+                    text: this.descendInputOfBlock(block, 'text')
+                }
+            case "sensing_thing_is_number":
+                return {
+                    kind: "sensing.thing.is.number",
+                    text: this.descendInputOfBlock(block, 'TEXT1')
+                }
+            case "sensing_mobile":
+                return {
+                    kind: "sensing.mobile",
+                }
+            case "sensing_thing_is_text":
+                return {
+                    kind: "sensing.thing.is.text",
+                    text: this.descendInputOfBlock(block, 'TEXT1')
+                }
+            case "sensing_getspritewithattrib":
+                return {
+                    kind: "sensing.getspritewithattrib",
+                    variable: this.descendInputOfBlock(block, 'var'),
+                    value: this.descendInputOfBlock(block, 'val')
+                }
+
+            case "operator_regexmatch":
+                return {
+                    kind: "operator.regexmatch",
+                    regex: this.descendInputOfBlock(block, 'reg'),
+                    text: this.descendInputOfBlock(block, 'text')
+                }
+            case "operator_replaceAll":
+                return {
+                    kind: "operator.replaceAll",
+                    text: this.descendInputOfBlock(block, 'term'),
+                    with: this.descendInputOfBlock(block, 'res'),
+                    in: this.descendInputOfBlock(block, 'text')
+                }
+            case "operator_getLettersFromIndexToIndexInText":
+                return {
+                    kind: "operator.getLettersFromIndexToIndexInText",
+                    from: this.descendInputOfBlock(block, 'INDEX1'),
+                    to: this.descendInputOfBlock(block, 'INDEX2'),
+                    ammount: this.descendInputOfBlock(block, 'TEXT')
+                }
+            case "operator_readLineInMultilineText":
+                return {
+                    kind: "operator.readLineInMultilineText",
+                    line: this.descendInputOfBlock(block, 'LINE'),
+                    text: this.descendInputOfBlock(block, 'TEXT')
+                }
+            case "operator_newLine":
+                return {
+                    kind: "operator.newLine",
+                }
+            case "operator_stringify":
+                return {
+                    kind: "operator.stringify",
+                    pass: this.descendInputOfBlock(block, 'ONE')
+                }
+            case "operator_lerpFunc":
+                return {
+                    kind: "operator.lerpFunc",
+                    from: this.descendInputOfBlock(block, 'ONE'),
+                    to: this.descendInputOfBlock(block, 'TWO'),
+                    ammount: this.descendInputOfBlock(block, 'AMOUNT')
+                }
+            case "operator_advMath":
+                return {
+                    kind: "operator.advMath",
+                    num1: this.descendInputOfBlock(block, 'ONE'),
+                    num2: this.descendInputOfBlock(block, 'TWO'),
+                    op: block.fields.OPTION.value
+                }
+            case "operator_constrainnumber":
+                return {
+                    kind: "operator.constrainnumber",
+                    number: this.descendInputOfBlock(block, 'inp'),
+                    min: this.descendInputOfBlock(block, 'min'),
+                    max: this.descendInputOfBlock(block, 'max')
+                }
+            case "operator_trueBoolean":
+                return {
+                    kind: "operator.trueBoolean",
+                }
+            case "operator_falseBoolean":
+                return {
+                    kind: "operator.falseBoolean",
+                }
+            case "operator_randomBoolean":
+                return {
+                    kind: "operator.randomBoolean",
+                }
+            case "operator_indexOfTextInText":
+                return {
+                    kind: "operator.indexOfTextInText",
+                    check: this.descendInputOfBlock(block, 'TEXT1'),
+                    text: this.descendInputOfBlock(block, 'TEXT2')
+                }
+
+            case "event_whenanything":
+                return {
+                    kind: "event.whenanything",
+                }
+            case "event_always":
+                return {
+                    kind: "event.always",
+                    event: this.descendInputOfBlock(block, 'ANYTHING')
+                }
+
+            case "control_backToGreenFlag":
+                return {
+                    kind: "control.backToGreenFlag",
+                }
+            case "control_if_return_else_return":
+                return {
+                    kind: "control.if.return.else.return",
+                    if: this.descendInputOfBlock(block, 'boolean'),
+                    true: this.descendInputOfBlock(block, 'TEXT1'),
+                    false: this.descendInputOfBlock(block, 'TEXT2'),
+                }
+            */
+
             default: {
                 const opcodeFunction = this.runtime.getOpcodeFunction(block.opcode);
                 if (opcodeFunction) {
