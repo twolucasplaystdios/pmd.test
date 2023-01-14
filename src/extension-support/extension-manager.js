@@ -638,9 +638,8 @@ class ExtensionManager {
         }
         return extensionURLs;
     }
-    for (II = 0, II < injectExtensions.length, II++) {
-  		injectExtensions[II] = () => extension;
-		}
 }
-
+for (const ii of injectExtensions) {
+  		injectExtensions[ii] = () => extension;
+		}
 module.exports = ExtensionManager;
