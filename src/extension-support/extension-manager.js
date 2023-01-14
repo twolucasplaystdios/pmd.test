@@ -1,3 +1,4 @@
+/*jshint esversion : 11, node : true, asi : true, loopfunc : true*/
 const dispatch = require('../dispatch/central-dispatch');
 const log = require('../util/log');
 const maybeFormatMessage = require('../util/maybe-format-message');
@@ -68,7 +69,7 @@ const builtinExtensions = {
     // text: text stuff
     GamepadExtension: () => require("../extensions/GamepadExtension"),
 };
-
+const injectExtensions = [builtinExtensions.jwProto];
 /**
  * @typedef {object} ArgumentInfo - Information about an extension block argument
  * @property {ArgumentType} type - the type of value this argument can take
@@ -636,6 +637,9 @@ class ExtensionManager {
             }
         }
         return extensionURLs;
+    }
+    for (let S = 0; S < injectExtensions.length; S++) {
+        injectExtensions[S] = () => extension;
     }
 }
 
