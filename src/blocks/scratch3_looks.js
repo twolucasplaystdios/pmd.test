@@ -372,7 +372,8 @@ class Scratch3LooksBlocks {
     setFont(args, util) {
         const state = this._getBubbleState(util.target)
         if (!this._doesFontSuport(state.props.FONT_SIZE, args.font)) return
-        if (!typeof state.props === 'object') state.props = this.defaultBubble
+        if (!typeof state.props === 'object') 
+            state.props = this.defaultBubble
         
         state.props.FONT = args.font
         state.props.FONT_SIZE = args.size
@@ -383,8 +384,10 @@ class Scratch3LooksBlocks {
     setColor(args, util) {
         const state = this._getBubbleState(util.target)
         if (!typeof state.props === 'object') state.props = this.defaultBubble
-        if (!typeof state.props.COLORS === 'object') state.props = this.defaultBubble
-        if (typeof args.color === 'number') args.color = Color.decimalToHex(args.color)
+        if (!typeof state.props.COLORS === 'object') 
+            state.props = this.defaultBubble
+        if (typeof args.color === 'number') 
+            args.color = Color.decimalToHex(args.color)
 
         state.props.COLORS[args.prop] = args.color
         util.target.setCustomState(Scratch3LooksBlocks.STATE_KEY, state);
@@ -395,7 +398,8 @@ class Scratch3LooksBlocks {
             return
         }
         const state = this._getBubbleState(util.target)
-        if (!typeof state.props === 'object') state.props = this.defaultBubble
+        if (!typeof state.props === 'object') 
+            state.props = this.defaultBubble
 
         state.props[args.prop] = args.color
         util.target.setCustomState(Scratch3LooksBlocks.STATE_KEY, state);
