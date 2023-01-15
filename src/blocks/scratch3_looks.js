@@ -41,7 +41,7 @@ class Scratch3LooksBlocks {
         this.runtime.on(Scratch3LooksBlocks.SAY_OR_THINK, this._updateBubble);
     }
 
-    static defaultBubble = {
+    static get defaultBubble () {
         MAX_LINE_WIDTH: 170, // Maximum width, in Scratch pixels, of a single line of text
         
         MIN_WIDTH: 50, // Minimum width, in Scratch pixels, of a text bubble
