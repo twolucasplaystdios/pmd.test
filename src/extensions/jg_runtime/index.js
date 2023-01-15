@@ -1,7 +1,6 @@
 const formatMessage = require('format-message');
 const BlockType = require('../../extension-support/block-type');
 const ArgumentType = require('../../extension-support/argument-type');
-const {loadCostume} = require('../../import/load-costume.js');
 // const Cast = require('../../util/cast');
 
 /**
@@ -15,41 +14,6 @@ class JgRuntimeBlocks {
          * @type {Runtime}
          */
         this.runtime = runtime;
-        this.md5HashApi = "https://api.hashify.net/hash/md5/hex?value="; // costumes want MD5 hashes for asset IDs and just in general ig
-        this.getImageSizeApi = "https://pm-bapi.vercel.app/api/getSize?url=" // costumes want their image size so they dont break lol
-        this.generateMd5Hash = (hashing) => {
-            return new Promise((resolve, _) => {
-                fetch(this.md5HashApi + String(hashing)).then(res => {
-                    res.json().then(json => {
-                        if (!json.Digest) {
-                            console.warn("MD5 hash could not be generated. Fallback is resolving with random number.");
-                            resolve(Math.round(Math.random() * 99999999999)); // fallback to generating random numbers incase it is deemed good enough
-                            return
-                        }
-                        resolve(String(json.Digest));
-                    }).catch(() => {
-                        console.warn("MD5 hash could not be generated. Fallback is resolving with random number.");
-                        resolve(Math.round(Math.random() * 99999999999)); // fallback to generating random numbers incase it is deemed good enough
-                    })
-                }).catch(() => {
-                    console.warn("MD5 hash could not be generated. Fallback is resolving with random number.");
-                    resolve(Math.round(Math.random() * 99999999999)); // fallback to generating random numbers incase it is deemed good enough
-                })
-            })
-        }
-        this.getImageSize = (imageUrl) => {
-            return new Promise((resolve, _) => {
-                fetch(this.getImageSizeApi + encodeURIComponent(String(imageUrl))).then(res => {
-                    res.json().then(json => {
-                        resolve(json);
-                    }).catch(() => {
-                        resolve({ width: 480, height: 360 });
-                    })
-                }).catch(() => {
-                    resolve({ width: 480, height: 360 });
-                })
-            })
-        }
     }
 
     /**
@@ -194,16 +158,17 @@ class JgRuntimeBlocks {
                 ? this.runtime.storage.DataFormat.PNG 
                 : this.runtime.storage.DataFormat.SVG
             
-            blob.arrayBuffer()
-            .then(buffer => {
-                const asset = this.runtime.storage.createAsset(assetType, dataType, buffer, null, true)
-                const name = asset.assetId + '.' + asset.dataFormat
-                loadCostume(name, {asset: asset}, this.runtime, 3)
-            })
-            .catch(err => {
-                console.error('failed to load costume because: ' + err)
-                console.warn(err)
-            })
+            blob
+                .arrayBuffer()
+                .then(buffer => {
+                    const asset = this.runtime.storage.createAsset(assetType, dataType, buffer, null, true)
+                    const name = asset.assetId + '.' + asset.dataFormat
+                    this.runtime.addCostume(name, {asset: asset}, util.target.id, 3)
+                })
+                .catch(err => {
+                    console.error('failed to load costume because: ' + err)
+                    console.warn(err)
+                })
         }))
     }
     deleteCostume(args, util) {
