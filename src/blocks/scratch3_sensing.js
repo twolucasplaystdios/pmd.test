@@ -132,8 +132,8 @@ class Scratch3SensingBlocks {
     }
 
     regextest(args) {
-        if (!validateRegex(args.reg)) return false
-        const regex = new RegExp(args.reg)
+        if (!validateRegex(args.reg, args.regrule)) return false
+        const regex = new RegExp(args.reg, args.regrule)
         return regex.test(args.text)
     }
 

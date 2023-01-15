@@ -114,8 +114,8 @@ class Scratch3OperatorsBlocks {
     }
 
     regexmatch(args) {
-        if (!validateRegex(args.reg)) return "[]"
-        const regex = new RegExp(args.reg)
+        if (!validateRegex(args.reg, args.regrule)) return "[]"
+        const regex = new RegExp(args.reg, args.regrule)
         const matches = args.text.match(regex)
         return JSON.stringify(matches ? matches : [])
     }

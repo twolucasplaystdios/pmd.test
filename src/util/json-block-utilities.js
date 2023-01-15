@@ -85,10 +85,10 @@ module.exports = {
      * Check if a regex is valid or not
      * @param {any} value the value to convert.
      */
-    validateRegex: (value) => {
+    validateRegex: (value, regrule) => {
         let valid = false
         try {
-            new RegExp(value)
+            new RegExp(value, regrule)
             valid = true
         } catch {}
 
