@@ -321,8 +321,20 @@ class RenderedTarget extends Target {
      * @param {number} y the stretch percentage on the y axis
      */
     setStretch(x, y) {
-        this.stretch[0] = x
-        this.stretch[1] = y
+        if (this.isStage) {
+            return;
+        }
+
+        this.stretch = [x, y]
+        if (this.renderer) {
+            const {direction: renderedDirection, scale} = this._getRenderedDirectionAndScale();
+            this.renderer.updateDrawableDirectionScale(this.drawableID, renderedDirection, scale);
+            if (this.visible) {
+                this.emitVisualChange();
+                this.runtime.requestRedraw();
+            }
+        }
+        this.runtime.requestTargetsUpdate(this);
     }
 
     /**
