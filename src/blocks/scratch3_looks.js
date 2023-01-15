@@ -132,6 +132,29 @@ class Scratch3LooksBlocks {
         state.props = this.defaultBubble
     }
 
+    _setBubbleState(target, paths, value, pathidx) {
+        const object = this._getBubbleState(target)
+        if (!(typeof pathidx === 'number')) {
+            paths = paths
+                .split(', ')
+                .map(v => v.split('.'))
+            pathidx = 0
+        }
+    
+        paths.forEach((path, idx) => {
+            if (!(typeof object[path[pathidx]] === 'object')) {
+                if (Object.prototype.toString.apply(value) === '[Object Array]') {
+                    object[path[pathidx]] = value[idx]
+                    return
+                }
+                object[path[pathidx]] = value
+                return
+            }
+            object[path[pathidx]] = this._setObjectPath(object[path[pathidx]], paths, value, pathidx+1)
+        })
+        target.setCustomState(Scratch3LooksBlocks.STATE_KEY, object);
+    }
+
     /**
      * Handle a target which has moved.
      * @param {RenderedTarget} target - the target which has moved.
@@ -370,39 +393,29 @@ class Scratch3LooksBlocks {
     }
 
     setFont(args, util) {
-        const state = this._getBubbleState(util.target)
-        if (!this._doesFontSuport(state.props.FONT_SIZE, args.font)) return
-        if (!typeof state.props === 'object') 
-            state.props = this.defaultBubble
-        
-        state.props.FONT = args.font
-        state.props.FONT_SIZE = args.size
-
-        state.props.LINE_HIEGHT = this._getLineHeight(state.props.FONT_SIZE, args.font)
-        util.target.setCustomState(Scratch3LooksBlocks.STATE_KEY, state);
+        this._setBubbleState(        
+            util.target,
+            'state.props.FONT, state.props.FONT_SIZE, state.props.LINE_HIEGHT',
+            [args.font, args.size, this._getLineHeight(state.props.FONT_SIZE, args.font)]
+        )
     }
     setColor(args, util) {
-        const state = this._getBubbleState(util.target)
-        if (!typeof state.props === 'object') state.props = this.defaultBubble
-        if (!typeof state.props.COLORS === 'object') 
-            state.props = this.defaultBubble
-        if (typeof args.color === 'number') 
-            args.color = Color.decimalToHex(args.color)
-
-        state.props.COLORS[args.prop] = args.color
-        util.target.setCustomState(Scratch3LooksBlocks.STATE_KEY, state);
+        this._setBubbleState(
+            util.target,
+            'state.props.COLOR.'+args.prop,
+            Color.decimalToHex(args.color)
+        )
     }
     setShape(args, util) {
         if (args.prop === 'texlim') {
             this.SAY_BUBBLE_LIMIT = Math.max(args.color, 1)
             return
         }
-        const state = this._getBubbleState(util.target)
-        if (!typeof state.props === 'object') 
-            state.props = this.defaultBubble
-
-        state.props[args.prop] = args.color
-        util.target.setCustomState(Scratch3LooksBlocks.STATE_KEY, state);
+        this._setBubbleState(
+            util.target,
+            'state.props.'+args.prop,
+            Color.decimalToHex(args.color)
+        )
     }
 
     getMonitored () {
