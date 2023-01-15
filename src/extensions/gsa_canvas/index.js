@@ -24,7 +24,7 @@ class canvas {
             color1: '#0069c2',
             blocks: [
                 {
-                    opcode: 'creaetNewCanvas',
+                    opcode: 'createNewCanvas',
                     blockType: BlockType.BUTTON,
                     text: 'create new canvas'
                 }, 
