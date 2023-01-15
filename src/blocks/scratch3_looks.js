@@ -149,7 +149,7 @@ class Scratch3LooksBlocks {
                 if (prop.startsWith('COLORS')) {
                     object.props.COLORS[prop.split('.')[1]] = value[index]
                 } else {
-                    object.props[props] = value[index]
+                    object.props[prop] = value[index]
                 }
             })
 
