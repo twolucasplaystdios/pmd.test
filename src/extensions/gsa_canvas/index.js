@@ -24,7 +24,7 @@ class JgJSONBlocks {
             color1: '#0069c2',
             blocks: [
                 {
-                    opcode: 'creatNew',
+                    opcode: 'creatNewCanvas',
                     blockType: BlockType.BUTTON,
                     text: 'create new canvas'
                 }, 
@@ -65,27 +65,8 @@ class JgJSONBlocks {
         };
     }
 
-    getAllLists() {
-        const variables = [].concat(
-            Object.values(vm.runtime.getTargetForStage().variables),
-            Object.values(vm.editingTarget.variables)
-        );
-        const lists = variables.filter(i => i.type === 'list');
-        if (lists.length === 0) {
-            return [
-                {
-                    text: 'select a list',
-                    value: 'select a list'
-                }
-            ];
-        }
-        return lists.map(i => ({
-            text: i.name,
-            value: JSON.stringify({
-                id: i.id,
-                name: i.name
-            })
-        }));
+    createNewCanvas() {
+        console.log('button clicked')
     }
 
     getValueFromJSON(args) {
