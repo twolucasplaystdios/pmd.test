@@ -163,7 +163,7 @@ class JgRuntimeBlocks {
                 .then(buffer => {
                     const asset = this.runtime.storage.createAsset(assetType, dataType, buffer, null, true)
                     const name = asset.assetId + '.' + asset.dataFormat
-                    this.runtime.addCostume(name, {asset: asset}, util.target.id, 3)
+                    vm.addCostume(name, {asset: asset}, util.target.id, 3)
                 })
                 .catch(err => {
                     console.error('failed to load costume because: ' + err)
