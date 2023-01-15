@@ -403,7 +403,7 @@ class Scratch3LooksBlocks {
     async setColor(args, util) {
         this._setBubbleProperty(
             util.target,
-            ['COLORs.'+args.prop],
+            ['COLORS.'+args.prop],
             [Color.decimalToHex(args.color)]
         )
     }
