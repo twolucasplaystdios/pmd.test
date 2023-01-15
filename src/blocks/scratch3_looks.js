@@ -142,7 +142,7 @@ class Scratch3LooksBlocks {
             pathidx = 0
         }
     
-        paths.forEach((path, idx) => {
+        for (let path = paths[0], idx = 1; idx < paths.length; path = paths[idx++]) {
             if (object[path[pathidx]] === undefined) object[path[pathidx]] = {}
             if (path[pathidx+1] === undefined) object[path[pathidx]] = value
             if (!(typeof object[path[pathidx]] === 'object')) {
@@ -154,7 +154,8 @@ class Scratch3LooksBlocks {
                 return
             }
             object[path[pathidx]] = this._setBubbleState(object[path[pathidx]], paths, value, pathidx+1)
-        })
+        }
+
         if (!(typeof pathidx === 'number')) target.setCustomState(Scratch3LooksBlocks.STATE_KEY, object);
         return object
     }
@@ -396,21 +397,21 @@ class Scratch3LooksBlocks {
         util.target.setStretch(args.X, args.Y)
     }
 
-    setFont(args, util) {
+    async setFont(args, util) {
         this._setBubbleState(        
             util.target,
             'props.FONT, props.FONT_SIZE, props.LINE_HIEGHT',
             [args.font, args.size, this._getLineHeight(args.size, args.font)]
         )
     }
-    setColor(args, util) {
+    async setColor(args, util) {
         this._setBubbleState(
             util.target,
             'props.COLOR.'+args.prop,
             Color.decimalToHex(args.color)
         )
     }
-    setShape(args, util) {
+    async setShape(args, util) {
         if (args.prop === 'texlim') {
             this.SAY_BUBBLE_LIMIT = Math.max(args.color, 1)
             return
