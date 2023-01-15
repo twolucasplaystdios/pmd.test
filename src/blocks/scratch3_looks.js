@@ -356,8 +356,18 @@ class Scratch3LooksBlocks {
             looks_goforwardbackwardlayers: this.goForwardBackwardLayers,
             looks_size: this.getSize,
             looks_costumenumbername: this.getCostumeNumberName,
-            looks_backdropnumbername: this.getBackdropNumberName
+            looks_backdropnumbername: this.getBackdropNumberName,
+            looks_setStretch: this.stretchSet,
+            looks_stretchGetX: this.getStretchX,
+            looks_stretchGetY: this.getStretchY,
         };
+    }
+
+    getStretchY(args, util) { return util.target._getRenderedDirectionAndScale()[1] }
+    getStretchX(args, util) { return util.target._getRenderedDirectionAndScale()[0] }
+
+    stretchSet(args, util) {
+        util.target.setStretch(args.X, args.Y)
     }
 
     setFont(args, util) {

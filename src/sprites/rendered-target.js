@@ -304,7 +304,19 @@ class RenderedTarget extends Target {
             const scaleFlip = (this.direction < 0) ? -1 : 1;
             finalScale = [scaleFlip * this.size, this.size];
         }
-        return {direction: finalDirection, scale: finalScale};
+        finalScale[0] *= this.stretch[0] / 100
+        finalScale[1] *= this.stretch[1] / 100
+        return {direction: finalDirection, scale: finalScale, stretch: this.stretch};
+    }
+
+    /**
+     * set the stretch of this sprite
+     * @param {number} x the stretch percentage on the x axis
+     * @param {number} y the stretch percentage on the y axis
+     */
+    setStretch(x, y) {
+        this.stretch[0] = x
+        this.stretch[1] = y
     }
 
     /**
