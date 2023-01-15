@@ -126,19 +126,30 @@ class Scratch3LooksBlocks {
         return bubbleState;
     }
 
+    /**
+     * resets the text bubble of a sprite
+     * @param {Target} target the target to reset
+     */
     _resetBubbles (target) {
         const state = this._getBubbleState(target)
         this.SAY_BUBBLE_LIMIT = this.SAY_BUBBLE_LIMITdefault
         state.props = this.defaultBubble
     }
 
+    /**
+     * set any property of the text bubble of any given target
+     * @param {Target} target the target to modify
+     * @param {array} props the property names to change
+     * @param {array} value the values the set the properties to
+     */
     _setBubbleProperty(target, props, value) {
         const object = this._getBubbleState(target)
+        if (!object.props) object.props = this.defaultBubble
         props.map((prop, index) => {
                 if (prop.startsWith('COLORS')) {
-                    object.COLORS[prop.split('.')[1]] = value[index]
+                    object.props.COLORS[prop.split('.')[1]] = value[index]
                 } else {
-                    object[props] = value[index]
+                    object.props[props] = value[index]
                 }
             })
 
