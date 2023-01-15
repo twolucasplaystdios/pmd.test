@@ -1039,12 +1039,12 @@ class Scratch3PenBlocks {
                 console.log('setting the layer order to', StageLayering.LAYER_GROUPS_PEN)
                 this.runtime.renderer.setLayerGroupOrdering(StageLayering.LAYER_GROUPS_PEN);
                 this.runtime.renderer.setDrawableOrder(-1, Infinity, StageLayering.PEN_LAYER);
-                this.runtime.setExecutablePosition(this, Infinity)
+                //this.runtime.setExecutablePosition(this, Infinity)
             } else if (args.OPTION === LayerParam.BACK) {
                 console.log('setting the layer order to', StageLayering.LAYER_GROUPS)
                 this.runtime.renderer.setLayerGroupOrdering(StageLayering.LAYER_GROUPS);
                 this.runtime.renderer.setDrawableOrder(-1, -Infinity, StageLayering.PEN_LAYER, false);
-                this.runtime.setExecutablePosition(this, -Infinity)
+                //this.runtime.setExecutablePosition(this, -Infinity)
             }
         }
     }
