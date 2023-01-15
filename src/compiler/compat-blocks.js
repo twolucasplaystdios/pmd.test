@@ -32,6 +32,7 @@ const stacked = [
     'sound_seteffectto',
     'sound_setvolumeto',
     'sound_stopallsounds',
+    "looks_setStretch"
 ];
 
 const inputs = [
