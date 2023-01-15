@@ -133,7 +133,7 @@ class Scratch3LooksBlocks {
     }
 
     _setBubbleState(target, paths, value, pathidx) {
-        const object = this._getBubbleState(target)
+        const object = typeof pathidx === 'number' ? target : this._getBubbleState(target)
         if (!(typeof pathidx === 'number')) {
             paths = paths
                 .split(', ')
