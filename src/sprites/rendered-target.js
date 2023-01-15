@@ -108,6 +108,12 @@ class RenderedTarget extends Target {
         this.size = 100;
 
         /**
+         * The stretch percent on each axis
+         * @type {array}
+         */
+        this.stretch = [100, 100]
+
+        /**
          * Currently selected costume index.
          * @type {number}
          */
