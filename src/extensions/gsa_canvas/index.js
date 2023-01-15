@@ -24,7 +24,7 @@ class canvas {
             color1: '#0069c2',
             blocks: [
                 {
-                    opcode: 'creatNewCanvas',
+                    opcode: 'creaetNewCanvas',
                     blockType: BlockType.BUTTON,
                     text: 'create new canvas'
                 }, 
@@ -33,7 +33,7 @@ class canvas {
                     text: "2D"
                 },
                 {
-                    opcode: '',
+                    opcode: 'dfsh',
                     blockType: BlockType.BOOLEAN,
                     arguments: {
                         json: {
