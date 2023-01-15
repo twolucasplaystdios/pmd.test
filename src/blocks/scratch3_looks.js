@@ -152,7 +152,7 @@ class Scratch3LooksBlocks {
                 object[path[pathidx]] = value
                 return
             }
-            object[path[pathidx]] = this._setObjectPath(object[path[pathidx]], paths, value, pathidx+1)
+            object[path[pathidx]] = this._setBubbleState(object[path[pathidx]], paths, value, pathidx+1)
         })
         target.setCustomState(Scratch3LooksBlocks.STATE_KEY, object);
     }
