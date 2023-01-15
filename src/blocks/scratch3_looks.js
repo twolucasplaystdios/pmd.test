@@ -132,32 +132,17 @@ class Scratch3LooksBlocks {
         state.props = this.defaultBubble
     }
 
-    _setBubbleState(target, paths, value, pathidx) {
-        const object = typeof pathidx === 'number' ? target : this._getBubbleState(target)
-        if (!object.props) object.props = this.defaultBubble
-        if (!(typeof pathidx === 'number')) {
-            paths = paths
-                .split(', ')
-                .map(v => v.split('.'))
-            pathidx = 0
-        }
-    
-        for (let path = paths[0], idx = 1; idx < paths.length; path = paths[idx++]) {
-            if (object[path[pathidx]] === undefined) object[path[pathidx]] = {}
-            if (path[pathidx+1] === undefined) object[path[pathidx]] = value
-            if (!(typeof object[path[pathidx]] === 'object')) {
-                if (Object.prototype.toString.apply(value) === '[Object Array]') {
-                    object[path[pathidx]] = value[idx]
-                    return
+    _setBubbleProperty(target, props, value) {
+        const object = this._getBubbleState(target)
+        props.map((prop, index) => {
+                if (prop.startsWith('COLORS')) {
+                    object.COLORS[prop.split('.')[1]] = value[index]
+                } else {
+                    object[props] = value[index]
                 }
-                object[path[pathidx]] = value
-                return
-            }
-            object[path[pathidx]] = this._setBubbleState(object[path[pathidx]], paths, value, pathidx+1)
-        }
+            })
 
-        if (!(typeof pathidx === 'number')) target.setCustomState(Scratch3LooksBlocks.STATE_KEY, object);
-        return object
+        target.setCustomState(Scratch3LooksBlocks.STATE_KEY, object);
     }
 
     /**
@@ -400,15 +385,15 @@ class Scratch3LooksBlocks {
     async setFont(args, util) {
         this._setBubbleState(        
             util.target,
-            'props.FONT, props.FONT_SIZE, props.LINE_HIEGHT',
+            ['FONT', 'FONT_SIZE', 'LINE_HIEGHT'],
             [args.font, args.size, this._getLineHeight(args.size, args.font)]
         )
     }
     async setColor(args, util) {
         this._setBubbleState(
             util.target,
-            'props.COLOR.'+args.prop,
-            Color.decimalToHex(args.color)
+            ['COLOR.'+args.prop],
+            [Color.decimalToHex(args.color)]
         )
     }
     async setShape(args, util) {
@@ -418,8 +403,8 @@ class Scratch3LooksBlocks {
         }
         this._setBubbleState(
             util.target,
-            'props.'+args.prop,
-            Color.decimalToHex(args.color)
+            ['props.'+args.prop],
+            [args.color]
         )
     }
 
