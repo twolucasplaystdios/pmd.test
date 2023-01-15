@@ -134,6 +134,7 @@ class Scratch3LooksBlocks {
 
     _setBubbleState(target, paths, value, pathidx) {
         const object = typeof pathidx === 'number' ? target : this._getBubbleState(target)
+        if (!object.props) object.props = this.defaultBubble
         if (!(typeof pathidx === 'number')) {
             paths = paths
                 .split(', ')
@@ -398,14 +399,14 @@ class Scratch3LooksBlocks {
     setFont(args, util) {
         this._setBubbleState(        
             util.target,
-            'state.props.FONT, state.props.FONT_SIZE, state.props.LINE_HIEGHT',
-            [args.font, args.size, this._getLineHeight(state.props.FONT_SIZE, args.font)]
+            'props.FONT, props.FONT_SIZE, props.LINE_HIEGHT',
+            [args.font, args.size, this._getLineHeight(args.size, args.font)]
         )
     }
     setColor(args, util) {
         this._setBubbleState(
             util.target,
-            'state.props.COLOR.'+args.prop,
+            'props.COLOR.'+args.prop,
             Color.decimalToHex(args.color)
         )
     }
@@ -416,7 +417,7 @@ class Scratch3LooksBlocks {
         }
         this._setBubbleState(
             util.target,
-            'state.props.'+args.prop,
+            'props.'+args.prop,
             Color.decimalToHex(args.color)
         )
     }
