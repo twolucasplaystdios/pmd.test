@@ -32,17 +32,7 @@ class Scratch3LooksBlocks {
         
         this.SAY_BUBBLE_LIMITdefault = 330
         this.SAY_BUBBLE_LIMIT = this.SAY_BUBBLE_LIMITdefault
-
-        // Reset all bubbles on start/stop
-        this.runtime.on('PROJECT_STOP_ALL', this._onResetBubbles);
-        this.runtime.on('targetWasRemoved', this._onTargetWillExit);
-
-        // Enable other blocks to use bubbles like ask/answer
-        this.runtime.on(Scratch3LooksBlocks.SAY_OR_THINK, this._updateBubble);
-    }
-
-    static get defaultBubble () {
-        return {
+        this.defaultBubble = {
             MAX_LINE_WIDTH: 170, // Maximum width, in Scratch pixels, of a single line of text
             
             MIN_WIDTH: 50, // Minimum width, in Scratch pixels, of a text bubble
@@ -62,6 +52,13 @@ class Scratch3LooksBlocks {
                 TEXT_FILL: '#575E75'
             },
         }
+
+        // Reset all bubbles on start/stop
+        this.runtime.on('PROJECT_STOP_ALL', this._onResetBubbles);
+        this.runtime.on('targetWasRemoved', this._onTargetWillExit);
+
+        // Enable other blocks to use bubbles like ask/answer
+        this.runtime.on(Scratch3LooksBlocks.SAY_OR_THINK, this._updateBubble);
     }
 
     /**
