@@ -65,8 +65,8 @@ class canvas {
         };
     }
 
-    createNewCanvas() {
-        console.log('button clicked')
+    createNewCanvas(...args) {
+        console.log(...args)
     }
 }
 

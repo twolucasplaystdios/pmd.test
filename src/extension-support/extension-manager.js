@@ -570,8 +570,7 @@ class ExtensionManager {
             }
 
             const funcName = blockInfo.opcode;
-
-            const callBlockFunc = () => dispatch.call(serviceName, funcName)
+            const callBlockFunc = (...args) => dispatch.call(serviceName, funcName, ...args)
 
             blockInfo.func = callBlockFunc
             break;
