@@ -142,6 +142,8 @@ class Scratch3LooksBlocks {
         }
     
         paths.forEach((path, idx) => {
+            if (object[path[pathidx]] === undefined) object[path[pathidx]] = {}
+            if (path[pathidx+1] === undefined) object[path[pathidx]] = value
             if (!(typeof object[path[pathidx]] === 'object')) {
                 if (Object.prototype.toString.apply(value) === '[Object Array]') {
                     object[path[pathidx]] = value[idx]
