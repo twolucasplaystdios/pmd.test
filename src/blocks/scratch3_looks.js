@@ -394,14 +394,14 @@ class Scratch3LooksBlocks {
     }
 
     async setFont(args, util) {
-        this._setBubbleState(        
+        this._setBubbleProperty(        
             util.target,
             ['FONT', 'FONT_SIZE', 'LINE_HIEGHT'],
             [args.font, args.size, this._getLineHeight(args.size, args.font)]
         )
     }
     async setColor(args, util) {
-        this._setBubbleState(
+        this._setBubbleProperty(
             util.target,
             ['COLOR.'+args.prop],
             [Color.decimalToHex(args.color)]
@@ -412,7 +412,7 @@ class Scratch3LooksBlocks {
             this.SAY_BUBBLE_LIMIT = Math.max(args.color, 1)
             return
         }
-        this._setBubbleState(
+        this._setBubbleProperty(
             util.target,
             ['props.'+args.prop],
             [args.color]
