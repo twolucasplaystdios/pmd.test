@@ -147,14 +147,15 @@ class Scratch3LooksBlocks {
             if (!(typeof object[path[pathidx]] === 'object')) {
                 if (Object.prototype.toString.apply(value) === '[Object Array]') {
                     object[path[pathidx]] = value[idx]
-                    return
+                    return object
                 }
                 object[path[pathidx]] = value
-                return
+                return object
             }
             object[path[pathidx]] = this._setBubbleState(object[path[pathidx]], paths, value, pathidx+1)
         })
-        target.setCustomState(Scratch3LooksBlocks.STATE_KEY, object);
+        if (!(typeof pathidx === 'number')) target.setCustomState(Scratch3LooksBlocks.STATE_KEY, object);
+        return object
     }
 
     /**
