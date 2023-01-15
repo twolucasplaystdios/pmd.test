@@ -414,7 +414,7 @@ class Scratch3LooksBlocks {
         }
         this._setBubbleProperty(
             util.target,
-            ['props.'+args.prop],
+            [args.prop],
             [args.color]
         )
     }
