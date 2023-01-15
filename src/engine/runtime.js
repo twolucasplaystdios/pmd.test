@@ -1083,7 +1083,7 @@ class Runtime extends EventEmitter {
                 categoryInfo.blocks.push(convertedBlock);
                 if (convertedBlock.json) {
                     const opcode = convertedBlock.json.type;
-                    if (blockInfo.blockType !== BlockType.EVENT) {
+                    if (blockInfo.blockType !== BlockType.EVENT && blockInfo.blockType !== BlockType.BUTTON) {
                         this._primitives[opcode] = convertedBlock.info.func;
                     }
                     if (blockInfo.blockType === BlockType.EVENT || blockInfo.blockType === BlockType.HAT) {
@@ -1420,17 +1420,11 @@ class Runtime extends EventEmitter {
      * @private
      */
     _convertButtonForScratchBlocks (buttonInfo) {
-        // for now we only support these pre-defined callbacks handled in scratch-blocks
-        const supportedCallbackKeys = ['MAKE_A_LIST', 'MAKE_A_PROCEDURE', 'MAKE_A_VARIABLE'];
-        if (supportedCallbackKeys.indexOf(buttonInfo.func) < 0) {
-            log.error(`Custom button callbacks not supported yet: ${buttonInfo.func}`);
-        }
-
         const extensionMessageContext = this.makeMessageContextForTarget();
         const buttonText = maybeFormatMessage(buttonInfo.text, extensionMessageContext);
         return {
             info: buttonInfo,
-            xml: `<button text="${buttonText}" callbackKey="${buttonInfo.func}"></button>`
+            xml: `<button text="${buttonText}" callbackKey="${buttonInfo.opcode}"></button>`
         };
     }
 

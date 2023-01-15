@@ -562,9 +562,27 @@ class ExtensionManager {
             }
             break;
         case BlockType.BUTTON:
-            if (blockInfo.opcode) {
-                log.warn(`Ignoring opcode "${blockInfo.opcode}" for button with text: ${blockInfo.text}`);
+            if (!blockInfo.opcode) {
+                throw new Error('Missing opcode for button: ' + blockInfo.text);
             }
+
+            const funcName = blockInfo.func ? this._sanitizeID(blockInfo.func) : blockInfo.opcode;
+
+            const callBlockFunc = (() => {
+                if (dispatch._isRemoteService(serviceName)) {
+                    return () => dispatch.call(serviceName, funcName)
+                }
+
+                // avoid promise latency if we can call direct
+                const serviceObject = dispatch.services[serviceName];
+                if (!serviceObject[funcName]) {
+                    // The function might show up later as a dynamic property of the service object
+                    log.warn(`Could not find extension block function called ${funcName}`);
+                }
+                return () => serviceObject[funcName]();
+            })();
+
+            blockInfo.func = callBlockFunc
             break;
         case BlockType.LABEL:
             log.warn(`Ignoring label "${blockInfo.text}"`);
