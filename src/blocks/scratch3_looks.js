@@ -147,10 +147,10 @@ class Scratch3LooksBlocks {
             if (!(typeof object[path[pathidx]] === 'object')) {
                 if (Object.prototype.toString.apply(value) === '[Object Array]') {
                     object[path[pathidx]] = value[idx]
-                    return object
+                    return
                 }
                 object[path[pathidx]] = value
-                return object
+                return
             }
             object[path[pathidx]] = this._setBubbleState(object[path[pathidx]], paths, value, pathidx+1)
         })
