@@ -30,7 +30,7 @@ class JgRuntimeBlocks {
                     opcode: 'addCostumeUrl',
                     text: formatMessage({
                         id: 'jgRuntime.blocks.addCostumeUrl',
-                        default: 'add costume from [URL]',
+                        default: 'add costume [name] from [URL]',
                         description: 'Adds a costume to the current sprite using the image at the URL. Returns the costume name.'
                     }),
                     blockType: BlockType.COMMAND,
@@ -38,6 +38,10 @@ class JgRuntimeBlocks {
                         URL: {
                             type: ArgumentType.STRING,
                             defaultValue: 'https://penguinmod.github.io/PenguinMod-Gui/static/assets/9525874be2b1d66bd448bf53400011a9.svg'
+                        },
+                        name: {
+                            type: ArgumentType.STRING,
+                            defaultValue: 'blue flag'
                         }
                     }
                 },
@@ -163,7 +167,7 @@ class JgRuntimeBlocks {
                 .then(buffer => {
                     const asset = this.runtime.storage.createAsset(assetType, dataType, buffer, null, true)
                     const name = asset.assetId + '.' + asset.dataFormat
-                    vm.addCostume(name, {asset: asset}, util.target.id, 3)
+                    vm.addCostume(name, {asset: asset, md5ext: name, name: args.name}, util.target.id, 3)
                 })
                 .catch(err => {
                     console.error('failed to load costume because: ' + err)
