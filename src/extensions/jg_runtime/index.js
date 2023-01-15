@@ -37,7 +37,7 @@ class JgRuntimeBlocks {
                     arguments: {
                         URL: {
                             type: ArgumentType.STRING,
-                            defaultValue: 'https://en.scratch-wiki.info/w/images/thumb/ScratchCat-Small.png/200px-ScratchCat-Small.png'
+                            defaultValue: 'https://penguinmod.github.io/PenguinMod-Gui/static/assets/9525874be2b1d66bd448bf53400011a9.svg'
                         }
                     }
                 },
