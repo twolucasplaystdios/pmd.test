@@ -321,6 +321,7 @@ class ExtensionManager {
      * @returns {Promise} resolved once all the extensions have been reinitialized
      */
     refreshDynamicCategorys() {
+        if (!this._loadedExtensions) return Promise.reject('_loadedExtensions is not readable yet')
         const allPromises = Array.from(this._loadedExtensions.values()).map(serviceName =>
             dispatch.call(serviceName, 'getInfo')
                 .then(info => {

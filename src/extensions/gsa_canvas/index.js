@@ -62,6 +62,11 @@ class canvas {
             ],
             menus: {
                 lists: 'getAllLists'
+            },
+            modals: {
+                newCanvas: {
+                    title: 'Create new canvas'
+                }
             }
         };
     }
