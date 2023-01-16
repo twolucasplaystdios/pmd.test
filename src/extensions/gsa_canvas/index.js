@@ -1,7 +1,7 @@
 const BlockType = require('../../extension-support/block-type');
 const ArgumentType = require('../../extension-support/argument-type');
-const uid = require('../../util/uid');
-const xmlEscape = require('../../util/xml-escape');
+const store = require('./canvasStorage');
+const canvasStorage = require('./canvasStorage');
 
 /**
  * Class
@@ -18,110 +18,15 @@ class canvas {
         this.publik = []
     }
 
-    /**
-     * the custome state key
-     * @type {string}
-     */
-    get stateKey () {
-        return 'canvas.canvases'
-    }
-
-    /**
-     * gets whether or nto a canvas is publik
-     * @param {Target} target the target to get any private canvases from
-     * @param {string} id the canvas id to check
-     * @returns {boolean} whether or not the canvas is publik
-     */
-    canvaspublik(target, id) {
-        return this.getCanvas(target, id).publik
-    }
-
-    /**
-     * gets a canvas with a given id
-     * @param {Target} target the target to get the canvas from
-     * @param {string} id the id of the canvas to get
-     * @returns {Object} the canvas object with this id
-     */
-    getCanvas(target, id) {
-        return Array.concat(target.getCustomState(this.stateKey), this.publik).find(canvas => canvas.id === id)
-    }
-
-    /**
-     * deletes a canvas with a given id
-     * @param {Target} target the target to delete the canvas from
-     * @param {string} id the canvas id to delete
-     */
-    deleteCanvas(target, id) {
-        const pindex = this.publik.findIndex(canvas => canvas.id === id)
-        if (this.canvaspublik(target, id)) {
-            delete this.publik[pindex]
-            return
-        }
-        const state = target.getCustomState(this.stateKey)
-        const index = state.findIndex(canvas => canvas.id === id)
-        delete state[index]
-        delete this.publik[pindex]
-        target.setCustomState(this.stateKey, state)
-    }
-
-    /**
-     * creates a new canvas
-     * @param {Target} target the target to create the canvas in
-     * @param {string} name the name to give the new canvas
-     * @param {boolean} publik whether or not to make this canvas publik
-     * @returns {Object} the new canvas object
-     */
-    newCanvas(target, name, publik) {
-        const state = target.getCustomState(this.stateKey)
-        const id = uid()
-        const element = document.createElement('canvas')
-        element.id = id
-        const data = {
-            name: name,
-            id: id,
-            element: element,
-            context: {
-                '2d': element.getContext('2d'),
-                '3d': element.getContext('webgl') || element.getContext("experimental-webgl")
-            },
-            publik: publik
-        }
-        if (publik) {
-            this.publik.push(data);
-            return
-        }
-        state.push(data)
-        target.setCustomState(this.stateKey, state)
-        return data
-    }
-
-    /**
-     * gets all canvases 
-     * @returns {Array}
-     */
-    getCanvasMenuItems() {
-        const editingTarget = this.runtime.getEditingTarget()
-        const local = editingTarget.getCustomState(this.stateKey)
-        const global = this.publik
-        const all = Array.concat(local, global)
-        return all.map(canvas => {
-            console.log(canvas)
-            return {
-                text: canvas.name,
-                value: canvas.id
-            }
-        })
-    }
-
     orderCategoryBlocks (blocks) {
         const varBlock = blocks[1].replace('</block>', `<field name="canvas">{canvasId}</field></block>`)
         delete blocks[1]
         const button = blocks[0]
         delete blocks[0]
-        const varBlocks = this.getCanvasMenuItems().map(canvas => {
+        const varBlocks = store.getAllCanvases().map(canvas => {
             return varBlock
                 .replace('{canvasId}', canvas.id)
-                .raplace('{canvasName}', canvas.text)
+                .raplace('{canvasName}', canvas.name)
         })
         varBlocks
             .reverse()
@@ -193,9 +98,17 @@ class canvas {
 
     createNewCanvas(workspace) {
         const name = window.prompt('canvas name', 'my canvas')
-        const privated = window.prompt('should this be private or public', 'private') === 'private'
-        this.newCanvas(this.runtime.getEditingTarget(), name, !privated)
+        store.newCanvas(name)
         vm.emitWorkspaceUpdate()
+    }
+
+    getCanvasMenuItems() {
+        return store.getAllCanvases().map(canvas => {
+            return {
+                text: canvas.name,
+                value: canvas.id
+            }
+        })
     }
 
     canvasGetter(args) {
