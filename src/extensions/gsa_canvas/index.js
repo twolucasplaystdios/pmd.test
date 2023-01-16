@@ -190,6 +190,7 @@ class canvas {
         const name = window.prompt('canvas name', 'my canvas')
         const privated = window.prompt('should this be private or public', 'private') === 'private'
         this.newCanvas(this.runtime.getEditingTarget(), name, !privated)
+        vm.emitWorkspaceUpdate()
     }
 
     canvasGetter(args) {
