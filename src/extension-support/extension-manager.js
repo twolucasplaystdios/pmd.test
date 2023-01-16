@@ -169,8 +169,6 @@ class ExtensionManager {
          */
         this.runtime = vm.runtime;
 
-        vm.addListener('workspaceUpdate', this.refreshDynamicCategorys);
-
         this.loadingAsyncExtensions = 0;
         this.asyncExtensionsLoadedCallbacks = [];
 
@@ -321,11 +319,11 @@ class ExtensionManager {
      * @returns {Promise} resolved once all the extensions have been reinitialized
      */
     refreshDynamicCategorys() {
-        if (!ExtensionManager._loadedExtensions) return Promise.reject('_loadedExtensions is not readable yet')
-        const allPromises = Array.from(ExtensionManager._loadedExtensions.values()).map(serviceName =>
+        if (!this._loadedExtensions) return Promise.reject('_loadedExtensions is not readable yet')
+        const allPromises = Array.from(this._loadedExtensions.values()).map(serviceName =>
             dispatch.call(serviceName, 'getInfo')
                 .then(info => {
-                    info = ExtensionManager._prepareExtensionInfo(serviceName, info);
+                    info = this._prepareExtensionInfo(serviceName, info);
                     if (!info.isDynamic) return
                     dispatch.call('runtime', '_refreshExtensionPrimitives', info);
                 })
