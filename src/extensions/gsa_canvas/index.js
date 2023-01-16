@@ -13,7 +13,7 @@ class canvas {
          * @type {runtime}
          */
         this.runtime = runtime;
-        runtime.editingTarget.setCustomState(this.stateKey, [])
+        runtime.getEditingTarget().setCustomState(this.stateKey, [])
         this.publik = []
     }
 
@@ -108,6 +108,8 @@ class canvas {
     }
 
     orderCategoryBlocks (blocks) {
+        const varBlock = blocks[1].replace('</block>', `<field name="canvas"></field></block>`)
+        delete blocks[1]
         console.log(blocks)
         return blocks
     }
@@ -120,6 +122,8 @@ class canvas {
             id: 'canvas',
             name: 'html canvas',
             color1: '#0069c2',
+            color2: '#0060B4',
+            color3: '#0060B4',
             isDynamic: true,
             orderBlocks: this.orderCategoryBlocks,
             blocks: [
@@ -131,14 +135,11 @@ class canvas {
                 {
                     opcode: 'canvasGetter',
                     blockType: BlockType.REPORTER,
-                    arguments: {
-                        canvas: {
-                            type: ArgumentType.STRING,
-                            defaultValue: "{}"
-                        }
-                    },
+                    arguments: {},
+                    isDynamic: true,
                     text: '[canvas]'
                 }, 
+                "---",
                 {
                     blockType: BlockType.LABEL,
                     text: "2D"
