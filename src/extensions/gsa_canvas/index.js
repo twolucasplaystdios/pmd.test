@@ -100,7 +100,8 @@ class canvas {
      * @returns {Array}
      */
     getCanvasMenuItems() {
-        const local = this.runtime.getEditingTarget().getCustomState(this.stateKey)
+        const editingTarget = this.runtime.getEditingTarget()
+        const local = editingTarget.getCustomState(this.stateKey)
         const global = this.publik
         const all = Array.concat(local, global)
         return all.map(canvas => {
