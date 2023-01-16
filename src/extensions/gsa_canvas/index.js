@@ -187,7 +187,14 @@ class canvas {
     }
 
     createNewCanvas(workspace) {
+        const name = window.prompt('canvas name', 'my canvas')
+        const private = window.prompt('should this be private or public', 'private') === 'private'
+        this.newCanvas(this.runtime.getEditingTarget(), name, !private)
+    }
 
+    canvasGetter(args) {
+        console.log(args)
+        return args.canvas
     }
 }
 
