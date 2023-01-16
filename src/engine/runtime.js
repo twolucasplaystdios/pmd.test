@@ -982,6 +982,10 @@ class Runtime extends EventEmitter {
             categoryInfo.color2 = defaultExtensionColors[1];
             categoryInfo.color3 = defaultExtensionColors[2];
         }
+        if (extensionInfo.isDynamic) {
+            categoryInfo.isDynamic = extensionInfo.isDynamic
+            categoryInfo.orderBlocks = extensionInfo.orderBlocks
+        }
 
         this._blockInfo.push(categoryInfo);
 
