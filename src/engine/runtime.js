@@ -1582,7 +1582,11 @@ class Runtime extends EventEmitter {
                 return blockFilterIncludesTarget && !block.info.hideFromPalette;
             });
 
-            orderBlocks = orderBlocks ? orderBlocks : (blocks) => blocks
+            orderBlocks = orderBlocks 
+                ? orderBlocks 
+                : (blocks) => {
+                    return blocks
+                }
 
             const colorXML = `colour="${color1}" secondaryColour="${color2}"`;
 
