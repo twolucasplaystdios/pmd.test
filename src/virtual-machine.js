@@ -209,7 +209,9 @@ class VirtualMachine extends EventEmitter {
         this.flyoutBlockListener = this.flyoutBlockListener.bind(this);
         this.monitorBlockListener = this.monitorBlockListener.bind(this);
         this.variableListener = this.variableListener.bind(this);
-        this.addListener('workspaceUpdate', this.extensionManager.refreshDynamicCategorys);
+        this.addListener('workspaceUpdate', () => {
+            this.extensionManager.refreshDynamicCategorys()
+        });
     }
 
     /**
