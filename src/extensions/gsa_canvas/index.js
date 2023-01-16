@@ -22,6 +22,7 @@ class canvas {
             id: 'canvas',
             name: 'html canvas',
             color1: '#0069c2',
+            isDynamic: true,
             blocks: [
                 {
                     opcode: 'createNewCanvas',
@@ -67,6 +68,7 @@ class canvas {
 
     createNewCanvas(...args) {
         console.log(...args)
+        vm.emitWorkspaceUpdate();
     }
 }
 

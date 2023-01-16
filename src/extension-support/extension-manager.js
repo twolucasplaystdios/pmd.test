@@ -169,6 +169,8 @@ class ExtensionManager {
          */
         this.runtime = vm.runtime;
 
+        vm.addListener('workspaceUpdate', this.refreshDynamicCategorys);
+
         this.loadingAsyncExtensions = 0;
         this.asyncExtensionsLoadedCallbacks = [];
 
@@ -312,6 +314,25 @@ class ExtensionManager {
                 reject
             });
         });
+    }
+
+    /**
+     * Regenerate blockinfo for all loaded dynamic extensions
+     * @returns {Promise} resolved once all the extensions have been reinitialized
+     */
+    refreshDynamicCategorys() {
+        const allPromises = Array.from(this._loadedExtensions.values()).map(serviceName =>
+            dispatch.call(serviceName, 'getInfo')
+                .then(info => {
+                    info = this._prepareExtensionInfo(serviceName, info);
+                    if (!info.isDynamic) return
+                    dispatch.call('runtime', '_refreshExtensionPrimitives', info);
+                })
+                .catch(e => {
+                    log.error(`Failed to refresh built-in extension primitives: ${JSON.stringify(e)}`);
+                })
+        );
+        return Promise.all(allPromises);
     }
 
     /**
