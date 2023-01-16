@@ -1,5 +1,6 @@
 const BlockType = require('../../extension-support/block-type');
 const ArgumentType = require('../../extension-support/argument-type');
+const uid = require('../../util/uid');
 
 /**
  * Class
@@ -12,6 +13,103 @@ class canvas {
          * @type {runtime}
          */
         this.runtime = runtime;
+        runtime.editingTarget.setCustomState(this.stateKey, [])
+        this.public = []
+    }
+
+    /**
+     * the custome state key
+     * @type {string}
+     */
+    get stateKey () {
+        return 'canvas.canvases'
+    }
+
+    /**
+     * gets whether or nto a canvas is public
+     * @param {Target} target the target to get any private canvases from
+     * @param {string} id the canvas id to check
+     * @returns {boolean} whether or not the canvas is public
+     */
+    canvasPublic(target, id) {
+        return this.getCanvas(target, id).public
+    }
+
+    /**
+     * gets a canvas with a given id
+     * @param {Target} target the target to get the canvas from
+     * @param {string} id the id of the canvas to get
+     * @returns {Object} the canvas object with this id
+     */
+    getCanvas(target, id) {
+        return Array.concat(target.getCustomState(this.stateKey), this.public).find(canvas => canvas.id === id)
+    }
+
+    /**
+     * deletes a canvas with a given id
+     * @param {Target} target the target to delete the canvas from
+     * @param {string} id the canvas id to delete
+     */
+    deleteCanvas(target, id) {
+        const pindex = this.public.findIndex(canvas => canvas.id === id)
+        if (this.canvasPublic(target, id)) {
+            delete this.public[pindex]
+            return
+        }
+        const state = target.getCustomState(this.stateKey)
+        const index = state.findIndex(canvas => canvas.id === id)
+        delete state[index]
+        delete this.public[pindex]
+        target.setCustomState(this.stateKey, state)
+    }
+
+    /**
+     * creates a new canvas
+     * @param {Target} target the target to create the canvas in
+     * @param {string} name the name to give the new canvas
+     * @param {boolean} public whether or not to make this canvas public
+     * @returns {Object} the new canvas object
+     */
+    newCanvas(target, name, public) {
+        const state = target.getCustomState(this.stateKey)
+        const id = uid()
+        const element = document.createElement('canvas')
+        element.id = id
+        const data = {
+            name: name,
+            id: id,
+            element: element,
+            context: {
+                '2d': element.getContext('2d'),
+                '3d': element.getContext('webgl') || element.getContext("experimental-webgl")
+            },
+            public: public
+        }
+        if (public) {
+            this.public.push(data);
+            return
+        }
+        state.push(data)
+        target.setCustomState(this.stateKey, state)
+        return data
+    }
+
+    /**
+     * gets all canvases 
+     * @returns {Array}
+     */
+    getCanvasMenuItems() {
+        return Array.concat(this.runtime.editingTarget.getCustomState(this.stateKey), this.public).map(canvas => {
+            return {
+                text: canvas.name,
+                value: canvas.id
+            }
+        })
+    }
+
+    orderCategoryBlocks (blocks) {
+        console.log(blocks)
+        return blocks
     }
 
     /**
@@ -23,11 +121,23 @@ class canvas {
             name: 'html canvas',
             color1: '#0069c2',
             isDynamic: true,
+            orderBlocks: this.orderCategoryBlocks,
             blocks: [
                 {
                     opcode: 'createNewCanvas',
                     blockType: BlockType.BUTTON,
                     text: 'create new canvas'
+                }, 
+                {
+                    opcode: 'canvasGetter',
+                    blockType: BlockType.REPORTER,
+                    arguments: {
+                        canvas: {
+                            type: ArgumentType.STRING,
+                            defaultValue: "{}"
+                        }
+                    },
+                    text: '[canvas]'
                 }, 
                 {
                     blockType: BlockType.LABEL,
@@ -61,19 +171,13 @@ class canvas {
                 }, 
             ],
             menus: {
-                lists: 'getAllLists'
+                canvas: 'getCanvasMenuItems'
             },
-            modals: {
-                newCanvas: {
-                    title: 'Create new canvas'
-                }
-            }
         };
     }
 
-    createNewCanvas(...args) {
-        console.log(...args)
-        vm.emitWorkspaceUpdate();
+    createNewCanvas(workspace) {
+
     }
 }
 

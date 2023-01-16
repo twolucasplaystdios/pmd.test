@@ -1566,7 +1566,7 @@ class Runtime extends EventEmitter {
      */
     getBlocksXML (target) {
         return this._blockInfo.map(categoryInfo => {
-            const {name, color1, color2} = categoryInfo;
+            const {name, color1, color2, orderBlocks} = categoryInfo;
             // Filter out blocks that aren't supposed to be shown on this target, as determined by the block info's
             // `hideFromPalette` and `filter` properties.
             const paletteBlocks = categoryInfo.blocks.filter(block => {
@@ -1581,6 +1581,8 @@ class Runtime extends EventEmitter {
                 // If the block info's `hideFromPalette` is true, then filter out this block
                 return blockFilterIncludesTarget && !block.info.hideFromPalette;
             });
+
+            orderBlocks = orderBlocks ? orderBlocks : (blocks) => blocks
 
             const colorXML = `colour="${color1}" secondaryColour="${color2}"`;
 
@@ -1603,7 +1605,7 @@ class Runtime extends EventEmitter {
             return {
                 id: categoryInfo.id,
                 xml: `<category name="${name}" id="${categoryInfo.id}" ${statusButtonXML} ${colorXML} ${menuIconXML}>${
-                    paletteBlocks.map(block => block.xml).join('')}</category>`
+                    orderBlocks(paletteBlocks.map(block => block.xml)).join('')}</category>`
             };
         });
     }
