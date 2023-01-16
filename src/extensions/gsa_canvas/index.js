@@ -1,6 +1,7 @@
 const BlockType = require('../../extension-support/block-type');
 const ArgumentType = require('../../extension-support/argument-type');
 const uid = require('../../util/uid');
+const xmlEscape = require('../../util/xml-escape');
 
 /**
  * Class
@@ -108,10 +109,19 @@ class canvas {
     }
 
     orderCategoryBlocks (blocks) {
-        const varBlock = blocks[1].replace('</block>', `<field name="canvas"></field></block>`)
+        const varBlock = blocks[1].replace('</block>', `<field name="canvas">{canvasId}</field></block>`)
         delete blocks[1]
-        console.log(blocks)
-        return blocks
+        const button = blocks[0]
+        delete blocks[0]
+        const varBlocks = this.getCanvasMenuItems().map(canvas => {
+            return varBlock
+                .replace('{canvasId}', canvas.id)
+                .raplace('{canvasName}', canvas.text)
+        })
+        varBlocks
+            .reverse()
+            .push(button)
+        return Array.concat(varBlocks, blocks)
     }
 
     /**
@@ -135,9 +145,8 @@ class canvas {
                 {
                     opcode: 'canvasGetter',
                     blockType: BlockType.REPORTER,
-                    arguments: {},
                     isDynamic: true,
-                    text: '[canvas]'
+                    text: '{canvasName}'
                 }, 
                 "---",
                 {
