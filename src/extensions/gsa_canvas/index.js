@@ -14,7 +14,7 @@ class canvas {
          */
         this.runtime = runtime;
         runtime.editingTarget.setCustomState(this.stateKey, [])
-        this.public = []
+        this.publik = []
     }
 
     /**
@@ -26,13 +26,13 @@ class canvas {
     }
 
     /**
-     * gets whether or nto a canvas is public
+     * gets whether or nto a canvas is publik
      * @param {Target} target the target to get any private canvases from
      * @param {string} id the canvas id to check
-     * @returns {boolean} whether or not the canvas is public
+     * @returns {boolean} whether or not the canvas is publik
      */
-    canvasPublic(target, id) {
-        return this.getCanvas(target, id).public
+    canvaspublik(target, id) {
+        return this.getCanvas(target, id).publik
     }
 
     /**
@@ -42,7 +42,7 @@ class canvas {
      * @returns {Object} the canvas object with this id
      */
     getCanvas(target, id) {
-        return Array.concat(target.getCustomState(this.stateKey), this.public).find(canvas => canvas.id === id)
+        return Array.concat(target.getCustomState(this.stateKey), this.publik).find(canvas => canvas.id === id)
     }
 
     /**
@@ -51,15 +51,15 @@ class canvas {
      * @param {string} id the canvas id to delete
      */
     deleteCanvas(target, id) {
-        const pindex = this.public.findIndex(canvas => canvas.id === id)
-        if (this.canvasPublic(target, id)) {
-            delete this.public[pindex]
+        const pindex = this.publik.findIndex(canvas => canvas.id === id)
+        if (this.canvaspublik(target, id)) {
+            delete this.publik[pindex]
             return
         }
         const state = target.getCustomState(this.stateKey)
         const index = state.findIndex(canvas => canvas.id === id)
         delete state[index]
-        delete this.public[pindex]
+        delete this.publik[pindex]
         target.setCustomState(this.stateKey, state)
     }
 
@@ -67,10 +67,10 @@ class canvas {
      * creates a new canvas
      * @param {Target} target the target to create the canvas in
      * @param {string} name the name to give the new canvas
-     * @param {boolean} public whether or not to make this canvas public
+     * @param {boolean} publik whether or not to make this canvas publik
      * @returns {Object} the new canvas object
      */
-    newCanvas(target, name, public) {
+    newCanvas(target, name, publik) {
         const state = target.getCustomState(this.stateKey)
         const id = uid()
         const element = document.createElement('canvas')
@@ -83,10 +83,10 @@ class canvas {
                 '2d': element.getContext('2d'),
                 '3d': element.getContext('webgl') || element.getContext("experimental-webgl")
             },
-            public: public
+            publik: publik
         }
-        if (public) {
-            this.public.push(data);
+        if (publik) {
+            this.publik.push(data);
             return
         }
         state.push(data)
@@ -99,7 +99,7 @@ class canvas {
      * @returns {Array}
      */
     getCanvasMenuItems() {
-        return Array.concat(this.runtime.editingTarget.getCustomState(this.stateKey), this.public).map(canvas => {
+        return Array.concat(this.runtime.editingTarget.getCustomState(this.stateKey), this.publik).map(canvas => {
             return {
                 text: canvas.name,
                 value: canvas.id
