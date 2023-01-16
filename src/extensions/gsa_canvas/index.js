@@ -14,8 +14,6 @@ class canvas {
          * @type {runtime}
          */
         this.runtime = runtime;
-        runtime.getEditingTarget().setCustomState(this.stateKey, [])
-        this.publik = []
     }
 
     orderCategoryBlocks (blocks) {
