@@ -17,13 +17,14 @@ class canvas {
     }
 
     orderCategoryBlocks (blocks) {
-        const varBlock = blocks[1].replace('</block>', `<field name="canvas">{canvasId}</field></block>`)
-        delete blocks[1]
         const button = blocks[0]
+        const varBlock = blocks[1]
         delete blocks[0]
+        delete blocks[1]
+        // create the variable block xml's
         const varBlocks = store.getAllCanvases().map(canvas => {
             return varBlock
-                .replace('{canvasId}', canvas.id)
+                .replace('</block>', `<field name="canvas">${canvas.id}</field></block>`)
                 .raplace('{canvasName}', canvas.name)
         })
         // push the button to the top of the var list
