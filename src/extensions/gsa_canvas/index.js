@@ -115,7 +115,7 @@ class canvas {
     }
 
     canvasGetter(args, util, mutation) {
-        return store.getCanvas(mutation.canvasId)
+        return store.getCanvas(mutation.canvasId).element.toDataURL('image/png')
     }
 }
 
