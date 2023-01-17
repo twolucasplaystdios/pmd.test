@@ -23,7 +23,7 @@ class canvas {
         delete blocks[1]
         // create the variable block xml's
         const varBlocks = store.getAllCanvases().map(canvas => varBlock
-                .replace('</block>', `<field name="canvas">${canvas.id}</field></block>`)
+                .replace('{canvasId}', canvas.id)
                 .replace('{canvasName}', canvas.name))
         // push the button to the top of the var list
         varBlocks
@@ -58,6 +58,7 @@ class canvas {
                     opcode: 'canvasGetter',
                     blockType: BlockType.REPORTER,
                     isDynamic: true,
+                    canvasId: '{canvasId}',
                     text: '{canvasName}'
                 }, 
                 "---",
