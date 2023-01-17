@@ -1,7 +1,7 @@
 const BlockType = require('../../extension-support/block-type');
 const ArgumentType = require('../../extension-support/argument-type');
-const store = require('./canvasStorage');
-const canvasStorage = require('./canvasStorage');
+const cstore = require('./canvasStorage');
+const store = new cstore()
 
 /**
  * Class
