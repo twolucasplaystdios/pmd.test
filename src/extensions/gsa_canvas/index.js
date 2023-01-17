@@ -113,9 +113,9 @@ class canvas {
         })
     }
 
-    canvasGetter(args) {
+    canvasGetter(...args) {
         console.log(args)
-        return args.canvas
+        return ''
     }
 }
 
