@@ -22,11 +22,9 @@ class canvas {
         delete blocks[0]
         delete blocks[1]
         // create the variable block xml's
-        const varBlocks = store.getAllCanvases().map(canvas => {
-            return varBlock
+        const varBlocks = store.getAllCanvases().map(canvas => varBlock
                 .replace('</block>', `<field name="canvas">${canvas.id}</field></block>`)
-                .raplace('{canvasName}', canvas.name)
-        })
+                .replace('{canvasName}', canvas.name))
         // push the button to the top of the var list
         varBlocks
             .reverse()
