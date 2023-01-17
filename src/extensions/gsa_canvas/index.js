@@ -114,9 +114,8 @@ class canvas {
         })
     }
 
-    canvasGetter(...args) {
-        console.log(...args)
-        return ''
+    canvasGetter(args, util, mutation) {
+        return store.getCanvas(mutation.canvasId)
     }
 }
 
