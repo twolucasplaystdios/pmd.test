@@ -5,9 +5,12 @@ class canvasStorage {
     /**
      * initiats the storage
      */
-    constructor(runtime) {
-        this.runtime = runtime
+    constructor() {
         this.canvases = {}
+    }
+
+    attachRuntime(runtime) {
+        this.runtime = runtime
     }
 
     /**
