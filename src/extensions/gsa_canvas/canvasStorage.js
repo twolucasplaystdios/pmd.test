@@ -4,7 +4,7 @@ class canvasStorage {
     /**
      * initiats the storage
      */
-    init() {
+    constructor() {
         this.canvases = {}
     }
 
