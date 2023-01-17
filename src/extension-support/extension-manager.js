@@ -66,6 +66,7 @@ const builtinExtensions = {
     //cl: () => require("../extensions/cl"),
     // gsa: theyl think ianyourgod did added this but no it was me all along!!!!!!!!!!!!!!!
     // text: text stuff
+    cloudlink: () => require('../extensions/scratch3_cloudlink'),
     GamepadExtension: () => require("../extensions/GamepadExtension"),
 
     // canvas: kinda obvius if you know anything about html canvases
