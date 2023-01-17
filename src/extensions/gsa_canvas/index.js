@@ -122,6 +122,7 @@ class canvas {
     }
 
     printCanvas(args) {
+        const penSkinId = this.runtime.renderer.getPenDrawableId()
         const canvas = store.getCanvas(args.canvas)
         this.runtime.renderer.penStamp(penSkinId, canvas.drawableId);
         this.runtime.requestRedraw();
