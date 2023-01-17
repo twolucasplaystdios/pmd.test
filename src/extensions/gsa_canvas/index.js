@@ -64,6 +64,17 @@ class canvas {
                 }, 
                 "---",
                 {
+                    opcode: 'printCanvas',
+                    blockType: BlockType.COMMAND,
+                    arguments: {
+                        canvas: {
+                            type: ArgumentType.STRING,
+                            menu: 'canvas'
+                        }
+                    },
+                    text: 'stamp canvas [canvas] to pen'
+                }, 
+                {
                     blockType: BlockType.LABEL,
                     text: "2D"
                 },
@@ -82,17 +93,6 @@ class canvas {
                     blockType: BlockType.LABEL,
                     text: "3D"
                 },
-                {
-                    opcode: 'printCanvas',
-                    blockType: BlockType.COMMAND,
-                    arguments: {
-                        canvas: {
-                            type: ArgumentType.STRING,
-                            menu: 'canvas'
-                        }
-                    },
-                    text: 'stamp canvas [canvas] to pen'
-                }, 
             ],
             menus: {
                 canvas: 'getCanvasMenuItems'
