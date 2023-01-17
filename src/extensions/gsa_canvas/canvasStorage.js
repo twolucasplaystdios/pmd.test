@@ -1,10 +1,12 @@
 const uid = require('../../util/uid');
+const StageLayering = require('../../engine/stage-layering');
 
 class canvasStorage {
     /**
      * initiats the storage
      */
-    constructor() {
+    constructor(runtime) {
+        this.runtime = runtime
         this.canvases = {}
     }
 
@@ -34,14 +36,26 @@ class canvasStorage {
      * @param {boolean} publik whether or not to make this canvas publik
      * @returns {Object} the new canvas object
      */
-    newCanvas(name) {
+    newCanvas(name, width, height) {
         const id = uid()
         const element = document.createElement('canvas')
         element.id = id
+        element.width = width;
+        element.height = height;
+
+        const skin = this.runtime.renderer.createBitmapSkin(element, 1);
+        const drawable = this.runtime.renderer.createDrawable(StageLayering.PEN_LAYER);
+        this.runtime.renderer.updateDrawableSkinId(drawable, skin);
+        this.runtime.renderer.updateDrawableVisible(drawable, false);
+
         const data = {
             name: name,
             id: id,
             element: element,
+            skinId: skin,
+            drawableId: drawable,
+            width: width, 
+            height: height,
             context: {
                 '2d': element.getContext('2d'),
                 '3d': element.getContext('webgl') || element.getContext("experimental-webgl")
@@ -49,6 +63,18 @@ class canvasStorage {
         }
         this.canvases[id] = data
         return data
+    }
+
+    /**
+     * updates the canvases renderer
+     * @param {String} id the id of the canvas to update
+     */
+    updateCanvas(id) {
+        const canvas = this.getCanvas(id)
+        const printSkin = this.runtime.renderer._allSkins[canvas.skinId];
+        const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+        printSkin._setTexture(imageData);
+        this.runtime.requestRedraw();
     }
 
     /**

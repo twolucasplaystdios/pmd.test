@@ -1,7 +1,6 @@
 const BlockType = require('../../extension-support/block-type');
 const ArgumentType = require('../../extension-support/argument-type');
-const cstore = require('./canvasStorage');
-const store = new cstore()
+const store = require('./canvasStorage');
 
 /**
  * Class
@@ -14,6 +13,7 @@ class canvas {
          * @type {runtime}
          */
         this.runtime = runtime;
+        this.store = new store(runtime)
     }
 
     orderCategoryBlocks (blocks) {
@@ -22,7 +22,7 @@ class canvas {
         delete blocks[0]
         delete blocks[1]
         // create the variable block xml's
-        const varBlocks = store.getAllCanvases().map(canvas => varBlock
+        const varBlocks = this.store.getAllCanvases().map(canvas => varBlock
                 .replace('{canvasId}', canvas.id)
                 .replace('{canvasName}', canvas.name))
         // push the button to the top of the var list
@@ -82,15 +82,15 @@ class canvas {
                     text: "3D"
                 },
                 {
-                    opcode: 'json_array_validate',
-                    blockType: BlockType.BOOLEAN,
+                    opcode: 'printCanvas',
+                    blockType: BlockType.COMMAND,
                     arguments: {
-                        array: {
+                        canvas: {
                             type: ArgumentType.STRING,
-                            defaultValue: "[]"
+                            menu: 'canvas'
                         }
                     },
-                    text: 'is array [array] valid?'
+                    text: 'stamp canvas [canvas] to pen'
                 }, 
             ],
             menus: {
@@ -101,12 +101,12 @@ class canvas {
 
     createNewCanvas(workspace) {
         const name = window.prompt('canvas name', 'my canvas')
-        store.newCanvas(name)
+        this.store.newCanvas(name)
         vm.emitWorkspaceUpdate()
     }
 
     getCanvasMenuItems() {
-        return store.getAllCanvases().map(canvas => {
+        return this.store.getAllCanvases().map(canvas => {
             return {
                 text: canvas.name,
                 value: canvas.id
@@ -115,7 +115,13 @@ class canvas {
     }
 
     canvasGetter(args, util, mutation) {
-        return store.getCanvas(mutation.canvasId).element.toDataURL('image/png')
+        return this.store.getCanvas(mutation.canvasId).element.toDataURL('image/png')
+    }
+
+    printCanvas(args) {
+        const canvas = this.store.getCanvas(args.canvas)
+        this.runtime.renderer.penStamp(penSkinId, canvas.drawableId);
+        this.runtime.requestRedraw();
     }
 }
 
