@@ -401,10 +401,14 @@ class Scratch3LooksBlocks {
         )
     }
     async setColor(args, util) {
+        if (typeof args.color === 'number') {
+            args.color = Color.decimalToRgb(args.color)
+            args.color = `rgba(${args.color.r}, ${args.color.g}, ${args.color.b}, ${args.color.a})`
+        }
         this._setBubbleProperty(
             util.target,
             ['COLORS.'+args.prop],
-            [Color.decimalToHex(args.color)]
+            [args.color]
         )
     }
     async setShape(args, util) {
