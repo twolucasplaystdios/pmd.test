@@ -29,7 +29,9 @@ class canvas {
         varBlocks
             .reverse()
             .push(button)
-        return Array.concat(varBlocks, blocks)
+            .reverse()
+        blocks = Array.concat(varBlocks, blocks)
+        return blocks
     }
 
     /**
