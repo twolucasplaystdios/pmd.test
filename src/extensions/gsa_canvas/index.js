@@ -107,7 +107,9 @@ class canvas {
     }
 
     getCanvasMenuItems() {
-        return store.getAllCanvases().map(canvas => {
+        const canvases = store.getAllCanvases()
+        if (canvases.length < 1) return [{text: '', value: ''}]
+        return canvases.map(canvas => {
             return {
                 text: canvas.name,
                 value: canvas.id
