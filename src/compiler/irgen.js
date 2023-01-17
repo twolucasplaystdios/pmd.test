@@ -1396,8 +1396,10 @@ class ScriptTreeGenerator {
                     const blockInfo = this.getBlockInfo(block.opcode);
                     if (blockInfo) {
                         const type = blockInfo.info.blockType;
+                        const args = this.descendCompatLayer(block)
+                        args.block = block
                         if (type === BlockType.COMMAND) {
-                            return this.descendCompatLayer(block);
+                            return args
                         }
                     }
                 }
