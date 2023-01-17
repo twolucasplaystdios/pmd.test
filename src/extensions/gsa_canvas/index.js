@@ -26,10 +26,14 @@ class canvas {
                 .replace('{canvasId}', canvas.id)
                 .raplace('{canvasName}', canvas.name)
         })
+        // push the button to the top of the var list
         varBlocks
             .reverse()
             .push(button)
-        blocks = Array.concat(varBlocks.reverse(), blocks)
+        // merge the category blocks and variable blocks into one block list
+        blocks = varBlocks
+            .reverse()
+            .concat(blocks)
         return blocks
     }
 
