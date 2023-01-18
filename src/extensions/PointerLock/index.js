@@ -134,4 +134,4 @@ const canvas = vm.runtime.renderer.canvas;
       return isLocked;
     }
   }
-module.exports = PointerLock
+module.exports = Pointerlock
