@@ -69,6 +69,14 @@ class canvasStorage {
     }
 
     /**
+     * gets or creates a canvas with name equal to 
+     * @param {String} name the name of the canvas
+     */
+    getCanvasByName(name) {
+        return Object.values(this.canvases).find(canvas => canvas.name === name)
+    }
+
+    /**
      * updates the canvases renderer
      * @param {String} id the id of the canvas to update
      */

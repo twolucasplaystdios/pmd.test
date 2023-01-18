@@ -102,7 +102,7 @@ class canvas {
 
     createNewCanvas(workspace) {
         const name = window.prompt('canvas name', 'my canvas')
-        store.newCanvas(name)
+        store.newCanvas(name, this.runtime.stageWidth, this.runtime.stageHeight)
         vm.emitWorkspaceUpdate()
     }
 
