@@ -70,8 +70,7 @@ const builtinExtensions = {
     GamepadExtension: () => require("../extensions/GamepadExtension"),
 
     // canvas: kinda obvius if you know anything about html canvases
-    canvas: () => require('../extensions/gsa_canvas'),
-    PointerLock: () => require('../extensions/PointerLock')
+    canvas: () => require('../extensions/gsa_canvas')
 };
 
 const preload = [
