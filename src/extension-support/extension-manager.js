@@ -54,19 +54,12 @@ const builtinExtensions = {
     // Blockly 2: a faithful recreation of the original blockly blocks
     blockly2math: () => require("../extensions/blockly-2/math.js"),
 
-    // griffpatch: *silence*
-    // griffpatch: box 2d
-    griffpatch: () => require("../extensions/griffpatch_box2d"),
-
     // jw: They'll think its made by jwklong >:) (but it's not (yet (maybe (probably not (but its made by ianyourgod)))))
     // this is the real jwklong speaking, one word shall be said about this: A N G E R Y
     // Structs: hehe structs for oop (look at c)
     jwStructs: () => require("../extensions/jw_structs"),
     //mikedev: ghytfhygfvbl
     //cl: () => require("../extensions/cl"),
-    // gsa: theyl think ianyourgod did added this but no it was me all along!!!!!!!!!!!!!!!
-    // text: text stuff
-    cloudlink: () => require('../extensions/scratch3_cloudlink'),
     GamepadExtension: () => require("../extensions/GamepadExtension"),
 
     // canvas: kinda obvius if you know anything about html canvases
