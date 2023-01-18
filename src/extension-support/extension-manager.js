@@ -71,7 +71,8 @@ const builtinExtensions = {
 
     // canvas: kinda obvius if you know anything about html canvases
     canvas: () => require('../extensions/gsa_canvas'),
-    PointerLock: () => require('../extensions/PointerLock')
+    PointerLock: () => require('../extensions/PointerLock'),
+    MouseCursor: () => require('../extensions/MouseCursor')
 };
 
 const preload = [
