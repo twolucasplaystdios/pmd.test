@@ -171,8 +171,8 @@ class ExtensionManager {
         });
 
         preload.forEach(value => {
-            this.loadExtensionURL(value)
-        })
+            this.loadExtensionURL(value);
+        });
     }
 
     /**
@@ -312,13 +312,13 @@ class ExtensionManager {
      * Regenerate blockinfo for all loaded dynamic extensions
      * @returns {Promise} resolved once all the extensions have been reinitialized
      */
-    refreshDynamicCategorys() {
-        if (!this._loadedExtensions) return Promise.reject('_loadedExtensions is not readable yet')
+    refreshDynamicCategorys () {
+        if (!this._loadedExtensions) return Promise.reject('_loadedExtensions is not readable yet');
         const allPromises = Array.from(this._loadedExtensions.values()).map(serviceName =>
             dispatch.call(serviceName, 'getInfo')
                 .then(info => {
                     info = this._prepareExtensionInfo(serviceName, info);
-                    if (!info.isDynamic) return
+                    if (!info.isDynamic) return;
                     dispatch.call('runtime', '_refreshExtensionPrimitives', info);
                 })
                 .catch(e => {

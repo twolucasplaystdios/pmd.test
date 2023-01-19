@@ -24,8 +24,7 @@ class SecurityManager {
      * @returns {Promise<'worker'|'iframe'|'unsandboxed'>}
      */
     getSandboxMode (extensionURL) {
-        // Default to worker for Scratch compatibility
-        return Promise.resolve('worker');
+        return Promise.resolve('unsandboxed');
     }
 
     /**
