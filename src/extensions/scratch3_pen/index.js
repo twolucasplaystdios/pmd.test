@@ -714,7 +714,7 @@ class Scratch3PenBlocks {
         ctx.fillText(args.TEXT, args.X, -args.Y);
         ctx.restore();
 
-        const printSkin = util.target.runtime.renderer._allSkins[this.skinID];
+        const printSkin = util.target.runtime.renderer._allSkins[this.bitmapSkinID];
         const imageData = ctx.getImageData(0, 0, width, height);
         printSkin._setTexture(imageData);
         this.runtime.renderer.penStamp(penSkinId, this.drawableID);
