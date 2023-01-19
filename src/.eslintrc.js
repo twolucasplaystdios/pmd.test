@@ -11,6 +11,7 @@ module.exports = {
         'no-shadow': 'off',
         'quotes': 'off',
         'prefer-template': 'warn',
-        'linebreak-style': 'off'
+        'linebreak-style': 'off',
+        'no-alert': 'off'
     }
 };
