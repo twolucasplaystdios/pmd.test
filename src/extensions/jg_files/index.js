@@ -124,6 +124,7 @@ class JgFilesBlocks {
         return this.__askUserForFile(fileTypesAllowed.join(","));
     }
     filesaveas(args,util) {
+        try {
         var myArray = args.FILE_NAME.split('.').length - 1;;
         var myArray = args.FILE_NAME.split('.')[myArray]
         const handle = showSaveFilePicker({
@@ -139,7 +140,7 @@ class JgFilesBlocks {
         const writableStream = handle.createWritable();
         writableStream.write(blob);
         writableStream.close();
-    }
+    } catch (e) {return;}}
 
     downloadFile (args) {
         let content = "";
