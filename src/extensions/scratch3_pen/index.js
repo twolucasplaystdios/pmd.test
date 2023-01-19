@@ -699,7 +699,7 @@ class Scratch3PenBlocks {
 
         const width = vm.runtime.stageWidth;
         const height = vm.runtime.stageHeight;
-        const ctx = this.Canvas.getContext('2d');
+        const ctx = this.bitmapCanvas.getContext('2d');
         ctx.clearRect(0, 0, width, height);
         ctx.save();
         ctx.translate(width / 2, height / 2);
@@ -714,10 +714,10 @@ class Scratch3PenBlocks {
         ctx.fillText(args.TEXT, args.X, -args.Y);
         ctx.restore();
 
-        const printSkin = util.target.runtime.renderer._allSkins[this.SkinID];
+        const printSkin = util.target.runtime.renderer._allSkins[this.skinID];
         const imageData = ctx.getImageData(0, 0, width, height);
         printSkin._setTexture(imageData);
-        this.runtime.renderer.penStamp(penSkinId, this.DrawableID);
+        this.runtime.renderer.penStamp(penSkinId, this.drawableID);
 
         this.runtime.requestRedraw();
     }
