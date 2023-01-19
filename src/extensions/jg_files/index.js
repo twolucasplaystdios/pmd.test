@@ -126,7 +126,7 @@ class JgFilesBlocks {
     filesaveas(args,util) {
         var myArray = args.FILE_NAME.split('.').length - 1;;
         var myArray = args.FILE_NAME.split('.')[myArray]
-        const handle = await showSaveFilePicker({
+        const handle = showSaveFilePicker({
         suggestedName: `${args.FILE_NAME}`,
         types: [{
             description: 'file',
@@ -137,8 +137,8 @@ class JgFilesBlocks {
         const blob = new Blob([args.FILE_CONTENT]);
 
         const writableStream = await handle.createWritable();
-        await writableStream.write(blob);
-        await writableStream.close();
+        writableStream.write(blob);
+        writableStream.close();
     }
 
     downloadFile (args) {
