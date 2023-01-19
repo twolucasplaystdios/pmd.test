@@ -10,6 +10,7 @@ module.exports = {
         'no-console': 'off',
         'no-shadow': 'off',
         'quotes': 'off',
-        'prefer-template': 'warn'
+        'prefer-template': 'warn',
+        'linebreak-style': 'off'
     }
 };
