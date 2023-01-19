@@ -45,6 +45,21 @@ class JgFilesBlocks {
                     }
                 },
                 {
+                    opcode: 'filesaveas',
+                    text: 'save [FILE_CONTENT] as with suggested file name [FILE_NAME]',
+                    blockType: BlockType.COMMAND,
+                    arguments: {
+                        FILE_CONTENT: {
+                            type: ArgumentType.STRING,
+                            defaultValue: 'Hello!'
+                        },
+                        FILE_NAME: {
+                            type: ArgumentType.STRING,
+                            defaultValue: 'text.txt'
+                        }
+                    }
+                }
+                {
                     opcode: 'downloadFile',
                     text: 'download content [FILE_CONTENT] as file name [FILE_NAME]',
                     blockType: BlockType.COMMAND,
@@ -107,6 +122,23 @@ class JgFilesBlocks {
             fileTypesAllowed.push("." + type);
         });
         return this.__askUserForFile(fileTypesAllowed.join(","));
+    }
+    filesaveas(args,util) {
+        var myArray = args.FILE_NAME.split('.').length - 1;;
+        var myArray = args.FILE_NAME.split('.')[myArray]
+        const handle = await showSaveFilePicker({
+        suggestedName: `${args.FILE_NAME}`,
+        types: [{
+            description: 'file',
+            accept: {'text/plain': [`.${myArray}`]},
+        }],
+        });
+
+        const blob = new Blob([args.FILE_CONTENT]);
+
+        const writableStream = await handle.createWritable();
+        await writableStream.write(blob);
+        await writableStream.close();
     }
 
     downloadFile (args) {
