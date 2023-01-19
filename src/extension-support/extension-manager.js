@@ -58,8 +58,8 @@ const builtinExtensions = {
     // this is the real jwklong speaking, one word shall be said about this: A N G E R Y
     // Structs: hehe structs for oop (look at c)
     jwStructs: () => require("../extensions/jw_structs"),
-    //mikedev: ghytfhygfvbl
-    //cl: () => require("../extensions/cl"),
+    // mikedev: ghytfhygfvbl
+    // cl: () => require("../extensions/cl"),
     GamepadExtension: () => require("../extensions/GamepadExtension"),
 
     // canvas: kinda obvius if you know anything about html canvases
@@ -67,8 +67,8 @@ const builtinExtensions = {
 };
 
 const preload = [
-  "jwProto"
-]
+    "jwProto"
+];
 
 /**
  * @typedef {object} ArgumentInfo - Information about an extension block argument
@@ -580,13 +580,13 @@ class ExtensionManager {
             break;
         case BlockType.BUTTON:
             if (!blockInfo.opcode) {
-                throw new Error('Missing opcode for button: ' + blockInfo.text);
+                throw new Error(`Missing opcode for button: ${blockInfo.text}`);
             }
 
             const funcName = blockInfo.opcode;
-            const callBlockFunc = (...args) => dispatch.call(serviceName, funcName, ...args)
+            const callBlockFunc = (...args) => dispatch.call(serviceName, funcName, ...args);
 
-            blockInfo.func = callBlockFunc
+            blockInfo.func = callBlockFunc;
             break;
         case BlockType.LABEL:
             log.warn(`Ignoring label "${blockInfo.text}"`);

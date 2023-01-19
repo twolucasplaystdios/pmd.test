@@ -9,6 +9,7 @@ module.exports = {
         'no-case-declarations': 'off',
         'no-console': 'off',
         'no-shadow': 'off',
-        'quotes': 'off'
+        'quotes': 'off',
+        'prefer-template': 'warn'
     }
 };
