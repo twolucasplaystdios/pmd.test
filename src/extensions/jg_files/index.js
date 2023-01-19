@@ -169,7 +169,7 @@ class JgFilesBlocks {
         const input = args.FILE_TYPE
             .toLowerCase()
             .replace(/.,/gmi, "");
-        if (input === "any") return this.__askUserForFile(null);
+        if (input === "any") return this.__askUserForFileasarraybuffer(null);
         input.split(" ").forEach(type => {
             fileTypesAllowed.push("." + type);
         });
