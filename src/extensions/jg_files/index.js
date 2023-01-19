@@ -58,7 +58,7 @@ class JgFilesBlocks {
                             defaultValue: 'text.txt'
                         }
                     }
-                }
+                },
                 {
                     opcode: 'downloadFile',
                     text: 'download content [FILE_CONTENT] as file name [FILE_NAME]',
