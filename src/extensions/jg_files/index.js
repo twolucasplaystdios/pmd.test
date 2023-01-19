@@ -136,7 +136,7 @@ class JgFilesBlocks {
 
         const blob = new Blob([args.FILE_CONTENT]);
 
-        const writableStream = await handle.createWritable();
+        const writableStream = handle.createWritable();
         writableStream.write(blob);
         writableStream.close();
     }
