@@ -84,7 +84,7 @@ class JgFilesBlocks {
                             })
                         }
                     },
-                {
+                		{
                     opcode: 'downloadFile',
                     text: formatMessage({
                         id: 'jgFiles.blocks.downloadFile',
