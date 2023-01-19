@@ -1,5 +1,5 @@
 const transportExtension = (id, url, extensions) => {
-    extensions.extensionURLs.add(url);
+    extensions.extensionURLs.set(id, url);
     extensions.extensionIDs.remove(id);
 };
 

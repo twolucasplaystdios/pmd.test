@@ -6,7 +6,6 @@ const Clone = require('../../util/clone');
 const Color = require('../../util/color');
 const formatMessage = require('format-message');
 const MathUtil = require('../../util/math-util');
-const RenderedTarget = require('../../sprites/rendered-target');
 const log = require('../../util/log');
 const StageLayering = require('../../engine/stage-layering');
 
@@ -34,7 +33,7 @@ const ColorParam = {
  * @readonly
  * @enum {string}
  */
- const LayerParam = {
+const LayerParam = {
     FRONT: 'front',
     BACK: 'back'
 };
@@ -655,7 +654,7 @@ class Scratch3PenBlocks {
                             menu: 'layerParam',
                             defaultValue: LayerParam.FRONT
                         }
-                    },
+                    }
                 }
             ],
             menus: {
@@ -697,8 +696,8 @@ class Scratch3PenBlocks {
     printText (args, util) {
         const penSkinId = this._getPenLayerID(); // 获取画笔图层ID
 
-        const width = vm.runtime.stageWidth;
-        const height = vm.runtime.stageHeight;
+        const width = this.runtime.stageWidth;
+        const height = this.runtime.stageHeight;
         const ctx = this.bitmapCanvas.getContext('2d');
         ctx.clearRect(0, 0, width, height);
         ctx.save();
@@ -1036,13 +1035,15 @@ class Scratch3PenBlocks {
     goPenLayer (args) {
         if (this.runtime.renderer) {
             if (args.OPTION === LayerParam.FRONT) {
-                console.log('setting the layer order to', StageLayering.LAYER_GROUPS_PEN)
+                console.log('setting the layer order to', StageLayering.LAYER_GROUPS_PEN);
                 this.runtime.renderer.setLayerGroupOrdering(StageLayering.LAYER_GROUPS_PEN);
-                this.runtime.renderer.setDrawableOrder(this._penDrawableId, Infinity, StageLayering.PEN_LAYER);
+                this._penDrawableId = this.runtime.renderer.setDrawableOrder(this._penDrawableId, 
+                    Infinity, StageLayering.PEN_LAYER);
             } else if (args.OPTION === LayerParam.BACK) {
-                console.log('setting the layer order to', StageLayering.LAYER_GROUPS)
+                console.log('setting the layer order to', StageLayering.LAYER_GROUPS);
                 this.runtime.renderer.setLayerGroupOrdering(StageLayering.LAYER_GROUPS);
-                this.runtime.renderer.setDrawableOrder(this._penDrawableId, -1, StageLayering.PEN_LAYER);
+                this._penDrawableId = this.runtime.renderer.setDrawableOrder(this._penDrawableId,
+                    -Infinity, StageLayering.PEN_LAYER);
             }
         }
     }

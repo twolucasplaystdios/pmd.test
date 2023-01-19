@@ -13,6 +13,7 @@ module.exports = {
         'prefer-template': 'warn',
         'linebreak-style': 'off',
         'no-alert': 'off',
-        'quote-props': 'off'
+        'quote-props': 'off',
+        'no-trailing-spaces': 'off'
     }
 };
