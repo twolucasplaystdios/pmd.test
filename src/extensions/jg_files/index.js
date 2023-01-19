@@ -83,6 +83,7 @@ class JgFilesBlocks {
                                 description: 'Default text for the file\'s name'
                             })
                         }
+                    },
                 {
                     opcode: 'downloadFile',
                     text: formatMessage({
