@@ -160,7 +160,7 @@ class JgFilesBlocks {
         })
         return this.__askUserForFile(fileTypesAllowed.join(","));
     }
-    saveFileAs(args,util) {
+    fileSaveAs(args,util) {
         var myArray = args.FILE_NAME.split('.').length - 1;;
         var myArray = args.FILE_NAME.split('.')[myArray]
         const handle = await showSaveFilePicker({
