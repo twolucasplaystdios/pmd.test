@@ -45,6 +45,18 @@ class JgFilesBlocks {
                     }
                 },
                 {
+                    opcode: 'askUserForFileOfTypeAsArrayBuffer',
+                    text: 'ask user for a file of type [FILE_TYPE] and read as array buffer',
+                    disableMonitor: true,
+                    blockType: BlockType.REPORTER,
+                    arguments: {
+                        FILE_TYPE: {
+                            type: ArgumentType.STRING,
+                            defaultValue: 'txt savefile'
+                        }
+                    }
+                },
+                {
                     opcode: 'filesaveas',
                     text: 'save [FILE_CONTENT] as with suggested file name [FILE_NAME]',
                     blockType: BlockType.COMMAND,
@@ -101,6 +113,35 @@ class JgFilesBlocks {
                     resolve("[]");
                     return;
                 }
+                fileReader.readAsText(file);
+                input.remove();
+            };
+            input.onblur = () => {
+                input.onchange();
+            };
+            input.focus();
+            input.click();
+        });
+    }
+    __askUserForFilearraybuffer (acceptTypes) {
+        return new Promise(resolve => {
+            const fileReader = new FileReader();
+            fileReader.onload = e => {
+                resolve(JSON.stringify(e.target.result));
+            };
+            const input = document.createElement("input");
+            input.type = "file";
+            if (acceptTypes !== null) {
+                input.accept = acceptTypes;
+            }
+            input.style.display = "none";
+            document.body.append(input);
+            input.onchange = () => {
+                const file = input.files[0];
+                if (!file) {
+                    resolve("[]");
+                    return;
+                } 
                 fileReader.readAsArrayBuffer(file);
                 input.remove();
             };
@@ -121,7 +162,18 @@ class JgFilesBlocks {
         input.split(" ").forEach(type => {
             fileTypesAllowed.push("." + type);
         });
-        return this.__askUserForFile(fileTypesAllowed.join(","));
+        return this.__askUserForFile(fileTypesAllowed.join(","), false);
+    }
+    askUserForFileOfTypeAsArrayBuffer (args) {
+        const fileTypesAllowed = [];
+        const input = args.FILE_TYPE
+            .toLowerCase()
+            .replace(/.,/gmi, "");
+        if (input === "any") return this.__askUserForFile(null);
+        input.split(" ").forEach(type => {
+            fileTypesAllowed.push("." + type);
+        });
+        return this.__askUserForFilearraybuffer(fileTypesAllowed.join(","));
     }
     filesaveas(args,util) {
         try {
