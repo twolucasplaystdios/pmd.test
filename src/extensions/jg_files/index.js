@@ -94,63 +94,67 @@ class JgFilesBlocks {
         return (window.FileReader !== null) && (window.document !== null);
     }
 
-    __askUserForFile (acceptTypes) {
-        return new Promise(resolve => {
+    __askUserForFile(acceptTypes) {
+        try {
+        return new Promise((resolve, _) => {
             const fileReader = new FileReader();
-            fileReader.onload = e => {
-                resolve(JSON.stringify(e.target.result));
-            };
+            fileReader.onload = (e) => {
+                resolve(e.target.result);
+            }
             const input = document.createElement("input");
             input.type = "file";
-            if (acceptTypes !== null) {
-                input.accept = acceptTypes;
+            if (acceptTypes != null) {
+                input.accept = acceptTypes
             }
             input.style.display = "none";
             document.body.append(input);
             input.onchange = () => {
                 const file = input.files[0];
                 if (!file) {
-                    resolve("[]");
+                    resolve("");
                     return;
+                } else {
+                    fileReader.readAsText(file);
                 }
-                fileReader.readAsText(file);
                 input.remove();
-            };
+            }
             input.onblur = () => {
                 input.onchange();
-            };
+            }
             input.focus();
             input.click();
-        });
+        })} catch (e) {return;}
     }
-    __askUserForFilearraybuffer (acceptTypes) {
-        return new Promise(resolve => {
+    __askUserForFilearraybuffer(acceptTypes) {
+        try {
+        return new Promise((resolve, _) => {
             const fileReader = new FileReader();
-            fileReader.onload = e => {
-                resolve(JSON.stringify(e.target.result));
-            };
+            fileReader.onload = (e) => {
+                resolve(e.target.result);
+            }
             const input = document.createElement("input");
             input.type = "file";
-            if (acceptTypes !== null) {
-                input.accept = acceptTypes;
+            if (acceptTypes != null) {
+                input.accept = acceptTypes
             }
             input.style.display = "none";
             document.body.append(input);
             input.onchange = () => {
                 const file = input.files[0];
                 if (!file) {
-                    resolve("[]");
+                    resolve("");
                     return;
-                } 
-                fileReader.readAsArrayBuffer(file);
+                } else {
+                    fileReader.readAsArrayBuffer(file);
+                }
                 input.remove();
-            };
+            }
             input.onblur = () => {
                 input.onchange();
-            };
+            }
             input.focus();
             input.click();
-        });
+        })} catch (e) {return;}
     }
 
     askUserForFileOfType (args) {
