@@ -59,6 +59,31 @@ class JgFilesBlocks {
                     }
                 },
                 {
+                    opcode: 'fileSaveAs',
+                    text: formatMessage({
+                        id: 'jgFiles.blocks.fileSaveAs',
+                        default: 'save [FILE_CONTENT] as file with suggested name [FILE_NAME]',
+                        description: 'Block that downloads a file. The content is what the file has inside, and the file name is what the file will save as on the user\'s computer.'
+                    }),
+                    blockType: BlockType.COMMAND,
+                    arguments: {
+                        FILE_CONTENT: {
+                            type: ArgumentType.STRING,
+                            defaultValue: formatMessage({
+                                id: 'jgFiles.file_content_name_area',
+                                default: 'Hello!',
+                                description: 'Default text for the file\'s content'
+                            })
+                        },
+                        FILE_NAME: {
+                            type: ArgumentType.STRING,
+                            defaultValue: formatMessage({
+                                id: 'jgFiles.file_name_name_area',
+                                default: 'World.txt',
+                                description: 'Default text for the file\'s name'
+                            })
+                        },
+                        {
                     opcode: 'downloadFile',
                     text: formatMessage({
                         id: 'jgFiles.blocks.downloadFile',
@@ -83,6 +108,7 @@ class JgFilesBlocks {
                                 description: 'Default text for the file\'s name'
                             })
                         }
+                    }
                     }
                 }
             ]
@@ -133,6 +159,23 @@ class JgFilesBlocks {
             fileTypesAllowed.push("." + type);
         })
         return this.__askUserForFile(fileTypesAllowed.join(","));
+    }
+    saveFileAs(args,util) {
+        var myArray = args.FILE_NAME.split('.').length - 1;;
+        var myArray = args.FILE_NAME.split('.')[myArray]
+        const handle = await showSaveFilePicker({
+        suggestedName: `${args.FILE_NAME}`,
+        types: [{
+            description: 'file',
+            accept: {'text/plain': [`.${myArray}`]},
+        }],
+        });
+
+        const blob = new Blob([args.FILE_CONTENT]);
+
+        const writableStream = await handle.createWritable();
+        await writableStream.write(blob);
+        await writableStream.close();
     }
 
     downloadFile(args, util) {
