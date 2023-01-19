@@ -82,8 +82,8 @@ class JgFilesBlocks {
                                 default: 'World.txt',
                                 description: 'Default text for the file\'s name'
                             })
-                        },
-                        {
+                        }
+                {
                     opcode: 'downloadFile',
                     text: formatMessage({
                         id: 'jgFiles.blocks.downloadFile',
