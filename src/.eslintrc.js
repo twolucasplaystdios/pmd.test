@@ -12,6 +12,7 @@ module.exports = {
         'quotes': 'off',
         'prefer-template': 'warn',
         'linebreak-style': 'off',
-        'no-alert': 'off'
+        'no-alert': 'off',
+        'quote-props': 'off'
     }
 };

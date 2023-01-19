@@ -16,6 +16,7 @@ const MathUtil = require('../util/math-util');
 const StringUtil = require('../util/string-util');
 const VariableUtil = require('../util/variable-util');
 const compress = require('./tw-compress-sb3');
+const OldExtensions = require('./old extension ids');
 
 const {loadCostume} = require('../import/load-costume.js');
 const {loadSound} = require('../import/load-sound.js');
@@ -1035,8 +1036,12 @@ const parseScratchObject = function (object, runtime, extensions, zip, assets) {
 
             // If the block is from an extension, record it.
             const extensionID = getExtensionIdForOpcode(blockJSON.opcode);
-            if (extensionID) {
+            const isPatched = !!OldExtensions[extensionID];
+            if (extensionID && !isPatched) {
                 extensions.extensionIDs.add(extensionID);
+            }
+            if (isPatched) {
+                OldExtensions[extensionID](extensions, blocks);
             }
         }
     }
