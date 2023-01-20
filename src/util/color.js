@@ -33,7 +33,7 @@ class Color {
             decimal += 0xFFFFFF + 1;
         }
         let hex = Number(decimal).toString(16);
-        hex = `#${'000000'.slice(0, 6 - hex.length)}${hex}`;
+        hex = `#${'00000000'.slice(0, 8 - hex.length)}${hex}`;
         return hex;
     }
 
@@ -104,7 +104,10 @@ class Color {
      * @return {!number} Number representing the color.
      */
     static rgbToDecimal (rgb) {
-        return (rgb.r << 24) + (rgb.g << 16) + (rgb.b << 8) + rgb.a;
+        if (rgb.a) {
+            return (rgb.r << 24) + (rgb.g << 16) + (rgb.b << 8) + rgb.a;
+        }
+        return (rgb.r << 16) + (rgb.g << 8) + rgb.b;
     }
 
     /**
