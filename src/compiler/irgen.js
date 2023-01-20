@@ -2,6 +2,7 @@ const Cast = require('../util/cast');
 const StringUtil = require('../util/string-util');
 const BlockType = require('../extension-support/block-type');
 const Variable = require('../engine/variable');
+const Color = require('../util/color');
 const log = require('../util/log');
 const {IntermediateScript, IntermediateRepresentation} = require('./intermediate');
 const compatBlocks = require('./compat-blocks');
@@ -165,7 +166,7 @@ class ScriptTreeGenerator {
         case 'colour_picker':
             return {
                 kind: 'constant',
-                value: parseInt(block.fields.COLOUR.value.slice(1, 8), 16)
+                value: Color.rgbToDecimal(Color.hexToRgb(block.fields.COLOUR.value))
             };
         case 'math_angle':
         case 'math_integer':
