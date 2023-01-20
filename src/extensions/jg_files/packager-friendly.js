@@ -144,5 +144,5 @@ class JgFilesBlocks {
       extensionInstance.getInfo().id,
       serviceName
     );
-    console.log("JgFilesBlocks has loaded.");
+    console.info("JgFilesBlocks has loaded.");
   }});

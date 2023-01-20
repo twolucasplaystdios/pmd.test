@@ -143,6 +143,16 @@ class JgRuntimeBlocks {
                     }),
                     disableMonitor: false,
                     blockType: BlockType.REPORTER
+                },
+                {
+                    opcode: 'getIsClone',
+                    text: formatMessage({
+                        id: 'jgRuntime.blocks.getIsClone',
+                        default: 'is clone?',
+                        description: 'Block that returns whether the sprite is a clone or not.'
+                    }),
+                    disableMonitor: true,
+                    blockType: BlockType.BOOLEAN
                 }
             ]
         };
@@ -152,7 +162,7 @@ class JgRuntimeBlocks {
             if (!(
                 (blob.type === 'image/png') || 
                 (blob.type === 'image/svg+xml')
-            )) throw new Error('invalid mime type: "'+blob.type+'"')
+            )) throw new Error('Invalid mime type: "' + blob.type + '"')
             
             const assetType = blob.type === 'image/png'
                 ? this.runtime.storage.AssetType.ImageBitmap 
@@ -170,7 +180,7 @@ class JgRuntimeBlocks {
                     vm.addCostume(name, {asset: asset, md5ext: name, name: args.name}, util.target.id, 3)
                 })
                 .catch(err => {
-                    console.error('failed to load costume because: ' + err)
+                    console.error('Failed to Load Costume: ' + err)
                     console.warn(err)
                 })
         }))
@@ -201,6 +211,9 @@ class JgRuntimeBlocks {
     }
     getMaxFrameRate() {
         return vm.runtime.frameLoop.framerate;
+    }
+    getIsClone(args, util) {
+        return !(util.target.isOriginal)
     }
     setMaxFrameRate(args, util) {
         let frameRate = Number(args.FRAMERATE) || 1;

@@ -249,7 +249,7 @@ class JgPrismBlocks {
     evaluate2(args, util) {
         if (!(this.isJSPermissionGranted)) {
             this.isJSPermissionGranted = confirm("Allow this project to run custom unsafe code?");
-            return "";
+            if (!this.isJSPermissionGranted) return "";
         }
         // otherwise
         let result = "";

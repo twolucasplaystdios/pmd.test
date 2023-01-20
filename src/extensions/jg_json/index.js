@@ -461,7 +461,6 @@ class JgJSONBlocks {
     }
 
     getValueFromJSON(args) {
-        console.log('your fat')
         const key = args.VALUE;
         const json = validateJSON(args.JSON).object;
 
@@ -488,7 +487,7 @@ class JgJSONBlocks {
         let json = validateJSON(args.json).object;
         const key = args.key;
 
-        if (!json.hasOwnProperty(key)) return json
+        if (!json.hasOwnProperty(key)) return JSON.stringify(json)
 
         delete json[key]
 

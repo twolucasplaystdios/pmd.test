@@ -44,11 +44,9 @@ class YourExt {
         var extensionClass = YourExt;
         if (typeof window === "undefined" || !window.vm) {
             Scratch.extensions.register(new extensionClass());
-            console.log("YourExt loaded. Detecting sandboxed mode, performance will suffer. Please load YourExt in Unsandboxed mode.");
         } else {
             var extensionInstance = new extensionClass(window.vm.extensionManager.runtime);
             var serviceName = window.vm.extensionManager._registerInternalExtension(extensionInstance);
             window.vm.extensionManager._loadedExtensions.set(extensionInstance.getInfo().id, serviceName);
-            console.log("YourExt loaded. Detecting unsandboxed mode.");
         };
     })()
