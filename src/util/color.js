@@ -71,10 +71,10 @@ class Color {
             };
         } else if (hex.length === 8) {
             return {
-                a: (parsed >> 24) & 0xff,
-                r: (parsed >> 16) & 0xff,
-                g: (parsed >> 8) & 0xff,
-                b: parsed & 0xff
+                r: (parsed >> 24) & 0xff,
+                g: (parsed >> 16) & 0xff,
+                b: (parsed >> 8) & 0xff,
+                a: parsed & 0xff
             };
         } else if (hex.length === 3) {
             const r = ((parsed >> 8) & 0xf);
@@ -104,7 +104,7 @@ class Color {
      * @return {!number} Number representing the color.
      */
     static rgbToDecimal (rgb) {
-        return (rgb.r << 16) + (rgb.g << 8) + rgb.b;
+        return (rgb.r << 24) + (rgb.g << 16) + (rgb.b << 8) + rgb.a;
     }
 
     /**
