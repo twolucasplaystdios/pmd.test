@@ -164,6 +164,7 @@ class ScriptTreeGenerator {
     descendInput (block) {
         switch (block.opcode) {
         case 'colour_picker':
+            console.log(block.fields.COLOUR.value);
             return {
                 kind: 'constant',
                 value: Color.rgbToDecimal(Color.hexToRgb(block.fields.COLOUR.value))
