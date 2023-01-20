@@ -17,6 +17,7 @@ module.exports = {
         'no-trailing-spaces': 'off',
         'object-curly-spacing': 'off',
         'curly': 'off',
-        'operator-linebreak': 'off'
+        'operator-linebreak': 'off',
+        'one-var': 'off'
     }
 };
