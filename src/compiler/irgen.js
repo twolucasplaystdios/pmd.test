@@ -163,10 +163,9 @@ class ScriptTreeGenerator {
     descendInput (block) {
         switch (block.opcode) {
         case 'colour_picker':
-            console.log(block.fields.COLOUR.value);
             return {
                 kind: 'constant',
-                value: block.fields.COLOUR.value
+                value: parseInt(block.fields.COLOUR.value.slice(1, 8), 16)
             };
         case 'math_angle':
         case 'math_integer':

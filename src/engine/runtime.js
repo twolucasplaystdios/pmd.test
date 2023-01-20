@@ -983,8 +983,8 @@ class Runtime extends EventEmitter {
             categoryInfo.color3 = defaultExtensionColors[2];
         }
         if (extensionInfo.isDynamic) {
-            categoryInfo.isDynamic = extensionInfo.isDynamic
-            categoryInfo.orderBlocks = extensionInfo.orderBlocks
+            categoryInfo.isDynamic = extensionInfo.isDynamic;
+            categoryInfo.orderBlocks = extensionInfo.orderBlocks;
         }
 
         this._blockInfo.push(categoryInfo);
@@ -1571,7 +1571,7 @@ class Runtime extends EventEmitter {
     getBlocksXML (target) {
         return this._blockInfo.map(categoryInfo => {
             const {name, color1, color2} = categoryInfo;
-            let orderBlocks = categoryInfo.orderBlocks
+            let orderBlocks = categoryInfo.orderBlocks;
             // Filter out blocks that aren't supposed to be shown on this target, as determined by the block info's
             // `hideFromPalette` and `filter` properties.
             const paletteBlocks = categoryInfo.blocks.filter(block => {
@@ -1588,10 +1588,8 @@ class Runtime extends EventEmitter {
             });
 
             orderBlocks = orderBlocks 
-                ? orderBlocks 
-                : (blocks) => {
-                    return blocks
-                }
+                ? orderBlocks
+                : blocks => blocks;
 
             const colorXML = `colour="${color1}" secondaryColour="${color2}"`;
 
@@ -2518,6 +2516,7 @@ class Runtime extends EventEmitter {
         this.emit(Runtime.STAGE_SIZE_CHANGED, width, height);
     }
 
+    // eslint-disable-next-line no-unused-vars
     setInEditor (inEditor) {
         // no-op
     }
@@ -2964,8 +2963,8 @@ class Runtime extends EventEmitter {
      * @return {?Target} Target representing a sprite of the given name.
      */
     getSpriteTargetByName (spriteName) {
-        let json = validateJSON(spriteName)
-        if (json.id) return this.getTargetById(json.id)
+        const json = validateJSON(spriteName);
+        if (json.id) return this.getTargetById(json.id);
         for (let i = 0; i < this.targets.length; i++) {
             const target = this.targets[i];
             if (target.isStage) {

@@ -210,7 +210,7 @@ class VirtualMachine extends EventEmitter {
         this.monitorBlockListener = this.monitorBlockListener.bind(this);
         this.variableListener = this.variableListener.bind(this);
         this.addListener('workspaceUpdate', () => {
-            this.extensionManager.refreshDynamicCategorys()
+            this.extensionManager.refreshDynamicCategorys();
         });
     }
 
@@ -817,7 +817,7 @@ class VirtualMachine extends EventEmitter {
         const target = optTargetId ? this.runtime.getTargetById(optTargetId) :
             this.editingTarget;
         if (target) {
-            return loadCostume(md5ext, costumeObject, this.runtime, optVersion).then((costumeObject) => {
+            return loadCostume(md5ext, costumeObject, this.runtime, optVersion).then(costumeObject => {
                 target.addCostume(costumeObject);
                 target.setCostume(
                     target.getCostumes().length - 1
