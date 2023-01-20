@@ -18,6 +18,7 @@ module.exports = {
         'object-curly-spacing': 'off',
         'curly': 'off',
         'operator-linebreak': 'off',
-        'one-var': 'off'
+        'one-var': 'off',
+        'brace-style': 'off'
     }
 };
