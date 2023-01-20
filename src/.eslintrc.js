@@ -14,6 +14,7 @@ module.exports = {
         'linebreak-style': 'off',
         'no-alert': 'off',
         'quote-props': 'off',
-        'no-trailing-spaces': 'off'
+        'no-trailing-spaces': 'off',
+        'object-curly-spacing': 'off'
     }
 };

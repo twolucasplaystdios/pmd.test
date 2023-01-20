@@ -12,13 +12,13 @@ const uid = require('../util/uid');
  */
 const domToBlock = function (blockDOM, blocks, isTopBlock, parent) {
     if (!blockDOM.attributes.id) {
-        blockDOM.attributes.id = {}
+        blockDOM.attributes.id = {};
         blockDOM.attributes.id.value = uid();
     }
 
     // make sure errors arnt thrown when there is no postion
-    blockDOM.attributes.x ??= {}
-    blockDOM.attributes.y ??= {}
+    blockDOM.attributes.x ??= {};
+    blockDOM.attributes.y ??= {};
 
     // Block skeleton.
     const block = {
@@ -70,7 +70,7 @@ const domToBlock = function (blockDOM, blocks, isTopBlock, parent) {
             // Add the field to this block.
             const fieldName = xmlChild.attributes.name.value;
             // make sure the id exists and is valid nomatter what
-            xmlChild.attributes.id ??= { value: uid() }
+            xmlChild.attributes.id ??= { value: uid() };
             // Add id in case it is a variable field
             const fieldId = xmlChild.attributes.id.value;
             let fieldData = '';
@@ -86,7 +86,7 @@ const domToBlock = function (blockDOM, blocks, isTopBlock, parent) {
                 id: fieldId,
                 value: fieldData
             };
-            xmlChild.attributes.variabletype ??= {}
+            xmlChild.attributes.variabletype ??= {};
             const fieldVarType = xmlChild.attributes.variabletype.value;
             if (typeof fieldVarType === 'string') {
                 block.fields[fieldName].variableType = fieldVarType;
