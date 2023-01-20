@@ -43,17 +43,10 @@ class Color {
      * @return {RGBObject} rgb - {r: red [0,255], g: green [0,255], b: blue [0,255]}.
      */
     static decimalToRgb (decimal) {
-        const len = Number(decimal).toString(16).length;
-        let r = (decimal >> 16) & 0xFF,
-            g = (decimal >> 8) & 0xFF,
-            b = decimal & 0xFF,
-            a = 255;
-        if (len > 6) {
-            r = (decimal >> 24) & 0xFF;
-            g = (decimal >> 16) & 0xFF;
-            b = (decimal >> 8) & 0xFF;
-            a = decimal & 0xFF;
-        }
+        const a = (decimal >> 24) & 0xFF;
+        const r = (decimal >> 16) & 0xFF;
+        const g = (decimal >> 8) & 0xFF;
+        const b = decimal & 0xFF;
         return {r: r, g: g, b: b, a: a > 0 ? a : 255};
     }
 
