@@ -69,6 +69,13 @@ class Color {
                 g: (parsed >> 8) & 0xff,
                 b: parsed & 0xff
             };
+        } else if (hex.length === 8) {
+            return {
+                a: (parsed >> 24) & 0xff,
+                r: (parsed >> 16) & 0xff,
+                g: (parsed >> 8) & 0xff,
+                b: parsed & 0xff
+            };
         } else if (hex.length === 3) {
             const r = ((parsed >> 8) & 0xf);
             const g = ((parsed >> 4) & 0xf);
