@@ -1,6 +1,7 @@
 const BlockType = require('../../extension-support/block-type');
 const ArgumentType = require('../../extension-support/argument-type');
 const {validateArray} = require('../../util/json-block-utilities');
+const BufferStuff = require('../../util/array buffer');
 
 /**
  * Class for File blocks
@@ -57,21 +58,6 @@ class JgFilesBlocks {
                     }
                 },
                 {
-                    opcode: 'filesaveas',
-                    text: 'save [FILE_CONTENT] as with suggested file name [FILE_NAME]',
-                    blockType: BlockType.COMMAND,
-                    arguments: {
-                        FILE_CONTENT: {
-                            type: ArgumentType.STRING,
-                            defaultValue: 'Hello!'
-                        },
-                        FILE_NAME: {
-                            type: ArgumentType.STRING,
-                            defaultValue: 'text.txt'
-                        }
-                    }
-                },
-                {
                     opcode: 'downloadFile',
                     text: 'download content [FILE_CONTENT] as file name [FILE_NAME]',
                     blockType: BlockType.COMMAND,
@@ -94,67 +80,73 @@ class JgFilesBlocks {
         return (window.FileReader !== null) && (window.document !== null);
     }
 
-    __askUserForFile(acceptTypes) {
+    __askUserForFile (acceptTypes) {
         try {
-        return new Promise((resolve, _) => {
-            const fileReader = new FileReader();
-            fileReader.onload = (e) => {
-                resolve(e.target.result);
-            }
-            const input = document.createElement("input");
-            input.type = "file";
-            if (acceptTypes != null) {
-                input.accept = acceptTypes
-            }
-            input.style.display = "none";
-            document.body.append(input);
-            input.onchange = () => {
-                const file = input.files[0];
-                if (!file) {
-                    resolve("");
-                    return;
-                } else {
+            return new Promise(resolve => {
+                const fileReader = new FileReader();
+                fileReader.onload = e => {
+                    resolve(e.target.result);
+                };
+                const input = document.createElement("input");
+                input.type = "file";
+                if (acceptTypes !== null) {
+                    input.accept = acceptTypes;
+                }
+                input.style.display = "none";
+                document.body.append(input);
+                input.onchange = () => {
+                    const file = input.files[0];
+                    if (!file) {
+                        resolve("");
+                        return;
+                    } 
                     fileReader.readAsText(file);
-                }
-                input.remove();
-            }
-            input.onblur = () => {
-                input.onchange();
-            }
-            input.focus();
-            input.click();
-        })} catch (e) {return;}
+                
+                    input.remove();
+                };
+                input.onblur = () => {
+                    input.onchange();
+                };
+                input.focus();
+                input.click();
+            }); 
+        } catch (e) { 
+            return; 
+        }
     }
-    __askUserForFilearraybuffer(acceptTypes) {
+    __askUserForFilearraybuffer (acceptTypes) {
         try {
-        return new Promise((resolve, _) => {
-            const fileReader = new FileReader();
-            fileReader.onload = (e) => {
-                resolve(e.target.result);
-            }
-            const input = document.createElement("input");
-            input.type = "file";
-            if (acceptTypes != null) {
-                input.accept = acceptTypes
-            }
-            input.style.display = "none";
-            document.body.append(input);
-            input.onchange = () => {
-                const file = input.files[0];
-                if (!file) {
-                    resolve("");
-                    return;
-                } else {
-                    fileReader.readAsArrayBuffer(file);
+            return new Promise(resolve => {
+                const fileReader = new FileReader();
+                fileReader.onload = e => {
+                    resolve(BufferStuff.bufferToArray(e.target.result));
+                };
+                const input = document.createElement("input");
+                input.type = "file";
+                if (acceptTypes !== null) {
+                    input.accept = acceptTypes;
                 }
-                input.remove();
-            }
-            input.onblur = () => {
-                input.onchange();
-            }
-            input.focus();
-            input.click();
-        })} catch (e) {return;}
+                input.style.display = "none";
+                document.body.append(input);
+                input.onchange = () => {
+                    const file = input.files[0];
+                    if (!file) {
+                        resolve("");
+                        return;
+                    } 
+                    fileReader.readAsArrayBuffer(file);
+                
+                    input.remove();
+                };
+                input.onblur = () => {
+                    input.onchange();
+                };
+                input.focus();
+                input.click();
+            }); 
+        } catch (e) { 
+            return; 
+        }
     }
 
     askUserForFileOfType (args) {
@@ -164,7 +156,7 @@ class JgFilesBlocks {
             .replace(/.,/gmi, "");
         if (input === "any") return this.__askUserForFile(null);
         input.split(" ").forEach(type => {
-            fileTypesAllowed.push("." + type);
+            fileTypesAllowed.push(`.${type}`);
         });
         return this.__askUserForFile(fileTypesAllowed.join(","), false);
     }
@@ -175,28 +167,10 @@ class JgFilesBlocks {
             .replace(/.,/gmi, "");
         if (input === "any") return this.__askUserForFileasarraybuffer(null);
         input.split(" ").forEach(type => {
-            fileTypesAllowed.push("." + type);
+            fileTypesAllowed.push(`.${type}`);
         });
         return this.__askUserForFilearraybuffer(fileTypesAllowed.join(","));
     }
-    filesaveas(args,util) {
-        try {
-        var myArray = args.FILE_NAME.split('.').length - 1;;
-        var myArray = args.FILE_NAME.split('.')[myArray]
-        const handle = showSaveFilePicker({
-        suggestedName: `${args.FILE_NAME}`,
-        types: [{
-            description: 'file',
-            accept: {'text/plain': [`.${myArray}`]},
-        }],
-        });
-
-        const blob = new Blob([args.FILE_CONTENT]);
-
-        const writableStream = handle.createWritable();
-        writableStream.write(blob);
-        writableStream.close();
-    } catch (e) {return;}}
 
     downloadFile (args) {
         let content = "";
