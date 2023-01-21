@@ -1,7 +1,8 @@
 const BlockType = require('../../extension-support/block-type');
 const ArgumentType = require('../../extension-support/argument-type');
 const {validateArray} = require('../../util/json-block-utilities');
-const BufferStuff = require('../../util/array buffer');
+const AHHHHHHHHHHHHHH = require('../../util/array buffer');
+const BufferStuff = new AHHHHHHHHHHHHHH();
 
 /**
  * Class for File blocks
