@@ -6,6 +6,7 @@ class bufferUtil {
      * @returns {Array} the converted array
      */
     bufferToArray (buffer, process) {
+        buffer = buffer.Int8Array;
         const array = [];
         const processNum = typeof process === 'function' 
             ? process 
@@ -15,24 +16,6 @@ class bufferUtil {
             array.push(processNum(number));
         }
         return array;
-    }
-
-    /**
-     * converts an array into an array buffer
-     * @param {Array} array the array to convert
-     * @param {Function|undefined} process a function to run on every item before converting it
-     * @returns {ArrayBuffer} the converted buffer
-     */
-    arrayToBuffer (array, process) {
-        const buffer = new ArrayBuffer(array.length);
-        array
-            .map(typeof process === 'function' 
-                ? process 
-                : num => num)
-            .forEach((byte, offset) => {
-                buffer[offset] = byte;
-            });
-        return buffer;
     }
     
     /**
