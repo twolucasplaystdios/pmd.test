@@ -16,6 +16,16 @@ class JgPrismBlocks {
         this.runtime = runtime;
         this.audioPlayer = new Audio();
         this.isJSPermissionGranted = false;
+
+        this.mouseScrollDelta = { x: 0, y: 0, z: 0 }
+        addEventListener("wheel", e => {
+            this.mouseScrollDelta.x = e.deltaX
+            this.mouseScrollDelta.y = e.deltaY
+            this.mouseScrollDelta.z = e.deltaZ
+        })
+        setInterval(() => {
+            this.mouseScrollDelta = { x: 0, y: 0, z: 0 }
+        }, 20)
     }
 
     /**
@@ -259,28 +269,30 @@ class JgPrismBlocks {
                     text: "More Mouse Inputs"
                 },
                 {
-                    opcode: 'whenMouseScrolledUp',
+                    opcode: 'currentMouseScrollX',
                     text: formatMessage({
-                        id: 'jgRuntime.blocks.whenMouseScrolledUp',
-                        default: 'when mouse scrolled up',
+                        id: 'jgRuntime.blocks.currentMouseScrollX',
+                        default: 'mouse scroll x',
                         description: 'im too lazy to write these anymore tbh'
                     }),
-                    blockType: BlockType.HAT
-                },
-                {
-                    opcode: 'whenMouseScrolledDown',
-                    text: formatMessage({
-                        id: 'jgRuntime.blocks.whenMouseScrolledDown',
-                        default: 'when mouse scrolled down',
-                        description: 'im too lazy to write these anymore tbh'
-                    }),
-                    blockType: BlockType.HAT
+                    disableMonitor: false,
+                    blockType: BlockType.REPORTER
                 },
                 {
                     opcode: 'currentMouseScroll',
                     text: formatMessage({
                         id: 'jgRuntime.blocks.currentMouseScroll',
                         default: 'mouse scroll y',
+                        description: 'im too lazy to write these anymore tbh'
+                    }),
+                    disableMonitor: false,
+                    blockType: BlockType.REPORTER
+                },
+                {
+                    opcode: 'currentMouseScrollZ',
+                    text: formatMessage({
+                        id: 'jgRuntime.blocks.currentMouseScrollZ',
+                        default: 'mouse scroll z',
                         description: 'im too lazy to write these anymore tbh'
                     }),
                     disableMonitor: false,
@@ -412,14 +424,14 @@ class JgPrismBlocks {
             })
         })
     }
-    whenMouseScrolledUp(args, util) {
-        return util.ioQuery('mouse', 'getButtonIsDown', [69]) < 0;
-    }
-    whenMouseScrolledDown(args, util) {
-        return util.ioQuery('mouse', 'getButtonIsDown', [69]) > 0;
+    currentMouseScrollX(args, util) {
+        return this.mouseScrollDelta.x;
     }
     currentMouseScroll(args, util) {
-        return util.ioQuery('mouse', 'getButtonIsDown', [69]);
+        return this.mouseScrollDelta.y;
+    }
+    currentMouseScrollZ(args, util) {
+        return this.mouseScrollDelta.z;
     }
 }
 
