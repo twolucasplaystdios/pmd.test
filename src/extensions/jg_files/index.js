@@ -145,11 +145,7 @@ class JgFilesBlocks {
                     resolve("");
                     return;
                 } else {
-                    try{
-                        return JSON.parse(new TextDecoder("utf-8").decode(fileReader.readAsArrayBuffer(file)));
-                    } catch (e) {
-                        JSON.parse(new TextDecoder("utf-8").decode(fileReader.readAsArrayBuffer(file)));
-                    }
+                    fileReader.readAsArrayBuffer(file);
                 }
                 input.remove();
             }
