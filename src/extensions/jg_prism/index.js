@@ -29,6 +29,10 @@ class JgPrismBlocks {
             color2: '#AD66FF',
             blocks: [
                 {
+                    blockType: BlockType.LABEL,
+                    text: "Audio"
+                },
+                {
                     opcode: 'playAudioFromUrl',
                     text: formatMessage({
                         id: 'jgPrism.blocks.playAudioFromUrl',
@@ -155,6 +159,10 @@ class JgPrismBlocks {
                     blockType: BlockType.REPORTER
                 },
                 {
+                    blockType: BlockType.LABEL,
+                    text: "JavaScript"
+                },
+                {
                     opcode: 'evaluate',
                     text: formatMessage({
                         id: 'jgRuntime.blocks.evaluate',
@@ -186,6 +194,10 @@ class JgPrismBlocks {
                     }
                 },
                 {
+                    blockType: BlockType.LABEL,
+                    text: "Data URIs"
+                },
+                {
                     opcode: 'screenshotStage',
                     text: formatMessage({
                         id: 'jgRuntime.blocks.screenshotStage',
@@ -194,6 +206,70 @@ class JgPrismBlocks {
                     }),
                     blockType: BlockType.REPORTER,
                     disableMonitor: true
+                },
+                {
+                    opcode: 'dataUriOfCostume',
+                    text: formatMessage({
+                        id: 'jgRuntime.blocks.dataUriOfCostume',
+                        default: 'data uri of costume #[INDEX]',
+                        description: 'Block that returns a Data URI of the costume at the index.'
+                    }),
+                    blockType: BlockType.REPORTER,
+                    disableMonitor: true,
+                    arguments: {
+                        INDEX: {
+                            type: ArgumentType.NUMBER,
+                            defaultValue: "1"
+                        }
+                    }
+                },
+                {
+                    opcode: 'dataUriFromImageUrl',
+                    text: formatMessage({
+                        id: 'jgRuntime.blocks.dataUriFromImageUrl',
+                        default: 'data uri of image at url: [URL]',
+                        description: 'Block that returns a Data URI of the costume at the index.'
+                    }),
+                    blockType: BlockType.REPORTER,
+                    disableMonitor: true,
+                    arguments: {
+                        URL: {
+                            type: ArgumentType.STRING,
+                            defaultValue: "url"
+                        }
+                    }
+                },
+                {
+                    blockType: BlockType.LABEL,
+                    text: "More Mouse Inputs"
+                },
+                {
+                    opcode: 'whenMouseScrolledUp',
+                    text: formatMessage({
+                        id: 'jgRuntime.blocks.whenMouseScrolledUp',
+                        default: 'when mouse scrolled up',
+                        description: 'im too lazy to write these anymore tbh'
+                    }),
+                    blockType: BlockType.HAT
+                },
+                {
+                    opcode: 'whenMouseScrolledDown',
+                    text: formatMessage({
+                        id: 'jgRuntime.blocks.whenMouseScrolledDown',
+                        default: 'when mouse scrolled down',
+                        description: 'im too lazy to write these anymore tbh'
+                    }),
+                    blockType: BlockType.HAT
+                },
+                {
+                    opcode: 'currentMouseScroll',
+                    text: formatMessage({
+                        id: 'jgRuntime.blocks.currentMouseScroll',
+                        default: 'mouse scroll y',
+                        description: 'im too lazy to write these anymore tbh'
+                    }),
+                    disableMonitor: false,
+                    blockType: BlockType.REPORTER
                 }
             ]
         };
@@ -275,6 +351,44 @@ class JgPrismBlocks {
                 resolve(uri);
             })
         })
+    }
+    dataUriOfCostume(args, util) {
+        const index = Number(args.INDEX);
+        if (isNaN(index)) return "";
+        if (index < 1) return "";
+
+        let target = util.target
+        if (target.sprite.costumes[index - 1] == undefined || target.sprite.costumes[index - 1] == null) return "";
+        let dataURI = target.sprite.costumes[index - 1].asset.encodeDataURI();
+        return String(dataURI);
+    }
+    dataUriFromImageUrl(args, util) {
+        return new Promise((resolve, reject) => {
+            if (window && !window.FileReader) return resolve("");
+            if (window && !window.fetch) return resolve("");
+            fetch("https://api.allorigins.win/raw?url=" + encodeURIComponent(String(args.URL))).then(r => {
+                r.text().then(text => {
+                    const reader = new FileReader();
+                    reader.onload = (e) => {
+                      resolve(e.target.result);
+                    }
+                    reader.readAsDataURL(new Blob([r]))
+                }).catch(err => {
+                    resolve("");
+                })
+            }).catch(err => {
+                resolve("");
+            })
+        })
+    }
+    whenMouseScrolledUp() {
+        return util.ioQuery('mouse', 'getScrollDeltaY', []) < 0;
+    }
+    whenMouseScrolledDown() {
+        return util.ioQuery('mouse', 'getScrollDeltaY', []) > 0;
+    }
+    currentMouseScroll(args, util) {
+        return util.ioQuery('mouse', 'getScrollDeltaY', []);
     }
 }
 

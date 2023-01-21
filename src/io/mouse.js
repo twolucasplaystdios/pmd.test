@@ -8,6 +8,7 @@ class Mouse {
         this._clientY = 0;
         this._scratchX = 0;
         this._scratchY = 0;
+        this._scrollDeltaY = 0;
         this._buttons = new Set();
         this.usesRightClickDown = false;
         this._isDown = false;
@@ -63,6 +64,7 @@ class Mouse {
      * @param  {object} data Data from DOM event.
      */
     postData (data) {
+        this._scrollDeltaY = data.deltaY;
         if (typeof data.x === 'number') {
             this._clientX = data.x;
             this._scratchX = MathUtil.clamp(
@@ -171,6 +173,10 @@ class Mouse {
             this.usesRightClickDown = true;
         }
         return this._buttons.has(button);
+    }
+
+    getScrollDeltaY () {
+        return this._scrollDeltaY;
     }
 }
 
