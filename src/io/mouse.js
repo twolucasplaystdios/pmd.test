@@ -169,6 +169,9 @@ class Mouse {
      * @return {boolean} Is the mouse button down?
      */
     getButtonIsDown (button) {
+        if (button === 69) {
+            return this._scrollDeltaY;
+        }
         if (button === 2) {
             this.usesRightClickDown = true;
         }
