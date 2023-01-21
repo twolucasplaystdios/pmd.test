@@ -6,6 +6,7 @@ class bufferUtil {
      * @returns {Array} the converted array
      */
     bufferToArray (buffer, process) {
+        console.log(buffer, buffer[0], buffer.Int8Array);
         buffer = buffer.Int8Array;
         const array = [];
         const processNum = typeof process === 'function' 
