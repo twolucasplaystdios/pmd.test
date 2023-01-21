@@ -297,6 +297,42 @@ class JgPrismBlocks {
                     }),
                     disableMonitor: false,
                     blockType: BlockType.REPORTER
+                },
+                {
+                    blockType: BlockType.LABEL,
+                    text: "Base64"
+                },
+                {
+                    opcode: 'base64Encode',
+                    text: formatMessage({
+                        id: 'jgRuntime.blocks.base64Encode',
+                        default: 'base64 encode [TEXT]',
+                        description: 'Block that encodes and returns the result of it.'
+                    }),
+                    blockType: BlockType.REPORTER,
+                    disableMonitor: true,
+                    arguments: {
+                        TEXT: {
+                            type: ArgumentType.STRING,
+                            defaultValue: "abc"
+                        }
+                    }
+                },
+                {
+                    opcode: 'base64Decode',
+                    text: formatMessage({
+                        id: 'jgRuntime.blocks.base64Decode',
+                        default: 'base64 decode [TEXT]',
+                        description: 'Block that decodes and returns the result of it.'
+                    }),
+                    blockType: BlockType.REPORTER,
+                    disableMonitor: true,
+                    arguments: {
+                        TEXT: {
+                            type: ArgumentType.STRING,
+                            defaultValue: "YWJj"
+                        }
+                    }
                 }
             ]
         };
@@ -432,6 +468,12 @@ class JgPrismBlocks {
     }
     currentMouseScrollZ(args, util) {
         return this.mouseScrollDelta.z;
+    }
+    base64Encode(args) {
+        return btoa(String(args.TEXT));
+    }
+    base64Decode(args) {
+        return atob(String(args.TEXT));
     }
 }
 
