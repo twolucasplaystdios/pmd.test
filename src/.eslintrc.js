@@ -19,6 +19,7 @@ module.exports = {
         'curly': 'off',
         'operator-linebreak': 'off',
         'one-var': 'off',
-        'brace-style': 'off'
+        'brace-style': 'off',
+        'camelcase': 'off'
     }
 };

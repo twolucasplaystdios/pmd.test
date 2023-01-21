@@ -1,3 +1,4 @@
+/* eslint-disable no-undef */
 const formatMessage = require('format-message');
 const BlockType = require('../../extension-support/block-type');
 const ArgumentType = require('../../extension-support/argument-type');
@@ -7,7 +8,7 @@ const {
     stringToEqivalint, 
     valueToString,
     validateRegex 
-} = require('../../util/json-block-utilities')
+} = require('../../util/json-block-utilities');
 
 // const Cast = require('../../util/cast');
 
@@ -16,7 +17,7 @@ const {
  * @constructor
  */
 class JgJSONBlocks {
-    constructor(runtime) {
+    constructor (runtime) {
         /**
          * The runtime instantiating this block package.
          * @type {Runtime}
@@ -27,7 +28,7 @@ class JgJSONBlocks {
     /**
      * @returns {object} metadata for this extension and its blocks.
      */
-    getInfo() {
+    getInfo () {
         return {
             id: 'jgJSON',
             name: 'JSON',
@@ -117,7 +118,7 @@ class JgJSONBlocks {
                                 default: 'key',
                                 description: 'The key you are setting in the JSON.'
                             })
-                        },
+                        }
                     },
                     text: 'in json [json] delete key [key]'
                 }, 
@@ -128,7 +129,7 @@ class JgJSONBlocks {
                         json: {
                             type: ArgumentType.STRING,
                             defaultValue: "{}"
-                        },
+                        }
                     },
                     text: 'get all values from json [json]'
                 }, 
@@ -139,7 +140,7 @@ class JgJSONBlocks {
                         json: {
                             type: ArgumentType.STRING,
                             defaultValue: "{}"
-                        },
+                        }
                     },
                     text: 'get all keys from json [json]'
                 }, 
@@ -158,7 +159,7 @@ class JgJSONBlocks {
                                 default: 'key',
                                 description: 'The key you are setting in the JSON.'
                             })
-                        },
+                        }
                     },
                     text: 'json [json] has key [key] ?'
                 },
@@ -239,7 +240,7 @@ class JgJSONBlocks {
                         index: {
                             type: ArgumentType.NUMBER,
                             defaultValue: 2
-                        },
+                        }
                     },
                     text: 'in array [array] delete [index]'
                 },
@@ -437,7 +438,7 @@ class JgJSONBlocks {
         };
     }
 
-    getAllLists() {
+    getAllLists () {
         const variables = [].concat(
             Object.values(vm.runtime.getTargetForStage().variables),
             Object.values(vm.editingTarget.variables)
@@ -460,78 +461,78 @@ class JgJSONBlocks {
         }));
     }
 
-    getValueFromJSON(args) {
+    getValueFromJSON (args) {
         const key = args.VALUE;
         const json = validateJSON(args.JSON).object;
 
         return valueToString(json[key]);
     }
-    setValueToKeyInJSON(args) {
-        let json = validateJSON(args.JSON).object;
+    setValueToKeyInJSON (args) {
+        const json = validateJSON(args.JSON).object;
         const key = args.KEY;
         const value = args.VALUE;
 
-        json[key] = stringToEqivalint(value)
+        json[key] = stringToEqivalint(value);
 
-        return JSON.stringify(json)
+        return JSON.stringify(json);
     }
 
-    json_has(args, util) {
+    json_has (args) {
         const json = validateJSON(args.json).object;
         const key = args.key;
 
         return json.hasOwnProperty(key);
     }
 
-    json_delete(args, util) {
-        let json = validateJSON(args.json).object;
+    json_delete (args) {
+        const json = validateJSON(args.json).object;
         const key = args.key;
 
-        if (!json.hasOwnProperty(key)) return JSON.stringify(json)
+        if (!json.hasOwnProperty(key)) return JSON.stringify(json);
 
-        delete json[key]
+        delete json[key];
 
         return JSON.stringify(json);
     }
 
-    json_values(args, util) {
+    json_values (args) {
         const json = validateJSON(args.json).object;
 
         return JSON.stringify(Object.values(json));
     }
 
-    json_keys(args, util) {
+    json_keys (args) {
         const json = validateJSON(args.json).object;
 
         return JSON.stringify(Object.keys(json));
     }
 
-    json_array_length(args, util) {
+    json_array_length (args) {
         const array = validateArray(args.array).array;
 
         return array.length;
     }
 
-    json_array_isempty(args, util) {
+    json_array_isempty (args) {
         const array = validateArray(args.array).array;
 
         return !array.length;
     }
 
-    json_array_contains(args, util) {
+    json_array_contains (args) {
         const array = validateArray(args.array).array;
         const value = args.value;
 
         return array.includes(stringToEqivalint(value));
     }
 
-    json_array_reverse(args, util) {
-        let array = validateArray(args.array).array;
+    json_array_reverse (args) {
+        const array = validateArray(args.array).array;
 
         return JSON.stringify(array.reverse());
     }
 
-    json_array_indexof(args, util) {
+    json_array_indexof (args) {
         const array = validateArray(args.array).array;
         const number = args.number;
         const value = args.value;
@@ -539,101 +540,97 @@ class JgJSONBlocks {
         return array.indexOf(stringToEqivalint(value), number);
     }
 
-    json_array_set(args, util) {
-        let array = validateArray(args.array).array;
+    json_array_set (args) {
+        const array = validateArray(args.array).array;
         const index = args.index;
         const value = args.value;
 
-        array[index] = stringToEqivalint(value)
+        array[index] = stringToEqivalint(value);
 
         return JSON.stringify(array);
     }
 
-    json_array_insert(args, util) {
-        let array = validateArray(args.array).array;
+    json_array_insert (args) {
+        const array = validateArray(args.array).array;
         const index = args.index;
         const value = args.value;
 
-        array.splice(index, 0, stringToEqivalint(value))
+        array.splice(index, 0, stringToEqivalint(value));
 
         return JSON.stringify(array);
     }
 
-    json_array_get(args, util) {
+    json_array_get (args) {
         const array = validateArray(args.array).array;
         const index = args.index;
 
         return valueToString(array[index]);
     }
 
-    json_array_getrange(args, util) {
-        let array = validateArray(args.array).array;
+    json_array_getrange (args) {
+        const array = validateArray(args.array).array;
         const index1 = args.index1;
         const index2 = args.index2;
 
         return JSON.stringify(array.slice(index1, index2));
     }
 
-    json_array_push(args, util) {
-        let array = validateArray(args.array).array;
+    json_array_push (args) {
+        const array = validateArray(args.array).array;
         const value = args.item;
 
-        array.push(stringToEqivalint(value))
+        array.push(stringToEqivalint(value));
 
         return JSON.stringify(array);
     }
 
-    json_array_tolist(args, util) {
+    json_array_tolist (args, util) {
         let list;
         try {
             list = JSON.parse(args.list);
         } catch {
-            return
+            return;
         }
         const array = validateArray(args.array).array;
-        const content = util.target.lookupOrCreateList(list.id, list.name)
+        const content = util.target.lookupOrCreateList(list.id, list.name);
 
-        content.value = array.map(x => {
-            return valueToString(x)
-        })
+        content.value = array.map(x => valueToString(x));
     }
 
-    json_array_listtoarray(args, util) {
+    json_array_listtoarray (args, util) {
         let list;
         try {
             list = JSON.parse(args.list);
         } catch {
-            return
+            return;
         }
-        const content = util.target.lookupOrCreateList(list.id, list.name).value
+        const content = util.target.lookupOrCreateList(list.id, list.name).value;
 
-        return JSON.stringify(content.map(x => {
-            return stringToEqivalint(x)
-        }));
+        return JSON.stringify(content.map(x => stringToEqivalint(x)));
     }
 
-    json_array_delete(args, util) {
-        let array = validateArray(args.array).array
-        const index = args.index
+    json_array_delete (args) {
+        const array = validateArray(args.array).array;
+        const index = args.index;
 
-        delete array[index]
+        delete array[index];
 
-        return JSON.stringify(array.filter(x => Boolean(x)))
+        return JSON.stringify(array.filter(x => Boolean(x)));
     }
 
-    json_array_split(args) {
-        if (validateRegex(args.delimeter)) args.delimeter = new RegExp(args.delimeter)
-        return JSON.stringify(args.text.split(args.delimeter))
+    json_array_split (args) {
+        if (validateRegex(args.delimeter)) args.delimeter = new RegExp(args.delimeter);
+        return JSON.stringify(args.text.split(args.delimeter));
     }
-    json_array_join(args) {
-        return validateArray(args.array).array.join(args.delimeter)
+    json_array_join (args) {
+        return validateArray(args.array).array.join(args.delimeter);
     }
 
-    json_validate(args) {
-        return validateJSON(args.json).isValid
+    json_validate (args) {
+        return validateJSON(args.json).isValid;
     }
-    json_array_validate(args) {
-        return validateArray(args.array).isValid
+    json_array_validate (args) {
+        return validateArray(args.array).isValid;
     }
 }
 

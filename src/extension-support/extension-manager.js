@@ -54,7 +54,8 @@ const builtinExtensions = {
     // Blockly 2: a faithful recreation of the original blockly blocks
     blockly2math: () => require("../extensions/blockly-2/math.js"),
 
-    // jw: They'll think its made by jwklong >:) (but it's not (yet (maybe (probably not (but its made by ianyourgod)))))
+    // jw: They'll think its made by jwklong >:)
+    // (but it's not (yet (maybe (probably not (but its made by ianyourgod)))))
     // this is the real jwklong speaking, one word shall be said about this: A N G E R Y
     // Structs: hehe structs for oop (look at c)
     jwStructs: () => require("../extensions/jw_structs"),
@@ -555,6 +556,14 @@ class ExtensionManager {
         return menuItems;
     }
 
+    _normalize (thing, to) {
+        switch (to) {
+        case 'string': return String(thing);
+        case 'number': return Number(thing);
+        case 'boolean': return String(thing) === 'true';
+        }
+    }
+
     /**
      * Apply defaults for optional block fields.
      * @param {string} serviceName - the name of the service hosting this extension block
@@ -640,7 +649,21 @@ class ExtensionManager {
             })();
 
             blockInfo.func = (args, util) => {
+                const normal = {
+                    'angle': "number",
+                    'Boolean': "boolean",
+                    'color': "number",
+                    'number': "number",
+                    'string': "string",
+                    'matrix': "string",
+                    'note': "number",
+                    'image': "string"
+                };
                 const realBlockInfo = getBlockInfo(args);
+                Object.keys(realBlockInfo.arguments).forEach(arg => {
+                    const expected = normal[realBlockInfo.arguments[arg].type];
+                    if (!(typeof args[arg] === expected)) args[arg] = this._normalize(args[arg], expected);
+                });
                 // TODO: filter args using the keys of realBlockInfo.arguments? maybe only if sandboxed?
                 return callBlockFunc(args, util, realBlockInfo);
             };
