@@ -11,7 +11,7 @@ class bufferUtil {
         const processNum = typeof process === 'function' 
             ? process 
             : num => num;
-        for (let idx = 0; idx < buffer.byteLength; idx++) {
+        for (let idx = 0; idx < buffer.length; idx++) {
             const number = Number(buffer[idx]) + 0;
             array.push(processNum(number));
         }
