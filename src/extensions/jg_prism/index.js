@@ -25,7 +25,7 @@ class JgPrismBlocks {
         })
         setInterval(() => {
             this.mouseScrollDelta = { x: 0, y: 0, z: 0 }
-        }, 20)
+        }, 65)
     }
 
     /**
