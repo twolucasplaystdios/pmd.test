@@ -194,6 +194,21 @@ class JgPrismBlocks {
                     }
                 },
                 {
+                    opcode: 'evaluate3',
+                    text: formatMessage({
+                        id: 'jgRuntime.blocks.evaluate3',
+                        default: 'eval [JAVASCRIPT]',
+                        description: 'Block that runs JavaScript code.'
+                    }),
+                    blockType: BlockType.HAT,
+                    arguments: {
+                        JAVASCRIPT: {
+                            type: ArgumentType.STRING,
+                            defaultValue: "Math.round(Math.random()) == 1"
+                        }
+                    }
+                },
+                {
                     blockType: BlockType.LABEL,
                     text: "Data URIs"
                 },
@@ -345,6 +360,22 @@ class JgPrismBlocks {
         // otherwise
         return result;
     }
+    evaluate3(args, util) {
+        if (!(this.isJSPermissionGranted)) {
+            this.isJSPermissionGranted = confirm("Allow this project to run custom unsafe code?");
+            if (!this.isJSPermissionGranted) return false;
+        }
+        // otherwise
+        let result = true;
+        try {
+            result = eval(String(args.JAVASCRIPT));
+        } catch (e) {
+            result = false;
+            console.error(e)
+        }
+        // otherwise
+        return result == true;
+    }
     screenshotStage() {
         return new Promise((resolve, _) => {
             vm.renderer.requestSnapshot(uri => {
@@ -367,12 +398,12 @@ class JgPrismBlocks {
             if (window && !window.FileReader) return resolve("");
             if (window && !window.fetch) return resolve("");
             fetch("https://api.allorigins.win/raw?url=" + encodeURIComponent(String(args.URL))).then(r => {
-                r.text().then(text => {
+                r.blob().then(blob => {
                     const reader = new FileReader();
                     reader.onload = (e) => {
                       resolve(e.target.result);
                     }
-                    reader.readAsDataURL(new Blob([r]))
+                    reader.readAsDataURL(blob)
                 }).catch(err => {
                     resolve("");
                 })
