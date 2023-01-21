@@ -413,13 +413,13 @@ class JgPrismBlocks {
         })
     }
     whenMouseScrolledUp(args, util) {
-        return util.ioQuery('mouse', 'getScrollDeltaY', []) < 0;
+        return util.ioQuery('mouse', 'getScrollDeltaY') < 0;
     }
     whenMouseScrolledDown(args, util) {
-        return util.ioQuery('mouse', 'getScrollDeltaY', []) > 0;
+        return util.ioQuery('mouse', 'getScrollDeltaY') > 0;
     }
     currentMouseScroll(args, util) {
-        return util.ioQuery('mouse', 'getScrollDeltaY', []);
+        return util.ioQuery('mouse', 'getScrollDeltaY');
     }
 }
 
