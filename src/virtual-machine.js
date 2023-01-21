@@ -810,7 +810,7 @@ class VirtualMachine extends EventEmitter {
      * @property {number} rotationCenterY - the Y component of the costume's origin.
      * @property {number} [bitmapResolution] - the resolution scale for a bitmap costume.
      * @param {string} optTargetId - the id of the target to add to, if not the editing target.
-     * @param {string} optVersion - if this is 2, load costume as sb2, otherwise load costume as sb3.
+     * @param {number} optVersion - if this is 2, load costume as sb2, otherwise load costume as sb3.
      * @returns {?Promise} - a promise that resolves when the costume has been added
      */
     addCostume (md5ext, costumeObject, optTargetId, optVersion) {
