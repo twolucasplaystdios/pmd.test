@@ -832,14 +832,11 @@ class JSGenerator {
             break;
         case 'list.forEach': {
             const list = this.referenceVariable(node.list);
-            const stack = this.descendStack(node.do, new Frame(true));
             const set = this.descendVariable(node.variable);
             const to = node.num ? 'index' : 'value';
-            this.source += `console.log(${list});
-            ${list}.value.forEach((value, index) => {
-                ${set.source} = ${to};
-                ${stack}
-            });\n`;
+            this.source += `${list}.value.forEach((value, index) => { ${set.source} = ${to};`;
+            this.descendStack(node.do, new Frame(true));
+            this.source += `});\n`;
             this.source += `${list}._monitorUpToDate = false;\n`;
             break;
         }
