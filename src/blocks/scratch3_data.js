@@ -1,5 +1,5 @@
 const Cast = require('../util/cast');
-const { validateArray } = require('../../util/json-block-utilities');
+const { validateArray } = require('../util/json-block-utilities');
 
 class Scratch3DataBlocks {
     constructor (runtime) {
