@@ -6,14 +6,13 @@ class bufferUtil {
      * @returns {Array} the converted array
      */
     bufferToArray (buffer, process) {
-        console.log(buffer, buffer[0], buffer.Int8Array);
-        buffer = buffer.Int8Array;
+        buffer = new DataView(buffer);
         const array = [];
         const processNum = typeof process === 'function' 
             ? process 
             : num => num;
-        for (let idx = 0; idx < buffer.length; idx++) {
-            const number = Number(buffer[idx]) + 0;
+        for (let idx = 0; idx < buffer.byteLength; idx++) {
+            const number = buffer.getUint8(idx);
             array.push(processNum(number));
         }
         return array;
