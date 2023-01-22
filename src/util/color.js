@@ -118,7 +118,7 @@ class Color {
      * @return {!number} Number representing the color.
      */
     static rgbToDecimal (rgb) {
-        if (rgb.a) {
+        if (typeof rgb.a === 'number') {
             return (rgb.r << 24) + (rgb.g << 16) + (rgb.b << 8) + rgb.a;
         }
         return (rgb.r << 16) + (rgb.g << 8) + rgb.b;
