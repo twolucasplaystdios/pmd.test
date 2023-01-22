@@ -32,7 +32,14 @@ class Scratch3DataBlocks {
             data_lengthoflist: this.lengthOfList,
             data_listcontainsitem: this.listContainsItem,
             data_hidelist: this.hideList,
-            data_showlist: this.showList
+            data_showlist: this.showList,
+            data_reverselist: this.data_reverselist,
+            data_itemexistslist: this.data_itemexistslist,
+            data_listisempty: this.data_listisempty,
+            data_listarray: this.data_listarray,
+            data_arraylist: this.data_arraylist,
+            data_listforeachnum: this.data_listforeachnum,
+            data_listforeachitem: this.data_listforeachitem
         };
     }
 
