@@ -1,6 +1,8 @@
 const formatMessage = require('format-message');
 const BlockType = require('../../extension-support/block-type');
 const ArgumentType = require('../../extension-support/argument-type');
+const AHHHHHHHHHHHHHH = require('../../util/array buffer');
+const BufferStuff = new AHHHHHHHHHHHHHH();
 // const Cast = require('../../util/cast');
 
 /**
@@ -52,6 +54,26 @@ class JgWebsiteRequestBlocks {
                         id: 'jgWebsiteRequests.blocks.getWebsiteContent',
                         default: 'get [WEBSITE]\'s content',
                         description: 'Gets the contents of the specified website. Includes HTML if it\'s a normal website.'
+                    }),
+                    disableMonitor: true,
+                    blockType: BlockType.REPORTER,
+                    arguments: {
+                        WEBSITE: {
+                            type: ArgumentType.STRING,
+                            defaultValue: formatMessage({
+                                id: 'jgWebsiteRequests.website_fetch_content',
+                                default: 'https://www.google.com',
+                                description: 'The website to get the content of.'
+                            })
+                        }
+                    }
+                },
+                {
+                    opcode: 'getWebsiteBinaryData',
+                    text: formatMessage({
+                        id: 'jgWebsiteRequests.blocks.getWebsiteBinaryData',
+                        default: 'get binary data from [WEBSITE]',
+                        description: 'Gets the data of the specified website.'
                     }),
                     disableMonitor: true,
                     blockType: BlockType.REPORTER,
@@ -120,6 +142,23 @@ class JgWebsiteRequestBlocks {
                 })
             }).catch(err => {
                 resolve("");
+            })
+        })
+    }
+    
+    getWebsiteBinaryData(args, util) {
+        return new Promise((resolve, reject) => {
+            if (window && !window.fetch) return resolve("[]");
+            fetch("https://api.allorigins.win/raw?url=" + encodeURIComponent(String(args.WEBSITE))).then(r => {
+                r.blob().then(blob => {
+                    blob.arrayBuffer().then(buffer => {
+                        resolve(String(JSON.stringify(BufferStuff.bufferToArray(buffer))));
+                    })
+                }).catch(err => {
+                    resolve("[]");
+                })
+            }).catch(err => {
+                resolve("[]");
             })
         })
     }
