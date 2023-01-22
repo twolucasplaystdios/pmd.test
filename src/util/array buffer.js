@@ -17,6 +17,19 @@ class bufferUtil {
         }
         return array;
     }
+
+    arrayToBuffer (array, patch) {
+        patch = typeof process === 'function' 
+            ? patch 
+            : num => num;
+        const buffer = new ArrayBuffer(array.length);
+        const view = new DataView(buffer);
+        array.forEach((byte, offset) => {
+            byte = patch(byte);
+            view.setUint8(offset, byte);
+        });
+        return view.buffer;
+    }
     
     /**
      * converts a buffer into a string of hex bytes

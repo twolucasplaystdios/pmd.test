@@ -48,7 +48,7 @@ class JgFilesBlocks {
                 },
                 {
                     opcode: 'askUserForFileOfTypeAsArrayBuffer',
-                    text: 'ask user for a file of type [FILE_TYPE] and read as array buffer',
+                    text: 'ask user for a binnary file of type [FILE_TYPE]',
                     disableMonitor: true,
                     blockType: BlockType.REPORTER,
                     arguments: {
@@ -120,7 +120,7 @@ class JgFilesBlocks {
             return new Promise(resolve => {
                 const fileReader = new FileReader();
                 fileReader.onload = e => {
-                    resolve(BufferStuff.bufferToArray(e.target.result));
+                    resolve(JSON.stringify(BufferStuff.bufferToArray(e.target.result)));
                 };
                 const input = document.createElement("input");
                 input.type = "file";
@@ -181,8 +181,8 @@ class JgFilesBlocks {
         fileName = String(args.FILE_NAME) || fileName;
 
         const array = validateArray(args.FILE_CONTENT);
-        if (array.length > 0 && typeof array[0] === 'number') {
-            content = array;
+        if (array.isValid) {
+            content = BufferStuff.arrayToBuffer(array.array);
             fileName = (fileName === 'text.txt' ? 'raw.bin' : fileName);
         }
 
