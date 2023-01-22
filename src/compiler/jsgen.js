@@ -459,15 +459,6 @@ class JSGenerator {
             }
             return new TypedInput(`listGet(${this.referenceVariable(node.list)}.value, ${index.asUnknown()})`, TYPE_UNKNOWN);
         }
-        case 'list.forEach': {
-            const stack = this.descendStack(node.do, new Frame(true));
-            const set = this.descendVariable(node.variable);
-            const to = node.num ? 'index' : 'value';
-            return `${this.referenceVariable(node.list)}.value.forEach((value, index) => {
-                ${set} = ${to};
-                ${stack}
-            });`;
-        }
         case 'list.indexOf':
             return new TypedInput(`listIndexOf(${this.referenceVariable(node.list)}, ${this.descendInput(node.item).asUnknown()})`, TYPE_NUMBER);
         case 'list.length':
@@ -839,7 +830,15 @@ class JSGenerator {
             this.source += `yield* waitThreads(startHats("event_whenbroadcastreceived", { BROADCAST_OPTION: ${this.descendInput(node.broadcast).asString()} }));\n`;
             this.yielded();
             break;
-
+        case 'list.forEach': {
+            const stack = this.descendStack(node.do, new Frame(true));
+            const set = this.descendVariable(node.variable);
+            const to = node.num ? 'index' : 'value';
+            return `${this.referenceVariable(node.list)}.value.forEach((value, index) => {
+                ${set} = ${to};
+                ${stack}
+            });`;
+        }
         case 'list.add': {
             const list = this.referenceVariable(node.list);
             this.source += `${list}.value.push(${this.descendInput(node.item).asSafe()});\n`;
