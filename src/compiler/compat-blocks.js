@@ -32,7 +32,13 @@ const stacked = [
     'sound_seteffectto',
     'sound_setvolumeto',
     'sound_stopallsounds',
-    "looks_setStretch"
+    "looks_setStretch",
+    "data_reverselist",
+    "data_itemexistslist",
+    "data_listisempty",
+    "data_listarray",
+    "data_arraylist"
+
 ];
 
 const inputs = [
@@ -63,7 +69,7 @@ const inputs = [
     "operator_readLineInMultilineText",
     "operator_getLettersFromIndexToIndexInText",
     "operator_replaceAll",
-    "operator_regexmatch",
+    "operator_regexmatch"
 ];
 
 module.exports = {

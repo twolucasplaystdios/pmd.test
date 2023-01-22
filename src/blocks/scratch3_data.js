@@ -1,4 +1,5 @@
 const Cast = require('../util/cast');
+const { validateArray } = require('../../util/json-block-utilities');
 
 class Scratch3DataBlocks {
     constructor (runtime) {
@@ -33,6 +34,77 @@ class Scratch3DataBlocks {
             data_hidelist: this.hideList,
             data_showlist: this.showList
         };
+    }
+
+    data_reverselist (args, util) {
+        const list = util.target.lookupOrCreateList(
+            args.LIST.id, args.LIST.name);
+        list.value.reverse();
+        list._monitorUpToDate = false;
+    }
+    data_itemexistslist (args, util) {
+        const list = util.target.lookupOrCreateList(
+            args.LIST.id, args.LIST.name);
+        const index = Cast.toListIndex(args.INDEX, list.value.length, false);
+        if (index === Cast.LIST_INVALID) {
+            return false;
+        }
+        return true;
+    }
+    data_listisempty (args, util) {
+        const list = util.target.lookupOrCreateList(
+            args.LIST.id, args.LIST.name);
+        return list.length < 1;
+    }
+    data_listarray (args, util) {
+        const list = util.target.lookupOrCreateList(
+            args.LIST.id, args.LIST.name);
+        return JSON.stringify(list.value);
+    }
+    data_arraylist (args, util) {
+        const list = util.target.lookupOrCreateList(
+            args.LIST.id, args.LIST.name);
+        list.value = validateArray(args.ARRAY).array;
+    }
+    data_listforeachnum (args, util) {
+        const list = util.target.lookupOrCreateList(
+            args.LIST.id, args.LIST.name);
+        if (typeof util.stackFrame.loopCounter === 'undefined') {
+            util.stackFrame.loopCounter = list.value.length;
+        }
+        // Only execute once per frame.
+        // When the branch finishes, `repeat` will be executed again and
+        // the second branch will be taken, yielding for the rest of the frame.
+        // Decrease counter
+        util.stackFrame.loopCounter--;
+        // If we still have some left, start the branch.
+        if (util.stackFrame.loopCounter >= 0) {
+            this.setVariableTo({
+                VARIABLE: args.INDEX,
+                VALUE: util.stackFrame.loopCounter
+            }, util);
+            util.startBranch(1, true);
+        }
+    }
+    data_listforeachitem (args, util) {
+        const list = util.target.lookupOrCreateList(
+            args.LIST.id, args.LIST.name);
+        if (typeof util.stackFrame.loopCounter === 'undefined') {
+            util.stackFrame.loopCounter = list.value.length;
+        }
+        // Only execute once per frame.
+        // When the branch finishes, `repeat` will be executed again and
+        // the second branch will be taken, yielding for the rest of the frame.
+        // Decrease counter
+        util.stackFrame.loopCounter--;
+        // If we still have some left, start the branch.
+        if (util.stackFrame.loopCounter >= 0) {
+            this.setVariableTo({
+                VARIABLE: args.INDEX,
+                VALUE: list.value[util.stackFrame.loopCounter]
+            }, util);
+            util.startBranch(1, true);
+        }
     }
 
     getVariable (args, util) {

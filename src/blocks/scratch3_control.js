@@ -40,16 +40,16 @@ class Scratch3ControlBlocks {
             control_clear_counter: this.clearCounter,
             control_all_at_once: this.allAtOnce,
             control_backToGreenFlag: this.backToGreenFlag,
-            control_if_return_else_return: this.if_return_else_return,
+            control_if_return_else_return: this.if_return_else_return
         };
     }
 
-    backToGreenFlag(args, util) {
-        this.runtime.greenFlag()
+    backToGreenFlag () {
+        this.runtime.greenFlag();
     }
 
-    if_return_else_return(args) {
-        return args.boolean ? args.TEXT1 : args.TEXT2
+    if_return_else_return (args) {
+        return args.boolean ? args.TEXT1 : args.TEXT2;
     }
 
     getHats () {

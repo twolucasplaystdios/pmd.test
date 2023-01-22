@@ -459,6 +459,15 @@ class JSGenerator {
             }
             return new TypedInput(`listGet(${this.referenceVariable(node.list)}.value, ${index.asUnknown()})`, TYPE_UNKNOWN);
         }
+        case 'list.forEach': {
+            const stack = this.descendStack(node.do, new Frame(true));
+            const set = this.descendVariable(node.variable);
+            const to = node.num ? 'index' : 'value';
+            return `${this.referenceVariable(node.list)}.value.forEach((value, index) => {
+                ${set} = ${to};
+                ${stack}
+            });`;
+        }
         case 'list.indexOf':
             return new TypedInput(`listIndexOf(${this.referenceVariable(node.list)}, ${this.descendInput(node.item).asUnknown()})`, TYPE_NUMBER);
         case 'list.length':
@@ -931,13 +940,13 @@ class JSGenerator {
             this.source += `target.setSize(${this.descendInput(node.size).asNumber()});\n`;
             break;
         case 'looks.setFont':
-            this.source += `runtime.ext_scratch3_looks.setFont({ font: ${this.descendInput(node.font).asString()}, size: ${this.descendInput(node.size).asNumber()} }, { target: target });\n`
+            this.source += `runtime.ext_scratch3_looks.setFont({ font: ${this.descendInput(node.font).asString()}, size: ${this.descendInput(node.size).asNumber()} }, { target: target });\n`;
             break;
         case 'looks.setColor':
-            this.source += `runtime.ext_scratch3_looks.setColor({ prop: "${sanitize(node.prop)}", color: ${this.descendInput(node.color).asColor()} }, { target: target });\n`
+            this.source += `runtime.ext_scratch3_looks.setColor({ prop: "${sanitize(node.prop)}", color: ${this.descendInput(node.color).asColor()} }, { target: target });\n`;
             break;
         case 'looks.setShape':
-            this.source += `runtime.ext_scratch3_looks.setShape({ prop: "${sanitize(node.prop)}", color: ${this.descendInput(node.value).asColor()} }, { target: target });\n`
+            this.source += `runtime.ext_scratch3_looks.setShape({ prop: "${sanitize(node.prop)}", color: ${this.descendInput(node.value).asColor()} }, { target: target });\n`;
             break;
         case 'looks.show':
             this.source += 'target.setVisible(true);\n';

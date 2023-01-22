@@ -846,6 +846,24 @@ class ScriptTreeGenerator {
                 kind: 'list.deleteAll',
                 list: this.descendVariable(block, 'LIST', LIST_TYPE)
             };
+        case 'data_listforeachnum':
+            this.analyzeLoop();
+            return {
+                kind: 'list.forEach',
+                num: true,
+                list: this.descendVariable(block, 'LIST', LIST_TYPE),
+                variable: this.descendVariable(block, 'INDEX', SCALAR_TYPE),
+                do: this.descendSubstack(block, 'SUBSTACK')
+            };
+        case 'data_listforeachitem':
+            this.analyzeLoop();
+            return {
+                kind: 'list.forEach',
+                num: false,
+                list: this.descendVariable(block, 'LIST', LIST_TYPE),
+                variable: this.descendVariable(block, 'VALUE', SCALAR_TYPE),
+                do: this.descendSubstack(block, 'SUBSTACK')
+            };
         case 'data_deleteoflist': {
             const index = this.descendInputOfBlock(block, 'INDEX');
             if (index.kind === 'constant' && index.value === 'all') {
