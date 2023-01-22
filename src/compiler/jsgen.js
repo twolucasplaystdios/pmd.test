@@ -837,7 +837,7 @@ class JSGenerator {
             const to = node.num ? 'index' : 'value';
             this.source += `console.log(${list});
             ${list}.value.forEach((value, index) => {
-                ${set} = ${to};
+                ${set.source} = ${to};
                 ${stack}
             });\n`;
             this.source += `${list}._monitorUpToDate = false;\n`;
