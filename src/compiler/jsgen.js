@@ -834,9 +834,9 @@ class JSGenerator {
             const list = this.referenceVariable(node.list);
             const set = this.descendVariable(node.variable);
             const to = node.num ? 'index' : 'value';
-            this.source += `${list}.value.forEach((value, index) => { ${set.source} = ${to};`;
+            this.source += `for (let index = 0; index < ${list}.value.length; index++) { const value = ${list}.value[index]; ${set.source} = ${to};`;
             this.descendStack(node.do, new Frame(true));
-            this.source += `});\n`;
+            this.source += `};\n`;
             this.source += `${list}._monitorUpToDate = false;\n`;
             break;
         }
