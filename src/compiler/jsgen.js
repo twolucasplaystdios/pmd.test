@@ -831,10 +831,13 @@ class JSGenerator {
             this.yielded();
             break;
         case 'list.forEach': {
+            const list = this.referenceVariable(node.list);
             const stack = this.descendStack(node.do, new Frame(true));
             const set = this.descendVariable(node.variable);
             const to = node.num ? 'index' : 'value';
-            return `${this.referenceVariable(node.list)}.value.forEach((value, index) => {
+            return `
+            console.log(${list})
+            ${list}.value.forEach((value, index) => {
                 ${set} = ${to};
                 ${stack}
             });`;
