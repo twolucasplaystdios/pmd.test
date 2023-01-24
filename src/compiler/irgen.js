@@ -1764,7 +1764,11 @@ class ScriptTreeGenerator {
 
         // If the top block is a hat, advance to its child.
         let entryBlock;
-        if (this.runtime.getIsHat(topBlock.opcode) || topBlock.opcode === 'procedures_definition' || topBlock.opcode === 'procedures_definition_return') {
+        if (
+            this.runtime.getIsHat(topBlock.opcode) || 
+            topBlock.opcode === 'procedures_definition' || 
+            topBlock.opcode === 'procedures_definition_return'
+        ) {
             if (this.runtime.getIsEdgeActivatedHat(topBlock.opcode)) {
                 throw new Error(`Not compiling an edge-activated hat: ${topBlock.opcode}`);
             }
