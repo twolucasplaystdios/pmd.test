@@ -178,7 +178,13 @@ class BlockUtility {
     initParams () {
         this.thread.initParams();
     }
-
+    pushReportedValue (value) {
+        this.thread.pushReportedValue(value);
+    }
+    return (args, util) {
+        util.pushReportedValue(args.VALUE);
+        util.stopThisScript();
+    }
     /**
      * Store a procedure parameter value by its name.
      * @param {string} paramName The procedure's parameter name.
