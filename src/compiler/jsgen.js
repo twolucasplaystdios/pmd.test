@@ -1073,7 +1073,6 @@ class JSGenerator {
             this.source += `return ${this.descendInput(node.return).asString()};`;
             break;
         case 'procedures.call': {
-            /** @todo add return suport to procedures.call */
             const procedureCode = node.code;
             const procedureVariant = node.variant;
             // Do not generate any code for empty procedures.
@@ -1352,7 +1351,7 @@ class JSGenerator {
         }
 
         script += '}; })';
-
+        console.log(script);
         return script;
     }
 
