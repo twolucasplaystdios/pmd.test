@@ -134,7 +134,9 @@ class JgWebsiteRequestBlocks {
     getWebsiteContent(args, util) {
         return new Promise((resolve, reject) => {
             if (window && !window.fetch) return resolve("");
-            fetch("https://api.allorigins.win/raw?url=" + encodeURIComponent(String(args.WEBSITE))).then(r => {
+            const rawRequestIgnoreCorsBypass = String(args.WEBSITE).startsWith("rawRequest()")
+            const fetchingUrl = rawRequestIgnoreCorsBypass ? String(args.WEBSITE).replace("rawRequest()", "") : ("https://api.allorigins.win/raw?url=" + encodeURIComponent(String(args.WEBSITE)))
+            fetch(fetchingUrl).then(r => {
                 r.text().then(text => {
                     resolve(String(text));
                 }).catch(err => {
@@ -149,11 +151,11 @@ class JgWebsiteRequestBlocks {
     getWebsiteBinaryData(args, util) {
         return new Promise((resolve, reject) => {
             if (window && !window.fetch) return resolve("[]");
-            fetch("https://api.allorigins.win/raw?url=" + encodeURIComponent(String(args.WEBSITE))).then(r => {
-                r.blob().then(blob => {
-                    blob.arrayBuffer().then(buffer => {
-                        resolve(String(JSON.stringify(BufferStuff.bufferToArray(buffer))));
-                    })
+            const rawRequestIgnoreCorsBypass = String(args.WEBSITE).startsWith("rawRequest()")
+            const fetchingUrl = rawRequestIgnoreCorsBypass ? String(args.WEBSITE).replace("rawRequest()", "") : ("https://api.allorigins.win/raw?url=" + encodeURIComponent(String(args.WEBSITE)))
+            fetch(fetchingUrl).then(r => {
+                r.arrayBuffer().then(buffer => {
+                    resolve(String(JSON.stringify(BufferStuff.bufferToArray(buffer))));
                 }).catch(err => {
                     resolve("[]");
                 })
