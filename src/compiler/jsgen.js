@@ -28,7 +28,6 @@ const TYPE_STRING = 2;
 const TYPE_BOOLEAN = 3;
 const TYPE_UNKNOWN = 4;
 const TYPE_NUMBER_NAN = 5;
-const TYPE_FUNCTION = 6;
 
 
 // Pen-related constants
@@ -78,25 +77,21 @@ class TypedInput {
     asNumber () {
         if (this.type === TYPE_NUMBER) return this.source;
         if (this.type === TYPE_NUMBER_NAN) return `(${this.source} || 0)`;
-        if (this.type === TYPE_FUNCTION) return this.source;
         return `(+${this.source} || 0)`;
     }
 
     asNumberOrNaN () {
         if (this.type === TYPE_NUMBER || this.type === TYPE_NUMBER_NAN) return this.source;
-        if (this.type === TYPE_FUNCTION) return this.source;
         return `(+${this.source})`;
     }
 
     asString () {
         if (this.type === TYPE_STRING) return this.source;
-        if (this.type === TYPE_FUNCTION) return this.source;
         return `("" + ${this.source})`;
     }
 
     asBoolean () {
         if (this.type === TYPE_BOOLEAN) return this.source;
-        if (this.type === TYPE_FUNCTION) return this.source;
         return `toBoolean(${this.source})`;
     }
 
@@ -742,7 +737,7 @@ class JSGenerator {
             source += `)`;
             // Variable input types may have changes after a procedure call.
             this.resetVariableInputs();
-            return new TypedInput(source, TYPE_FUNCTION);
+            return new TypedInput(source, TYPE_STRING);
         }
 
         default:
