@@ -77,7 +77,10 @@ class Scratch3ProcedureBlocks {
         }
         return value;
     }
-
+    procedures_return (args, util) {
+        util.pushReportedValue(args.VALUE);
+        util.stopThisScript();
+    }
     argumentReporterBoolean(args, util) {
         const value = util.getParam(args.VALUE);
         if (value === null) {
