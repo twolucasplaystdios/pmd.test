@@ -111,7 +111,7 @@ class RenderedTarget extends Target {
          * The stretch percent on each axis
          * @type {array}
          */
-        this.stretch = [100, 100]
+        this.stretch = [100, 100];
 
         /**
          * Currently selected costume index.
@@ -310,8 +310,8 @@ class RenderedTarget extends Target {
             const scaleFlip = (this.direction < 0) ? -1 : 1;
             finalScale = [scaleFlip * this.size, this.size];
         }
-        finalScale[0] *= this.stretch[0] / 100
-        finalScale[1] *= this.stretch[1] / 100
+        finalScale[0] *= this.stretch[0] / 100;
+        finalScale[1] *= this.stretch[1] / 100;
         return {direction: finalDirection, scale: finalScale, stretch: this.stretch};
     }
 
@@ -320,12 +320,12 @@ class RenderedTarget extends Target {
      * @param {number} x the stretch percentage on the x axis
      * @param {number} y the stretch percentage on the y axis
      */
-    setStretch(x, y) {
+    setStretch (x, y) {
         if (this.isStage) {
             return;
         }
 
-        this.stretch = [x, y]
+        this.stretch = [x, y];
         if (this.renderer) {
             const {direction: renderedDirection, scale} = this._getRenderedDirectionAndScale();
             this.renderer.updateDrawableDirectionScale(this.drawableID, renderedDirection, scale);

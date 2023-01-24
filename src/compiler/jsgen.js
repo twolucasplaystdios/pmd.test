@@ -1034,7 +1034,11 @@ class JSGenerator {
             this.source += `${PEN_EXT}._penUp(target);\n`;
             break;
 
+        case 'procedures.return': 
+            this.source += `return ${this.descendInput(node.return).asString()}`;
+            break;
         case 'procedures.call': {
+            /** @todo add return suport to procedures.call */
             const procedureCode = node.code;
             const procedureVariant = node.variant;
             // Do not generate any code for empty procedures.

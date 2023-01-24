@@ -1153,8 +1153,13 @@ class ScriptTreeGenerator {
             return {
                 kind: 'pen.stamp'
             };
-
+        case 'procedures_return': 
+            return {
+                kind: 'procedures.return',
+                return: this.descendInputOfBlock(block, 'return')
+            };
         case 'procedures_call': {
+            /** @todo add return suport to procedures.call */
             // setting of yields will be handled later in the analysis phase
 
             const procedureCode = block.mutation.proccode;

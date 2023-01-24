@@ -8,7 +8,7 @@ const ArgumentType = require('../../extension-support/argument-type');
  * @constructor
  */
 class JgRuntimeBlocks {
-    constructor(runtime) {
+    constructor (runtime) {
         /**
          * The runtime instantiating this block package.
          * @type {Runtime}
@@ -19,7 +19,7 @@ class JgRuntimeBlocks {
     /**
      * @returns {object} metadata for this extension and its blocks.
      */
-    getInfo() {
+    getInfo () {
         return {
             id: 'jgRuntime',
             name: 'Runtime',
@@ -28,11 +28,7 @@ class JgRuntimeBlocks {
             blocks: [
                 {
                     opcode: 'addCostumeUrl',
-                    text: formatMessage({
-                        id: 'jgRuntime.blocks.addCostumeUrl',
-                        default: 'add costume [name] from [URL]',
-                        description: 'Adds a costume to the current sprite using the image at the URL. Returns the costume name.'
-                    }),
+                    text: 'add costume [name] from [URL]',
                     blockType: BlockType.COMMAND,
                     arguments: {
                         URL: {
@@ -157,68 +153,72 @@ class JgRuntimeBlocks {
             ]
         };
     }
-    addCostumeUrl(args, util) {
+    addCostumeUrl (args, util) {
         fetch(args.URL, { method: 'GET' }).then(x => x.blob().then(blob => {
             if (!(
                 (blob.type === 'image/png') || 
                 (blob.type === 'image/svg+xml')
-            )) throw new Error('Invalid mime type: "' + blob.type + '"')
+            )) throw new Error(`Invalid mime type: "${blob.type}"`);
             
             const assetType = blob.type === 'image/png'
                 ? this.runtime.storage.AssetType.ImageBitmap 
-                : this.runtime.storage.AssetType.ImageVector
+                : this.runtime.storage.AssetType.ImageVector;
             
             const dataType = blob.type === 'image/png' 
                 ? this.runtime.storage.DataFormat.PNG 
-                : this.runtime.storage.DataFormat.SVG
+                : this.runtime.storage.DataFormat.SVG;
             
-            blob
-                .arrayBuffer()
+            blob.arrayBuffer()
                 .then(buffer => {
-                    const asset = this.runtime.storage.createAsset(assetType, dataType, buffer, null, true)
-                    const name = asset.assetId + '.' + asset.dataFormat
-                    vm.addCostume(name, {asset: asset, md5ext: name, name: args.name}, util.target.id, 3)
+                    const asset = this.runtime.storage.createAsset(assetType, dataType, buffer, null, true);
+                    const name = `${asset.assetId}.${asset.dataFormat}`;
+                    const spriteJson = {
+                        asset: asset, 
+                        md5ext: name, 
+                        name: args.name
+                    };
+                    vm.addCostume(name, spriteJson, util.target.id);
                 })
                 .catch(err => {
-                    console.error('Failed to Load Costume: ' + err)
-                    console.warn(err)
-                })
-        }))
+                    console.error(`Failed to Load Costume: ${err}`);
+                    console.warn(err);
+                });
+        }));
     }
-    deleteCostume(args, util) {
+    deleteCostume (args, util) {
         const index = (Number(args.COSTUME) ? Number(args.COSTUME) : 1) - 1;
         if (index < 0) return;
-        vm.deleteCostume(index);
+        util.target.deleteCostume(index);
     }
-    setStageSize(args, util) {
+    setStageSize (args) {
         let width = Number(args.WIDTH) || 480;
         let height = Number(args.HEIGHT) || 360;
         if (width <= 0) width = 1;
         if (height <= 0) height = 1;
         if (vm) vm.setStageSize(width, height);
     }
-    turboModeEnabled() {
-        return vm.runtime.turboMode;
+    turboModeEnabled () {
+        return this.runtime.turboMode;
     }
-    amountOfClones() {
-        return vm.runtime._cloneCounter;
+    amountOfClones () {
+        return this.runtime._cloneCounter;
     }
-    getStageWidth() {
-        return vm.runtime.stageWidth;
+    getStageWidth () {
+        return this.runtime.stageWidth;
     }
-    getStageHeight() {
-        return vm.runtime.stageHeight;
+    getStageHeight () {
+        return this.runtime.stageHeight;
     }
-    getMaxFrameRate() {
-        return vm.runtime.frameLoop.framerate;
+    getMaxFrameRate () {
+        return this.runtime.frameLoop.framerate;
     }
-    getIsClone(args, util) {
-        return !(util.target.isOriginal)
+    getIsClone (args, util) {
+        return !(util.target.isOriginal);
     }
-    setMaxFrameRate(args, util) {
+    setMaxFrameRate (args) {
         let frameRate = Number(args.FRAMERATE) || 1;
         if (frameRate <= 0) frameRate = 1;
-        if (vm) vm.runtime.frameLoop.setFramerate(frameRate);
+        this.runtime.frameLoop.setFramerate(frameRate);
     }
 }
 
