@@ -28,6 +28,8 @@ const TYPE_STRING = 2;
 const TYPE_BOOLEAN = 3;
 const TYPE_UNKNOWN = 4;
 const TYPE_NUMBER_NAN = 5;
+const TYPE_FUNCTION = 6;
+
 
 // Pen-related constants
 const PEN_EXT = 'runtime.ext_pen';
@@ -76,21 +78,25 @@ class TypedInput {
     asNumber () {
         if (this.type === TYPE_NUMBER) return this.source;
         if (this.type === TYPE_NUMBER_NAN) return `(${this.source} || 0)`;
+        if (this.type === TYPE_FUNCTION) return this.source;
         return `(+${this.source} || 0)`;
     }
 
     asNumberOrNaN () {
         if (this.type === TYPE_NUMBER || this.type === TYPE_NUMBER_NAN) return this.source;
+        if (this.type === TYPE_FUNCTION) return this.source;
         return `(+${this.source})`;
     }
 
     asString () {
         if (this.type === TYPE_STRING) return this.source;
+        if (this.type === TYPE_FUNCTION) return this.source;
         return `("" + ${this.source})`;
     }
 
     asBoolean () {
         if (this.type === TYPE_BOOLEAN) return this.source;
+        if (this.type === TYPE_FUNCTION) return this.source;
         return `toBoolean(${this.source})`;
     }
 
@@ -704,6 +710,40 @@ class JSGenerator {
 
         case 'var.get':
             return this.descendVariable(node.variable);
+
+        case 'procedures.call': {
+            const procedureCode = node.code;
+            const procedureVariant = node.variant;
+            let source = '';
+            // Do not generate any code for empty procedures.
+            const procedureData = this.ir.procedures[procedureVariant];
+            if (procedureData.stack === null) {
+                break;
+            }
+            if (!this.isWarp && procedureCode === this.script.procedureCode) {
+                // Direct recursion yields.
+                this.yieldNotWarp();
+            }
+            if (procedureData.yields) {
+                source += 'yield* ';
+                if (!this.script.yields) {
+                    throw new Error('Script uses yielding procedure but is not marked as yielding.');
+                }
+            }
+            source += `thread.procedures["${sanitize(procedureVariant)}"](`;
+            // Only include arguments if the procedure accepts any.
+            if (procedureData.arguments.length) {
+                const args = [];
+                for (const input of node.arguments) {
+                    args.push(this.descendInput(input).asSafe());
+                }
+                source += args.join(',');
+            }
+            source += `)`;
+            // Variable input types may have changes after a procedure call.
+            this.resetVariableInputs();
+            return new TypedInput(source, TYPE_FUNCTION);
+        }
 
         default:
             log.warn(`JS: Unknown input: ${node.kind}`, node);
