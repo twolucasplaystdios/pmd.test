@@ -76,11 +76,11 @@ class Scratch3ProcedureBlocks {
             return 0;
         }
         return value;
-    }
+    }/*
     return (args, util) {
         util.pushReportedValue(args.VALUE);
         util.stopThisScript();
-    }
+    }*/
     argumentReporterBoolean(args, util) {
         const value = util.getParam(args.VALUE);
         if (value === null) {
