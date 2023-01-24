@@ -286,7 +286,7 @@ class Blocks {
         for (const id in this._blocks) {
             if (!this._blocks.hasOwnProperty(id)) continue;
             const block = this._blocks[id];
-            if (block.opcode === 'procedures_definition') {
+            if (block.opcode === 'procedures_definition' || block.opcode === 'procedures_definition_return') {
                 // tw: make sure that populateProcedureCache is kept up to date with this method
                 const internal = this._getCustomBlockInternal(block);
                 if (internal && internal.mutation.proccode === name) {
@@ -368,7 +368,7 @@ class Blocks {
                 continue;
             }
 
-            if (block.opcode === 'procedures_definition') {
+            if (block.opcode === 'procedures_definition' || block.opcode === 'procedures_definition_return') {
                 const internal = this._getCustomBlockInternal(block);
                 if (internal) {
                     const name = internal.mutation.proccode;
