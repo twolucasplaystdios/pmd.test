@@ -1035,7 +1035,7 @@ class JSGenerator {
             break;
 
         case 'procedures.return': 
-            this.source += `return ${this.descendInput(node.return).asString()}`;
+            this.source += `return ${this.descendInput(node.return).asString()};`;
             break;
         case 'procedures.call': {
             /** @todo add return suport to procedures.call */
