@@ -77,7 +77,7 @@ class Scratch3ProcedureBlocks {
         }
         return value;
     }
-    procedures_return (args, util) {
+    procedures_definition_return (args, util) {
         util.pushReportedValue(args.VALUE);
         util.stopThisScript();
     }
