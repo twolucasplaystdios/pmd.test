@@ -1306,6 +1306,7 @@ class JSGenerator {
                 .substring(0, 20); // keep length reasonable
             name += `_${simplifiedProcedureCode}`;
         }
+        console.log(name);
         return name;
     }
 
@@ -1351,6 +1352,7 @@ class JSGenerator {
         }
 
         script += '}; })';
+        console.log(script)
         return script;
     }
 
