@@ -333,6 +333,42 @@ class JgPrismBlocks {
                             defaultValue: "YWJj"
                         }
                     }
+                },
+                {
+                    blockType: BlockType.LABEL,
+                    text: "String Character Codes"
+                },
+                {
+                    opcode: 'fromCharacterCodeString',
+                    text: formatMessage({
+                        id: 'jgRuntime.blocks.fromCharacterCodeString',
+                        default: 'character from character code [TEXT]',
+                        description: 'Block that decodes and returns the result of it.'
+                    }),
+                    blockType: BlockType.REPORTER,
+                    disableMonitor: true,
+                    arguments: {
+                        TEXT: {
+                            type: ArgumentType.NUMBER,
+                            defaultValue: 97
+                        }
+                    }
+                },
+                {
+                    opcode: 'toCharacterCodeString',
+                    text: formatMessage({
+                        id: 'jgRuntime.blocks.toCharacterCodeString',
+                        default: 'character code of [TEXT]',
+                        description: 'Block that encodes and returns the result of it.'
+                    }),
+                    blockType: BlockType.REPORTER,
+                    disableMonitor: true,
+                    arguments: {
+                        TEXT: {
+                            type: ArgumentType.STRING,
+                            defaultValue: "a"
+                        }
+                    }
                 }
             ]
         };
@@ -474,6 +510,12 @@ class JgPrismBlocks {
     }
     base64Decode(args) {
         return atob(String(args.TEXT));
+    }
+    fromCharacterCodeString(args) {
+        return String.fromCharCode(args.TEXT);
+    }
+    toCharacterCodeString(args) {
+        return String(args.TEXT).charCodeAt(0);
     }
 }
 
