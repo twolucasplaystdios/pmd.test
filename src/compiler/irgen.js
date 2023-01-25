@@ -650,7 +650,6 @@ class ScriptTreeGenerator {
             };
 
         case 'procedures_call': {
-            /** @todo add return suport to procedures.call */
             // setting of yields will be handled later in the analysis phase
     
             const procedureCode = block.mutation.proccode;

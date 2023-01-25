@@ -1279,6 +1279,7 @@ class JSGenerator {
 
         for (const inputName of Object.keys(node.inputs)) {
             const input = node.inputs[inputName];
+            console.log(node, input);
             const compiledInput = this.descendInput(input).asSafe();
             result += `"${sanitize(inputName)}":${compiledInput},`;
         }
