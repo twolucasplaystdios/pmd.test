@@ -1,6 +1,17 @@
 const formatMessage = require('format-message');
 const BlockType = require('../../extension-support/block-type');
 const ArgumentType = require('../../extension-support/argument-type');
+const beatgammit = {
+    deflate: require('./beatgammit-deflate'),
+    inflate: require('./beatgammit-inflate')
+}
+const { 
+    validateJSON, 
+    validateArray, 
+    stringToEqivalint, 
+    valueToString,
+    validateRegex 
+} = require('../../util/json-block-utilities');
 // const Cast = require('../../util/cast');
 
 /**
@@ -369,6 +380,42 @@ class JgPrismBlocks {
                             defaultValue: "a"
                         }
                     }
+                },
+                {
+                    blockType: BlockType.LABEL,
+                    text: "JS Deflate implementation"
+                },
+                {
+                    opcode: 'lib_deflate_deflateArray',
+                    text: formatMessage({
+                        id: 'jgRuntime.blocks.lib_deflate_deflateArray',
+                        default: 'deflate [ARRAY]',
+                        description: 'abc'
+                    }),
+                    blockType: BlockType.REPORTER,
+                    disableMonitor: true,
+                    arguments: {
+                        ARRAY: {
+                            type: ArgumentType.STRING,
+                            defaultValue: "[]"
+                        }
+                    }
+                },
+                {
+                    opcode: 'lib_deflate_inflateArray',
+                    text: formatMessage({
+                        id: 'jgRuntime.blocks.lib_deflate_inflateArray',
+                        default: 'inflate [ARRAY]',
+                        description: 'abc'
+                    }),
+                    blockType: BlockType.REPORTER,
+                    disableMonitor: true,
+                    arguments: {
+                        ARRAY: {
+                            type: ArgumentType.STRING,
+                            defaultValue: "[]"
+                        }
+                    }
                 }
             ]
         };
@@ -516,6 +563,16 @@ class JgPrismBlocks {
     }
     toCharacterCodeString(args) {
         return String(args.TEXT).charCodeAt(0);
+    }
+    lib_deflate_deflateArray(args) {
+        const array = validateArray(args.ARRAY).array;
+
+        return JSON.stringify(beatgammit.deflate(array));
+    }
+    lib_deflate_inflateArray(args) {
+        const array = validateArray(args.ARRAY).array;
+        
+        return JSON.stringify(beatgammit.inflate(array));
     }
 }
 
