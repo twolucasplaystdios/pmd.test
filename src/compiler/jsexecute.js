@@ -568,7 +568,6 @@ const insertRuntime = source => {
 const scopedEval = source => {
     const withRuntime = insertRuntime(source);
     try {
-        console.log(withRuntime);
         return new Function('globalState', withRuntime)(globalState);
     } catch (e) {
         globalState.log.error('was unable to compile script', withRuntime);

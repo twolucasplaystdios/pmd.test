@@ -18,7 +18,6 @@ const mutatorTagToObject = function (dom) {
     if (!Boolean(dom.tagName)) {
         console.warn('invalid dom; skiping to reading children')
         obj = parseChildren(obj, dom)
-        console.log(obj)
         return obj
     }
     for (let idx = 0; idx < dom.attributes.length; idx++) {
