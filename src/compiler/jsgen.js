@@ -740,6 +740,10 @@ class JSGenerator {
             return new TypedInput(source, TYPE_STRING);
         }
 
+        case 'noop':
+            console.warn('unexpected noop');
+            return new TypedInput('', TYPE_UNKNOWN);
+
         default:
             log.warn(`JS: Unknown input: ${node.kind}`, node);
             throw new Error(`JS: Unknown input: ${node.kind}`);
@@ -1026,7 +1030,7 @@ class JSGenerator {
             break;
 
         case 'noop':
-            // todo: remove noop entirely
+            console.warn('unexpected noop');
             break;
 
         case 'pen.clear':
@@ -1352,7 +1356,7 @@ class JSGenerator {
         }
 
         script += '}; })';
-        console.log(script)
+        console.log(script);
         return script;
     }
 
