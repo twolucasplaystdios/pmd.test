@@ -1691,11 +1691,13 @@ class ScriptTreeGenerator {
             inputs[name] = this.descendInputOfBlock(block, name);
         }
         if (blockInfo && blockInfo.branchCount) {
-            for (let branch = 0; branch < blockInfo.branchCount; branch++) {
+            let branch = 0;
+            while (branch < blockInfo.branchCount) {
                 const name = `SUBSTACK${branch + 1}`;
                 const substack = this.descendSubstack(block, name);
                 substack.name = name.toLowerCase();
                 stacks.push(substack);
+                branch++;
             }
         }
         for (const name of Object.keys(block.fields)) {
