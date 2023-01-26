@@ -1283,13 +1283,14 @@ class JSGenerator {
 
         for (const inputName of Object.keys(node.inputs)) {
             const input = node.inputs[inputName];
+            if (inputName.startsWith('SUBSTACK')) {
+                result += `"${sanitize(inputName.toLowerCase())}":(function* () {`;
+                this.descendStack(input, new Frame(true));
+                result += '}),';
+                continue;
+            }
             const compiledInput = this.descendInput(input).asSafe();
             result += `"${sanitize(inputName)}":${compiledInput},`;
-        }
-        for (const stack of node.stacks) {
-            result += `"${sanitize(stack.name)}":(function* () {`;
-            this.descendStack(stack, new Frame(true));
-            result += '}),';
         }
         for (const fieldName of Object.keys(node.fields)) {
             const field = node.fields[fieldName];
