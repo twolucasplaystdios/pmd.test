@@ -1694,7 +1694,7 @@ class ScriptTreeGenerator {
             for (let branch = 0; branch < blockInfo.info.branchCount; branch++) {
                 const name = `SUBSTACK${branch + 1}`;
                 const substack = this.descendSubstack(block, name);
-                substack.name = name;
+                substack.name = name.toLowerCase();
                 stacks.push(substack);
             }
         }

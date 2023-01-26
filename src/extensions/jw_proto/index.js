@@ -122,8 +122,8 @@ class jwProto {
     labelHat () {
         return false;
     }
-    labelFunction (args, util) {
-        util.startBranch(1, false);
+    labelFunction (args) {
+        args.substack1();
     }
     labelCommand () {
     }
