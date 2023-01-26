@@ -1259,7 +1259,7 @@ class ScriptTreeGenerator {
         case 'procedures_call': {
             // setting of yields will be handled later in the analysis phase
             // patches output previewing
-            if (JSON.parse(block.mutation.returns)) return this.descendInput(block).asString();
+            if (JSON.parse(block.mutation.returns)) return this.descendInput(block);
 
             const procedureCode = block.mutation.proccode;
             if (procedureCode === 'tw:debugger;') {
