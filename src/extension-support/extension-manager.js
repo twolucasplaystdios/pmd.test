@@ -70,7 +70,9 @@ const builtinExtensions = {
 };
 
 const preload = [
-    "jwProto"
+    "jwProto",
+    "griffpatch",
+    "cloudlink"
 ];
 
 /**
