@@ -648,6 +648,8 @@ class ScriptTreeGenerator {
                 value: block.fields.SOUND_MENU.value
             };
 
+        // used by the stacked version of this block to run as an input block 
+        // despite there being a stacked version
         case 'procedures_call_return':
         case 'procedures_call': {
             // setting of yields will be handled later in the analysis phase
