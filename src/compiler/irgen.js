@@ -1256,7 +1256,6 @@ class ScriptTreeGenerator {
                 return: this.descendInputOfBlock(block, 'return')
             };
         case 'procedures_call': {
-            /** @todo add return suport to procedures.call */
             // setting of yields will be handled later in the analysis phase
 
             const procedureCode = block.mutation.proccode;
@@ -1523,7 +1522,7 @@ class ScriptTreeGenerator {
                 const blockInfo = this.getBlockInfo(block.opcode);
                 if (blockInfo) {
                     const type = blockInfo.info.blockType;
-                    const args = this.descendCompatLayer(block);
+                    const args = this.descendCompatLayer(block, blockInfo.info);
                     args.block = block;
                     if (block.mutation) args.mutation = block.mutation;
                     if (type === BlockType.COMMAND) {
@@ -1683,12 +1682,21 @@ class ScriptTreeGenerator {
      * @private
      * @returns {Node} The parsed node.
      */
-    descendCompatLayer (block) {
+    descendCompatLayer (block, blockInfo) {
         this.script.yields = true;
         const inputs = {};
         const fields = {};
+        const stacks = [];
         for (const name of Object.keys(block.inputs)) {
             inputs[name] = this.descendInputOfBlock(block, name);
+        }
+        if (blockInfo && blockInfo.branchCount) {
+            for (let branch = 0; branch < blockInfo.info.branchCount; branch++) {
+                const name = `SUBSTACK${branch + 1}`;
+                const substack = this.descendSubstack(block, name);
+                substack.name = name;
+                stacks.push(substack);
+            }
         }
         for (const name of Object.keys(block.fields)) {
             fields[name] = block.fields[name].value;
@@ -1697,7 +1705,8 @@ class ScriptTreeGenerator {
             kind: 'compat',
             opcode: block.opcode,
             inputs,
-            fields
+            fields,
+            stacks
         };
     }
 

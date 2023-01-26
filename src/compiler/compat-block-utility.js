@@ -14,8 +14,25 @@ class CompatibilityLayerBlockUtility extends BlockUtility {
     startBranch () {
         throw new Error('startBranch is not supported by this BlockUtility');
     }
-    startProcedure () {
-        throw new Error('startProcedure is not supported by this BlockUtility');
+
+    /**
+     * runs any given procedure
+     * @param {String} proccode the procedure to start
+     * @param {Object} args 
+     * @returns the return value of the procedure, returns undefined if statement
+     */
+    startProcedure (proccode, args) {
+        if (!args)
+            return this.thread.procedures[proccode]();
+        if (!(typeof args === 'object'))
+            throw new Error(`procedure arguments can only be of type undefined|object. instead got "${typeof args}"`);
+        let evaluate = `this.thread.procedures[proccode](`;
+        const inputs = [];
+        for (const arg in args) {
+            inputs.push(String(args[arg]));
+        }
+        evaluate += `${inputs.join(',')})`;
+        return new Function(`Procedure ${proccode}`, evaluate)();
     }
 
     // Parameters are not used by compiled scripts.

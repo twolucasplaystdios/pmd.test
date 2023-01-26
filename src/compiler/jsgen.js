@@ -1138,7 +1138,7 @@ class JSGenerator {
             const value = this.localVariables.next();
             this.source += `const ${value} = ${this.descendInput(node.input).asUnknown()};`;
             // blocks like legacy no-ops can return a literal `undefined`
-            this.source += `if (${value} !== undefined) runtime.visualReport("${sanitize(this.script.topBlockId)}", ${value});\n`;
+            this.source += `debugger;\nif (${value} !== undefined) runtime.visualReport("${sanitize(this.script.topBlockId)}", ${value});\n`;
             break;
         }
 
@@ -1285,6 +1285,11 @@ class JSGenerator {
             const input = node.inputs[inputName];
             const compiledInput = this.descendInput(input).asSafe();
             result += `"${sanitize(inputName)}":${compiledInput},`;
+        }
+        for (const stack of node.stacks) {
+            result += `"${sanitize(stack.name)}":(function* () {`;
+            this.descendStack(stack, new Frame(true));
+            result += '}),';
         }
         for (const fieldName of Object.keys(node.fields)) {
             const field = node.fields[fieldName];
