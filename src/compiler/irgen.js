@@ -648,6 +648,7 @@ class ScriptTreeGenerator {
                 value: block.fields.SOUND_MENU.value
             };
 
+        case 'procedures_call_return':
         case 'procedures_call': {
             // setting of yields will be handled later in the analysis phase
     
@@ -1259,7 +1260,10 @@ class ScriptTreeGenerator {
         case 'procedures_call': {
             // setting of yields will be handled later in the analysis phase
             // patches output previewing
-            if (JSON.parse(block.mutation.returns)) return this.descendInput(block);
+            if (JSON.parse(block.mutation.returns)) {
+                block.opcode = 'procedures_call_return';
+                return this.descendStackedBlock(block);
+            }
 
             const procedureCode = block.mutation.proccode;
             if (procedureCode === 'tw:debugger;') {
