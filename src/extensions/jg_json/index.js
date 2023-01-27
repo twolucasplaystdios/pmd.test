@@ -615,7 +615,7 @@ class JgJSONBlocks {
 
         delete array[index];
 
-        return JSON.stringify(array.filter(x => Boolean(x)));
+        return JSON.stringify(array.filter(x => !x === null));
     }
 
     json_array_split (args) {
