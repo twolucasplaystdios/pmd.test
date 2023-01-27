@@ -65,8 +65,8 @@ const builtinExtensions = {
 
     // canvas: kinda obvius if you know anything about html canvases
     canvas: () => require('../extensions/gsa_canvas'),
-    griffpatch: () => node_require_url("https://extensions.turbowarp.org/box2d.js"),
-    cloudlink: () => node_require_url("https://extensions.turbowarp.org/cloudlink.js")
+    griffpatch: () => await node_require_url("https://extensions.turbowarp.org/box2d.js"),
+    cloudlink: () => await node_require_url("https://extensions.turbowarp.org/cloudlink.js")
 };
 
 const preload = [
