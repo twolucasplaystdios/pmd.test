@@ -4,7 +4,7 @@ const maybeFormatMessage = require('../util/maybe-format-message');
 
 const BlockType = require('./block-type');
 const SecurityManager = require('./tw-security-manager');
-
+const requireFromWeb = require('require-from-web');
 // These extensions are currently built into the VM repository but should not be loaded at startup.
 // TODO: move these out into a separate repository?
 // TODO: change extension spec so that library info, including extension ID, can be collected through static methods
@@ -64,11 +64,15 @@ const builtinExtensions = {
     GamepadExtension: () => require("../extensions/GamepadExtension"),
 
     // canvas: kinda obvius if you know anything about html canvases
-    canvas: () => require('../extensions/gsa_canvas')
+    canvas: () => require('../extensions/gsa_canvas'),
+    griffpatch: () => requireFromWeb("https://extensions.turbowarp.org/box2d.js"),
+    cloudlink: () => requireFromWeb("https://extensions.turbowarp.org/cloudlink.js")
 };
 
 const preload = [
-    "jwProto"
+    "jwProto",
+    "griffpatch",
+    "cloudlink"
 ];
 
 /**
