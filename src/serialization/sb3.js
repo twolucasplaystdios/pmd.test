@@ -948,8 +948,8 @@ const ExtensionsPatches = {
     "cloudlink": extensions => this.basicPatch("cloudlink", 'https://extensions.turbowarp.org/cloudlink.js', extensions),
     "jwUnite": async (extensions, blocks) => {
         extensions.extensionIDs.delete("jwUnite");
-        let usesReplacers = false;
         const blockIDs = Object.keys(blocks);
+        const replacers = deserializeBlocks(replacersPatch.blocks);
         // handle all 1:1 blocks
         for (let block, idx = 0; idx < blockIDs.length; idx++) {
             block = blocks[blockIDs[idx]];
@@ -966,13 +966,13 @@ const ExtensionsPatches = {
             }
             // handle replacer blocks
             if (block.opcode === 'jwUnite_setReplacer' || block.opcode === 'jwUnite_replaceWithReplacers') {
-                usesReplacers = true;
+                blocks = Object.assign(blocks, replacers);
                 const repBlock = block.opcode === 'jwUnite_setReplacer' 
                     ? "set replacer %s to %s display"
                     : "replace with replacers definition";
                 const replacment = Clone.simple(replacersPatch.blocks[repBlock]);
                 replacment.opcode = 'procedures_call';
-                replacment.id = repBlock;
+                replacment.id = block.id;
                 replacment.x = block.x;
                 replacment.y = block.y;
                 replacment.next = block.next;
@@ -981,10 +981,6 @@ const ExtensionsPatches = {
                 block = replacment;
             }
             blocks[blockIDs[idx]] = block;
-        }
-        if (usesReplacers) {
-            const replacers = deserializeBlocks(replacersPatch.blocks);
-            blocks = Object.assign(blocks, replacers);
         }
     }
 };
