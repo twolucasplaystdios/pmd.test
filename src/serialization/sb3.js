@@ -902,7 +902,7 @@ const deserializeBlocks = function (blocks) {
         const block = blocks[blockId];
         if (Array.isArray(block)) {
             // this is one of the primitives
-            // delete the old entry in object.blocks and replace it w/the
+            // delete the old entry in object.blocks and replace it with the
             // deserialized object
             delete blocks[blockId];
             deserializeInputDesc(block, null, false, blocks);
@@ -964,7 +964,7 @@ const ExtensionsPatches = {
                 }
             }
             // handle replacer blocks
-            if (block.opcode === 'jwUnite_setReplacer' || block.opcode === 'replaceWithReplacers') {
+            if (block.opcode === 'jwUnite_setReplacer' || block.opcode === 'jwUnite_replaceWithReplacers') {
                 usesReplacers = true;
                 const repBlock = block.opcode === 'jwUnite_setReplacer' 
                     ? "set replacer %s to %s display"
@@ -978,7 +978,8 @@ const ExtensionsPatches = {
             blocks[blockIDs[idx]] = block;
         }
         if (usesReplacers) {
-            blocks = Object.assign(blocks, deserializeBlocks(replacersPatch.blocks));
+            const replacers = deserializeBlocks(replacersPatch.blocks);
+            blocks = Object.assign(blocks, replacers);
         }
     }
 };
