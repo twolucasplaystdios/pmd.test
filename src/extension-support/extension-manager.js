@@ -244,7 +244,7 @@ class ExtensionManager {
     async loadExtensionURL (extensionURL) {
         if (this.isBuiltinExtension(extensionURL)) {
             this.loadExtensionIdSync(extensionURL);
-            return;
+            return extensionURL;
         }
 
         if (!this._isValidExtensionURL(extensionURL)) {
@@ -262,6 +262,7 @@ class ExtensionManager {
             const extensionObjects = await load(extensionURL, this.vm)
                 .catch(error => this._failedLoadingExtensionScript(error));
             const fakeWorkerId = this.nextExtensionWorker++;
+            const returnedIDs = [];
             this.workerURLs[fakeWorkerId] = extensionURL;
 
             for (const extensionObject of extensionObjects) {
@@ -270,10 +271,11 @@ class ExtensionManager {
                 dispatch.setServiceSync(serviceName, extensionObject);
                 dispatch.callSync('extensions', 'registerExtensionServiceSync', serviceName);
                 this._loadedExtensions.set(extensionInfo.id, serviceName);
+                returnedIDs.push(extensionInfo.id);
             }
 
             this._finishedLoadingExtensionScript();
-            return;
+            return returnedIDs;
         }
 
         /* eslint-disable max-len */

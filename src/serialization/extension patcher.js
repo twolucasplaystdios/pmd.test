@@ -6,6 +6,7 @@ class extensionsPatch {
     constructor (runtime) {
         this.runtime = runtime;
         this.extensions = {};
+        this.loaded = {};
     }
 
     /**
@@ -14,15 +15,14 @@ class extensionsPatch {
      * @param {String} url new extension url
      * @param {Object} extensions sb3 loader extension object
      */
-    basicPatch (id, url, newId, extensions) {
-        extensions.extensionURLs.set(newId, url);
-        if (!id === newId) {
-            extensions.extensionIDs.delete(id);
-            extensions.extensionIDs.add(newId);
-        }
-        // patch to fix added urls not loading
-        if (this.runtime.extensionManager.isExtensionLoaded(newId)) return;
-        this.runtime.extensionManager.loadExtensionURL(url);
+    basicPatch (id, url, newIDs, extensions) {
+        newIDs.forEach(newId => {
+            extensions.extensionURLs.set(newId, url);
+            if (!id === newId) {
+                extensions.extensionIDs.delete(id);
+                extensions.extensionIDs.add(newId);
+            }
+        });
     }
 
     /**
@@ -34,7 +34,12 @@ class extensionsPatch {
     runExtensionPatch (id, extensions, object) {
         const patch = this.extensions[id];
         if (typeof patch === 'object') {
-            this.basicPatch(patch.id, patch.url, patch.newId, extensions);
+            if (!this.loaded[id]) {
+                // patch to fix added urls not loading
+                const extensionIDs = this.runtime.extensionManager.loadExtensionURL(patch.url);
+                this.loaded[id] = extensionIDs;
+            }
+            this.basicPatch(patch.id, patch.url, this.loaded[id], extensions);
             return;
         }
         patch(extensions, object, this.runtime);
