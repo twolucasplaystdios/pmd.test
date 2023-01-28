@@ -83,71 +83,6 @@ const VAR_PRIMITIVE = 12;
 // data_listcontents
 const LIST_PRIMITIVE = 13;
 
-// the list of blocks and there replacements for jwUnite
-const replacments = {
-    'jwUnite_always': 'event_always',
-    'jwUnite_whenanything': 'event_whenanything',
-    'jwUnite_getspritewithattrib': 'sensing_getspritewithattrib',
-    'jwUnite_backToGreenFlag': 'control_backToGreenFlag',
-    'jwUnite_trueBoolean': 'operator_trueBoolean',
-    'jwUnite_falseBoolean': 'operator_falseBoolean',
-    'jwUnite_randomBoolean': 'operator_randomBoolean',
-    'jwUnite_mobile': 'sensing_mobile',
-    'jwUnite_thing_is_text': 'sensing_thing_is_text',
-    'jwUnite_thing_is_number': 'sensing_thing_is_number',
-    'jwUnite_if_return_else_return': 'control_if_return_else_return',
-    'jwUnite_indexOfTextInText': 'operator_indexOfTextInText',
-    'jwUnite_regextest': 'sensing_regextest',
-    'jwUnite_regexmatch': 'operator_regexmatch',
-    'jwUnite_replaceAll': 'operator_replaceAll',
-    'jwUnite_getLettersFromIndexToIndexInText': 'operator_getLettersFromIndexToIndexInText',
-    'jwUnite_readLineInMultilineText': 'operator_readLineInMultilineText',
-    'jwUnite_newLine': 'operator_newLine',
-    'jwUnite_stringify': 'operator_stringify',
-    'jwUnite_lerpFunc': 'operator_lerpFunc',
-    'jwUnite_advMath': 'operator_advMath',
-    'jwUnite_constrainnumber': 'operator_constrainnumber'
-};
-
-// extensions to be patched by the extension patcher
-const ExtensionsPatches = {
-    "griffpatch": extensions => this.basicPatch("griffpatch", 'https://extensions.turbowarp.org/box2d.js', extensions),
-    "cloudlink": extensions => this.basicPatch("cloudlink", 'https://extensions.turbowarp.org/cloudlink.js', extensions),
-    "jwUnite": async (extensions, blocks) => {
-        extensions.extensionIDs.delete("jwUnite");
-        let usesReplacers = false;
-        const blockIDs = Object.keys(blocks);
-        // handle all 1:1 blocks
-        for (let block, idx = 0; idx < blockIDs.length; idx++) {
-            block = blocks[blockIDs[idx]];
-            if (replacments[block.opcode]) {
-                block.opcode = replacments[block.opcode];
-                if (block.opcode === 'sensing_regextest' || block.opcode === 'operator_regexmatch') {
-                    block.inputs.regrule = [
-                        TEXT_PRIMITIVE,
-                        "g"
-                    ];
-                }
-            }
-            // handle replacer blocks
-            if (block.opcode === 'jwUnite_setReplacer' || block.opcode === 'replaceWithReplacers') {
-                usesReplacers = true;
-                const repBlock = block.opcode === 'jwUnite_setReplacer' 
-                    ? "set replacer %s to %s display"
-                    : "replace with replacers definition";
-                const replacment = replacersPatch.blocks[repBlock];
-                replacment.opcode = 'procedures_call';
-                replacment.inputs = Object.asign(replacment.inputs, block.inputs);
-                block = replacment;
-            }
-            blocks[blockIDs[idx]] = block;
-        }
-        if (usesReplacers) {
-            blocks = Object.assign(blocks, replacersPatch.blocks);
-        }
-    }
-};
-
 // Map block opcodes to the above primitives and the name of the field we can use
 // to find the value of the field
 const primitiveOpcodeInfoMap = {
@@ -916,6 +851,68 @@ const deserializeInputs = function (inputs, parentId, blocks) {
         };
     }
     return obj;
+};
+
+// the list of blocks and there replacements for jwUnite
+const replacments = {
+    'jwUnite_always': 'event_always',
+    'jwUnite_whenanything': 'event_whenanything',
+    'jwUnite_getspritewithattrib': 'sensing_getspritewithattrib',
+    'jwUnite_backToGreenFlag': 'control_backToGreenFlag',
+    'jwUnite_trueBoolean': 'operator_trueBoolean',
+    'jwUnite_falseBoolean': 'operator_falseBoolean',
+    'jwUnite_randomBoolean': 'operator_randomBoolean',
+    'jwUnite_mobile': 'sensing_mobile',
+    'jwUnite_thing_is_text': 'sensing_thing_is_text',
+    'jwUnite_thing_is_number': 'sensing_thing_is_number',
+    'jwUnite_if_return_else_return': 'control_if_return_else_return',
+    'jwUnite_indexOfTextInText': 'operator_indexOfTextInText',
+    'jwUnite_regextest': 'sensing_regextest',
+    'jwUnite_regexmatch': 'operator_regexmatch',
+    'jwUnite_replaceAll': 'operator_replaceAll',
+    'jwUnite_getLettersFromIndexToIndexInText': 'operator_getLettersFromIndexToIndexInText',
+    'jwUnite_readLineInMultilineText': 'operator_readLineInMultilineText',
+    'jwUnite_newLine': 'operator_newLine',
+    'jwUnite_stringify': 'operator_stringify',
+    'jwUnite_lerpFunc': 'operator_lerpFunc',
+    'jwUnite_advMath': 'operator_advMath',
+    'jwUnite_constrainnumber': 'operator_constrainnumber'
+};
+
+// extensions to be patched by the extension patcher
+const ExtensionsPatches = {
+    "griffpatch": extensions => this.basicPatch("griffpatch", 'https://extensions.turbowarp.org/box2d.js', extensions),
+    "cloudlink": extensions => this.basicPatch("cloudlink", 'https://extensions.turbowarp.org/cloudlink.js', extensions),
+    "jwUnite": async (extensions, blocks) => {
+        extensions.extensionIDs.delete("jwUnite");
+        let usesReplacers = false;
+        const blockIDs = Object.keys(blocks);
+        // handle all 1:1 blocks
+        for (let block, idx = 0; idx < blockIDs.length; idx++) {
+            block = blocks[blockIDs[idx]];
+            if (replacments[block.opcode]) {
+                block.opcode = replacments[block.opcode];
+                if (block.opcode === 'sensing_regextest' || block.opcode === 'operator_regexmatch') {
+                    block.inputs.regrule = deserializeInputs([TEXT_PRIMITIVE, "g"]);
+                }
+            }
+            // handle replacer blocks
+            if (block.opcode === 'jwUnite_setReplacer' || block.opcode === 'replaceWithReplacers') {
+                usesReplacers = true;
+                const repBlock = block.opcode === 'jwUnite_setReplacer' 
+                    ? "set replacer %s to %s display"
+                    : "replace with replacers definition";
+                const replacment = replacersPatch.blocks[repBlock];
+                replacment.opcode = 'procedures_call';
+                replacment.inputs = Object.asign(replacment.inputs, block.inputs);
+                block = replacment;
+            }
+            blocks[blockIDs[idx]] = block;
+        }
+        if (usesReplacers) {
+            blocks = Object.assign(blocks, replacersPatch.blocks);
+        }
+    }
 };
 
 /**
