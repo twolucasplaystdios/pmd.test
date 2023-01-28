@@ -893,7 +893,9 @@ const ExtensionsPatches = {
             if (replacments[block.opcode]) {
                 block.opcode = replacments[block.opcode];
                 if (block.opcode === 'sensing_regextest' || block.opcode === 'operator_regexmatch') {
-                    block.inputs.regrule = deserializeInputs([TEXT_PRIMITIVE, "g"]);
+                    block.inputs.regrule = deserializeInputs({
+                        input: [TEXT_PRIMITIVE, "g"]
+                    }, block.id, blocks).input;
                 }
             }
             // handle replacer blocks
