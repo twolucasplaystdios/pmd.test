@@ -1,3 +1,4 @@
+/* eslint-disable no-invalid-this */
 /**
  * @fileoverview
  * An SB3 serializer and deserializer. Parses provided
@@ -16,7 +17,7 @@ const MathUtil = require('../util/math-util');
 const StringUtil = require('../util/string-util');
 const VariableUtil = require('../util/variable-util');
 const compress = require('./tw-compress-sb3');
-const OldExtensions = require('./old extension ids');
+const OldExtensions = require('./extension patcher');
 
 const {loadCostume} = require('../import/load-costume.js');
 const {loadSound} = require('../import/load-sound.js');
@@ -57,6 +58,12 @@ const CORE_EXTENSIONS = [
     'sensing',
     'sound'
 ];
+
+// extensions to be patched by the extension patcher
+const ExtensionsPatches = {
+    "griffpatch": extensions => this.basicPatch("griffpatch", 'https://extensions.turbowarp.org/box2d.js', extensions),
+    "cloudlink": extensions => this.basicPatch("cloudlink", 'https://extensions.turbowarp.org/cloudlink.js', extensions)
+};
 
 // Constants referring to 'primitive' blocks that are usually shadows,
 // or in the case of variables and lists, appear quite often in projects
@@ -1036,12 +1043,12 @@ const parseScratchObject = function (object, runtime, extensions, zip, assets) {
 
             // If the block is from an extension, record it.
             const extensionID = getExtensionIdForOpcode(blockJSON.opcode);
-            const isPatched = !!OldExtensions[extensionID];
+            const isPatched = !!extensions.patcher.patchExists(extensionID);
             if (extensionID && !isPatched) {
                 extensions.extensionIDs.add(extensionID);
             }
             if (isPatched) {
-                OldExtensions[extensionID](extensions, blocks);
+                extensions.patcher.runExtensionPatch(extensionID, extensions, blocks);
             }
         }
     }
@@ -1329,10 +1336,13 @@ const replaceUnsafeCharsInVariableIds = function (targets) {
  * @param {boolean} isSingleSprite - If true treat as single sprite, else treat as whole project
  * @returns {Promise.<ImportedProject>} Promise that resolves to the list of targets after the project is deserialized
  */
-const deserialize = function (json, runtime, zip, isSingleSprite) {
+const deserialize = function (json, runtime, zip, isSingleSprite, vm) {
+    const extensionPatcher = new OldExtensions(vm);
+    extensionPatcher.registerExtensions(ExtensionsPatches);
     const extensions = {
         extensionIDs: new Set(),
-        extensionURLs: new Map()
+        extensionURLs: new Map(),
+        patcher: extensionPatcher
     };
 
     // Store the origin field (e.g. project originated at CSFirst) so that we can save it again.

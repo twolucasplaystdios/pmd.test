@@ -620,7 +620,8 @@ class VirtualMachine extends EventEmitter {
             }
             if (projectVersion === 3) {
                 const sb3 = require('./serialization/sb3');
-                return sb3.deserialize(projectJSON, runtime, zip);
+                // eslint-disable-next-line no-invalid-this
+                return sb3.deserialize(projectJSON, runtime, zip, false, this);
             }
             return Promise.reject('Unable to verify Scratch Project version.');
         };
