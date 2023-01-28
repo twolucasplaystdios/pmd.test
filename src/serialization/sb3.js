@@ -60,6 +60,29 @@ const CORE_EXTENSIONS = [
     'sound'
 ];
 
+// Constants referring to 'primitive' blocks that are usually shadows,
+// or in the case of variables and lists, appear quite often in projects
+// math_number
+const MATH_NUM_PRIMITIVE = 4; // there's no reason these constants can't collide
+// math_positive_number
+const POSITIVE_NUM_PRIMITIVE = 5; // with the above, but removing duplication for clarity
+// math_whole_number
+const WHOLE_NUM_PRIMITIVE = 6;
+// math_integer
+const INTEGER_NUM_PRIMITIVE = 7;
+// math_angle
+const ANGLE_NUM_PRIMITIVE = 8;
+// colour_picker
+const COLOR_PICKER_PRIMITIVE = 9;
+// text
+const TEXT_PRIMITIVE = 10;
+// event_broadcast_menu
+const BROADCAST_PRIMITIVE = 11;
+// data_variable
+const VAR_PRIMITIVE = 12;
+// data_listcontents
+const LIST_PRIMITIVE = 13;
+
 // the list of blocks and there replacements for jwUnite
 const replacments = {
     'jwUnite_always': 'event_always',
@@ -99,6 +122,12 @@ const ExtensionsPatches = {
             block = blocks[blockIDs[idx]];
             if (replacments[block.opcode]) {
                 block.opcode = replacments[block.opcode];
+                if (block.opcode === 'sensing_regextest' || block.opcode === 'operator_regexmatch') {
+                    block.inputs.regrule = [
+                        TEXT_PRIMITIVE,
+                        "g"
+                    ];
+                }
             }
             // handle replacer blocks
             if (block.opcode === 'jwUnite_setReplacer' || block.opcode === 'replaceWithReplacers') {
@@ -118,29 +147,6 @@ const ExtensionsPatches = {
         }
     }
 };
-
-// Constants referring to 'primitive' blocks that are usually shadows,
-// or in the case of variables and lists, appear quite often in projects
-// math_number
-const MATH_NUM_PRIMITIVE = 4; // there's no reason these constants can't collide
-// math_positive_number
-const POSITIVE_NUM_PRIMITIVE = 5; // with the above, but removing duplication for clarity
-// math_whole_number
-const WHOLE_NUM_PRIMITIVE = 6;
-// math_integer
-const INTEGER_NUM_PRIMITIVE = 7;
-// math_angle
-const ANGLE_NUM_PRIMITIVE = 8;
-// colour_picker
-const COLOR_PICKER_PRIMITIVE = 9;
-// text
-const TEXT_PRIMITIVE = 10;
-// event_broadcast_menu
-const BROADCAST_PRIMITIVE = 11;
-// data_variable
-const VAR_PRIMITIVE = 12;
-// data_listcontents
-const LIST_PRIMITIVE = 13;
 
 // Map block opcodes to the above primitives and the name of the field we can use
 // to find the value of the field
