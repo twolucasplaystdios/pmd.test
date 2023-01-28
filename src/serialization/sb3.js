@@ -96,7 +96,7 @@ const ExtensionsPatches = {
         const blockIDs = Object.keys(blocks);
         // handle all 1:1 blocks
         for (let block, idx = 0; idx < blockIDs.length; idx++) {
-            block = blockIDs[idx]
+            block = blocks[blockIDs[idx]];
             if (replacments[block.opcode]) {
                 block.opcode = replacments[block.opcode];
             }
