@@ -973,6 +973,10 @@ const ExtensionsPatches = {
                 const replacment = Clone.simple(replacersPatch.blocks[repBlock]);
                 replacment.opcode = 'procedures_call';
                 replacment.id = repBlock;
+                replacment.x = block.x;
+                replacment.y = block.y;
+                replacment.next = block.next;
+                replacment.parent = block.parent;
                 replacment.inputs = Object.assign(replacment.inputs, block.inputs);
                 block = replacment;
             }
