@@ -971,14 +971,8 @@ const ExtensionsPatches = {
                     ? "set replacer %s to %s display"
                     : "replace with replacers definition";
                 const replacment = Clone.simple(replacersPatch.blocks[repBlock]);
-                replacment.opcode = 'procedures_call';
-                replacment.id = block.id;
-                replacment.x = block.x;
-                replacment.y = block.y;
-                replacment.next = block.next;
-                replacment.parent = block.parent;
-                replacment.inputs = Object.assign(replacment.inputs, block.inputs);
-                block = replacment;
+                block.opcode = 'procedures_call';
+                block.mutation = replacment.mutation;
             }
             blocks[blockIDs[idx]] = block;
         }
