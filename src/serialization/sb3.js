@@ -128,7 +128,7 @@ const replacments = {
 // extensions to be patched by the extension patcher
 const ExtensionPatches = {
     "griffpatch": {id: 'griffpatch', url: 'https://extensions.turbowarp.org/box2d.js', newId: 'griffpatch'},
-    "cloudlink": {id: 'cloudlink', url: 'https://extensions.turbowarp.org/cloudlink.js', newId: 'griffpatch'},
+    "cloudlink": {id: 'cloudlink', url: 'https://extensions.turbowarp.org/cloudlink.js', newId: 'cloudlink'},
     "jwUnite": (extensions, object, runtime) => {
         extensions.extensionIDs.delete("jwUnite");
         runtime.extensionManager.loadExtensionURL('jgJSON');
