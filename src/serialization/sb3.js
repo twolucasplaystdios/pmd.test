@@ -959,18 +959,16 @@ const ExtensionPatches = {
             if (replacments[block.opcode]) {
                 block.opcode = replacments[block.opcode];
                 if (block.opcode === 'sensing_regextest' || block.opcode === 'operator_regexmatch') {
-                    block.inputs.regrule = deserializeInputs({
-                        input: [
-                            INPUT_SAME_BLOCK_SHADOW, 
-                            [TEXT_PRIMITIVE, "g"]
-                        ]
-                    }, block.id, blocks).input;
+                    block.inputs.regrule = [
+                        INPUT_SAME_BLOCK_SHADOW, 
+                        [TEXT_PRIMITIVE, "g"]
+                    ];
                 }
             }
             // handle replacer blocks
             if (block.opcode === 'jwUnite_setReplacer' || block.opcode === 'jwUnite_replaceWithReplacers') {
                 blocks = Object.assign(blocks, replacersPatch.blocks);
-
+                object.variables = Object.assign(object.variables, replacersPatch.variables);
                 const repBlock = block.opcode === 'jwUnite_setReplacer' 
                     ? "setReplacerToDisplay"
                     : "replaceWithReplacersDisplay";
@@ -1097,13 +1095,10 @@ const parseScratchObject = function (object, runtime, extensions, zip, assets) {
         sprite.name = object.name;
     }
     if (object.hasOwnProperty('blocks')) {
-        deserializeBlocks(object.blocks);
-        // Take a second pass to create objects and add extensions
+        // register and patch extensions
         for (const blockId in object.blocks) {
             if (!object.blocks.hasOwnProperty(blockId)) continue;
-
             const blockJSON = object.blocks[blockId];
-            // If the block is from an extension, record it.
             const extensionID = getExtensionIdForOpcode(blockJSON.opcode);
             const isPatched = extensions.patcher.patchExists(extensionID);
             if (extensionID && !isPatched) {
@@ -1112,7 +1107,13 @@ const parseScratchObject = function (object, runtime, extensions, zip, assets) {
             if (isPatched) {
                 extensions.patcher.runExtensionPatch(extensionID, extensions, object);
             }
-            
+        }
+
+        deserializeBlocks(object.blocks);
+        // Take a second pass to create objects and add extensions
+        for (const blockId in object.blocks) {
+            if (!object.blocks.hasOwnProperty(blockId)) continue;
+            const blockJSON = object.blocks[blockId];
             blocks.createBlock(blockJSON);
         }
     }
