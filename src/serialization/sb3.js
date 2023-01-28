@@ -894,7 +894,10 @@ const ExtensionsPatches = {
                 block.opcode = replacments[block.opcode];
                 if (block.opcode === 'sensing_regextest' || block.opcode === 'operator_regexmatch') {
                     block.inputs.regrule = deserializeInputs({
-                        input: [TEXT_PRIMITIVE, "g"]
+                        input: [
+                            INPUT_SAME_BLOCK_SHADOW, 
+                            [TEXT_PRIMITIVE, "g"]
+                        ]
                     }, block.id, blocks).input;
                 }
             }
@@ -906,7 +909,7 @@ const ExtensionsPatches = {
                     : "replace with replacers definition";
                 const replacment = replacersPatch.blocks[repBlock];
                 replacment.opcode = 'procedures_call';
-                replacment.id = repBlock
+                replacment.id = repBlock;
                 replacment.inputs = Object.assign(replacment.inputs, block.inputs);
                 block = replacment;
             }
