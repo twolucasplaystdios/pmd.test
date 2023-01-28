@@ -1,13 +1,13 @@
 class extensionsPatch {
-    constructor (vm) {
-        this.vm = vm;
+    constructor (runtime) {
+        this.runtime = runtime;
         this.extensions = {};
     }
     basicPatch (id, url, extensions) {
         extensions.extensionURLs.set(id, url);
         extensions.extensionIDs.delete(id);
         // patch to fix added urls not loading(?)
-        this.vm.extensionManager.loadExtensionURL(url);
+        this.runtime.extensionManager.loadExtensionURL(url);
     }
 
     /**
@@ -18,7 +18,7 @@ class extensionsPatch {
      */
     runExtensionPatch (id, extensions, blocks) {
         // blocks is still included for future proofing even though its not used
-        this.extensions[id](extensions, blocks, this.vm);
+        this.extensions[id](extensions, blocks, this.runtime);
     }
 
     /**

@@ -18,14 +18,14 @@
         ]
     },
     "blocks": {
-        "set replacer %s to %s definition": {
+        "setReplacerToDefinition": {
             "opcode": "procedures_definition",
-            "next": "?3c)h~L3Pf]NkoQ=LLI|",
+            "next": "setReplacersVarToReplacerJson",
             "parent": null,
             "inputs": {
                 "custom_block": [
                     1,
-                    "f9@9Kn]g^c1/AIC(#ALe"
+                    "setReplacerToDisplay"
                 ]
             },
             "fields": {},
@@ -34,18 +34,18 @@
             "x": 48,
             "y": 64
         },
-        "set replacer %s to %s display": {
+        "setReplacerToDisplay": {
             "opcode": "procedures_prototype",
             "next": null,
-            "parent": "set replacer %s to %s definition",
+            "parent": "setReplacerToDefinition",
             "inputs": {
                 "REPLACER": [
                     1,
-                    "set replacer argument REPLACER"
+                    "setReplacerArgumentREPLACER"
                 ],
                 "VALUE": [
                     1,
-                    "set replacer argument VALUE"
+                    "setReplacerArgumentVALUE"
                 ]
             },
             "fields": {},
@@ -63,7 +63,7 @@
                 "edited": "true"
             }
         },
-        "set replacer argument REPLACER": {
+        "setReplacerArgumentREPLACER": {
             "opcode": "argument_reporter_string_number",
             "next": null,
             "parent": "REPLACER",
@@ -77,7 +77,7 @@
             "shadow": true,
             "topLevel": false
         },
-        "set replacer argument VALUE": {
+        "setReplacerArgumentVALUE": {
             "opcode": "argument_reporter_string_number",
             "next": null,
             "parent": "VALUE",
@@ -91,14 +91,14 @@
             "shadow": true,
             "topLevel": false
         },
-        "set replacers var to replacer json": {
+        "setReplacersVarToReplacerJson": {
             "opcode": "data_setvariableto",
             "next": null,
-            "parent": "set replacer %s to %s definition",
+            "parent": "setReplacerToDefinition",
             "inputs": {
                 "VALUE": [
                     3,
-                    "set replacer value to",
+                    "setReplacerValueTo",
                     [
                         10,
                         "0"
@@ -114,14 +114,14 @@
             "shadow": false,
             "topLevel": false
         },
-        "set replacer value to": {
+        "setReplacerValueTo": {
             "opcode": "jgJSON_setValueToKeyInJSON",
             "next": null,
-            "parent": "set replacers var to replacer json",
+            "parent": "setReplacersVarToReplacerJson",
             "inputs": {
                 "KEY": [
                     3,
-                    "left and midle half",
+                    "leftAndMidleHalf",
                     [
                         10,
                         "key"
@@ -155,7 +155,7 @@
         "REPLACER": {
             "opcode": "argument_reporter_string_number",
             "next": null,
-            "parent": "righ half",
+            "parent": "rightHalf",
             "inputs": {},
             "fields": {
                 "VALUE": [
@@ -169,7 +169,7 @@
         "VALUE": {
             "opcode": "argument_reporter_string_number",
             "next": null,
-            "parent": "set replacer value to",
+            "parent": "setReplacerValueTo",
             "inputs": {},
             "fields": {
                 "VALUE": [
@@ -180,14 +180,14 @@
             "shadow": false,
             "topLevel": false
         },
-        "replace with replacers definition": {
+        "replaceWithReplacersDefinition": {
             "opcode": "procedures_definition_return",
-            "next": "define temp replacers list",
+            "next": "defineTempReplacersList",
             "parent": null,
             "inputs": {
                 "custom_block": [
                     1,
-                    "replace with replacers display"
+                    "replaceWithReplacersDisplay"
                 ]
             },
             "fields": {},
@@ -196,10 +196,10 @@
             "x": 48,
             "y": 280
         },
-        "replace with replacers display": {
+        "replaceWithReplacersDisplay": {
             "opcode": "procedures_prototype",
             "next": null,
-            "parent": "replace with replacers definition",
+            "parent": "replaceWithReplacersDefinition",
             "inputs": {
                 "STRING": [
                     1,
@@ -224,7 +224,7 @@
         "STRING": {
             "opcode": "argument_reporter_string_number",
             "next": null,
-            "parent": "replace with replacers display",
+            "parent": "replaceWithReplacersDisplay",
             "inputs": {},
             "fields": {
                 "VALUE": [
@@ -235,14 +235,14 @@
             "shadow": true,
             "topLevel": false
         },
-        "run through each replacer": {
+        "runThroughEachReplacer": {
             "opcode": "control_for_each",
-            "next": "return the finnal text",
-            "parent": "define temp text",
+            "next": "returnTheFinnalText",
+            "parent": "defineTempText",
             "inputs": {
                 "VALUE": [
                     3,
-                    "the number of replacers",
+                    "theNumberOfReplacers",
                     [
                         6,
                         "10"
@@ -250,7 +250,7 @@
                 ],
                 "SUBSTACK": [
                     2,
-                    "define temp replacer name"
+                    "defineTempReplacerName"
                 ]
             },
             "fields": {
@@ -262,14 +262,14 @@
             "shadow": false,
             "topLevel": false
         },
-        "define temp replacers list": {
+        "defineTempReplacersList": {
             "opcode": "data_setvariableto",
-            "next": "define temp text",
-            "parent": "replace with replacers definition",
+            "next": "defineTempText",
+            "parent": "replaceWithReplacersDefinition",
             "inputs": {
                 "VALUE": [
                     3,
-                    "get all replacers",
+                    "getAllReplacers",
                     [
                         10,
                         "0"
@@ -285,10 +285,10 @@
             "shadow": false,
             "topLevel": false
         },
-        "get all replacers": {
+        "getAllReplacers": {
             "opcode": "jgJSON_json_keys",
             "next": null,
-            "parent": "define temp replacers list",
+            "parent": "defineTempReplacersList",
             "inputs": {
                 "json": [
                     3,
@@ -307,10 +307,10 @@
             "shadow": false,
             "topLevel": false
         },
-        "righ half": {
+        "rightHalf": {
             "opcode": "operator_join",
             "next": null,
-            "parent": "left and midle half",
+            "parent": "leftAndMidleHalf",
             "inputs": {
                 "STRING1": [
                     1,
@@ -332,14 +332,14 @@
             "shadow": false,
             "topLevel": false
         },
-        "left and midle half": {
+        "leftAndMidleHalf": {
             "opcode": "operator_join",
             "next": null,
-            "parent": "set replacer value to",
+            "parent": "setReplacerValueTo",
             "inputs": {
                 "STRING1": [
                     3,
-                    "righ half",
+                    "rightHalf",
                     [
                         10,
                         "foo"
@@ -357,10 +357,10 @@
             "shadow": false,
             "topLevel": false
         },
-        "the number of replacers": {
+        "theNumberOfReplacers": {
             "opcode": "jgJSON_json_array_length",
             "next": null,
-            "parent": "run through each replacer",
+            "parent": "runThroughEachReplacer",
             "inputs": {
                 "array": [
                     3,
@@ -379,10 +379,10 @@
             "shadow": false,
             "topLevel": false
         },
-        "get current replacer": {
+        "getCurrentReplacer": {
             "opcode": "jgJSON_json_array_get",
             "next": null,
-            "parent": "define temp replacer name",
+            "parent": "defineTempReplacerName",
             "inputs": {
                 "array": [
                     3,
@@ -398,7 +398,7 @@
                 ],
                 "index": [
                     3,
-                    "offset index by -1",
+                    "offsetIndexBy",
                     [
                         4,
                         "2"
@@ -409,10 +409,10 @@
             "shadow": false,
             "topLevel": false
         },
-        "replace all replacers with value": {
+        "replaceAllReplacersWithValue": {
             "opcode": "operator_replaceAll",
             "next": null,
-            "parent": "replace text with this replacer",
+            "parent": "replaceTextWithThisReplacer",
             "inputs": {
                 "text": [
                     3,
@@ -440,7 +440,7 @@
                 ],
                 "res": [
                     3,
-                    "get replacer value from replacer list",
+                    "getReplacerValueFromReplacerList",
                     [
                         10,
                         "bar"
@@ -451,14 +451,14 @@
             "shadow": false,
             "topLevel": false
         },
-        "define temp replacer name": {
+        "defineTempReplacerName": {
             "opcode": "data_setvariableto",
-            "next": "replace text with this replacer",
-            "parent": "run through each replacer",
+            "next": "replaceTextWithThisReplacer",
+            "parent": "runThroughEachReplacer",
             "inputs": {
                 "VALUE": [
                     3,
-                    "get current replacer",
+                    "getCurrentReplacer",
                     [
                         10,
                         "0"
@@ -474,10 +474,10 @@
             "shadow": false,
             "topLevel": false
         },
-        "get replacer value from replacer list": {
+        "getReplacerValueFromReplacerList": {
             "opcode": "jgJSON_getValueFromJSON",
             "next": null,
-            "parent": "replace all replacers with value",
+            "parent": "replaceAllReplacersWithValue",
             "inputs": {
                 "VALUE": [
                     3,
@@ -508,10 +508,10 @@
             "shadow": false,
             "topLevel": false
         },
-        "define temp text": {
+        "defineTempText": {
             "opcode": "data_setvariableto",
-            "next": "run through each replacer",
-            "parent": "define temp replacers list",
+            "next": "runThroughEachReplacer",
+            "parent": "defineTempReplacersList",
             "inputs": {
                 "VALUE": [
                     3,
@@ -534,7 +534,7 @@
         "STRING argument": {
             "opcode": "argument_reporter_string_number",
             "next": null,
-            "parent": "define temp text",
+            "parent": "defineTempText",
             "inputs": {},
             "fields": {
                 "VALUE": [
@@ -545,14 +545,14 @@
             "shadow": false,
             "topLevel": false
         },
-        "replace text with this replacer": {
+        "replaceTextWithThisReplacer": {
             "opcode": "data_setvariableto",
             "next": null,
-            "parent": "define temp replacer name",
+            "parent": "defineTempReplacerName",
             "inputs": {
                 "VALUE": [
                     3,
-                    "replace all replacers with value",
+                    "replaceAllReplacersWithValue",
                     [
                         10,
                         "0"
@@ -568,10 +568,10 @@
             "shadow": false,
             "topLevel": false
         },
-        "return the finnal text": {
+        "returnTheFinnalText": {
             "opcode": "procedures_return",
             "next": null,
-            "parent": "run through each replacer",
+            "parent": "runThroughEachReplacer",
             "inputs": {
                 "return": [
                     3,
@@ -590,10 +590,10 @@
             "shadow": false,
             "topLevel": false
         },
-        "offset index by -1": {
+        "offsetIndexBy": {
             "opcode": "operator_subtract",
             "next": null,
-            "parent": "get current replacer",
+            "parent": "getCurrentReplacer",
             "inputs": {
                 "NUM1": [
                     3,

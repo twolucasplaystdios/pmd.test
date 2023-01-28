@@ -944,11 +944,12 @@ const replacments = {
 deserializeBlocks(replacersPatch.blocks);
 
 // extensions to be patched by the extension patcher
-const ExtensionsPatches = {
+const ExtensionPatches = {
     "griffpatch": extensions => this.basicPatch("griffpatch", 'https://extensions.turbowarp.org/box2d.js', extensions),
     "cloudlink": extensions => this.basicPatch("cloudlink", 'https://extensions.turbowarp.org/cloudlink.js', extensions),
-    "jwUnite": async (extensions, blocks) => {
+    "jwUnite": (extensions, blocks, runtime) => {
         extensions.extensionIDs.delete("jwUnite");
+        runtime.extensionManager.loadExtensionURL('jgJSON');
         const blockIDs = Object.keys(blocks);
         // handle all 1:1 blocks
         for (let block, idx = 0; idx < blockIDs.length; idx++) {
@@ -968,8 +969,8 @@ const ExtensionsPatches = {
             if (block.opcode === 'jwUnite_setReplacer' || block.opcode === 'jwUnite_replaceWithReplacers') {
                 blocks = Object.assign(blocks, replacersPatch.blocks);
                 const repBlock = block.opcode === 'jwUnite_setReplacer' 
-                    ? "set replacer %s to %s display"
-                    : "replace with replacers display";
+                    ? "setReplacerToDisplay"
+                    : "replaceWithReplacersDisplay";
                 const replacment = Clone.simple(replacersPatch.blocks[repBlock]);
                 block.opcode = 'procedures_call';
                 block.mutation = replacment.mutation;
@@ -1395,9 +1396,9 @@ const replaceUnsafeCharsInVariableIds = function (targets) {
  * @param {boolean} isSingleSprite - If true treat as single sprite, else treat as whole project
  * @returns {Promise.<ImportedProject>} Promise that resolves to the list of targets after the project is deserialized
  */
-const deserialize = function (json, runtime, zip, isSingleSprite, vm) {
-    const extensionPatcher = new OldExtensions(vm);
-    extensionPatcher.registerExtensions(ExtensionsPatches);
+const deserialize = function (json, runtime, zip, isSingleSprite) {
+    const extensionPatcher = new OldExtensions(runtime);
+    extensionPatcher.registerExtensions(ExtensionPatches);
     const extensions = {
         extensionIDs: new Set(),
         extensionURLs: new Map(),
