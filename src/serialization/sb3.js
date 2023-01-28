@@ -969,7 +969,7 @@ const ExtensionsPatches = {
                 blocks = Object.assign(blocks, replacers);
                 const repBlock = block.opcode === 'jwUnite_setReplacer' 
                     ? "set replacer %s to %s display"
-                    : "replace with replacers definition";
+                    : "replace with replacers display";
                 const replacment = Clone.simple(replacersPatch.blocks[repBlock]);
                 block.opcode = 'procedures_call';
                 block.mutation = replacment.mutation;
