@@ -36,7 +36,8 @@ class extensionsPatch {
         if (typeof patch === 'object') {
             if (!this.loaded[id]) {
                 // patch to fix added urls not loading
-                const extensionIDs = this.runtime.extensionManager.loadExtensionURL(patch.url);
+                const extensionIDs = this.runtime.extensionManager.loadExtensionURL(patch.url)
+                    .then(extensionIDs => extensionIDs);
                 this.loaded[id] = extensionIDs;
             }
             this.basicPatch(patch.id, patch.url, this.loaded[id], extensions);
