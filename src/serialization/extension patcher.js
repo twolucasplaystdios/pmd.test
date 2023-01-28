@@ -30,6 +30,7 @@ class extensionsPatch {
         const patch = this.extensions[id];
         if (typeof patch === 'object') {
             this.basicPatch(patch.id, patch.url, extensions);
+            return;
         }
         patch(extensions, object, this.runtime);
     }
