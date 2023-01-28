@@ -91,7 +91,6 @@ const ExtensionsPatches = {
     "griffpatch": extensions => this.basicPatch("griffpatch", 'https://extensions.turbowarp.org/box2d.js', extensions),
     "cloudlink": extensions => this.basicPatch("cloudlink", 'https://extensions.turbowarp.org/cloudlink.js', extensions),
     "jwUnite": (extensions, blocks) => {
-        extensions.extensionIDs.remove("jwUnite");
         let usesReplacers = false;
         // handle all 1:1 blocks
         blocks.forEach(block => {
@@ -1080,7 +1079,6 @@ const parseScratchObject = function (object, runtime, extensions, zip, assets) {
         // Take a second pass to create objects and add extensions
         for (const blockId in object.blocks) {
             if (!object.blocks.hasOwnProperty(blockId)) continue;
-
             const blockJSON = object.blocks[blockId];
             // If the block is from an extension, record it.
             const extensionID = getExtensionIdForOpcode(blockJSON.opcode);
