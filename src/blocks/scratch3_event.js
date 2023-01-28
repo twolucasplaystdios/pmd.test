@@ -29,14 +29,14 @@ class Scratch3EventBlocks {
             event_broadcast: this.broadcast,
             event_broadcastandwait: this.broadcastAndWait,
             event_whengreaterthan: this.hatGreaterThanPredicate,
-            event_always: this.always,
+            event_always: this.always
         };
     }
 
-    always() { return true }
+    always () { return true; }
 
-    whenanything(args, util) {
-        return Boolean(args.ANYTHING || false)
+    whenanything (args) {
+        return Boolean(args.ANYTHING || false);
     }
 
     getHats () {

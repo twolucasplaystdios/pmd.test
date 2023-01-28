@@ -22,6 +22,7 @@ const OldExtensions = require('./extension patcher');
 const {loadCostume} = require('../import/load-costume.js');
 const {loadSound} = require('../import/load-sound.js');
 const {deserializeCostume, deserializeSound} = require('./deserialize-assets.js');
+const replacersPatch = require('./replacers patch.json');
 
 const hasOwnProperty = Object.prototype.hasOwnProperty;
 
@@ -59,10 +60,52 @@ const CORE_EXTENSIONS = [
     'sound'
 ];
 
+// the list of blocks and there replacements for jwUnite
+const replacments = {
+    'jwUnite_always': 'event_always',
+    'jwUnite_whenanything': 'event_whenanything',
+    'jwUnite_getspritewithattrib': 'sensing_getspritewithattrib',
+    'jwUnite_backToGreenFlag': 'control_backToGreenFlag',
+    'jwUnite_trueBoolean': 'operator_trueBoolean',
+    'jwUnite_falseBoolean': 'operator_falseBoolean',
+    'jwUnite_randomBoolean': 'operator_randomBoolean',
+    'jwUnite_mobile': 'sensing_mobile',
+    'jwUnite_thing_is_text': 'sensing_thing_is_text',
+    'jwUnite_thing_is_number': 'sensing_thing_is_number',
+    'jwUnite_if_return_else_return': 'control_if_return_else_return',
+    'jwUnite_indexOfTextInText': 'operator_indexOfTextInText',
+    'jwUnite_regextest': 'sensing_regextest',
+    'jwUnite_regexmatch': 'operator_regexmatch',
+    'jwUnite_replaceAll': 'operator_replaceAll',
+    'jwUnite_getLettersFromIndexToIndexInText': 'operator_getLettersFromIndexToIndexInText',
+    'jwUnite_readLineInMultilineText': 'operator_readLineInMultilineText',
+    'jwUnite_newLine': 'operator_newLine',
+    'jwUnite_stringify': 'operator_stringify',
+    'jwUnite_lerpFunc': 'operator_lerpFunc',
+    'jwUnite_advMath': 'operator_advMath',
+    'jwUnite_constrainnumber': 'operator_constrainnumber'
+};
+
 // extensions to be patched by the extension patcher
 const ExtensionsPatches = {
     "griffpatch": extensions => this.basicPatch("griffpatch", 'https://extensions.turbowarp.org/box2d.js', extensions),
-    "cloudlink": extensions => this.basicPatch("cloudlink", 'https://extensions.turbowarp.org/cloudlink.js', extensions)
+    "cloudlink": extensions => this.basicPatch("cloudlink", 'https://extensions.turbowarp.org/cloudlink.js', extensions),
+    "jwUnite": (extensions, blocks) => {
+        extensions.extensionIDs.remove("jwUnite");
+        let usesReplacers = false;
+        // handle all 1:1 blocks
+        blocks.forEach(block => {
+            if (replacments[block.opcode]) {
+                block.opcode = replacments[block.opcode];
+            }
+            if (block.opcode === 'jwUnite_setReplacer' || block.opcode === 'replaceWithReplacers') {
+                usesReplacers = true;
+            }
+        });
+        if (usesReplacers) {
+            blocks = Object.assign(blocks, replacersPatch.blocks);
+        }
+    }
 };
 
 // Constants referring to 'primitive' blocks that are usually shadows,
@@ -920,7 +963,6 @@ const deserializeBlocks = function (blocks) {
     return blocks;
 };
 
-
 /**
  * Parse the assets of a single "Scratch object" and load them. This
  * preprocesses objects to support loading the data for those assets over a
@@ -1038,9 +1080,8 @@ const parseScratchObject = function (object, runtime, extensions, zip, assets) {
         // Take a second pass to create objects and add extensions
         for (const blockId in object.blocks) {
             if (!object.blocks.hasOwnProperty(blockId)) continue;
-            const blockJSON = object.blocks[blockId];
-            blocks.createBlock(blockJSON);
 
+            const blockJSON = object.blocks[blockId];
             // If the block is from an extension, record it.
             const extensionID = getExtensionIdForOpcode(blockJSON.opcode);
             const isPatched = !!extensions.patcher.patchExists(extensionID);
@@ -1048,8 +1089,10 @@ const parseScratchObject = function (object, runtime, extensions, zip, assets) {
                 extensions.extensionIDs.add(extensionID);
             }
             if (isPatched) {
-                extensions.patcher.runExtensionPatch(extensionID, extensions, blocks);
+                extensions.patcher.runExtensionPatch(extensionID, extensions, object.blocks);
             }
+            
+            blocks.createBlock(blockJSON);
         }
     }
     // Costumes from JSON.

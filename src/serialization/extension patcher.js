@@ -18,7 +18,7 @@ class extensionsPatch {
      */
     runExtensionPatch (id, extensions, blocks) {
         // blocks is still included for future proofing even though its not used
-        this.extensions[id](extensions, blocks);
+        this.extensions[id](extensions, blocks, this.vm);
     }
 
     /**

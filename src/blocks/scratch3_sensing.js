@@ -1,7 +1,7 @@
 const Cast = require('../util/cast');
 const Timer = require('../util/timer');
 const getMonitorIdForBlockWithArgs = require('../util/get-monitor-id');
-const { validateRegex } = require('../util/json-block-utilities')
+const { validateRegex } = require('../util/json-block-utilities');
 
 class Scratch3SensingBlocks {
     constructor (runtime) {
@@ -78,25 +78,23 @@ class Scratch3SensingBlocks {
             sensing_thing_is_number: this.thing_is_number,
             sensing_mobile: this.mobile,
             sensing_thing_is_text: this.thing_is_text,
-            sensing_getspritewithattrib: this.getspritewithattrib,
+            sensing_getspritewithattrib: this.getspritewithattrib
         };
     }
 
-    getspritewithattrib(args, util) {
+    getspritewithattrib (args, util) {
         // strip out usless data
-        const sprites = util.runtime.targets.map(x => {
-            return {
-                id: x.id, 
-                name: x.sprite ? x.sprite.name : "Unkown",
-                variables: Object.values(x.variables).reduce((obj, value) => {
-                    if (!value.name) return obj
-                    obj[value.name] = String(value.value)
-                    return obj
-                }, {})
-            }
-        })
+        const sprites = util.runtime.targets.map(x => ({
+            id: x.id, 
+            name: x.sprite ? x.sprite.name : "Unkown",
+            variables: Object.values(x.variables).reduce((obj, value) => {
+                if (!value.name) return obj;
+                obj[value.name] = String(value.value);
+                return obj;
+            }, {})
+        }));
         // get the target with variable x set to y
-        let res = "No sprites found"
+        let res = "No sprites found";
         for (
             // define the index and the sprite
             let idx = 1, sprite = sprites[0]; 
@@ -105,36 +103,36 @@ class Scratch3SensingBlocks {
             // set sprite to a new item  
             sprite = sprites[idx++]
         ) {
-            if (sprite.variables[args.var] == args.val) {
-                res = `{"id": "${sprite.id}", "name": "${sprite.name}"}`
-                break
+            if (sprite.variables[args.var] === args.val) {
+                res = `{"id": "${sprite.id}", "name": "${sprite.name}"}`;
+                break;
             }
         }
         
-        return res
+        return res;
     }
-    thing_is_number(args, util) {
+    thing_is_number (args) {
         // i hate js
         // i also hate regex
         // so im gonna do this the lazy way
         // no. String(Number(value)) === value does infact do the job X)
         // also what was originaly here was inificiant as hell
-        return String(Number(args.TEXT1)) == args.TEXT1 && !isNaN(Number(args.TEXT1))
+        return String(Number(args.TEXT1)) === args.TEXT1 && !isNaN(Number(args.TEXT1));
     }
-    thing_is_text(args, util) {
+    thing_is_text (args) {
         // WHY IS NAN NOT EQUAL TO ITSELF
         // HOW IS NAN A NUMBER
         // because nan is how numbers say the value put into me is not a number
-        return isNaN(Number(args.TEXT1))
+        return isNaN(Number(args.TEXT1));
     }
-    mobile(args, util) {
-        return navigator.userAgent.includes("Mobile") || window.matchMedia("(max-width: 767px)").matches
+    mobile () {
+        return navigator.userAgent.includes("Mobile") || window.matchMedia("(max-width: 767px)").matches;
     }
 
-    regextest(args) {
-        if (!validateRegex(args.reg, args.regrule)) return false
-        const regex = new RegExp(args.reg, args.regrule)
-        return regex.test(args.text)
+    regextest (args) {
+        if (!validateRegex(args.reg, args.regrule)) return false;
+        const regex = new RegExp(args.reg, args.regrule);
+        return regex.test(args.text);
     }
 
     getMonitored () {
