@@ -32,8 +32,7 @@
             "shadow": false,
             "topLevel": true,
             "x": 48,
-            "y": 64,
-            "comment": "set replacers comment"
+            "y": 64
         },
         "set replacer %s to %s display": {
             "opcode": "procedures_prototype",
@@ -195,8 +194,7 @@
             "shadow": false,
             "topLevel": true,
             "x": 48,
-            "y": 280,
-            "comment": "replace replacers comment"
+            "y": 280
         },
         "replace with replacers display": {
             "opcode": "procedures_prototype",
@@ -620,26 +618,6 @@
             "fields": {},
             "shadow": false,
             "topLevel": false
-        }
-    },
-    "comments": {
-        "set replacers comment": {
-            "blockId": "set replacer %s to %s definition",
-            "x": 420.74074074074076,
-            "y": 78.51851851851852,
-            "width": 200,
-            "height": 200,
-            "minimized": true,
-            "text": "Sets a replacer to a value\n\nthis was created as a patch to remove unite"
-        },
-        "replace replacers comment": {
-            "blockId": "replace with replacers definition",
-            "x": 419.68620088365344,
-            "y": 300,
-            "width": 200,
-            "height": 200,
-            "minimized": true,
-            "text": "Replaces all replacer names with their respective value\n\nthis was created as a patch to remove unite"
         }
     }
 }
