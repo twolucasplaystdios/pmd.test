@@ -95,10 +95,11 @@ const ExtensionsPatches = {
         let usesReplacers = false;
         const blockIDs = Object.keys(blocks);
         // handle all 1:1 blocks
-        for (let block, idx = 0; idx; block = blockIDs[++idx]) {
+        for (let block, idx = 0; idx < blockIDs.length; block = blockIDs[++idx]) {
             if (replacments[block.opcode]) {
                 block.opcode = replacments[block.opcode];
             }
+            // handle replacer blocks
             if (block.opcode === 'jwUnite_setReplacer' || block.opcode === 'replaceWithReplacers') {
                 usesReplacers = true;
                 const repBlock = block.opcode === 'jwUnite_setReplacer' 
