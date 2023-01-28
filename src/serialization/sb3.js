@@ -853,6 +853,68 @@ const deserializeInputs = function (inputs, parentId, blocks) {
     return obj;
 };
 
+/**
+ * Deserialize the given block fields.
+ * @param {object} fields The fields to be deserialized
+ * @return {object} The deserialized and uncompressed block fields.
+ */
+const deserializeFields = function (fields) {
+    // Explicitly not using Object.create(null) here
+    // because we call prototype functions later in the vm
+    const obj = {};
+    for (const fieldName in fields) {
+        if (!hasOwnProperty.call(fields, fieldName)) continue;
+        const fieldDescArr = fields[fieldName];
+        // If this block has already been deserialized (it's not an array) skip it
+        if (!Array.isArray(fieldDescArr)) continue;
+        obj[fieldName] = {
+            name: fieldName,
+            value: fieldDescArr[0]
+        };
+        if (fieldDescArr.length > 1) {
+            obj[fieldName].id = fieldDescArr[1];
+        }
+        if (fieldName === 'BROADCAST_OPTION') {
+            obj[fieldName].variableType = Variable.BROADCAST_MESSAGE_TYPE;
+        } else if (fieldName === 'VARIABLE') {
+            obj[fieldName].variableType = Variable.SCALAR_TYPE;
+        } else if (fieldName === 'LIST') {
+            obj[fieldName].variableType = Variable.LIST_TYPE;
+        }
+    }
+    return obj;
+};
+
+/**
+ * Covnert serialized INPUT and FIELD primitives back to hydrated block templates.
+ * Should be able to deserialize a format that has already been deserialized.  The only
+ * "east" path to adding new targets/code requires going through deserialize, so it should
+ * work with pre-parsed deserialized blocks.
+ *
+ * @param {object} blocks Serialized SB3 "blocks" property of a target. Will be mutated.
+ * @return {object} input is modified and returned
+ */
+const deserializeBlocks = function (blocks) {
+    for (const blockId in blocks) {
+        if (!Object.prototype.hasOwnProperty.call(blocks, blockId)) {
+            continue;
+        }
+        const block = blocks[blockId];
+        if (Array.isArray(block)) {
+            // this is one of the primitives
+            // delete the old entry in object.blocks and replace it w/the
+            // deserialized object
+            delete blocks[blockId];
+            deserializeInputDesc(block, null, false, blocks);
+            continue;
+        }
+        block.id = blockId; // add id back to block since it wasn't serialized
+        block.inputs = deserializeInputs(block.inputs, blockId, blocks);
+        block.fields = deserializeFields(block.fields);
+    }
+    return blocks;
+};
+
 // the list of blocks and there replacements for jwUnite
 const replacments = {
     'jwUnite_always': 'event_always',
@@ -916,71 +978,9 @@ const ExtensionsPatches = {
             blocks[blockIDs[idx]] = block;
         }
         if (usesReplacers) {
-            blocks = Object.assign(blocks, replacersPatch.blocks);
+            blocks = Object.assign(blocks, deserializeBlocks(replacersPatch.blocks));
         }
     }
-};
-
-/**
- * Deserialize the given block fields.
- * @param {object} fields The fields to be deserialized
- * @return {object} The deserialized and uncompressed block fields.
- */
-const deserializeFields = function (fields) {
-    // Explicitly not using Object.create(null) here
-    // because we call prototype functions later in the vm
-    const obj = {};
-    for (const fieldName in fields) {
-        if (!hasOwnProperty.call(fields, fieldName)) continue;
-        const fieldDescArr = fields[fieldName];
-        // If this block has already been deserialized (it's not an array) skip it
-        if (!Array.isArray(fieldDescArr)) continue;
-        obj[fieldName] = {
-            name: fieldName,
-            value: fieldDescArr[0]
-        };
-        if (fieldDescArr.length > 1) {
-            obj[fieldName].id = fieldDescArr[1];
-        }
-        if (fieldName === 'BROADCAST_OPTION') {
-            obj[fieldName].variableType = Variable.BROADCAST_MESSAGE_TYPE;
-        } else if (fieldName === 'VARIABLE') {
-            obj[fieldName].variableType = Variable.SCALAR_TYPE;
-        } else if (fieldName === 'LIST') {
-            obj[fieldName].variableType = Variable.LIST_TYPE;
-        }
-    }
-    return obj;
-};
-
-/**
- * Covnert serialized INPUT and FIELD primitives back to hydrated block templates.
- * Should be able to deserialize a format that has already been deserialized.  The only
- * "east" path to adding new targets/code requires going through deserialize, so it should
- * work with pre-parsed deserialized blocks.
- *
- * @param {object} blocks Serialized SB3 "blocks" property of a target. Will be mutated.
- * @return {object} input is modified and returned
- */
-const deserializeBlocks = function (blocks) {
-    for (const blockId in blocks) {
-        if (!Object.prototype.hasOwnProperty.call(blocks, blockId)) {
-            continue;
-        }
-        const block = blocks[blockId];
-        if (Array.isArray(block)) {
-            // this is one of the primitives
-            // delete the old entry in object.blocks and replace it w/the
-            // deserialized object
-            delete blocks[blockId];
-            deserializeInputDesc(block, null, false, blocks);
-            continue;
-        }
-        block.id = blockId; // add id back to block since it wasn't serialized
-        block.inputs = deserializeInputs(block.inputs, blockId, blocks);
-        block.fields = deserializeFields(block.fields);
-    }
-    return blocks;
 };
 
 /**
