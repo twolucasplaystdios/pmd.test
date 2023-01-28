@@ -1,11 +1,21 @@
 class extensionsPatch {
+    /**
+     * constructor
+     * @param {Runtime} runtime runtime
+     */
     constructor (runtime) {
         this.runtime = runtime;
         this.extensions = {};
     }
+
+    /**
+     * replaces a core extension with a external extension for the loader
+     * @param {String} id extension id
+     * @param {String} url new extension url
+     * @param {Object} extensions sb3 loader extension object
+     */
     basicPatch (id, url, extensions) {
         extensions.extensionURLs.set(id, url);
-        extensions.extensionIDs.delete(id);
         // patch to fix added urls not loading(?)
         this.runtime.extensionManager.loadExtensionURL(url);
     }
@@ -17,8 +27,11 @@ class extensionsPatch {
      * @param {Blocks} blocks all of the blocks
      */
     runExtensionPatch (id, extensions, blocks) {
-        // blocks is still included for future proofing even though its not used
-        this.extensions[id](extensions, blocks, this.runtime);
+        const patch = this.extensions[id];
+        if (typeof patch === 'object') {
+            this.basicPatch(patch.id, patch.url, extensions);
+        }
+        patch(extensions, blocks, this.runtime);
     }
 
     /**

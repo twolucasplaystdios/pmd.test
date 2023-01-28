@@ -945,15 +945,16 @@ deserializeBlocks(replacersPatch.blocks);
 
 // extensions to be patched by the extension patcher
 const ExtensionPatches = {
-    "griffpatch": extensions => this.basicPatch("griffpatch", 'https://extensions.turbowarp.org/box2d.js', extensions),
-    "cloudlink": extensions => this.basicPatch("cloudlink", 'https://extensions.turbowarp.org/cloudlink.js', extensions),
+    "griffpatch": {id: 'griffpatch', url: 'https://extensions.turbowarp.org/box2d.js'},
+    "cloudlink": {id: 'cloudlink', url: 'https://extensions.turbowarp.org/cloudlink.js'},
     "jwUnite": (extensions, blocks, runtime) => {
         extensions.extensionIDs.delete("jwUnite");
         runtime.extensionManager.loadExtensionURL('jgJSON');
         const blockIDs = Object.keys(blocks);
-        // handle all 1:1 blocks
+        
         for (let block, idx = 0; idx < blockIDs.length; idx++) {
             block = blocks[blockIDs[idx]];
+            // handle all 1:1 blocks
             if (replacments[block.opcode]) {
                 block.opcode = replacments[block.opcode];
                 if (block.opcode === 'sensing_regextest' || block.opcode === 'operator_regexmatch') {
@@ -1101,7 +1102,7 @@ const parseScratchObject = function (object, runtime, extensions, zip, assets) {
             const blockJSON = object.blocks[blockId];
             // If the block is from an extension, record it.
             const extensionID = getExtensionIdForOpcode(blockJSON.opcode);
-            const isPatched = !!extensions.patcher.patchExists(extensionID);
+            const isPatched = extensions.patcher.patchExists(extensionID);
             if (extensionID && !isPatched) {
                 extensions.extensionIDs.add(extensionID);
             }
