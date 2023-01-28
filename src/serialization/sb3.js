@@ -16,6 +16,7 @@ const uid = require('../util/uid');
 const MathUtil = require('../util/math-util');
 const StringUtil = require('../util/string-util');
 const VariableUtil = require('../util/variable-util');
+const Clone = require('../util/clone');
 const compress = require('./tw-compress-sb3');
 const OldExtensions = require('./extension patcher');
 
@@ -969,7 +970,7 @@ const ExtensionsPatches = {
                 const repBlock = block.opcode === 'jwUnite_setReplacer' 
                     ? "set replacer %s to %s display"
                     : "replace with replacers definition";
-                const replacment = replacersPatch.blocks[repBlock];
+                const replacment = Clone.simple(replacersPatch.blocks[repBlock]);
                 replacment.opcode = 'procedures_call';
                 replacment.id = repBlock;
                 replacment.inputs = Object.assign(replacment.inputs, block.inputs);
