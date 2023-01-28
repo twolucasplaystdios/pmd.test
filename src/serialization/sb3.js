@@ -906,6 +906,7 @@ const ExtensionsPatches = {
                     : "replace with replacers definition";
                 const replacment = replacersPatch.blocks[repBlock];
                 replacment.opcode = 'procedures_call';
+                replacment.id = repBlock
                 replacment.inputs = Object.assign(replacment.inputs, block.inputs);
                 block = replacment;
             }
