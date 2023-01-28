@@ -941,7 +941,6 @@ const replacments = {
     'jwUnite_advMath': 'operator_advMath',
     'jwUnite_constrainnumber': 'operator_constrainnumber'
 };
-deserializeBlocks(replacersPatch.blocks);
 
 // extensions to be patched by the extension patcher
 const ExtensionPatches = {

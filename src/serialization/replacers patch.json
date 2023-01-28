@@ -515,7 +515,7 @@
             "inputs": {
                 "VALUE": [
                     3,
-                    "STRING argument",
+                    "STRINGargument",
                     [
                         10,
                         "0"
@@ -531,7 +531,7 @@
             "shadow": false,
             "topLevel": false
         },
-        "STRING argument": {
+        "STRINGargument": {
             "opcode": "argument_reporter_string_number",
             "next": null,
             "parent": "defineTempText",
