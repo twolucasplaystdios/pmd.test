@@ -90,18 +90,27 @@ const replacments = {
 const ExtensionsPatches = {
     "griffpatch": extensions => this.basicPatch("griffpatch", 'https://extensions.turbowarp.org/box2d.js', extensions),
     "cloudlink": extensions => this.basicPatch("cloudlink", 'https://extensions.turbowarp.org/cloudlink.js', extensions),
-    "jwUnite": (extensions, blocks) => {
+    "jwUnite": async (extensions, blocks) => {
         extensions.extensionIDs.delete("jwUnite");
         let usesReplacers = false;
+        const blockIDs = Object.keys(blocks);
         // handle all 1:1 blocks
-        blocks.forEach(block => {
+        for (let block, idx = 0; idx; block = blockIDs[++idx]) {
             if (replacments[block.opcode]) {
                 block.opcode = replacments[block.opcode];
             }
             if (block.opcode === 'jwUnite_setReplacer' || block.opcode === 'replaceWithReplacers') {
                 usesReplacers = true;
+                const repBlock = block.opcode === 'jwUnite_setReplacer' 
+                    ? "set replacer %s to %s display"
+                    : "replace with replacers definition";
+                const replacment = replacersPatch.blocks[repBlock];
+                replacment.opcode = 'procedures_call';
+                replacment.inputs = Object.asign(replacment.inputs, block.inputs);
+                block = replacment;
             }
-        });
+            blocks[blockIDs[idx]] = block;
+        }
         if (usesReplacers) {
             blocks = Object.assign(blocks, replacersPatch.blocks);
         }
