@@ -26,12 +26,12 @@ class extensionsPatch {
      * @param {Object} extensions the extensions object
      * @param {Blocks} blocks all of the blocks
      */
-    runExtensionPatch (id, extensions, blocks) {
+    runExtensionPatch (id, extensions, object) {
         const patch = this.extensions[id];
         if (typeof patch === 'object') {
             this.basicPatch(patch.id, patch.url, extensions);
         }
-        patch(extensions, blocks, this.runtime);
+        patch(extensions, object, this.runtime);
     }
 
     /**

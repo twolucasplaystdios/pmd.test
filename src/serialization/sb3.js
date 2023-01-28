@@ -947,9 +947,10 @@ deserializeBlocks(replacersPatch.blocks);
 const ExtensionPatches = {
     "griffpatch": {id: 'griffpatch', url: 'https://extensions.turbowarp.org/box2d.js'},
     "cloudlink": {id: 'cloudlink', url: 'https://extensions.turbowarp.org/cloudlink.js'},
-    "jwUnite": (extensions, blocks, runtime) => {
+    "jwUnite": (extensions, object, runtime) => {
         extensions.extensionIDs.delete("jwUnite");
         runtime.extensionManager.loadExtensionURL('jgJSON');
+        let blocks = object.blocks;
         const blockIDs = Object.keys(blocks);
         
         for (let block, idx = 0; idx < blockIDs.length; idx++) {
@@ -969,6 +970,7 @@ const ExtensionPatches = {
             // handle replacer blocks
             if (block.opcode === 'jwUnite_setReplacer' || block.opcode === 'jwUnite_replaceWithReplacers') {
                 blocks = Object.assign(blocks, replacersPatch.blocks);
+
                 const repBlock = block.opcode === 'jwUnite_setReplacer' 
                     ? "setReplacerToDisplay"
                     : "replaceWithReplacersDisplay";
@@ -978,6 +980,7 @@ const ExtensionPatches = {
             }
             blocks[blockIDs[idx]] = block;
         }
+        object.blocks = blocks;
     }
 };
 
@@ -1107,7 +1110,7 @@ const parseScratchObject = function (object, runtime, extensions, zip, assets) {
                 extensions.extensionIDs.add(extensionID);
             }
             if (isPatched) {
-                extensions.patcher.runExtensionPatch(extensionID, extensions, object.blocks);
+                extensions.patcher.runExtensionPatch(extensionID, extensions, object);
             }
             
             blocks.createBlock(blockJSON);
