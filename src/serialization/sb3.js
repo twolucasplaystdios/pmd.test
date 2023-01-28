@@ -941,6 +941,7 @@ const replacments = {
     'jwUnite_advMath': 'operator_advMath',
     'jwUnite_constrainnumber': 'operator_constrainnumber'
 };
+deserializeBlocks(replacersPatch.blocks);
 
 // extensions to be patched by the extension patcher
 const ExtensionsPatches = {
@@ -949,7 +950,6 @@ const ExtensionsPatches = {
     "jwUnite": async (extensions, blocks) => {
         extensions.extensionIDs.delete("jwUnite");
         const blockIDs = Object.keys(blocks);
-        const replacers = deserializeBlocks(replacersPatch.blocks);
         // handle all 1:1 blocks
         for (let block, idx = 0; idx < blockIDs.length; idx++) {
             block = blocks[blockIDs[idx]];
@@ -966,7 +966,7 @@ const ExtensionsPatches = {
             }
             // handle replacer blocks
             if (block.opcode === 'jwUnite_setReplacer' || block.opcode === 'jwUnite_replaceWithReplacers') {
-                blocks = Object.assign(blocks, replacers);
+                blocks = Object.assign(blocks, replacersPatch.blocks);
                 const repBlock = block.opcode === 'jwUnite_setReplacer' 
                     ? "set replacer %s to %s display"
                     : "replace with replacers display";
