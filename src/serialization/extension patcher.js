@@ -14,9 +14,14 @@ class extensionsPatch {
      * @param {String} url new extension url
      * @param {Object} extensions sb3 loader extension object
      */
-    basicPatch (id, url, extensions) {
-        extensions.extensionURLs.set(id, url);
-        // patch to fix added urls not loading(?)
+    basicPatch (id, url, newId, extensions) {
+        extensions.extensionURLs.set(newId, url);
+        if (!id === newId) {
+            extensions.extensionIDs.delete(id);
+            extensions.extensionIDs.add(newId);
+        }
+        // patch to fix added urls not loading
+        if (this.runtime.extensionManager.isExtensionLoaded(newId)) return;
         this.runtime.extensionManager.loadExtensionURL(url);
     }
 
@@ -29,7 +34,7 @@ class extensionsPatch {
     runExtensionPatch (id, extensions, object) {
         const patch = this.extensions[id];
         if (typeof patch === 'object') {
-            this.basicPatch(patch.id, patch.url, extensions);
+            this.basicPatch(patch.id, patch.url, patch.newId, extensions);
             return;
         }
         patch(extensions, object, this.runtime);
