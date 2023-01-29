@@ -31,12 +31,12 @@ class extensionsPatch {
      * @param {Object} extensions the extensions object
      * @param {Blocks} blocks all of the blocks
      */
-    runExtensionPatch (id, extensions, object) {
+    async runExtensionPatch (id, extensions, object) {
         const patch = this.extensions[id];
         if (typeof patch === 'object') {
             if (!this.loaded[id]) {
                 // patch to fix added urls not loading
-                this.runtime.extensionManager.loadExtensionURL(patch.url)
+                await this.runtime.extensionManager.loadExtensionURL(patch.url)
                     .then(extensionIDs => {
                         this.loaded[id] = extensionIDs;
                     });
