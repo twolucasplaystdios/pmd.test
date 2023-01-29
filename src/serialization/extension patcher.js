@@ -39,7 +39,9 @@ class extensionsPatch {
                 await this.runtime.extensionManager.loadExtensionURL(patch.url)
                     .then(extensionIDs => {
                         this.loaded[id] = extensionIDs;
+                        this.basicPatch(patch.id, patch.url, this.loaded[id], extensions);
                     });
+                return;
             }
             this.basicPatch(patch.id, patch.url, this.loaded[id], extensions);
             return;
