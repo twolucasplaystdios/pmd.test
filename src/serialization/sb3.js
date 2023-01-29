@@ -131,7 +131,6 @@ const ExtensionPatches = {
     "cloudlink": {id: 'cloudlink', url: 'https://extensions.turbowarp.org/cloudlink.js'},
     "jwUnite": (extensions, object, runtime) => {
         extensions.extensionIDs.delete("jwUnite");
-        runtime.extensionManager.loadExtensionURL('jgJSON');
         let blocks = object.blocks;
         const blockIDs = Object.keys(blocks);
         
@@ -149,6 +148,10 @@ const ExtensionPatches = {
             }
             // handle replacer blocks
             if (block.opcode === 'jwUnite_setReplacer' || block.opcode === 'jwUnite_replaceWithReplacers') {
+                if (!this.loaded.includes('jgJSON')) {
+                    runtime.extensionManager.loadExtensionURL('jgJSON');
+                    this.loaded.push('jgJSON');
+                }
                 blocks = Object.assign(blocks, replacersPatch.blocks);
                 object.variables = Object.assign(object.variables, replacersPatch.variables);
                 const repBlock = block.opcode === 'jwUnite_setReplacer' 
