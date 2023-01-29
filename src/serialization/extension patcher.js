@@ -6,7 +6,7 @@ class extensionsPatch {
     constructor (runtime) {
         this.runtime = runtime;
         this.extensions = {};
-        this.loaded = {};
+        this.loaded = [];
     }
 
     /**
@@ -18,10 +18,6 @@ class extensionsPatch {
     basicPatch (id, url, newIDs, extensions) {
         newIDs.forEach(newId => {
             extensions.extensionURLs.set(newId, url);
-            if (!id === newId) {
-                extensions.extensionIDs.delete(id);
-                extensions.extensionIDs.add(newId);
-            }
         });
     }
 
@@ -31,19 +27,15 @@ class extensionsPatch {
      * @param {Object} extensions the extensions object
      * @param {Blocks} blocks all of the blocks
      */
-    async runExtensionPatch (id, extensions, object) {
+    runExtensionPatch (id, extensions, object) {
         const patch = this.extensions[id];
         if (typeof patch === 'object') {
-            if (!this.loaded[id]) {
+            if (!this.loaded.includes(id)) {
                 // patch to fix added urls not loading
-                await this.runtime.extensionManager.loadExtensionURL(patch.url)
-                    .then(extensionIDs => {
-                        this.loaded[id] = extensionIDs;
-                        this.basicPatch(patch.id, patch.url, this.loaded[id], extensions);
-                    });
-                return;
+                this.runtime.extensionManager.loadExtensionURL(patch.url);
+                this.loaded.push(id);
             }
-            this.basicPatch(patch.id, patch.url, this.loaded[id], extensions);
+            this.basicPatch(patch.id, patch.url, extensions);
             return;
         }
         patch(extensions, object, this.runtime);
