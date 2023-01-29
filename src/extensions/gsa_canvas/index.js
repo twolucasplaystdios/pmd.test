@@ -85,6 +85,8 @@ class canvas {
             </div>
         </div>
         `;
+        const body = document.getElementById('app');
+        body.appendChild(modal);
         /*
         const closeFunc = () => {
             modal.remove();
