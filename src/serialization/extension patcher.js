@@ -15,10 +15,8 @@ class extensionsPatch {
      * @param {String} url new extension url
      * @param {Object} extensions sb3 loader extension object
      */
-    basicPatch (id, url, newIDs, extensions) {
-        newIDs.forEach(newId => {
-            extensions.extensionURLs.set(newId, url);
-        });
+    basicPatch (id, url, extensions) {
+        extensions.extensionURLs.set(id, url);
     }
 
     /**
