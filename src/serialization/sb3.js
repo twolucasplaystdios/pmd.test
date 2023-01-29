@@ -1105,6 +1105,8 @@ const parseScratchObject = function (object, runtime, extensions, zip, assets) {
         for (const blockId in object.blocks) {
             if (!object.blocks.hasOwnProperty(blockId)) continue;
             const blockJSON = object.blocks[blockId];
+            // this is a internal constant and cant be patched
+            if (typeof blockJSON !== 'object') continue;
             const extensionID = getExtensionIdForOpcode(blockJSON.opcode);
             const isPatched = extensions.patcher.patchExists(extensionID);
             if (extensionID && !isPatched) {
