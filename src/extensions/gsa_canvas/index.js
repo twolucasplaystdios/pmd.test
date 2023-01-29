@@ -85,9 +85,8 @@ class canvas {
             </div>
         </div>
         `;
-        const body = document.getElementById('app');
+        const body = document.getElementsByTagName('body').item(0);
         body.appendChild(modal);
-        /*
         const closeFunc = () => {
             modal.remove();
         };
@@ -119,7 +118,7 @@ class canvas {
         };
         defaultImageInput.onblur = () => {
             defaultImageInput.onchange();
-        };*/
+        };
     }
 
     orderCategoryBlocks (blocks) {
