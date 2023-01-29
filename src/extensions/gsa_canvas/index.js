@@ -85,6 +85,7 @@ class canvas {
             </div>
         </div>
         `;
+        /*
         const closeFunc = () => {
             modal.remove();
         };
@@ -116,7 +117,7 @@ class canvas {
         };
         defaultImageInput.onblur = () => {
             defaultImageInput.onchange();
-        };
+        };*/
     }
 
     orderCategoryBlocks (blocks) {
