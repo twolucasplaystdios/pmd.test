@@ -133,6 +133,7 @@ const ExtensionPatches = {
         extensions.extensionIDs.delete("jwUnite");
         let blocks = object.blocks;
         const blockIDs = Object.keys(blocks);
+        const patcher = extensions.patcher;
         
         for (let block, idx = 0; idx < blockIDs.length; idx++) {
             block = blocks[blockIDs[idx]];
@@ -149,9 +150,9 @@ const ExtensionPatches = {
             }
             // handle replacer blocks
             if (block.opcode === 'jwUnite_setReplacer' || block.opcode === 'jwUnite_replaceWithReplacers') {
-                if (!this.loaded.includes('jgJSON')) {
+                if (!patcher.loaded.includes('jgJSON')) {
                     runtime.extensionManager.loadExtensionURL('jgJSON');
-                    this.loaded.push('jgJSON');
+                    patcher.loaded.push('jgJSON');
                 }
                 blocks = Object.assign(blocks, replacersPatch.blocks);
                 object.variables = Object.assign(object.variables, replacersPatch.variables);
