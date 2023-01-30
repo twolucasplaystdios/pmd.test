@@ -155,7 +155,7 @@ const ExtensionPatches = {
                     patcher.loaded.push('jgJSON');
                 }
                 blocks = Object.assign(blocks, Clone.simple(replacersPatch.blocks));
-                object.variables = Object.assign(object.variables, replacersPatch.variables);
+                object.variables = Object.assign(object.variables, Clone.simple(replacersPatch.variables));
                 const repBlock = block.opcode === 'jwUnite_setReplacer' 
                     ? "setReplacerToDisplay"
                     : "replaceWithReplacersDisplay";
