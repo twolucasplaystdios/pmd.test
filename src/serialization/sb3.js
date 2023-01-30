@@ -136,6 +136,7 @@ const ExtensionPatches = {
         
         for (let block, idx = 0; idx < blockIDs.length; idx++) {
             block = blocks[blockIDs[idx]];
+            if (typeof block !== 'object' || Array.isArray(block)) continue;
             // handle all 1:1 blocks
             if (replacments[block.opcode]) {
                 block.opcode = replacments[block.opcode];
@@ -1106,7 +1107,7 @@ const parseScratchObject = function (object, runtime, extensions, zip, assets) {
             if (!object.blocks.hasOwnProperty(blockId)) continue;
             const blockJSON = object.blocks[blockId];
             // this is a internal constant and cant be patched
-            if (typeof blockJSON !== 'object') continue;
+            if (typeof blockJSON !== 'object' || Array.isArray(blockJSON)) continue;
             const extensionID = getExtensionIdForOpcode(blockJSON.opcode);
             const isPatched = extensions.patcher.patchExists(extensionID);
             if (extensionID && !isPatched) {
