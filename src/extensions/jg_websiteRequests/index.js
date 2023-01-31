@@ -10,7 +10,7 @@ const BufferStuff = new AHHHHHHHHHHHHHH();
  * @constructor
  */
 class JgWebsiteRequestBlocks {
-    constructor(runtime) {
+    constructor (runtime) {
         /**
          * The runtime instantiating this block package.
          * @type {Runtime}
@@ -21,7 +21,7 @@ class JgWebsiteRequestBlocks {
     /**
      * @returns {object} metadata for this extension and its blocks.
      */
-    getInfo() {
+    getInfo () {
         return {
             id: 'jgWebsiteRequests',
             name: 'Website Requests',
@@ -33,6 +33,26 @@ class JgWebsiteRequestBlocks {
                     text: formatMessage({
                         id: 'jgWebsiteRequests.blocks.encodeTextForURL',
                         default: 'encode [TEXT] for URL',
+                        description: 'Encodes text to be usable in a URL.'
+                    }),
+                    disableMonitor: true,
+                    blockType: BlockType.REPORTER,
+                    arguments: {
+                        TEXT: {
+                            type: ArgumentType.STRING,
+                            defaultValue: formatMessage({
+                                id: 'jgWebsiteRequests.text_encode_for_url',
+                                default: 'Text here',
+                                description: 'The text to encode.'
+                            })
+                        }
+                    }
+                },
+                {
+                    opcode: 'decodeUrlForText',
+                    text: formatMessage({
+                        id: 'jgWebsiteRequests.blocks.encodeTextForURL',
+                        default: 'decode [TEXT] for text',
                         description: 'Encodes text to be usable in a URL.'
                     }),
                     disableMonitor: true,
@@ -121,52 +141,59 @@ class JgWebsiteRequestBlocks {
                                 default: 'https://httpbin.org/post',
                                 description: 'The website to post the key and content to.'
                             })
-                        },
+                        }
                     }
                 }
             ]
         };
     }
-    encodeTextForURL(args, util) {
+    encodeTextForURL (args) {
         return encodeURIComponent(String(args.TEXT));
     }
+    decodeUrlForText (args) {
+        return decodeURI(String(args.TEXT));
+    }
 
-    getWebsiteContent(args, util) {
-        return new Promise((resolve, reject) => {
+    getWebsiteContent (args) {
+        return new Promise(resolve => {
             if (window && !window.fetch) return resolve("");
-            const rawRequestIgnoreCorsBypass = String(args.WEBSITE).startsWith("rawRequest()")
-            const fetchingUrl = rawRequestIgnoreCorsBypass ? String(args.WEBSITE).replace("rawRequest()", "") : ("https://api.allorigins.win/raw?url=" + encodeURIComponent(String(args.WEBSITE)))
+            const rawRequestIgnoreCorsBypass = String(args.WEBSITE).startsWith("rawRequest()");
+            const fetchingUrl = rawRequestIgnoreCorsBypass ? String(args.WEBSITE).replace("rawRequest()", "") : (`https://api.allorigins.win/raw?url=${encodeURIComponent(String(args.WEBSITE))}`);
             fetch(fetchingUrl).then(r => {
                 r.text().then(text => {
                     resolve(String(text));
-                }).catch(err => {
-                    resolve("");
                 })
-            }).catch(err => {
-                resolve("");
+                    .catch(() => {
+                        resolve("");
+                    });
             })
-        })
+                .catch(() => {
+                    resolve("");
+                });
+        });
     }
     
-    getWebsiteBinaryData(args, util) {
-        return new Promise((resolve, reject) => {
+    getWebsiteBinaryData (args) {
+        return new Promise(resolve => {
             if (window && !window.fetch) return resolve("[]");
-            const rawRequestIgnoreCorsBypass = String(args.WEBSITE).startsWith("rawRequest()")
-            const fetchingUrl = rawRequestIgnoreCorsBypass ? String(args.WEBSITE).replace("rawRequest()", "") : ("https://api.allorigins.win/raw?url=" + encodeURIComponent(String(args.WEBSITE)))
+            const rawRequestIgnoreCorsBypass = String(args.WEBSITE).startsWith("rawRequest()");
+            const fetchingUrl = rawRequestIgnoreCorsBypass ? String(args.WEBSITE).replace("rawRequest()", "") : (`https://api.allorigins.win/raw?url=${encodeURIComponent(String(args.WEBSITE))}`);
             fetch(fetchingUrl).then(r => {
                 r.arrayBuffer().then(buffer => {
                     resolve(String(JSON.stringify(BufferStuff.bufferToArray(buffer))));
-                }).catch(err => {
-                    resolve("[]");
                 })
-            }).catch(err => {
-                resolve("[]");
+                    .catch(() => {
+                        resolve("[]");
+                    });
             })
-        })
+                .catch(() => {
+                    resolve("[]");
+                });
+        });
     }
 
-    postWithContentToWebsite(args, util) {
-        return new Promise((resolve, reject) => {
+    postWithContentToWebsite (args) {
+        return new Promise(resolve => {
             if (window && !window.fetch) return resolve("");
             const body = {};
             const checking = String(args.CONTENT);
@@ -176,10 +203,10 @@ class JgWebsiteRequestBlocks {
             } catch {
                 canJSONParse = false;
             }
-            body[String(args.KEY)] = checking == "true" ? true :
-                checking == "false" ? false :
+            body[String(args.KEY)] = checking === "true" ? true :
+                checking === "false" ? false :
                     Number(checking) ? Number(checking) :
-                        checking == "null" ? null :
+                        checking === "null" ? null :
                             canJSONParse ? JSON.parse(checking) :
                                 checking;
             fetch(String(args.WEBSITE), {
@@ -189,13 +216,15 @@ class JgWebsiteRequestBlocks {
             }).then(r => {
                 r.text().then(text => {
                     resolve(String(text));
-                }).catch(err => {
-                    resolve("");
                 })
-            }).catch(err => {
-                resolve("");
+                    .catch(() => {
+                        resolve("");
+                    });
             })
-        })
+                .catch(() => {
+                    resolve("");
+                });
+        });
     }
 }
 
