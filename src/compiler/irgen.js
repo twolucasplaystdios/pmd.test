@@ -746,7 +746,8 @@ class ScriptTreeGenerator {
                 code: procedureCode,
                 variant,
                 returns: true,
-                arguments: args
+                arguments: args,
+                type: block.mutation.opType
             };
         }
 
@@ -1359,7 +1360,8 @@ class ScriptTreeGenerator {
                 code: procedureCode,
                 variant,
                 returns: false,
-                arguments: args
+                arguments: args,
+                type: block.mutation.opType
             };
         }
 

@@ -707,6 +707,13 @@ class JSGenerator {
             return this.descendVariable(node.variable);
 
         case 'procedures.call': {
+            const types = {
+                string: TYPE_STRING,
+                number: TYPE_NUMBER,
+                boolean: TYPE_BOOLEAN
+            };
+            const type = node.type.toLowerCase();
+            const blockType = types[type];
             const procedureCode = node.code;
             const procedureVariant = node.variant;
             let source = '';
@@ -737,12 +744,12 @@ class JSGenerator {
             source += `)`;
             // Variable input types may have changes after a procedure call.
             this.resetVariableInputs();
-            return new TypedInput(source, TYPE_STRING);
+            return new TypedInput(source, blockType);
         }
 
         case 'noop':
             console.warn('unexpected noop');
-            return new TypedInput('', TYPE_UNKNOWN);
+            return new TypedInput('""', TYPE_UNKNOWN);
 
         default:
             log.warn(`JS: Unknown input: ${node.kind}`, node);
@@ -1104,6 +1111,9 @@ class JSGenerator {
                 this.source += args.join(',');
             }
             this.source += `);\n`;
+            if (node.type === 'hat') {
+                throw new Error('custom hat blocks are not suported');
+            }
             // Variable input types may have changes after a procedure call.
             this.resetVariableInputs();
             break;
