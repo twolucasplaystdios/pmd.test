@@ -712,7 +712,7 @@ class JSGenerator {
                 number: TYPE_NUMBER,
                 boolean: TYPE_BOOLEAN
             };
-            const type = node.type.toLowerCase();
+            const type = JSON.parse(node.type) || 'string';
             const blockType = types[type];
             const procedureCode = node.code;
             const procedureVariant = node.variant;
