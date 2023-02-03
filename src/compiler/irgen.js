@@ -1361,7 +1361,7 @@ class ScriptTreeGenerator {
                 variant,
                 returns: false,
                 arguments: args,
-                type: block.mutation.opType
+                type: JSON.parse(block.mutation.optype)
             };
         }
 
