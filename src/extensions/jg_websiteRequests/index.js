@@ -211,7 +211,7 @@ class JgWebsiteRequestBlocks {
                                 checking;
             fetch(String(args.WEBSITE), {
                 method: "POST",
-                headers: { "Content-Type": "application/json" },
+                headers: { "Content-Type": "text/plain" },
                 body: JSON.stringify(body)
             }).then(r => {
                 r.text().then(text => {
