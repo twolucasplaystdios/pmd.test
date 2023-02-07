@@ -159,7 +159,7 @@ class JgWebsiteRequestBlocks {
             if (window && !window.fetch) return resolve("");
             const rawRequestIgnoreCorsBypass = String(args.WEBSITE).startsWith("rawRequest()");
             const fetchingUrl = rawRequestIgnoreCorsBypass ? String(args.WEBSITE).replace("rawRequest()", "") : (`https://api.allorigins.win/raw?url=${encodeURIComponent(String(args.WEBSITE))}`);
-            fetch(fetchingUrl).then(r => {
+            fetch(fetchingUrl, {cache: "no-cache"}).then(r => {
                 r.text().then(text => {
                     resolve(String(text));
                 })
@@ -178,7 +178,7 @@ class JgWebsiteRequestBlocks {
             if (window && !window.fetch) return resolve("[]");
             const rawRequestIgnoreCorsBypass = String(args.WEBSITE).startsWith("rawRequest()");
             const fetchingUrl = rawRequestIgnoreCorsBypass ? String(args.WEBSITE).replace("rawRequest()", "") : (`https://api.allorigins.win/raw?url=${encodeURIComponent(String(args.WEBSITE))}`);
-            fetch(fetchingUrl).then(r => {
+            fetch(fetchingUrl, {cache: "no-cache"}).then(r => {
                 r.arrayBuffer().then(buffer => {
                     resolve(String(JSON.stringify(BufferStuff.bufferToArray(buffer))));
                 })
@@ -212,6 +212,7 @@ class JgWebsiteRequestBlocks {
             fetch(String(args.WEBSITE), {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
+                cache: "no-cache",
                 body: JSON.stringify(body)
             }).then(r => {
                 r.text().then(text => {
