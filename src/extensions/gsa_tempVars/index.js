@@ -31,11 +31,11 @@ class tempVars {
                     arguments: {
                         name: {
                             type: ArgumentType.STRING,
-                            default: 'Variable'
+                            defaultValue: 'Variable'
                         },
                         value: {
                             type: ArgumentType.STRING,
-                            default: 'Value'
+                            defaultValue: 'Value'
                         }
                     },
                     blockType: BlockType.COMMAND
@@ -46,11 +46,11 @@ class tempVars {
                     arguments: {
                         name: {
                             type: ArgumentType.STRING,
-                            default: 'Variable'
+                            defaultValue: 'Variable'
                         },
                         value: {
                             type: ArgumentType.NUMBER,
-                            default: '1'
+                            defaultValue: '1'
                         }
                     },
                     blockType: BlockType.COMMAND
@@ -61,7 +61,7 @@ class tempVars {
                     arguments: {
                         name: {
                             type: ArgumentType.STRING,
-                            default: 'Variable'
+                            defaultValue: 'Variable'
                         }
                     },
                     blockType: BlockType.REPORTER
