@@ -72,23 +72,23 @@ class tempVars {
 
     setVariable (args, util) {
         const name = `threadVar_${args.name}`;
-        util.stackFrame[name] = args.value;
+        util.thread[name] = args.value;
     }
 
     changeVariable (args, util) {
         const name = `threadVar_${args.name}`;
         const oldNum = Number(util.stackFrame[name]);
         const newNum = oldNum + args.value;
-        if (!util.stackFrame[name] || !oldNum) {
-            util.stackFrame[name] = Number(args.value);
+        if (!util.thread[name] || !oldNum) {
+            util.thread[name] = Number(args.value);
             return;
         }
-        util.stackFrame[name] = newNum;
+        util.thread[name] = newNum;
     }
 
     getVariable (args, util) {
         const name = `threadVar_${args.name}`;
-        const value = util.stackFrame[name];
+        const value = util.thread[name];
         if (!value) return '';
         return value;
     }
