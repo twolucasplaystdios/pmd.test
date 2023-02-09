@@ -1304,6 +1304,19 @@ class JSGenerator {
         }
         for (const fieldName of Object.keys(node.fields)) {
             const field = node.fields[fieldName];
+            if (typeof field !== 'string') {
+                let variable;
+                switch (field.type) {
+                case 'list':
+                    variable = this.referenceVariable(field);
+                    break;
+                case '':
+                    variable = this.descendVariable(field).source;
+                    break;
+                }
+                result += `"${sanitize(fieldName)}":${variable},`;
+                continue;
+            }
             result += `"${sanitize(fieldName)}":"${sanitize(field)}",`;
         } 
         result += `"mutation":${JSON.stringify(node.mutation)},`;
