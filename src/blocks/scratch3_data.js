@@ -73,7 +73,7 @@ class Scratch3DataBlocks {
             args.LIST.id, args.LIST.name);
         const array = validateArray(args.VALUE).array
             .map(v => {
-                if (typeof v === 'boolean') return JSON.stringify(v);
+                if (typeof v === 'object') return JSON.stringify(v);
                 return String(v);
             });
         list.value = array;
