@@ -71,7 +71,12 @@ class Scratch3DataBlocks {
     data_arraylist (args, util) {
         const list = util.target.lookupOrCreateList(
             args.LIST.id, args.LIST.name);
-        list.value = validateArray(args.VALUE).array;
+        const array = validateArray(args.VALUE).array
+            .map(v => {
+                if (typeof v === 'boolean') return JSON.stringify(v);
+                return String(v);
+            });
+        list.value = array;
     }
     data_listforeachnum (args, util) {
         const list = util.target.lookupOrCreateList(
