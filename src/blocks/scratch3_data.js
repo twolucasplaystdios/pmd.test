@@ -61,7 +61,7 @@ class Scratch3DataBlocks {
     data_listisempty (args, util) {
         const list = util.target.lookupOrCreateList(
             args.LIST.id, args.LIST.name);
-        return list.length < 1;
+        return list.value.length < 1;
     }
     data_listarray (args, util) {
         const list = util.target.lookupOrCreateList(
