@@ -954,7 +954,7 @@ class ScriptTreeGenerator {
                 kind: 'list.forEach',
                 num: true,
                 list: this.descendVariable(block, 'LIST', LIST_TYPE),
-                variable: this.descendVariable(block, 'INDEX', SCALAR_TYPE),
+                variable: this.descendVariable(block, 'VARIABLE', SCALAR_TYPE),
                 do: this.descendSubstack(block, 'SUBSTACK')
             };
         case 'data_listforeachitem':
@@ -963,7 +963,7 @@ class ScriptTreeGenerator {
                 kind: 'list.forEach',
                 num: false,
                 list: this.descendVariable(block, 'LIST', LIST_TYPE),
-                variable: this.descendVariable(block, 'VALUE', SCALAR_TYPE),
+                variable: this.descendVariable(block, 'VARIABLE', SCALAR_TYPE),
                 do: this.descendSubstack(block, 'SUBSTACK')
             };
         case 'data_deleteoflist': {
