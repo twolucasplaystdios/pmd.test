@@ -14,6 +14,13 @@ class tempVars {
         this.runtime = runtime;
     }
 
+    getThreadVars (thread) {
+        if (!thread.tempVars) {
+            thread.tempVars = {};
+        }
+        return thread.tempVars;
+    }
+
     /**
      * @returns {object} metadata for this extension and its blocks.
      */
@@ -71,13 +78,13 @@ class tempVars {
     }
 
     setVariable (args, util) {
-        const tempVars = util.thread.tempVars;
+        const tempVars = this.getThreadVars(util.thread);
         const name = `threadVar_${args.name}`;
         tempVars[name] = args.value;
     }
 
     changeVariable (args, util) {
-        const tempVars = util.thread.tempVars;
+        const tempVars = this.getThreadVars(util.thread);
         const name = `threadVar_${args.name}`;
         const oldNum = Number(tempVars[name]);
         const newNum = oldNum + args.value;
@@ -89,7 +96,7 @@ class tempVars {
     }
 
     getVariable (args, util) {
-        const tempVars = util.thread.tempVars;
+        const tempVars = this.getThreadVars(util.thread);
         const name = `threadVar_${args.name}`;
         const value = tempVars[name];
         if (!value) return '';
