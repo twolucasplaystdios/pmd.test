@@ -1713,6 +1713,10 @@ class ScriptTreeGenerator {
             }
         }
         for (const name of Object.keys(block.fields)) {
+            if (typeof block.fields[name].variableType !== 'undefined') {
+                fields[name] = this.descendVariable(block, name, block.fields[name].variableType);
+                continue;
+            }
             fields[name] = block.fields[name].value;
         }
         return {
