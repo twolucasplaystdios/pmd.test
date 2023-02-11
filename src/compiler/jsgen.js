@@ -1296,7 +1296,7 @@ class JSGenerator {
         for (const inputName of Object.keys(node.inputs)) {
             const input = node.inputs[inputName];
             if (inputName.startsWith('SUBSTACK')) {
-                result += `"${sanitize(inputName.toLowerCase())}":(function* () {`;
+                result += `"${sanitize(inputName.toLowerCase())}":(function* () {\n`;
                 this.descendStack(input, new Frame(true));
                 result += '}),';
                 continue;
