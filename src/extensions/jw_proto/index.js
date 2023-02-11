@@ -123,7 +123,7 @@ class jwProto {
         return false;
     }
     labelFunction (args) {
-        args.substack();
+        args.substack1();
     }
     labelCommand () {
     }
