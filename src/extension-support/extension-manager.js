@@ -665,6 +665,7 @@ class ExtensionManager {
                 const realBlockInfo = getBlockInfo(args);
                 Object.keys(realBlockInfo.arguments).forEach(arg => {
                     const expected = normal[realBlockInfo.arguments[arg].type];
+                    if (arg.startsWith('substack')) return
                     if (!(typeof args[arg] === expected)) args[arg] = this._normalize(args[arg], expected);
                 });
                 // TODO: filter args using the keys of realBlockInfo.arguments? maybe only if sandboxed?
