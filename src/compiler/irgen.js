@@ -1698,17 +1698,16 @@ class ScriptTreeGenerator {
         this.script.yields = true;
         const inputs = {};
         const fields = {};
-        const stacks = [];
         for (const name of Object.keys(block.inputs)) {
             inputs[name] = this.descendInputOfBlock(block, name);
         }
         if (blockInfo && blockInfo.branchCount) {
             let branch = 0;
             while (branch < blockInfo.branchCount) {
-                const name = `SUBSTACK${branch + 1}`;
+                let name = `SUBSTACK${branch + 1}`;
                 const substack = this.descendSubstack(block, name);
-                substack.name = name.toLowerCase();
-                stacks.push(substack);
+                name = name.toLowerCase();
+                inputs[name] = substack;
                 branch++;
             }
         }
@@ -1726,8 +1725,7 @@ class ScriptTreeGenerator {
             kind: 'compat',
             opcode: block.opcode,
             inputs,
-            fields,
-            stacks
+            fields
         };
     }
 
