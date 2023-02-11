@@ -69,7 +69,9 @@ const inputs = [
     "operator_regexmatch",
     "data_itemexistslist",
     "data_listisempty",
-    "data_listarray"
+    "data_listarray",
+    "sensing_directionTo",
+    "sensing_distanceTo"
 ];
 
 module.exports = {

@@ -1,5 +1,6 @@
 const Cast = require('../util/cast');
 const Timer = require('../util/timer');
+const MathUtil = require('../util/math-util');
 const getMonitorIdForBlockWithArgs = require('../util/get-monitor-id');
 const { validateRegex } = require('../util/json-block-utilities');
 
@@ -78,8 +79,23 @@ class Scratch3SensingBlocks {
             sensing_thing_is_number: this.thing_is_number,
             sensing_mobile: this.mobile,
             sensing_thing_is_text: this.thing_is_text,
-            sensing_getspritewithattrib: this.getspritewithattrib
+            sensing_getspritewithattrib: this.getspritewithattrib,
+            sensing_directionTo: this.getDirectionToFrom,
+            sensing_distanceTo: this.getDistanceToFrom
         };
+    }
+
+    getDirectionToFrom (args) {
+        const dx = args.x2 - args.x1;
+        const dy = args.y2 - args.y1;
+        const direction = 90 - MathUtil.radToDeg(Math.atan2(dy, dx));
+        return direction;
+    }
+
+    getDistanceToFrom (args) {
+        const dx = args.x2 - args.x1;
+        const dy = args.y2 - args.y1;
+        return Math.sqrt((dx * dx) + (dy * dy));
     }
 
     getspritewithattrib (args, util) {
