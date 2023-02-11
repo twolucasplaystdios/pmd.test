@@ -389,8 +389,12 @@ class Scratch3LooksBlocks {
         };
     }
 
-    getStretchY (args, util) { return util.target._getRenderedDirectionAndScale()[1]; }
-    getStretchX (args, util) { return util.target._getRenderedDirectionAndScale()[0]; }
+    getStretchY (args, util) { 
+        return util.target._getRenderedDirectionAndScale().stretch[1]; 
+    }
+    getStretchX (args, util) { 
+        return util.target._getRenderedDirectionAndScale().stretch[0]; 
+    }
 
     stretchSet (args, util) {
         util.target.setStretch(args.X, args.Y);
