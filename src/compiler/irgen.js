@@ -747,7 +747,7 @@ class ScriptTreeGenerator {
                 variant,
                 returns: true,
                 arguments: args,
-                type: JSON.parse(block.mutation.opType || 'string')
+                type: JSON.parse(block.mutation.opType || '"string"')
             };
         }
 
@@ -1361,7 +1361,7 @@ class ScriptTreeGenerator {
                 variant,
                 returns: false,
                 arguments: args,
-                type: JSON.parse(block.mutation.optype || 'statement')
+                type: JSON.parse(block.mutation.optype || '"statement"')
             };
         }
 
