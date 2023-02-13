@@ -747,7 +747,7 @@ class ScriptTreeGenerator {
                 variant,
                 returns: true,
                 arguments: args,
-                type: block.mutation.opType
+                type: JSON.parse(block.mutation.opType || 'string')
             };
         }
 
@@ -1263,7 +1263,7 @@ class ScriptTreeGenerator {
         case 'procedures_call': {
             // setting of yields will be handled later in the analysis phase
             // patches output previewing
-            if (JSON.parse(block.mutation.returns)) {
+            if (block.mutation.returns === 'true') {
                 block.opcode = 'procedures_call_return';
                 return this.descendStackedBlock(block);
             }
@@ -1361,7 +1361,7 @@ class ScriptTreeGenerator {
                 variant,
                 returns: false,
                 arguments: args,
-                type: JSON.parse(block.mutation.optype)
+                type: JSON.parse(block.mutation.optype || 'statement')
             };
         }
 
