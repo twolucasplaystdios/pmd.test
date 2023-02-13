@@ -182,6 +182,20 @@ class ScriptTreeGenerator {
                 kind: 'constant',
                 value: block.fields.TEXT.value
             };
+        case 'polygon':
+            const points = [];
+            for (let point = 1; point <= block.mutation.points; point++) {
+                const xn = `x${point}`;
+                const yn = `y${point}`;
+                points.push({
+                    x: this.descendInputOfBlock(block, xn),
+                    y: this.descendInputOfBlock(block, yn)
+                });
+            }
+            return {
+                kind: 'math.polygon',
+                points
+            };
 
         case 'argument_reporter_string_number': {
             const name = block.fields.VALUE.value;

@@ -440,6 +440,12 @@ class JSGenerator {
 
         case 'constant':
             return this.safeConstantInput(node.value);
+        case 'math.polygon':
+            const points = node.points.map(point => ({
+                x: this.descendInput(point.x).asNumber(),
+                y: this.descendInput(point.y).asNumber()
+            }));
+            return new TypedInput(JSON.stringify(points), TYPE_UNKNOWN);
 
         case 'keyboard.pressed':
             return new TypedInput(`runtime.ioDevices.keyboard.getKeyIsDown(${this.descendInput(node.key).asSafe()})`, TYPE_BOOLEAN);
