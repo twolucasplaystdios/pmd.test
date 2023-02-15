@@ -1545,7 +1545,8 @@ class Runtime extends EventEmitter {
             }
 
             if (shadowType === 'polygon') {
-                context.inputList.push(`<field name="button">TRUE</field>`);
+                context.inputList.push(`<field name="button">FALSE</field>`);
+                // eslint-disable-next-line max-len
                 context.inputList.push(`<mutation points="${argInfo.nodes}" color="${context.blockJSON.colour}" midle="[0,0]" scale="${argInfo.defaultSize || 30}"/>`);
             }
 
