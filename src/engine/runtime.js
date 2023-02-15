@@ -108,6 +108,12 @@ const ArgumentTypeMap = (() => {
         // They are more analagous to the label on a block.
         fieldType: 'field_image'
     };
+    map[ArgumentType.POLYGON] = {
+        check: 'polygon',
+        shadow: {
+            type: 'polygon'
+        }
+    };
     return map;
 })();
 
@@ -1536,6 +1542,11 @@ class Runtime extends EventEmitter {
             // Boolean inputs don't need to specify a shadow in the XML.
             if (shadowType) {
                 context.inputList.push(`<shadow type="${shadowType}">`);
+            }
+
+            if (shadowType === 'polygon') {
+                context.inputList.push(`<field name="button">FALSE</field>`);
+                context.inputList.push(`<mutation points="${argInfo.nodes}" color="${context.json.colour}" midle="[0,0]" scale="${argInfo.defaultSize || 30}"/>`);
             }
 
             // A <field> displays a dynamic value: a user-editable text field, a drop-down menu, etc.

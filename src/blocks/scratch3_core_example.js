@@ -27,11 +27,6 @@ class Scratch3CoreExample {
             name: 'CoreEx', // This string does not need to be translated as this extension is only used as an example.
             blocks: [
                 {
-                    func: 'MAKE_A_VARIABLE',
-                    blockType: BlockType.BUTTON,
-                    text: 'make a variable (CoreEx)'
-                },
-                {
                     opcode: 'exampleOpcode',
                     blockType: BlockType.REPORTER,
                     text: 'example block'
@@ -44,6 +39,17 @@ class Scratch3CoreExample {
                         CLOCKWISE: {
                             type: ArgumentType.IMAGE,
                             dataURI: blockIconURI
+                        }
+                    }
+                },
+                {
+                    opcode: 'exampleNodeInputs',
+                    blockType: BlockType.COMMAND,
+                    text: 'block with some node inputs ',
+                    arguments: {
+                        CLOCKWISE: {
+                            type: ArgumentType.POLYGON,
+                            nodes: 3
                         }
                     }
                 }

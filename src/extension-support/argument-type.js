@@ -41,7 +41,12 @@ const ArgumentType = {
     /**
      * Inline image on block (as part of the label)
      */
-    IMAGE: 'image'
+    IMAGE: 'image',
+
+    /**
+     * creates an input with n x,y inputs
+     */
+    POLYGON: 'polygon'
 };
 
 module.exports = ArgumentType;
