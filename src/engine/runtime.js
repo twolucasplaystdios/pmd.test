@@ -1546,7 +1546,7 @@ class Runtime extends EventEmitter {
 
             if (shadowType === 'polygon') {
                 context.inputList.push(`<field name="button">FALSE</field>`);
-                context.inputList.push(`<mutation points="${argInfo.nodes}" color="${context.json.colour}" midle="[0,0]" scale="${argInfo.defaultSize || 30}"/>`);
+                context.inputList.push(`<mutation points="${argInfo.nodes}" color="${context.blockJSON.colour}" midle="[0,0]" scale="${argInfo.defaultSize || 30}"/>`);
             }
 
             // A <field> displays a dynamic value: a user-editable text field, a drop-down menu, etc.
