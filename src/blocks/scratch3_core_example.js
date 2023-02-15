@@ -70,6 +70,17 @@ class Scratch3CoreExample {
         return;
     }
 
+    exampleNodeInputs (args, util) {
+        const nodes = args.CLOCKWISE;
+        this.runtime.ext_pen._penUp(util.target);
+        this.runtime.ext_pen.clear();
+        util.target.setXY(nodes[0].x, nodes[0].y);
+        this.runtime.ext_pen._penDown(util.target);
+        nodes.forEach(node => {
+            util.target.setXY(node.x, node.y);
+        });
+        util.target.setXY(nodes[0].x, nodes[0].y);
+    }
 }
 
 module.exports = Scratch3CoreExample;
