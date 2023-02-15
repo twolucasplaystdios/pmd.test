@@ -109,9 +109,9 @@ const ArgumentTypeMap = (() => {
         fieldType: 'field_image'
     };
     map[ArgumentType.POLYGON] = {
-        check: 'polygon',
+        check: 'math_polygon',
         shadow: {
-            type: 'math_polygon'
+            type: 'polygon'
         }
     };
     return map;
