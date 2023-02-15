@@ -562,8 +562,11 @@ class ExtensionManager {
     _normalize (thing, to) {
         switch (to) {
         case 'string': return String(thing);
+        case 'bigint':
         case 'number': return Number(thing);
         case 'boolean': return String(thing) === 'true';
+        case 'function': return new Function(thing);
+        default: return String(thing);
         }
     }
 
@@ -601,7 +604,6 @@ class ExtensionManager {
             blockInfo.func = callBlockFunc;
             break;
         case BlockType.LABEL:
-            log.warn(`Ignoring label "${blockInfo.text}"`);
             break;
         default: {
             if (!blockInfo.opcode) {
@@ -660,7 +662,8 @@ class ExtensionManager {
                     'string': "string",
                     'matrix': "string",
                     'note': "number",
-                    'image': "string"
+                    'image': "string",
+                    'polygon': "object"
                 };
                 const realBlockInfo = getBlockInfo(args);
                 Object.keys(realBlockInfo.arguments).forEach(arg => {
