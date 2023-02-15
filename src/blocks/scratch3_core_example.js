@@ -45,7 +45,7 @@ class Scratch3CoreExample {
                 {
                     opcode: 'exampleNodeInputs',
                     blockType: BlockType.COMMAND,
-                    text: 'block with some node inputs ',
+                    text: 'block with some node inputs [CLOCKWISE]',
                     arguments: {
                         CLOCKWISE: {
                             type: ArgumentType.POLYGON,
