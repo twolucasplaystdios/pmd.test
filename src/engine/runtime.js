@@ -111,7 +111,7 @@ const ArgumentTypeMap = (() => {
     map[ArgumentType.POLYGON] = {
         check: 'polygon',
         shadow: {
-            type: 'polygon'
+            type: 'math_polygon'
         }
     };
     return map;
