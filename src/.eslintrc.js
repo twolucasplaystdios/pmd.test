@@ -21,5 +21,8 @@ module.exports = {
         'one-var': 'off',
         'brace-style': 'off',
         'camelcase': 'off'
-    }
+    },
+    "globals": {
+        "vm": true
+    },
 };
