@@ -1079,7 +1079,7 @@ class Scratch3PenBlocks {
         const penAttributes = this._getPenState(target).penAttributes;
         const size = penAttributes.diameter;
         const stroke = this._getPenColor(target);
-        const style = `fill:${args.COLOR};stroke:${stroke};stroke-width:${size}`;
+        const style = `fill:${Color.decimalToHex(args.COLOR)};stroke:${stroke};stroke-width:${size}`;
         const width = this.runtime.stageWidth;
         const height = this.runtime.stageHeight;
         const lines = args.SHAPE.map(point => (`${point.x},${point.y}`));
