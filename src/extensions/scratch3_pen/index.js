@@ -169,7 +169,8 @@ class Scratch3PenBlocks {
             this.bitmapCanvas.width = this.runtime.stageWidth;
             this.bitmapCanvas.height = this.runtime.stageHeight;
             this.bitmapSkinID = this.runtime.renderer.createBitmapSkin(this.bitmapCanvas, 1);
-            this.vectorSkinID = this.runtime.renderer.createSVGSkin('<svg></svg>');
+            // eslint-disable-next-line max-len
+            this.vectorSkinID = this.runtime.renderer.createSVGSkin(`<svg width="${this.runtime.stageWidth}" height="${this.runtime.stageHeight}"></svg>`);
             this.bitmapDrawableID = this.runtime.renderer.createDrawable(StageLayering.PEN_LAYER);
             this.vectorDrawableID = this.runtime.renderer.createDrawable(StageLayering.PEN_LAYER);
             this.runtime.renderer.updateDrawableSkinId(this.bitmapDrawableID, this.bitmapSkinID);
