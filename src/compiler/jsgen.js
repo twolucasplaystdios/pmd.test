@@ -444,8 +444,8 @@ class JSGenerator {
             let points = JSON.stringify(node.points.map((point, num) => ({x: `x${num}`, y: `y${num}`})));
             for (let num = 0; num < node.points.length; num++) {
                 const point = node.points[num];
-                const xn = `x${num}`;
-                const yn = `y${num}`;
+                const xn = `"x${num}"`;
+                const yn = `"y${num}"`;
                 points = points
                     .replace(xn, this.descendInput(point.x).asNumber())
                     .replace(yn, this.descendInput(point.y).asNumber());
