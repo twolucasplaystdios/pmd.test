@@ -1076,14 +1076,15 @@ class Scratch3PenBlocks {
     drawComplexShape (args, util) {
         const penSkinId = this._getPenLayerID();
         const target = util.target;
+        const penAttributes = this._getPenState(target).penAttributes;
+        const size = penAttributes.diameter;
         const stroke = this._getPenColor(target);
+        const style = `fill:${args.COLOR};stroke:${stroke};stroke-width:${size}`;
         const width = this.runtime.stageWidth;
         const height = this.runtime.stageHeight;
-        const lines = args.SHAPE.map(point => (`l ${point.x} ${point.y}`));
-        lines.push(lines[0]);
-        const path = `m ${target.x} ${target.y} ${lines.join(' ')}`;
-        const container = `<g stroke="${stroke}"><path d="${path}" fill="${args.COLOR}"/></g>`;
-        const svg = `<svg width="${width}" height="${height}">${container}</svg>`;
+        const lines = args.SHAPE.map(point => (`${point.x},${point.y}`));
+        const path = `<polygon points="${lines.join(' ')}" style="${style}" />`;
+        const svg = `<svg width="${width}" height="${height}">${path}</svg>`;
         const pathSkin = this.runtime.renderer.createSVGSkin(svg, [0,0]);
         if (penSkinId >= 0) {
             this.runtime.renderer.penStamp(penSkinId, pathSkin);
