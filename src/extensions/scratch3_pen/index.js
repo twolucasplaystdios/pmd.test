@@ -1078,22 +1078,27 @@ class Scratch3PenBlocks {
     }
 
     drawComplexShape (args, util) {
-        const penSkinId = this._getPenLayerID();
         const target = util.target;
+        const penSkinId = this._getPenLayerID();
         const penAttributes = this._getPenState(target).penAttributes;
+
         const size = penAttributes.diameter;
         const stroke = this._getPenColor(target);
         const style = `fill:${Color.decimalToHex(args.COLOR)};stroke:${stroke};stroke-width:${size}`;
-        const width = this.runtime.stageWidth;
-        const height = this.runtime.stageHeight;
+
         const lines = args.SHAPE.map(point => (`${point.x},${point.y}`));
         const path = `<polygon points="${lines.join(' ')}" style="${style}" />`;
+
+        const width = this.runtime.stageWidth;
+        const height = this.runtime.stageHeight;
         const svg = `<svg width="${width}" height="${height}">${path}</svg>`;
-        this.runtime.renderer.updateSVGSkin(this.vectorSkinID, svg);
-        if (penSkinId >= 0) {
-            this.runtime.renderer.penStamp(penSkinId, this.vectorDrawableID);
-            this.runtime.requestRedraw();
-        }
+
+        this.runtime.renderer.updateSVGSkin(this.vectorSkinID, svg).then(() => {
+            if (penSkinId >= 0) {
+                this.runtime.renderer.penStamp(penSkinId, this.vectorDrawableID);
+                this.runtime.requestRedraw();
+            }
+        });
     }
 }
 
