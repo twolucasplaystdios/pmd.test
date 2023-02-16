@@ -170,8 +170,10 @@ class Scratch3PenBlocks {
             this.bitmapCanvas.height = this.runtime.stageHeight;
             this.bitmapSkinID = this.runtime.renderer.createBitmapSkin(this.bitmapCanvas, 1);
             this.bitmapDrawableID = this.runtime.renderer.createDrawable(StageLayering.PEN_LAYER);
+            this.vectorDrawableID = this.runtime.renderer.createDrawable(StageLayering.PEN_LAYER);
             this.runtime.renderer.updateDrawableSkinId(this.bitmapDrawableID, this.bitmapSkinID);
             this.runtime.renderer.updateDrawableVisible(this.bitmapDrawableID, false);
+            this.runtime.renderer.updateDrawableVisible(this.vectorDrawableID, false);
         }
         return this._penSkinId;
     }
@@ -1086,8 +1088,9 @@ class Scratch3PenBlocks {
         const path = `<polygon points="${lines.join(' ')}" style="${style}" />`;
         const svg = `<svg width="${width}" height="${height}">${path}</svg>`;
         const pathSkin = this.runtime.renderer.createSVGSkin(svg, [0,0]);
+        this.runtime.renderer.updateDrawableSkinId(this.bitmapDrawableID, pathSkin);
         if (penSkinId >= 0) {
-            this.runtime.renderer.penStamp(penSkinId, pathSkin);
+            this.runtime.renderer.penStamp(penSkinId, this.vectorDrawableID);
             this.runtime.requestRedraw();
         }
         this.runtime.renderer.destroySkin(pathSkin);
