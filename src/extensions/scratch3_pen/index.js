@@ -1063,15 +1063,27 @@ class Scratch3PenBlocks {
         }
     }
 
+    _getPenColor () {
+        const rgba = {}
+        const penState = this._getPenState(target);
+        rgba.r = penState.penAttributes.color4f[0] * 255
+        rgba.g = penState.penAttributes.color4f[1] * 255
+        rgba.b = penState.penAttributes.color4f[2] * 255
+        rgba.a = this._alphaToTransparency(penState.penAttributes.color4f[3])
+        return Color.rgbToHex(rgba)
+    }
+
     drawComplexShape (args, util) {
         const penSkinId = this._getPenLayerID();
+        const stroke = this._getPenColor()
         const target = util.target;
         const width = this.runtime.stageWidth;
         const height = this.runtime.stageHeight;
         const lines = args.SHAPE.map(point => (`l ${point.x} ${point.y}`));
         lines.push(lines[0]);
         const path = `m ${target.x} ${target.y} ${lines.join(' ')}`;
-        const svg = `<svg width="${width}" height="${height}"><path d="${path}"/></svg>`;
+        const container = `<g stroke="${stroke}"><path d="${path}" fill=${args.COLOR}/></g>`;
+        const svg = `<svg width="${width}" height="${height}">${container}</svg>`;
         const pathSkin = this.runtime.renderer.createSVGSkin(svg, [0,0]);
         if (penSkinId >= 0) {
             this.runtime.renderer.penStamp(penSkinId, pathSkin);
