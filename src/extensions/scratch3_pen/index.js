@@ -1082,7 +1082,7 @@ class Scratch3PenBlocks {
         const lines = args.SHAPE.map(point => (`l ${point.x} ${point.y}`));
         lines.push(lines[0]);
         const path = `m ${target.x} ${target.y} ${lines.join(' ')}`;
-        const container = `<g stroke="${stroke}"><path d="${path}" fill=${args.COLOR}/></g>`;
+        const container = `<g stroke="${stroke}"><path d="${path}" fill="${args.COLOR}"/></g>`;
         const svg = `<svg width="${width}" height="${height}">${container}</svg>`;
         const pathSkin = this.runtime.renderer.createSVGSkin(svg, [0,0]);
         if (penSkinId >= 0) {
