@@ -1088,7 +1088,7 @@ class Scratch3PenBlocks {
         const path = `<polygon points="${lines.join(' ')}" style="${style}" />`;
         const svg = `<svg width="${width}" height="${height}">${path}</svg>`;
         const pathSkin = this.runtime.renderer.createSVGSkin(svg, [width / 2,height / 2]);
-        this.runtime.renderer.updateDrawableSkinId(this.bitmapDrawableID, pathSkin);
+        this.runtime.renderer.updateDrawableSkinId(this.vectorDrawableID, pathSkin);
         if (penSkinId >= 0) {
             this.runtime.renderer.penStamp(penSkinId, this.vectorDrawableID);
             this.runtime.requestRedraw();
