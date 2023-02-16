@@ -20,7 +20,8 @@ module.exports = {
         'operator-linebreak': 'off',
         'one-var': 'off',
         'brace-style': 'off',
-        'camelcase': 'off'
+        'camelcase': 'off',
+        'comma-spacing': 'off'
     },
     "globals": {
         "vm": true

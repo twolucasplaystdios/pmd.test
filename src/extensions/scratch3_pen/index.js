@@ -467,6 +467,21 @@ class Scratch3PenBlocks {
                     }
                 },
                 {
+                    opcode: 'drawComplexShape',
+                    blockType: BlockType.COMMAND,
+                    text: 'draw triangle [SHAPE] at [X] [Y] with fill [COLOR]',
+                    arguments: {
+                        SHAPE: {
+                            type: ArgumentType.POLYGON,
+                            nodes: 3
+                        },
+                        COLOR: {
+                            type: ArgumentType.COLOR
+                        }
+                    },
+                    hideFromPalette: false
+                },
+                {
                     opcode: 'penDown',
                     blockType: BlockType.COMMAND,
                     text: formatMessage({
@@ -1048,6 +1063,22 @@ class Scratch3PenBlocks {
         }
     }
 
+    drawComplexShape (args, util) {
+        const penSkinId = this._getPenLayerID();
+        const target = util.target;
+        const width = this.runtime.stageWidth;
+        const height = this.runtime.stageHeight;
+        const lines = args.SHAPE.map(point => (`l ${point.x} ${point.y}`));
+        lines.push(lines[0]);
+        const path = `m ${target.x} ${target.y} ${lines.join(' ')}`;
+        const svg = `<svg width="${width}" height="${height}"><path d="${path}"/></svg>`;
+        const pathSkin = this.runtime.renderer.createSVGSkin(svg, [0,0]);
+        if (penSkinId >= 0) {
+            this.runtime.renderer.penStamp(penSkinId, pathSkin);
+            this.runtime.requestRedraw();
+        }
+        this.runtime.renderer.destroySkin(pathSkin);
+    }
 }
 
 module.exports = Scratch3PenBlocks;
