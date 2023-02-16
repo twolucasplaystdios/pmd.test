@@ -469,7 +469,7 @@ class Scratch3PenBlocks {
                 {
                     opcode: 'drawComplexShape',
                     blockType: BlockType.COMMAND,
-                    text: 'draw triangle [SHAPE] at [X] [Y] with fill [COLOR]',
+                    text: 'draw triangle [SHAPE] with fill [COLOR]',
                     arguments: {
                         SHAPE: {
                             type: ArgumentType.POLYGON,
