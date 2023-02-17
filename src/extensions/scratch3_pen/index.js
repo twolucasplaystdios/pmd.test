@@ -1079,7 +1079,7 @@ class Scratch3PenBlocks {
         return Color.rgbToHex(rgba);
     }
 
-    drawComplexShape (args, util) {
+    async drawComplexShape (args, util) {
         const target = util.target;
         const penSkinId = this._getPenLayerID();
         const penAttributes = this._getPenState(target).penAttributes;
@@ -1095,13 +1095,11 @@ class Scratch3PenBlocks {
         const height = this.runtime.stageHeight;
         const svg = `<svg width="${width}" height="${height}">${path}</svg>`;
 
-        this.runtime.renderer.updateSVGSkin(this.vectorSkinID, svg, [0,0]).then(() => {
+        await this.runtime.renderer.updateSVGSkin(this.vectorSkinID, svg, [0,0]).then(() => {
             if (penSkinId >= 0) {
                 this.runtime.renderer.penStamp(penSkinId, this.vectorDrawableID);
                 this.runtime.requestRedraw();
-                return true;
             }
-            return false;
         });
     }
 }
