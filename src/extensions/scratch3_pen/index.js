@@ -1083,7 +1083,6 @@ class Scratch3PenBlocks {
         const target = util.target;
         const penSkinId = this._getPenLayerID();
         const penAttributes = this._getPenState(target).penAttributes;
-        const svgSkin = this.runtime.renderer._allSkins[this.vectorSkinID];
 
         const size = penAttributes.diameter;
         const stroke = this._getPenColor(target);
@@ -1097,8 +1096,6 @@ class Scratch3PenBlocks {
         const svg = `<svg width="${width}" height="${height}">${path}</svg>`;
 
         this.runtime.renderer.updateSVGSkin(this.vectorSkinID, svg, [0,0]);
-        // eslint-disable-next-line no-empty
-        while (!svgSkin._svgImageLoaded) {}
         if (penSkinId >= 0) {
             this.runtime.renderer.penStamp(penSkinId, this.vectorDrawableID);
             this.runtime.requestRedraw();
