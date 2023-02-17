@@ -177,7 +177,7 @@ class Scratch3PenBlocks {
             this.runtime.renderer.updateDrawableSkinId(this.vectorDrawableID, this.vectorSkinID);
             this.runtime.renderer.updateDrawableVisible(this.bitmapDrawableID, false);
             this.runtime.renderer.updateDrawableVisible(this.vectorDrawableID, false);
-            this.runtime.renderer.updateDrawableDirectionScale(this.vectorDrawableID, -90, [100,100]);
+            this.runtime.renderer.updateDrawableDirectionScale(this.vectorDrawableID, 90, [100,100]);
         }
         return this._penSkinId;
     }
