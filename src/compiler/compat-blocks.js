@@ -36,7 +36,8 @@ const stacked = [
     "data_reverselist",
     "data_arraylist",
     "looks_sayHeight",
-    "looks_sayWidth"
+    "looks_sayWidth",
+    "sensing_isUpperCase"
 
 ];
 
@@ -71,9 +72,7 @@ const inputs = [
     "operator_regexmatch",
     "data_itemexistslist",
     "data_listisempty",
-    "data_listarray",
-    "sensing_directionTo",
-    "sensing_distanceTo"
+    "data_listarray"
 ];
 
 module.exports = {

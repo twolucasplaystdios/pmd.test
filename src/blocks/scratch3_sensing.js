@@ -81,8 +81,13 @@ class Scratch3SensingBlocks {
             sensing_thing_is_text: this.thing_is_text,
             sensing_getspritewithattrib: this.getspritewithattrib,
             sensing_directionTo: this.getDirectionToFrom,
-            sensing_distanceTo: this.getDistanceToFrom
+            sensing_distanceTo: this.getDistanceToFrom,
+            sensing_isUpperCase: this.isCharecterUppercase
         };
+    }
+
+    isCharecterUppercase (args) {
+        return (/[A-Z]/g).test(args.text);
     }
 
     getDirectionToFrom (args) {
