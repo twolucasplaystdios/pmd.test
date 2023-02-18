@@ -73,9 +73,7 @@ const inputs = [
     "data_listisempty",
     "data_listarray",
     "sensing_directionTo",
-    "sensing_distanceTo",
-    "looks_sayHeight",
-    "looks_sayWidth"
+    "sensing_distanceTo"
 ];
 
 module.exports = {
