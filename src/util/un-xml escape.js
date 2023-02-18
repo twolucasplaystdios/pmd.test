@@ -7,7 +7,7 @@
  * @return {string} XML-escaped string, for use within an XML tag.
  */
 const xmlEscape = function (safe) {
-    return safe.replace(/&lt;|&gt;|&amp;|&apos;|&quot;/g, c => {
+    return String(safe).replace(/&lt;|&gt;|&amp;|&apos;|&quot;/g, c => {
         switch (c) {
         case '&lt;': return '<';
         case '&gt;': return '>';
