@@ -814,6 +814,30 @@ class ScriptTreeGenerator {
      */
     descendStackedBlock (block) {
         switch (block.opcode) {
+        case 'control_switch':
+            return {
+                kind: 'control.switch',
+                test: this.descendInputOfBlock(block, 'CONDITION'),
+                conditions: this.descendSubstack(block, 'SUBSTACK'),
+                default: []
+            };
+        case 'control_switch_default':
+            return {
+                kind: 'control.switch',
+                test: this.descendInputOfBlock(block, 'CONDITION'),
+                conditions: this.descendSubstack(block, 'SUBSTACK1'),
+                default: this.descendSubstack(block, 'SUBSTACK2')
+            };
+        case 'control_case':
+            return {
+                kind: 'control.case',
+                condition: this.descendInputOfBlock(block, 'CONDITION'),
+                code: this.descendSubstack(block, 'SUBSTACK')
+            };
+        case 'control_exitCase':
+            return {
+                kind: 'control.exitCase'
+            };
         case 'control_all_at_once':
             // In Scratch 3, this block behaves like "if 1 = 1"
             return {

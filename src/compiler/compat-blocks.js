@@ -38,7 +38,6 @@ const stacked = [
     "looks_sayHeight",
     "looks_sayWidth",
     "sensing_isUpperCase"
-
 ];
 
 const inputs = [
@@ -72,7 +71,11 @@ const inputs = [
     "operator_regexmatch",
     "data_itemexistslist",
     "data_listisempty",
-    "data_listarray"
+    "data_listarray",
+    "control_switch",
+    "control_switch_default",
+    "control_case",
+    "control_exitCase"
 ];
 
 module.exports = {

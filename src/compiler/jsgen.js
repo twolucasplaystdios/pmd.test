@@ -814,6 +814,25 @@ class JSGenerator {
             this.source += '}\n';
             break;
         }
+        case 'control.switch':
+            this.source += `switch (${this.descendInput(node.condition).asString()}) {\n`;
+            this.descendStack(node.conditions, new Frame(false));
+            // only add the else branch if it won't be empty
+            // this makes scripts have a bit less useless noise in them
+            if (node.default.length) {
+                this.source += `default:\n`;
+                this.descendStack(node.default, new Frame(false));
+            }
+            this.source += `}\n`;
+            break;
+        case 'control.case':
+            this.source += `case ${this.descendInput(node.condition).asString()}:\n`;
+            this.descendStack(node.code, new Frame(false));
+            this.source += `break;\n`;
+            break;
+        case 'control.exitCase':
+            this.source += `break;\n`;
+            break;
         case 'control.if':
             this.source += `if (${this.descendInput(node.condition).asBoolean()}) {\n`;
             this.descendStack(node.whenTrue, new Frame(false));
