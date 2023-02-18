@@ -75,7 +75,8 @@ const inputs = [
     "control_switch",
     "control_switch_default",
     "control_case",
-    "control_exitCase"
+    "control_exitCase",
+    "control_case_next"
 ];
 
 module.exports = {

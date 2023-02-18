@@ -828,11 +828,19 @@ class ScriptTreeGenerator {
                 conditions: this.descendSubstack(block, 'SUBSTACK1'),
                 default: this.descendSubstack(block, 'SUBSTACK2')
             };
+        case 'control_case_next':
+            return {
+                kind: 'control.case',
+                condition: this.descendInputOfBlock(block, 'CONDITION'),
+                code: this.descendSubstack(block, 'SUBSTACK'),
+                runsNext: true
+            };
         case 'control_case':
             return {
                 kind: 'control.case',
                 condition: this.descendInputOfBlock(block, 'CONDITION'),
-                code: this.descendSubstack(block, 'SUBSTACK')
+                code: this.descendSubstack(block, 'SUBSTACK'),
+                runsNext: false
             };
         case 'control_exitCase':
             return {
