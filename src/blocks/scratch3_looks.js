@@ -385,8 +385,23 @@ class Scratch3LooksBlocks {
             looks_backdropnumbername: this.getBackdropNumberName,
             looks_setStretch: this.stretchSet,
             looks_stretchGetX: this.getStretchX,
-            looks_stretchGetY: this.getStretchY
+            looks_stretchGetY: this.getStretchY,
+            looks_sayWidth: this.getBubbleWidth,
+            looks_sayHeight: this.getBubbleHeight
         };
+    }
+
+    _getBubbleSize (target) {
+        const bubbleState = this._getBubbleState(target);
+        return this.runtime.renderer.getSkinSize(bubbleState.skinId);
+    }
+
+    getBubbleWidth (target) {
+        return this._getBubbleSize(target)[0];
+    }
+
+    getBubbleHeight (target) {
+        return this._getBubbleSize(target)[1];
     }
 
     getStretchY (args, util) { 
