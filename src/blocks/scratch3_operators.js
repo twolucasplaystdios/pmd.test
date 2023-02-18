@@ -1,6 +1,5 @@
 const Cast = require('../util/cast.js');
 const MathUtil = require('../util/math-util.js');
-const unXMLescape = require('../util/un-xml escape');
 const { validateRegex } = require('../util/json-block-utilities');
 
 class Scratch3OperatorsBlocks {
@@ -91,7 +90,7 @@ class Scratch3OperatorsBlocks {
         }
     }
 
-    stringify (args) { return unXMLescape(args.ONE); }
+    stringify (args) { return args.ONE; }
 
     newLine () { return "\n"; }
 
