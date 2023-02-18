@@ -35,9 +35,11 @@ const stacked = [
     "looks_setStretch",
     "data_reverselist",
     "data_arraylist",
-    "looks_sayHeight",
-    "looks_sayWidth",
-    "sensing_isUpperCase"
+    "control_switch",
+    "control_switch_default",
+    "control_case",
+    "control_exitCase",
+    "control_case_next"
 ];
 
 const inputs = [
@@ -72,11 +74,9 @@ const inputs = [
     "data_itemexistslist",
     "data_listisempty",
     "data_listarray",
-    "control_switch",
-    "control_switch_default",
-    "control_case",
-    "control_exitCase",
-    "control_case_next"
+    "looks_sayHeight",
+    "looks_sayWidth",
+    "sensing_isUpperCase"
 ];
 
 module.exports = {
