@@ -815,7 +815,7 @@ class JSGenerator {
             break;
         }
         case 'control.switch':
-            this.source += `switch (${this.descendInput(node.condition).asString()}) {\n`;
+            this.source += `switch (${this.descendInput(node.test).asString()}) {\n`;
             this.descendStack(node.conditions, new Frame(false));
             // only add the else branch if it won't be empty
             // this makes scripts have a bit less useless noise in them
