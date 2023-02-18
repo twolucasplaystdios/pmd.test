@@ -827,7 +827,7 @@ class JSGenerator {
             break;
         case 'control.case':
             this.source += `case ${this.descendInput(node.condition).asString()}:\n`;
-            if (node.runsNext){
+            if (!node.runsNext){
                 this.descendStack(node.code, new Frame(false));
                 this.source += `break;\n`;
             }
