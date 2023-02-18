@@ -396,11 +396,13 @@ class Scratch3LooksBlocks {
         return this.runtime.renderer.getSkinSize(bubbleState.skinId);
     }
 
-    getBubbleWidth (target) {
+    getBubbleWidth (args, util) {
+        const target = util.target;
         return this._getBubbleSize(target)[0];
     }
 
-    getBubbleHeight (target) {
+    getBubbleHeight (args, util) {
+        const target = util.target;
         return this._getBubbleSize(target)[1];
     }
 
