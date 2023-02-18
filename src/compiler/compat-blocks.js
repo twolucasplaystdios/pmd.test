@@ -34,7 +34,9 @@ const stacked = [
     'sound_stopallsounds',
     "looks_setStretch",
     "data_reverselist",
-    "data_arraylist"
+    "data_arraylist",
+    "looks_sayHeight",
+    "looks_sayWidth"
 
 ];
 
