@@ -54,7 +54,7 @@ class Color {
             b = (decimal >> 8) & 0xFF;
             a = decimal & 0xFF;
         }
-        return {r: r, g: g, b: b, a: a > 0 ? a : 255};
+        return {r: r, g: g, b: b, a: a};
     }
 
     /**
