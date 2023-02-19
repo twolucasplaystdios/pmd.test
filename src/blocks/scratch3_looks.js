@@ -329,22 +329,6 @@ class Scratch3LooksBlocks {
     _percentToRatio (percent) {
         return percent / 100;
     }
-    _getLineHeight (size, font) {
-        const temp = document.createElement('span');
-        let ret;
-        temp.setAttribute("style", `
-            margin:0; 
-            padding:0;
-            font-family: ${font};
-            font-size: ${size};`);
-        temp.innerHTML = "A";
-        temp.style.display = 'none';
-    
-        // eslint-disable-next-line prefer-const
-        ret = temp.clientHeight;
-        temp.remove();
-        return ret;
-    }
     _doesFontSuport (size, font) {
         const check = size + 'px ' + font;
         return document.fonts.check(check);
