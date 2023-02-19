@@ -420,13 +420,14 @@ class Scratch3LooksBlocks {
     async setFont (args, util) {
         this._setBubbleProperty(        
             util.target,
-            ['FONT', 'FONT_SIZE', 'LINE_HIEGHT'],
-            [args.font, args.size, this._getLineHeight(args.size, args.font)]
+            ['FONT', 'FONT_SIZE'],
+            [args.font, args.size]
         );
     }
     async setColor (args, util) {
-        if (typeof args.color === 'number') {
-            args.color = Color.decimalToRgb(args.color);
+        const numColor = Cast.toNumber(args.color);
+        if (!isNaN(numColor)) {
+            args.color = Color.decimalToRgb(numColor);
             args.color = `rgba(${args.color.r}, ${args.color.g}, ${args.color.b}, ${args.color.a / 255})`;
         }
         this._setBubbleProperty(
