@@ -76,7 +76,8 @@ const inputs = [
     "data_listarray",
     "looks_sayHeight",
     "looks_sayWidth",
-    "sensing_isUpperCase"
+    "sensing_isUpperCase",
+    "operator_toUpperLowerCase"
 ];
 
 module.exports = {

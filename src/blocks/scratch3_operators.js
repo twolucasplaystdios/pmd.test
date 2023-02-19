@@ -48,13 +48,24 @@ class Scratch3OperatorsBlocks {
             operator_trueBoolean: this.true,
             operator_falseBoolean: this.false,
             operator_randomBoolean: this.randomBoolean,
-            operator_indexOfTextInText: this.indexOfTextInText
+            operator_indexOfTextInText: this.indexOfTextInText,
+            operator_toUpperLowerCase: this.toCase
         };
     }
 
+    toCase (args) {
+        const text = Cast.toString(args.TEXT);
+        switch (args.OPTION) {
+        case 'upper':
+            return text.toUpperCase();
+        case 'lower':
+            return text.toLowerCase();
+        }
+    }
+
     indexOfTextInText (args) {
-        const lookfor = String(args.TEXT1);
-        const searchin = String(args.TEXT2);
+        const lookfor = Cast.toString(args.TEXT1);
+        const searchin = Cast.toString(args.TEXT2);
         let index = 0;
         if (searchin.includes(lookfor)) {
             index = searchin.indexOf(lookfor) + 1;
@@ -71,17 +82,17 @@ class Scratch3OperatorsBlocks {
     }
 
     lerpFunc (args) {
-        const one = isNaN(Number(args.ONE)) ? 0 : Number(args.ONE);
-        const two = isNaN(Number(args.TWO)) ? 0 : Number(args.TWO);
-        const amount = isNaN(Number(args.AMOUNT)) ? 0 : Number(args.AMOUNT);
+        const one = isNaN(Cast.toNumber(args.ONE)) ? 0 : Cast.toNumber(args.ONE);
+        const two = isNaN(Cast.toNumber(args.TWO)) ? 0 : Cast.toNumber(args.TWO);
+        const amount = isNaN(Cast.toNumber(args.AMOUNT)) ? 0 : Cast.toNumber(args.AMOUNT);
         let lerped = one;
         lerped += ((two - one) / (amount / (amount * amount)));
         return lerped;
     }
     advMath (args) {
-        const one = isNaN(Number(args.ONE)) ? 0 : Number(args.ONE);
-        const two = isNaN(Number(args.TWO)) ? 0 : Number(args.TWO);
-        const operator = String(args.OPTION);
+        const one = isNaN(Cast.toNumber(args.ONE)) ? 0 : Cast.toNumber(args.ONE);
+        const two = isNaN(Cast.toNumber(args.TWO)) ? 0 : Cast.toNumber(args.TWO);
+        const operator = Cast.toString(args.OPTION);
         switch (operator) {
         case "^": return one ** two;
         case "root": return one ** 1 / two;
@@ -95,16 +106,16 @@ class Scratch3OperatorsBlocks {
     newLine () { return "\n"; }
 
     readLineInMultilineText (args) {
-        const line = (Number(args.LINE) ? Number(args.LINE) : 1) - 1;
-        const text = String(args.TEXT);
+        const line = (Cast.toNumber(args.LINE) ? Cast.toNumber(args.LINE) : 1) - 1;
+        const text = Cast.toString(args.TEXT);
         const readline = text.split("\n")[line] || "";
         return readline;
     }
 
     getLettersFromIndexToIndexInText (args) {
-        const index1 = (Number(args.INDEX1) ? Number(args.INDEX1) : 1) - 1;
-        const index2 = (Number(args.INDEX2) ? Number(args.INDEX2) : 1) - 1;
-        const string = String(args.TEXT);
+        const index1 = (Cast.toNumber(args.INDEX1) ? Cast.toNumber(args.INDEX1) : 1) - 1;
+        const index2 = (Cast.toNumber(args.INDEX2) ? Cast.toNumber(args.INDEX2) : 1) - 1;
+        const string = Cast.toString(args.TEXT);
         const substring = string.substring(index1, index2);
         return substring;
     }
