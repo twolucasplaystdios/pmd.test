@@ -4,25 +4,25 @@
  * @return {object} Object representing useful parts of this mutation.
  */
 const mutatorTagToObject = function (dom) {
-    function parseChildren(obj, dom) {
+    const parseChildren = (obj, dom) => {
         for (let i = 0; i < dom.children.length; i++) {
             obj.children.push(
                 mutatorTagToObject(dom.children[i])
             );
         }
-        return obj.children[0]
-    }
+        return obj.children[0];
+    };
     let obj = Object.create(null);
     obj.tagName = dom.tagName;
     obj.children = [];
-    if (!Boolean(dom.tagName)) {
-        console.warn('invalid dom; skiping to reading children')
-        obj = parseChildren(obj, dom)
-        return obj
+    if (!dom.tagName) {
+        console.warn('invalid dom; skiping to reading children');
+        obj = parseChildren(obj, dom);
+        return obj;
     }
     for (let idx = 0; idx < dom.attributes.length; idx++) {
-        const attrib = dom.attributes[idx]
-        const attribName = attrib.name
+        const attrib = dom.attributes[idx];
+        const attribName = attrib.name;
         if (attribName === 'xmlns') continue;
         obj[attribName] = attrib.value;
         // Note: the capitalization of block info in the following lines is important.
@@ -33,7 +33,7 @@ const mutatorTagToObject = function (dom) {
         }
     }
 
-    parseChildren(obj, dom)
+    parseChildren(obj, dom);
     return obj;
 };
 
@@ -52,6 +52,9 @@ const mutationAdpater = function (mutation) {
         const parser = new DOMParser();
         const doc = parser.parseFromString(mutation, "application/xml");
         mutationParsed = doc;
+        if (mutationParsed.nodeName === '#document') {
+            mutationParsed = mutationParsed.children[0];
+        }
     }
     
     return mutatorTagToObject(mutationParsed);
