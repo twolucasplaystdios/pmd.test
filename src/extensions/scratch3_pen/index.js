@@ -752,8 +752,7 @@ class Scratch3PenBlocks {
         ctx.save();
         ctx.translate(width / 2, height / 2);
 
-        const rgb = Cast.toRgbColorObject(args.COLOR);
-        const hex = Color.rgbToHex(rgb);
+        const hex = Color.decimalToHex(args.COLOR);
         ctx.fillStyle = hex;
         ctx.strokeStyle = ctx.fillStyle;
         ctx.fillRect(args.X, -args.Y, args.WIDTH, args.HEIGHT);
