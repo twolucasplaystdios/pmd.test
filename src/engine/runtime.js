@@ -1298,9 +1298,9 @@ class Runtime extends EventEmitter {
         switch (blockInfo.blockType) {
         case BlockType.COMMAND:
             blockJSON.outputShape = ScratchBlocksConstants.OUTPUT_SHAPE_SQUARE;
-            blockJSON.previousStatement = null; // null = available connection; undefined = hat
+            blockJSON.previousStatement = 'normal'; // null = available connection; undefined = hat
             if (!blockInfo.isTerminal) {
-                blockJSON.nextStatement = null; // null = available connection; undefined = terminal
+                blockJSON.nextStatement = 'normal'; // null = available connection; undefined = terminal
             }
             break;
         case BlockType.REPORTER:
