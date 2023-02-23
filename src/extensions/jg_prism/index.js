@@ -481,14 +481,6 @@ class JgPrismBlocks {
             result = e;
             console.error(e)
         }
-        let canJsonParse = true;
-        try {
-            JSON.parse(result);
-        } catch {
-            canJsonParse = false;
-        }
-        if (canJsonParse) return JSON.parse(result);
-        // otherwise
         return result;
     }
     evaluate3(args, util) {
