@@ -169,15 +169,9 @@ class Scratch3PenBlocks {
             this.bitmapCanvas.width = this.runtime.stageWidth;
             this.bitmapCanvas.height = this.runtime.stageHeight;
             this.bitmapSkinID = this.runtime.renderer.createBitmapSkin(this.bitmapCanvas, 1);
-            // eslint-disable-next-line max-len
-            this.vectorSkinID = this.runtime.renderer.createSVGSkin(`<svg width="${this.runtime.stageWidth}" height="${this.runtime.stageHeight}"></svg>`);
             this.bitmapDrawableID = this.runtime.renderer.createDrawable(StageLayering.PEN_LAYER);
-            this.vectorDrawableID = this.runtime.renderer.createDrawable(StageLayering.PEN_LAYER);
             this.runtime.renderer.updateDrawableSkinId(this.bitmapDrawableID, this.bitmapSkinID);
-            this.runtime.renderer.updateDrawableSkinId(this.vectorDrawableID, this.vectorSkinID);
             this.runtime.renderer.updateDrawableVisible(this.bitmapDrawableID, false);
-            this.runtime.renderer.updateDrawableVisible(this.vectorDrawableID, false);
-            this.runtime.renderer.updateDrawableDirectionScale(this.vectorDrawableID, 0, [100,100]);
         }
         return this._penSkinId;
     }
@@ -714,9 +708,7 @@ class Scratch3PenBlocks {
         this.printTextAttribute.color = hex;
     }
 
-    printText (args, util) {
-        const penSkinId = this._getPenLayerID(); // 获取画笔图层ID
-
+    printText (args) {
         const width = this.runtime.stageWidth;
         const height = this.runtime.stageHeight;
         const ctx = this.bitmapCanvas.getContext('2d');
@@ -734,20 +726,14 @@ class Scratch3PenBlocks {
         ctx.fillText(args.TEXT, args.X, -args.Y);
         ctx.restore();
 
-        const printSkin = util.target.runtime.renderer._allSkins[this.bitmapSkinID];
-        const imageData = ctx.getImageData(0, 0, width, height);
-        printSkin._setTexture(imageData);
-        this.runtime.renderer.penStamp(penSkinId, this.bitmapDrawableID);
-
-        this.runtime.requestRedraw();
+        this._drawContextToPen(ctx);
     }
 
-    drawRect (args, util) {
-        const penSkinId = this._getPenLayerID(); // 获取画笔图层ID
-
-        const width = util.target.runtime.constructor.STAGE_WIDTH;
-        const height = util.target.runtime.constructor.STAGE_HEIGHT;
+    drawRect (args) {
         const ctx = this.bitmapCanvas.getContext('2d');
+        const width = this.runtime.constructor.STAGE_WIDTH;
+        const height = this.runtime.constructor.STAGE_HEIGHT;
+
         ctx.clearRect(0, 0, width, height);
         ctx.save();
         ctx.translate(width / 2, height / 2);
@@ -758,8 +744,14 @@ class Scratch3PenBlocks {
         ctx.fillRect(args.X, -args.Y, args.WIDTH, args.HEIGHT);
         ctx.restore();
 
-        const printSkin = util.target.runtime.renderer._allSkins[this.bitmapSkinID];
-        const imageData = ctx.getImageData(0, 0, width, height);
+        this._drawContextToPen(ctx);
+    }
+
+    _drawContextToPen (ctx) {
+        const penSkinId = this._getPenLayerID();
+        
+        const printSkin = this.runtime.renderer._allSkins[this.bitmapSkinID];
+        const imageData = ctx.getImageData();
         printSkin._setTexture(imageData);
         this.runtime.renderer.penStamp(penSkinId, this.bitmapDrawableID);
 
@@ -1080,25 +1072,30 @@ class Scratch3PenBlocks {
 
     drawComplexShape (args, util) {
         const target = util.target;
-        const penSkinId = this._getPenLayerID();
         const penAttributes = this._getPenState(target).penAttributes;
+        const penColor = this._getPenColor(util.target);
 
-        const size = penAttributes.diameter;
-        const stroke = this._getPenColor(target);
-        const style = `fill:${Color.decimalToHex(args.COLOR)};stroke:${stroke};stroke-width:${size}`;
+        const ctx = this.bitmapCanvas.getContext('2d');
+        const width = this.runtime.constructor.STAGE_WIDTH;
+        const height = this.runtime.constructor.STAGE_HEIGHT;
 
-        const lines = args.SHAPE.map(point => (`${point.x},${point.y}`));
-        const path = `<polygon points="${lines.join(' ')}" style="${style}" />`;
+        ctx.clearRect(0, 0, width, height);
+        ctx.save();
+        ctx.translate(width / 2, height / 2);
 
-        const width = this.runtime.stageWidth;
-        const height = this.runtime.stageHeight;
-        const svg = `<svg width="${width}" height="${height}">${path}</svg>`;
+        const hex = Color.decimalToHex(args.COLOR);
+        ctx.fillStyle = hex;
+        ctx.strokeStyle = penColor;
+        ctx.lineWidth = penAttributes.diameter;
 
-        this.runtime.renderer.updateSVGSkin(this.vectorSkinID, svg, [0,0]);
-        if (penSkinId >= 0) {
-            this.runtime.renderer.penStamp(penSkinId, this.vectorDrawableID);
-            this.runtime.requestRedraw();
-        }
+        ctx.beginPath();
+        ctx.moveTo(0, 0);
+        args.shape.forEach(pos => ctx.lineTo(pos.x,pos.y));
+        ctx.closePath();
+        ctx.stroke();
+        ctx.restore();
+
+        this._drawContextToPen(ctx);
     }
 }
 
