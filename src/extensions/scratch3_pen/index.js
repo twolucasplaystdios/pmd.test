@@ -709,6 +709,9 @@ class Scratch3PenBlocks {
     }
 
     printText (args) {
+        // we dont actualy need the id here, we just need the canvas and bitmap to be made
+        this._getPenLayerID();
+
         const width = this.runtime.stageWidth;
         const height = this.runtime.stageHeight;
         const ctx = this.bitmapCanvas.getContext('2d');
@@ -730,6 +733,9 @@ class Scratch3PenBlocks {
     }
 
     drawRect (args) {
+        // we dont actualy need the id here, we just need the canvas and bitmap to be made
+        this._getPenLayerID();
+
         const ctx = this.bitmapCanvas.getContext('2d');
         const width = this.runtime.constructor.STAGE_WIDTH;
         const height = this.runtime.constructor.STAGE_HEIGHT;
@@ -1071,6 +1077,9 @@ class Scratch3PenBlocks {
     }
 
     drawComplexShape (args, util) {
+        // we dont actualy need the id here, we just need the canvas and bitmap to be made
+        this._getPenLayerID();
+        
         const target = util.target;
         const penAttributes = this._getPenState(target).penAttributes;
         const penColor = this._getPenColor(util.target);
@@ -1090,7 +1099,7 @@ class Scratch3PenBlocks {
 
         ctx.beginPath();
         ctx.moveTo(0, 0);
-        args.shape.forEach(pos => ctx.lineTo(pos.x,pos.y));
+        args.SHAPE.forEach(pos => ctx.lineTo(pos.x,pos.y));
         ctx.closePath();
         ctx.stroke();
         ctx.restore();
