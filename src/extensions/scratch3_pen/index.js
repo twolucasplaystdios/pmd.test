@@ -1085,6 +1085,7 @@ class Scratch3PenBlocks {
         const target = util.target;
         const penAttributes = this._getPenState(target).penAttributes;
         const penColor = this._getPenColor(util.target);
+        const firstPos = args.SHAPE.at(-1);
 
         const ctx = this.bitmapCanvas.getContext('2d');
         const width = this.runtime.constructor.STAGE_WIDTH;
@@ -1100,7 +1101,7 @@ class Scratch3PenBlocks {
         ctx.lineWidth = penAttributes.diameter;
 
         ctx.beginPath();
-        ctx.moveTo(0, 0);
+        ctx.moveTo(firstPos.x,firstPos.y);
         args.SHAPE.forEach(pos => {
             ctx.lineTo(pos.x,pos.y);
         });
