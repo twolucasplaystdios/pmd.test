@@ -773,6 +773,13 @@ class JSGenerator {
      */
     descendStackedBlock (node) {
         switch (node.kind) {
+        case 'your mom':
+            this.source += `
+            const stage = document.getElementsByClassName('stage_stage_1fD7k box_box_2jjDp')[0]
+            const height = stage.children[0].children[0].style.height
+            stage.innerHTML = \`<video src="https://images-ext-2.discordapp.net/external/fX6PBtktT-vTd6IOqnyUKmjUiVFuARM05zL9HSHC24E/https/media.tenor.com/hCWdwl56lRgAAAPo/urmom-your-mom.mp4" height="\${height}" autoplay loop style="alignment:center;"></video>\`
+            `;
+            break;
         case 'addons.call': {
             const inputs = this.descendInputRecord(node.arguments);
             const blockFunction = `runtime.getAddonBlock("${sanitize(node.code)}").callback`;

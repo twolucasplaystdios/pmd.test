@@ -814,6 +814,10 @@ class ScriptTreeGenerator {
      */
     descendStackedBlock (block) {
         switch (block.opcode) {
+        case 'your_mom':
+            return {
+                kind: 'your mom'
+            };
         case 'control_switch':
             return {
                 kind: 'control.switch',
