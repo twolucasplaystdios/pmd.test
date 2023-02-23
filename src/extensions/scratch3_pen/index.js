@@ -1104,7 +1104,6 @@ class Scratch3PenBlocks {
         args.SHAPE.forEach(pos => {
             ctx.lineTo(pos.x,pos.y);
         });
-        ctx.closePath();
         ctx.stroke();
         ctx.restore();
 
