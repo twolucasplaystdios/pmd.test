@@ -14,17 +14,6 @@ class execute {
         // must have there internal vars defined externaly
         // so that the code can not access nor edit them
         const thisFuncs = {
-            // extension blocks, cant really moderate this sadly
-            get extensions () {
-                const extensions = {};
-                const keys = Object.keys(runtime);
-                keys.filter(name => name.startsWith('ext_'))
-                    .forEach(name => {
-                        const extName = name.replace('ext_', '');
-                        extensions[extName] = runtime[name];
-                    });
-                return extensions;
-            },
             goto: target.setXY,
             set xPosition (newPos) {
                 target.setXY(newPos, target.y);
