@@ -390,6 +390,13 @@ class colorBlocks {
         };
     }
 
+    defaultBlack () {
+        return JSON.stringify(Color.RGB_BLACK);
+    }
+    defaultWhite () {
+        return JSON.stringify(Color.RGB_WHITE);
+    }
+
     csbMaker (args) {
         const color = {
             color: args.h,
@@ -422,6 +429,7 @@ class colorBlocks {
         const color2 = this._validateColor(args.color2, 'rgbObj');
         return JSON.stringify(Color.mixRgb(color1, color2, args.percent));
     }
+
     rgbToDecimal (args) {
         const color = this._validateColor(args.color, 'rgbObj');
         return Color.rgbToDecimal(color);
