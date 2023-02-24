@@ -295,7 +295,7 @@ class colorBlocks {
                 },
                 "---",
                 {
-                    blockblockType: BlockType.LABEL,
+                    blockType: BlockType.LABEL,
                     text: 'other'
                 },
                 {
