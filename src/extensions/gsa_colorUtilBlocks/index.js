@@ -137,15 +137,17 @@ class colorBlocks {
                 {
                     opcode: 'defaultBlack',
                     text: 'black',
+                    disableMonitor: true,
                     blockType: BlockType.REPORTER
                 },
                 {
                     opcode: 'defaultWhite',
                     text: 'white',
+                    disableMonitor: true,
                     blockType: BlockType.REPORTER
                 },
                 {
-                    type: BlockType.LABEL,
+                    blockType: BlockType.LABEL,
                     text: 'rgb'
                 },
                 {
@@ -182,7 +184,7 @@ class colorBlocks {
                     blockType: BlockType.REPORTER
                 },
                 {
-                    type: BlockType.LABEL,
+                    blockType: BlockType.LABEL,
                     text: 'hex'
                 },
                 {
@@ -219,7 +221,7 @@ class colorBlocks {
                     blockType: BlockType.REPORTER
                 },
                 {
-                    type: BlockType.LABEL,
+                    blockType: BlockType.LABEL,
                     text: 'decimal'
                 },
                 {
@@ -256,7 +258,7 @@ class colorBlocks {
                     blockType: BlockType.REPORTER
                 },
                 {
-                    type: BlockType.LABEL,
+                    blockType: BlockType.LABEL,
                     text: 'hsv'
                 },
                 {
@@ -294,7 +296,7 @@ class colorBlocks {
                 },
                 "---",
                 {
-                    type: BlockType.LABEL,
+                    blockblockType: BlockType.LABEL,
                     text: 'other'
                 },
                 {
