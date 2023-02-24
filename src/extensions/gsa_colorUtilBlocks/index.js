@@ -44,8 +44,8 @@ class colorBlocks {
         const validRgb = () => !(typeof parsed.r === 'number') || 
             !(typeof parsed.g === 'number') || 
             !(typeof parsed.b === 'number');
-        const validHex = () => typeof json === 'string' && !validJson;
-        const validDecimal = () => typeof json === 'number';
+        const validHex = () => !validJson && json.startsWith('#');
+        const validDecimal = () => !validJson && !isNaN(Number(parsed));
 
         const validAlphaSmall = () => typeof parsed.a === 'number';
         const validAlphaLarge = () => typeof parsed.alpha === 'number';
