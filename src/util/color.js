@@ -33,7 +33,9 @@ class Color {
             decimal += 0xFFFFFF + 1;
         }
         let hex = Number(decimal).toString(16);
-        hex = `#${'00000000'.slice(0, 8 - hex.length)}${hex}`;
+        let zeros = '000000';
+        if (hex.length > 6) zeros = '00000000';
+        hex = `#${zeros.slice(0, zeros.length - hex.length)}${hex}`;
         return hex;
     }
 
