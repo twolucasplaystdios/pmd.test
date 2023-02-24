@@ -29,7 +29,7 @@ class colorBlocks {
     _validateColor (json, shouldBe) {
         const parsedResult = validateJSON(json);
         const validJson = parsedResult.isValid;
-        let parsed = parsedResult.json;
+        let parsed = parsedResult.object;
         const validCsbFull = () => !(typeof parsed.color === 'number') || 
             !(typeof parsed.saturation === 'number') || 
             !(typeof parsed.brightness === 'number');
