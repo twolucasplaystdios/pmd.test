@@ -320,9 +320,9 @@ class colorBlocks {
     }
     rgbMaker (args) {
         const color = {
-            r: args.h,
-            g: args.s,
-            b: args.v
+            r: args.r,
+            g: args.g,
+            b: args.b
         };
         if (!isNaN(args.a)) color.a = args.a;
         return JSON.stringify(color);
