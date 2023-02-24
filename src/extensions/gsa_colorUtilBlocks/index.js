@@ -249,7 +249,7 @@ class colorBlocks {
                 },
                 {
                     opcode: 'rgbMaker',
-                    text: 'r: [h] g: [s] b: [v] s: [a]',
+                    text: 'r: [r] g: [g] b: [b] s: [a]',
                     arguments: {
                         r: {
                             type: ArgumentType.NUMBER,
