@@ -347,26 +347,26 @@ class colorBlocks {
     }
     hexToDecimal (args) {
         const color = args.color;
-        return Color.rgbToDecimal(color);
+        return Color.hexToDecimal(color);
     }
     hexToRgb (args) {
-        const color = args.color;
+        const color = Color.hexToRgb(args.color);
         return JSON.stringify(color);
     }
     hexToHsv (args) {
-        const color = args.color;
+        const color = Color.hexToRgb(args.color);
         return JSON.stringify(Color.rgbToHsv(color));
     }
     decimalToHex (args) {
         const color = Number(args.color);
-        return Color.rgbToHex(color);
+        return Color.decimalToHex(color);
     }
     decimalToRgb (args) {
-        const color = Number(args.color);
+        const color = Color.decimalToRgb(Number(args.color));
         return JSON.stringify(color);
     }
     decimalToHsv (args) {
-        const color = Number(args.color);
+        const color = Color.decimalToRgb(Number(args.color));
         return JSON.stringify(Color.rgbToHsv(color));
     }
     hsvToHex (args) {
