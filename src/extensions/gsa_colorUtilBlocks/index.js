@@ -421,7 +421,7 @@ class colorBlocks {
     mixColors (args) {
         const color1 = this._validateColor(args.color1, 'rgbObj');
         const color2 = this._validateColor(args.color2, 'rgbObj');
-        return Color.mixRgb(color1, color2, args.percent);
+        return JSON.stringify(Color.mixRgb(color1, color2, args.percent));
     }
     rgbToDecimal (args) {
         const color = this._validateColor(args.color, 'rgbObj');
