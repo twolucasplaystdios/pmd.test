@@ -302,11 +302,11 @@ class colorBlocks {
 
     csbMaker (args) {
         const color = {
-            color: args.h,
-            saturation: args.s,
-            brightness: args.v
+            color: args.h * 360 / 100,
+            saturation: args.s / 100,
+            brightness: args.v / 100
         };
-        if (!isNaN(args.a)) color.transparency = args.a;
+        if (!isNaN(args.a)) color.transparency = args.a / 100;
         return JSON.stringify(color);
     }
     hsvMaker (args) {
