@@ -334,15 +334,15 @@ class colorBlocks {
     }
 
     rgbToDecimal (args) {
-        const color = validateJSON(args.color);
+        const color = validateJSON(args.color).object;
         return Color.rgbToDecimal(color);
     }
     rgbToHex (args) {
-        const color = validateJSON(args.color);
+        const color = validateJSON(args.color).object;
         return Color.rgbToHex(color);
     }
     rgbToHsv (args) {
-        const color = validateJSON(args.color);
+        const color = validateJSON(args.color).object;
         return JSON.stringify(Color.rgbToHsv(color));
     }
     hexToDecimal (args) {
@@ -370,15 +370,15 @@ class colorBlocks {
         return JSON.stringify(Color.rgbToHsv(color));
     }
     hsvToHex (args) {
-        const color = Color.hsvToRgb(validateJSON(args.color));
+        const color = Color.hsvToRgb(validateJSON(args.color).object);
         return Color.rgbToHex(color);
     }
     hsvToRgb (args) {
-        const color = Color.hsvToRgb(validateJSON(args.color));
+        const color = Color.hsvToRgb(validateJSON(args.color).object);
         return JSON.stringify(color);
     }
     hsvToDecimal (args) {
-        const color = Color.hsvToRgb(validateJSON(args.color));
+        const color = Color.hsvToRgb(validateJSON(args.color).object);
         return Color.rgbToDecimal(color);
     }
 }
