@@ -49,10 +49,10 @@ class Color {
             b = decimal & 0xFF,
             a = 255;
         if (len > 6) {
-            r = (decimal >> 24) & 0xFF;
-            g = (decimal >> 16) & 0xFF;
-            b = (decimal >> 8) & 0xFF;
-            a = decimal & 0xFF;
+            a = (decimal >> 24) & 0xFF;
+            r = (decimal >> 16) & 0xFF;
+            g = (decimal >> 8) & 0xFF;
+            b = decimal & 0xFF;
         }
         return {r: r, g: g, b: b, a: a};
     }
@@ -112,7 +112,7 @@ class Color {
      */
     static rgbToDecimal (rgb) {
         if (typeof rgb.a === 'number') {
-            return (rgb.r << 24) + (rgb.g << 16) + (rgb.b << 8) + rgb.a;
+            return (rgb.a << 24) + (rgb.r << 16) + (rgb.g << 8) + rgb.b;
         }
         return (rgb.r << 16) + (rgb.g << 8) + rgb.b;
     }
