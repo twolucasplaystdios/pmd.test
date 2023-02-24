@@ -26,103 +26,6 @@ class colorBlocks {
     deafultHex = '#ff0000';
     deafultDecimal = '16711680';
 
-    _validateColor (json, shouldBe) {
-        const parsedResult = validateJSON(json);
-        let parsed = parsedResult.object;
-        const validCsbFull = () => !(typeof parsed.color === 'number') || 
-            !(typeof parsed.saturation === 'number') || 
-            !(typeof parsed.brightness === 'number');
-        const validCsbPartial = () => !(typeof parsed.c === 'number') || 
-            !(typeof parsed.s === 'number') || 
-            !(typeof parsed.b === 'number');
-        const validHsvObj = () => !(typeof parsed.h === 'number') || 
-            !(typeof parsed.s === 'number') || 
-            !(typeof parsed.v === 'number');
-
-        const validHsv = () => !validCsbFull() && !validCsbPartial() && !validHsvObj();
-        const validRgb = () => !(typeof parsed.r === 'number') || 
-            !(typeof parsed.g === 'number') || 
-            !(typeof parsed.b === 'number');
-        const validHex = () => json.startsWith('#');
-        const validDecimal = () => !isNaN(Number(parsed));
-
-        const validAlphaSmall = () => typeof parsed.a === 'number';
-        const validAlphaLarge = () => typeof parsed.alpha === 'number';
-        const validtransparencySmall = () => typeof parsed.t === 'number';
-        const validtransparencyLarge = () => typeof parsed.transparency === 'number';
-        switch (shouldBe) {
-        case 'rgbObj': {
-            if (validHsv()) parsed = Color.hsvToRgb(this._validateColor(json, 'hsvObg'));
-            if (validHex()) parsed = Color.hexToRgb(this._validateColor(json, 'hex'));
-            if (validDecimal()) parsed = Color.decimalToRgb(this._validateColor(json, 'decimal'));
-            if (!validRgb()) return this.RGB_BLACK;
-            if (validAlphaLarge) {
-                parsed.a = parsed.alpha;
-            } else if (validtransparencySmall) {
-                parsed.a = parsed.t / 100;
-            } else if (validtransparencyLarge) {
-                parsed.a = parsed.transparency / 100;
-            }
-            return parsed;
-        }
-        case 'hsvObj': {
-            if (validRgb()) parsed = Color.rgbToHsv(this._validateColor(json, 'rgbObg'));
-            if (validHex()) parsed = Color.rgbToHsv(Color.hexToRgb(this._validateColor(json, 'hex')));
-            if (validDecimal()) parsed = Color.rgbToHsv(Color.decimalToRgb(this._validateColor(json, 'decimal')));
-            if (!validHsv()) return this.HSV_BLACK;
-            const res = {};
-            if (validAlphaSmall()) {
-                res.a = parsed.a;
-            } else if (validAlphaLarge()) {
-                res.a = parsed.alpha;
-            } else if (validtransparencySmall()) {
-                res.a = parsed.t / 100;
-            } else if (validtransparencyLarge()) {
-                res.a = parsed.transparency / 100;
-            }
-            if (validCsbFull()) {
-                res.h = parsed.color * 360 / 100;
-                res.s = parsed.saturation / 100;
-                res.v = parsed.brightness / 100;
-            } else if (validCsbPartial()) {
-                res.h = parsed.c * 360 / 100;
-                res.s = parsed.s / 100;
-                res.v = parsed.b / 100;
-            } else if (validHsvObj()) {
-                res.h = parsed.h;
-                res.s = parsed.s;
-                res.v = parsed.v;
-            }
-            return res;
-        }
-        case 'decimal': {
-            if (validRgb()) {
-                parsed = Color.rgbToDecimal(this._validateColor(json, 'rgbObg'));
-            } else if (validHsv()) {
-                parsed = Color.rgbToDecimal(Color.hsvToRgb(this._validateColor(json, 'hsvObg')));
-            } else if (validHex()) {
-                parsed = Color.hexToDecimal(this._validateColor(json, 'hex'));
-            } else {
-                parsed = json;
-            }
-
-            return Number(parsed);
-        }
-        case 'hex': {
-            if (validRgb()) {
-                parsed = Color.rgbToHex(this._validateColor(json, 'rgbObg'));
-            } else if (validHsv()) {
-                parsed = Color.rgbToHex(Color.hsvToRgb(this._validateColor(json, 'hsvObg')));
-            } else if (validDecimal()) {
-                parsed = Color.decimalToHex(this._validateColor(json, 'decimal'));
-            } else {
-                parsed = json;
-            }
-            return String(parsed);
-        }
-        }
-    }
-
     /**
      * @returns {object} metadata for this extension and its blocks.
      */
@@ -431,51 +334,51 @@ class colorBlocks {
     }
 
     rgbToDecimal (args) {
-        const color = this._validateColor(args.color, 'rgbObj');
+        const color = validateJSON(args.color);
         return Color.rgbToDecimal(color);
     }
     rgbToHex (args) {
-        const color = this._validateColor(args.color, 'rgbObj');
+        const color = validateJSON(args.color);
         return Color.rgbToHex(color);
     }
     rgbToHsv (args) {
-        const color = this._validateColor(args.color, 'rgbObj');
+        const color = validateJSON(args.color);
         return JSON.stringify(Color.rgbToHsv(color));
     }
     hexToDecimal (args) {
-        const color = this._validateColor(args.color, 'rgbObj');
+        const color = args.color;
         return Color.rgbToDecimal(color);
     }
     hexToRgb (args) {
-        const color = this._validateColor(args.color, 'rgbObj');
+        const color = args.color;
         return JSON.stringify(color);
     }
     hexToHsv (args) {
-        const color = this._validateColor(args.color, 'rgbObj');
+        const color = args.color;
         return JSON.stringify(Color.rgbToHsv(color));
     }
     decimalToHex (args) {
-        const color = this._validateColor(args.color, 'rgbObj');
+        const color = Number(args.color);
         return Color.rgbToHex(color);
     }
     decimalToRgb (args) {
-        const color = this._validateColor(args.color, 'rgbObj');
+        const color = Number(args.color);
         return JSON.stringify(color);
     }
     decimalToHsv (args) {
-        const color = this._validateColor(args.color, 'rgbObj');
+        const color = Number(args.color);
         return JSON.stringify(Color.rgbToHsv(color));
     }
     hsvToHex (args) {
-        const color = this._validateColor(args.color, 'rgbObj');
+        const color = Color.hsvToRgb(validateJSON(args.color));
         return Color.rgbToHex(color);
     }
     hsvToRgb (args) {
-        const color = this._validateColor(args.color, 'rgbObj');
+        const color = Color.hsvToRgb(validateJSON(args.color));
         return JSON.stringify(color);
     }
     hsvToDecimal (args) {
-        const color = this._validateColor(args.color, 'rgbObj');
+        const color = Color.hsvToRgb(validateJSON(args.color));
         return Color.rgbToDecimal(color);
     }
 }
