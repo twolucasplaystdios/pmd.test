@@ -28,7 +28,6 @@ class colorBlocks {
 
     _validateColor (json, shouldBe) {
         const parsedResult = validateJSON(json);
-        const validJson = parsedResult.isValid;
         let parsed = parsedResult.object;
         const validCsbFull = () => !(typeof parsed.color === 'number') || 
             !(typeof parsed.saturation === 'number') || 
@@ -44,8 +43,8 @@ class colorBlocks {
         const validRgb = () => !(typeof parsed.r === 'number') || 
             !(typeof parsed.g === 'number') || 
             !(typeof parsed.b === 'number');
-        const validHex = () => !validJson && json.startsWith('#');
-        const validDecimal = () => !validJson && !isNaN(Number(parsed));
+        const validHex = () => json.startsWith('#');
+        const validDecimal = () => !isNaN(Number(parsed));
 
         const validAlphaSmall = () => typeof parsed.a === 'number';
         const validAlphaLarge = () => typeof parsed.alpha === 'number';
