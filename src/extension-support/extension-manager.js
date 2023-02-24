@@ -65,7 +65,8 @@ const builtinExtensions = {
 
     // canvas: kinda obvius if you know anything about html canvases
     canvas: () => require('../extensions/gsa_canvas'),
-    tempVars: () => require('../extensions/gsa_tempVars')
+    tempVars: () => require('../extensions/gsa_tempVars'),
+    colors: () => require('../extensions/gsa_colorUtilBlocks')
 };
 
 const preload = [

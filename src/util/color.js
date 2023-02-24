@@ -70,7 +70,6 @@ class Color {
         if (isNaN(parsed)) {
             return null;
         }
-        console.log(hex.length);
         if (hex.length === 6) {
             return {
                 r: (parsed >> 16) & 0xff,
@@ -78,12 +77,6 @@ class Color {
                 b: parsed & 0xff
             };
         } else if (hex.length === 8) {
-            console.log({
-                r: (parsed >> 24) & 0xff,
-                g: (parsed >> 16) & 0xff,
-                b: (parsed >> 8) & 0xff,
-                a: parsed & 0xff
-            });
             return {
                 r: (parsed >> 24) & 0xff,
                 g: (parsed >> 16) & 0xff,
