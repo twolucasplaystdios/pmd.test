@@ -1104,10 +1104,11 @@ class Scratch3PenBlocks {
         ctx.beginPath();
         ctx.moveTo(firstPos.x,firstPos.y);
         for (const pos of points) {
-            ctx.lineTo(pos.x,pos.y);
+            ctx.lineTo(pos.x,-pos.y);
         }
         ctx.closePath();
         ctx.stroke();
+        ctx.fill();
         ctx.restore();
 
         this._drawContextToPen(ctx);
