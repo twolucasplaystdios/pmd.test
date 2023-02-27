@@ -16,6 +16,18 @@ class JgRuntimeBlocks {
         this.runtime = runtime;
     }
 
+    _typeIsBitmap (type) {
+        return (
+            type === 'image/png' ||
+            type === 'image/bmp' ||
+            type === 'image/jpg' ||
+            type === 'image/jpeg' ||
+            type === 'image/jfif' ||
+            type === 'image/webp' ||
+            type === 'image/gif'
+        );
+    }
+
     /**
      * @returns {object} metadata for this extension and its blocks.
      */
@@ -156,17 +168,15 @@ class JgRuntimeBlocks {
     addCostumeUrl (args, util) {
         fetch(args.URL, { method: 'GET' }).then(x => x.blob().then(blob => {
             if (!(
-                (blob.type === 'image/png') || 
+                (this._typeIsBitmap(blob.type)) || 
                 (blob.type === 'image/svg+xml')
             )) throw new Error(`Invalid mime type: "${blob.type}"`);
             
-            const assetType = blob.type === 'image/png'
+            const assetType = this._typeIsBitmap(blob.type)
                 ? this.runtime.storage.AssetType.ImageBitmap 
                 : this.runtime.storage.AssetType.ImageVector;
             
-            const dataType = blob.type === 'image/png' 
-                ? this.runtime.storage.DataFormat.PNG 
-                : this.runtime.storage.DataFormat.SVG;
+            const dataType = blob.type;
             
             blob.arrayBuffer()
                 .then(buffer => {
