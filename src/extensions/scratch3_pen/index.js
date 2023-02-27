@@ -1102,7 +1102,7 @@ class Scratch3PenBlocks {
         ctx.lineWidth = penAttributes.diameter;
 
         ctx.beginPath();
-        ctx.moveTo(firstPos.x,firstPos.y);
+        ctx.moveTo(firstPos.x,-firstPos.y);
         for (const pos of points) {
             ctx.lineTo(pos.x,-pos.y);
         }
