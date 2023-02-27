@@ -180,7 +180,9 @@ class JgRuntimeBlocks {
             
             blob.arrayBuffer()
                 .then(buffer => {
-                    const data = new Uint8Array(buffer);
+                    const data = dataType === 'image/svg+xml' 
+                        ? buffer 
+                        : new Uint8Array(buffer);
                     const asset = this.runtime.storage.createAsset(assetType, dataType, data, null, true);
                     const name = `${asset.assetId}.${asset.dataFormat}`;
                     const spriteJson = {
