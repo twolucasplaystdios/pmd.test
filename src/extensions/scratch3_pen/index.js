@@ -1093,6 +1093,7 @@ class Scratch3PenBlocks {
         const firstPos = points.at(-1);
 
         const ctx = this.bitmapCanvas.getContext('2d');
+        this._initBitmapDraw(ctx);
 
         const hex = Color.decimalToHex(args.COLOR);
         ctx.fillStyle = hex;
