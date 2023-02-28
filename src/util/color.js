@@ -38,7 +38,7 @@ class Color {
         const r = levelText(rgb.r.toString(16), 2, '0');
         const g = levelText(rgb.g.toString(16), 2, '0');
         const b = levelText(rgb.b.toString(16), 2, '0');
-        return `${r}${g}${b}${alphaOrNone}`;
+        return `#${r}${g}${b}${alphaOrNone}`;
     }
 
     /**
