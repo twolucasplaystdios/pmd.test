@@ -747,6 +747,7 @@ class Scratch3PenBlocks {
         const penSkin = this.runtime.renderer._allSkins[penSkinId];
         const width = penSkin._size[0];
         const height = penSkin._size[1];
+        ctx.restore();
         
         const printSkin = this.runtime.renderer._allSkins[this.bitmapSkinID];
         const imageData = ctx.getImageData(0, 0, width, height);
@@ -764,6 +765,7 @@ class Scratch3PenBlocks {
 
         ctx.clearRect(0, 0, width, height);
         ctx.save();
+        ctx.translate(width / 2, height / 2);
 
         this.bitmapCanvas.width = width;
         this.bitmapCanvas.height = height;
