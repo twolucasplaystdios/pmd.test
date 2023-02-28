@@ -16,11 +16,6 @@ class colorBlocks {
         this.runtime = runtime;
     }
 
-    HSV_BLACK = Color.rgbToHsv(Color.RGB_BLACK);
-    DECIMAL_BLACK = Color.rgbToDecimal(Color.RGB_BLACK);
-    HEX_BLACK = Color.rgbToHex(Color.RGB_BLACK);
-    RGB_BLACK = Color.RGB_BLACK;
-
     deafultHsv = '{"h": 360, "s": 1, "v": 1}';
     deafultRgb = '{"r": 255, "g": 0, "b": 0}';
     deafultHex = '#ff0000';
@@ -226,7 +221,7 @@ class colorBlocks {
                 },
                 {
                     opcode: 'hsvMaker',
-                    text: 'h: [h] s: [s] v: [v] s: [a]',
+                    text: 'h: [h] s: [s] v: [v] a: [a]',
                     arguments: {
                         h: {
                             type: ArgumentType.NUMBER,
@@ -249,7 +244,7 @@ class colorBlocks {
                 },
                 {
                     opcode: 'rgbMaker',
-                    text: 'r: [r] g: [g] b: [b] s: [a]',
+                    text: 'r: [r] g: [g] b: [b] a: [a]',
                     arguments: {
                         r: {
                             type: ArgumentType.NUMBER,

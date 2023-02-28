@@ -29,16 +29,13 @@ class Color {
      * @return {string} RGB color as #RRGGBB hex string.
      */
     static decimalToHex (decimal) {
-        if (decimal < 0) {
-            decimal += 0xFFFFFF + 1;
-        }
-        let hex = Number(decimal).toString(16);
+        const rgb = this.decimalToRgb(decimal);
+        const alphaOrNone = typeof rgb.a === 'number' 
+            ? rgb.a.toString(16)
+            : '';
+        let hex = `#${rgb.r.toString(16)}${rgb.g.toString(16)}${rgb.b.toString(16)}${alphaOrNone}`;
         let zeros = '000000';
-        if (hex.length > 6) {
-            zeros = '00000000';
-            hex += hex.slice(0, 2) 
-            hex = hex.slice(2, hex.length)
-        }
+        if (hex.length > 6) zeros = '00000000';
         hex = `#${zeros.slice(0, zeros.length - hex.length)}${hex}`;
         return hex;
     }
@@ -49,7 +46,11 @@ class Color {
      * @return {RGBObject} rgb - {r: red [0,255], g: green [0,255], b: blue [0,255]}.
      */
     static decimalToRgb (decimal) {
-        const len = Number(decimal).toString(16).length;
+        const hexForLen = Number(decimal).toString(16);
+        const len = hexForLen.startsWith('-') 
+            ? hexForLen.length - 1 
+            : hexForLen.length;
+        
         let r = (decimal >> 16) & 0xFF,
             g = (decimal >> 8) & 0xFF,
             b = decimal & 0xFF,
