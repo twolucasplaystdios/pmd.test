@@ -727,7 +727,7 @@ class JSGenerator {
             const blockType = types[type];
             const procedureCode = node.code;
             const procedureVariant = node.variant;
-            let source = '';
+            let source = '(';
             // Do not generate any code for empty procedures.
             const procedureData = this.ir.procedures[procedureVariant];
             if (procedureData.stack === null) {
@@ -752,7 +752,7 @@ class JSGenerator {
                 }
                 source += args.join(',');
             }
-            source += `)`;
+            source += `))`;
             // Variable input types may have changes after a procedure call.
             this.resetVariableInputs();
             return new TypedInput(source, blockType);
