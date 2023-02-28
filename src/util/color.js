@@ -34,7 +34,11 @@ class Color {
         }
         let hex = Number(decimal).toString(16);
         let zeros = '000000';
-        if (hex.length > 6) zeros = '00000000';
+        if (hex.length > 6) {
+            zeros = '00000000';
+            hex += hex.slice(0, 3) 
+            hex = hex.slice(2, hex.length)
+        }
         hex = `#${zeros.slice(0, zeros.length - hex.length)}${hex}`;
         return hex;
     }
