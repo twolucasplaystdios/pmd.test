@@ -1,3 +1,5 @@
+const levelText = require('./text leveler');
+
 class Color {
     /**
      * @typedef {object} RGBObject - An object representing a color in RGB format.
@@ -33,11 +35,10 @@ class Color {
         const alphaOrNone = typeof rgb.a === 'number' 
             ? rgb.a.toString(16)
             : '';
-        let hex = `#${rgb.r.toString(16)}${rgb.g.toString(16)}${rgb.b.toString(16)}${alphaOrNone}`;
-        let zeros = '000000';
-        if (hex.length > 6) zeros = '00000000';
-        hex = `#${zeros.slice(0, zeros.length - hex.length)}${hex}`;
-        return hex;
+        const r = levelText(rgb.r.toString(16), 2, '0');
+        const g = levelText(rgb.g.toString(16), 2, '0');
+        const b = levelText(rgb.b.toString(16), 2, '0');
+        return `${r}${g}${b}${alphaOrNone}`;
     }
 
     /**
