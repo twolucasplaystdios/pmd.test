@@ -712,12 +712,8 @@ class Scratch3PenBlocks {
         // we dont actualy need the id here, we just need the canvas and bitmap to be made
         this._getPenLayerID();
 
-        const width = this.runtime.stageWidth;
-        const height = this.runtime.stageHeight;
         const ctx = this.bitmapCanvas.getContext('2d');
-        ctx.clearRect(0, 0, width, height);
-        ctx.save();
-        ctx.translate(width / 2, height / 2);
+        this._initBitmapDraw(ctx);
         let resultFont = '';
         resultFont += `${this.printTextAttribute.size}px `;
         resultFont += this.printTextAttribute.font;
@@ -727,7 +723,6 @@ class Scratch3PenBlocks {
         ctx.fillStyle = ctx.strokeStyle;
 
         ctx.fillText(args.TEXT, args.X, -args.Y);
-        ctx.restore();
 
         this._drawContextToPen(ctx);
     }
@@ -737,18 +732,12 @@ class Scratch3PenBlocks {
         this._getPenLayerID();
 
         const ctx = this.bitmapCanvas.getContext('2d');
-        const width = this.runtime.constructor.STAGE_WIDTH;
-        const height = this.runtime.constructor.STAGE_HEIGHT;
-
-        ctx.clearRect(0, 0, width, height);
-        ctx.save();
-        ctx.translate(width / 2, height / 2);
+        this._initBitmapDraw(ctx);
 
         const hex = Color.decimalToHex(args.COLOR);
         ctx.fillStyle = hex;
         ctx.strokeStyle = ctx.fillStyle;
         ctx.fillRect(args.X, -args.Y, args.WIDTH, args.HEIGHT);
-        ctx.restore();
 
         this._drawContextToPen(ctx);
     }
@@ -757,6 +746,7 @@ class Scratch3PenBlocks {
         const penSkinId = this._getPenLayerID();
         const width = this.runtime.constructor.STAGE_WIDTH;
         const height = this.runtime.constructor.STAGE_HEIGHT;
+        ctx.restore();
         
         const printSkin = this.runtime.renderer._allSkins[this.bitmapSkinID];
         const imageData = ctx.getImageData(0, 0, width, height);
@@ -764,6 +754,20 @@ class Scratch3PenBlocks {
         this.runtime.renderer.penStamp(penSkinId, this.bitmapDrawableID);
 
         this.runtime.requestRedraw();
+    }
+
+    _initBitmapDraw (ctx) {
+        const penSkinId = this._getPenLayerID();
+        const penSkin = this.runtime.renderer._allSkins[penSkinId];
+        const width = this.runtime.constructor.STAGE_WIDTH;
+        const height = this.runtime.constructor.STAGE_HEIGHT;
+
+        ctx.clearRect(0, 0, width, height);
+        ctx.save();
+        ctx.translate(width / 2, height / 2);
+
+        this.bitmapCanvas.width = Math.round(penSkin._size[0]);
+        this.bitmapCanvas.height = Math.round(penSkin._size[1]);
     }
 
     /**
@@ -1089,12 +1093,6 @@ class Scratch3PenBlocks {
         const firstPos = points.at(-1);
 
         const ctx = this.bitmapCanvas.getContext('2d');
-        const width = this.runtime.constructor.STAGE_WIDTH;
-        const height = this.runtime.constructor.STAGE_HEIGHT;
-
-        ctx.clearRect(0, 0, width, height);
-        ctx.save();
-        ctx.translate(width / 2, height / 2);
 
         const hex = Color.decimalToHex(args.COLOR);
         ctx.fillStyle = hex;
