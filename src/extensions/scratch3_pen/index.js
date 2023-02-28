@@ -765,7 +765,7 @@ class Scratch3PenBlocks {
 
         ctx.clearRect(0, 0, width, height);
         ctx.save();
-        ctx.translate(width / 2, height / 2);
+        ctx.translate(this.runtime.stageWidth / 2, this.runtime.stageHeight / 2);
 
         this.bitmapCanvas.width = width;
         this.bitmapCanvas.height = height;

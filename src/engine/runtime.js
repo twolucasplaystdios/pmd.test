@@ -2659,8 +2659,8 @@ class Runtime extends EventEmitter {
         if (parsed.runtimeOptions) {
             this.setRuntimeOptions(parsed.runtimeOptions);
         }
-        if (parsed.hq && this.renderer) {
-            this.renderer.setUseHighQualityRender(true);
+        if (!parsed.hq && this.renderer) {
+            this.renderer.setUseHighQualityRender(false);
         }
         const storedWidth = +parsed.width || this.stageWidth;
         const storedHeight = +parsed.height || this.stageHeight;
