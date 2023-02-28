@@ -1079,7 +1079,8 @@ class Scratch3PenBlocks {
 
     drawComplexShape (args, util) {
         const target = util.target;
-        const penAttributes = this._getPenState(target).penAttributes;
+        const penState = this._getPenState(target);
+        const penAttributes = penState.penAttributes;
         const penColor = this._getPenColor(util.target);
         const points = args.SHAPE;
         const firstPos = points.at(-1);
@@ -1097,7 +1098,7 @@ class Scratch3PenBlocks {
             ctx.lineTo(pos.x,-pos.y);
         }
         ctx.closePath();
-        ctx.stroke();
+        if (penState.penDown) ctx.stroke();
         ctx.fill();
 
         this._drawContextToPen(ctx);
