@@ -761,7 +761,7 @@ class Scratch3PenBlocks {
 
         ctx.clearRect(0, 0, width, height);
         ctx.save();
-        ctx.translate(this.runtime.stageWidth / 2, this.runtime.stageHeight / 2);
+        ctx.translate(width / 2, height / 2);
         return ctx;
     }
 
