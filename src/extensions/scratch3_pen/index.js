@@ -740,7 +740,7 @@ class Scratch3PenBlocks {
         ctx.restore();
         
         const printSkin = this.runtime.renderer._allSkins[this.bitmapSkinID];
-        printSkin.setBitmap(ctx);
+        printSkin.setBitmap(ctx.canvas);
         this.runtime.renderer.penStamp(penSkinId, this.bitmapDrawableID);
 
         this.runtime.requestRedraw();
