@@ -173,6 +173,7 @@ class Scratch3PenBlocks {
             this.runtime.renderer.updateDrawableSkinId(this.bitmapDrawableID, this.bitmapSkinID);
             this.runtime.renderer.updateDrawableVisible(this.bitmapDrawableID, false);
         }
+        this._penRes = this.runtime.renderer._allSkins[this._penSkinId].renderQuality;
         return this._penSkinId;
     }
 
@@ -712,14 +713,14 @@ class Scratch3PenBlocks {
         const ctx = this._getBitmapCanvas();
 
         let resultFont = '';
-        resultFont += `${this.printTextAttribute.size}px `;
+        resultFont += `${this.printTextAttribute.size * this._penRes}px `;
         resultFont += this.printTextAttribute.font;
         ctx.font = resultFont;
 
         ctx.strokeStyle = this.printTextAttribute.color;
         ctx.fillStyle = ctx.strokeStyle;
 
-        ctx.fillText(args.TEXT, args.X, -args.Y);
+        ctx.fillText(args.TEXT, args.X * this._penRes, -args.Y * this._penRes);
 
         this._drawContextToPen(ctx);
     }
@@ -730,19 +731,26 @@ class Scratch3PenBlocks {
         const hex = Color.decimalToHex(args.COLOR);
         ctx.fillStyle = hex;
         ctx.strokeStyle = ctx.fillStyle;
-        ctx.fillRect(args.X, -args.Y, args.WIDTH, args.HEIGHT);
+        ctx.fillRect(
+            args.X * this._penRes, 
+            -args.Y * this._penRes, 
+            args.WIDTH * this._penRes, 
+            args.HEIGHT * this._penRes
+        );
 
         this._drawContextToPen(ctx);
     }
 
     _drawContextToPen (ctx) {
         const penSkinId = this._getPenLayerID();
+        const penSkin = this.runtime.renderer._allSkins[penSkinId];
         const width = this.bitmapCanvas.width;
         const height = this.bitmapCanvas.height;
         ctx.restore();
         
         const printSkin = this.runtime.renderer._allSkins[this.bitmapSkinID];
         const imageData = ctx.getImageData(0, 0, width, height);
+        printSkin._costumeResolution = penSkin.renderQuality; 
         printSkin._textureSize = [width,height];
         printSkin._setTexture(imageData);
         this.runtime.renderer.penStamp(penSkinId, this.bitmapDrawableID);
@@ -1083,7 +1091,7 @@ class Scratch3PenBlocks {
         const penState = this._getPenState(target);
         const penAttributes = penState.penAttributes;
         const penColor = this._getPenColor(util.target);
-        const points = args.SHAPE;
+        const points = args.SHAPE.map(pos => ({x: pos.x * this._penRes, y: pos.y * this._penRes}));
         const firstPos = points.at(-1);
 
         const ctx = this._getBitmapCanvas();
