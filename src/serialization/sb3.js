@@ -700,6 +700,7 @@ const serialize = function (runtime, targetId, {allowOptimization = true} = {}) 
         // or if it is already loaded, then it doesn't need to fetch the script again.
         const extensionURLs = runtime.extensionManager.getExtensionURLs();
         const urlsToSave = {};
+        obj.extensionData = {};
         for (const extension of extensions) {
             const url = extensionURLs[extension];
             if (typeof url === 'string') {

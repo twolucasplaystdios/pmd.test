@@ -641,13 +641,6 @@ class VirtualMachine extends EventEmitter {
                     }
                 }
                 return this.installTargets(targets, extensions, true);
-            })
-            .then(extensions => {
-                for (const extension of extensions) {
-                    if (this.runtime[`ext_${extension}`].deserialize) {
-                        this.runtime[`ext_${extension}`].deserialize(projectJSON);
-                    }
-                }
             });
     }
 
