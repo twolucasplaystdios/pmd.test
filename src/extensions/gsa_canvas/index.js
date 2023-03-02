@@ -27,6 +27,7 @@ class canvas {
     }
 
     onload () {
+        store.canvases = {};
         const targets = this.runtime.targets;
         for (const target of targets) {
             const comments = Object.values(target.comments);
