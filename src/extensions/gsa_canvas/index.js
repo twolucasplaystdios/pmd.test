@@ -449,7 +449,7 @@ class canvas {
 
     clearCanvas (args) {
         const canvasObj = store.getCanvas(args.canvas);
-        canvasObj.canvas.clearRect(0, 0, canvasObj.width, canvasObj.height);
+        canvasObj.context.clearRect(0, 0, canvasObj.width, canvasObj.height);
     }
 
     setTransparency (args) {
