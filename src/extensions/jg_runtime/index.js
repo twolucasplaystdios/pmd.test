@@ -71,7 +71,7 @@ class JgRuntimeBlocks {
                 {
                     opcode: 'getIndexOfCostume',
                     text: 'get costume index of [costume]',
-                    blockType: BlockType.COMMAND,
+                    blockType: BlockType.REPORTER,
                     arguments: {
                         costume: {
                             type: ArgumentType.STRING,
