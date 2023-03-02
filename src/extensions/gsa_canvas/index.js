@@ -179,6 +179,47 @@ class canvas {
                     text: "drawing"
                 },
                 {
+                    opcode: 'clearCanvas',
+                    text: 'clear canvas [canvas]',
+                    arguments: {
+                        canvas: {
+                            type: ArgumentType.STRING,
+                            menu: 'canvas',
+                            defaultValue: ""
+                        }
+                    },
+                    blockType: BlockType.COMMAND
+                },
+                {
+                    opcode: 'clearAria',
+                    text: 'clear area at x: [x] y: [y] with width: [width] height: [height] on [canvas]',
+                    arguments: {
+                        canvas: {
+                            type: ArgumentType.STRING,
+                            menu: 'canvas',
+                            defaultValue: ""
+                        },
+                        x: {
+                            type: ArgumentType.NUMBER,
+                            defaultValue: '0'
+                        },
+                        y: {
+                            type: ArgumentType.NUMBER,
+                            defaultValue: '0'
+                        },
+                        width: {
+                            type: ArgumentType.NUMBER,
+                            defaultValue: this.runtime.stageWidth
+                        },
+                        height: {
+                            type: ArgumentType.NUMBER,
+                            defaultValue: this.runtime.stageHeight
+                        }
+                    },
+                    blockType: BlockType.COMMAND
+                },
+                '---',
+                {
                     opcode: 'drawRect',
                     text: 'draw rectangle at x: [x] y: [y] with width: [width] height: [height] on [canvas]',
                     arguments: {
@@ -399,6 +440,16 @@ class canvas {
         const image = new Image();
         image.src = args.src;
         canvasObj.context.drawImage(image, args.x, args.y);
+    }
+
+    clearAria (args) {
+        const canvasObj = store.getCanvas(args.canvas);
+        canvasObj.canvas.clearRect(args.x, args.y, args.width, args.height);
+    }
+
+    clearCanvas (args) {
+        const canvasObj = store.getCanvas(args.canvas);
+        canvasObj.canvas.clearRect(0, 0, canvasObj.width, canvasObj.height);
     }
 
     setTransparency (args) {
