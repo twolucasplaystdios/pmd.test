@@ -22,16 +22,16 @@ class canvas {
         return 'canvases: ';
     }
 
-    deserialize (projectJSON) {
+    deserialize (data) {
         store.canvases = {};
-        for (const canvas of projectJSON.canvases) {
+        for (const canvas of data) {
             store.newCanvas(canvas.name, canvas.width, canvas.height, canvas.id);
         }
         vm.emitWorkspaceUpdate();
     }
 
-    serialize (projectJSON) {
-        projectJSON.canvases = JSON.stringify(store.getAllCanvases()
+    serialize () {
+        return JSON.stringify(store.getAllCanvases()
             .map(variable => ({
                 name: variable.name, 
                 width: variable.width, 

@@ -705,6 +705,9 @@ const serialize = function (runtime, targetId, {allowOptimization = true} = {}) 
             if (typeof url === 'string') {
                 urlsToSave[extension] = url;
             }
+            if (typeof runtime[`ext_${extension}`].serialize === 'function') {
+                obj.extensionData[extension] = runtime[`ext_${extension}`].serialize();
+            }
         }
         // Only save this object if any URLs would actually be saved.
         if (Object.keys(urlsToSave).length !== 0) {
@@ -728,12 +731,6 @@ const serialize = function (runtime, targetId, {allowOptimization = true} = {}) 
 
     // Assemble payload and return
     obj.meta = meta;
-
-    for (const extension of extensions) {
-        if (typeof runtime[`ext_${extension}`].serialize === 'function') {
-            runtime[`ext_${extension}`].serialize(obj);
-        }
-    }
 
     if (allowOptimization) {
         compress(obj);
@@ -1423,6 +1420,7 @@ const deserialize = function (json, runtime, zip, isSingleSprite) {
     const extensions = {
         extensionIDs: new Set(),
         extensionURLs: new Map(),
+        extensionData: new Map(),
         patcher: extensionPatcher
     };
 
@@ -1436,6 +1434,7 @@ const deserialize = function (json, runtime, zip, isSingleSprite) {
     // Extract custom extension IDs, if they exist.
     if (json.extensionURLs) {
         extensions.extensionURLs = new Map(Object.entries(json.extensionURLs));
+        extensions.extensionData = new Map(Object.entries(json.extensionData));
     }
 
     // First keep track of the current target order in the json,

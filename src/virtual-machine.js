@@ -693,6 +693,9 @@ class VirtualMachine extends EventEmitter {
         targets = targets.filter(target => !!target);
 
         return this._loadExtensions(extensions.extensionIDs, extensions.extensionURLs).then(() => {
+            for (const extension of extensions.extensionIDs) {
+                this.runtime[`ext_${extension}`].deserialize(extensions.extensionData[extension]);
+            }
             targets.forEach(target => {
                 this.runtime.addTarget(target);
                 (/** @type RenderedTarget */ target).updateAllDrawableProperties();
