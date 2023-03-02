@@ -56,11 +56,11 @@ class canvas {
                 id: variable.id
             })));
         const storeText = `canvases: ${serializedVariables}`;
-        
+
         for (const target of targets) {
             if (!this.knownSerializeComments.hasOwnProperty(target.id)) {
                 const id = uid();
-                target.createComment(id, null, storeText, 0, 0, true);
+                target.createComment(id, null, storeText, 0, 0, 0, 0, true);
                 this.knownSerializeComments[target.id] = id;
                 continue;
             }
