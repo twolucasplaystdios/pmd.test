@@ -92,8 +92,7 @@ class canvas {
         delete blocks[1];
         // create the variable block xml's
         const varBlocks = store.getAllCanvases().map(canvas => varBlock
-            .replace('{canvasId}', canvas.id)
-            .replace('{canvasName}', canvas.name));
+            .replace('{canvasId}', canvas.id));
         if (!varBlocks.length) {
             return [button];
         }
@@ -132,7 +131,8 @@ class canvas {
                     arguments: {
                         canvas: {
                             type: ArgumentType.STRING,
-                            menu: 'canvas'
+                            menu: 'canvas',
+                            defaultValue: '{canvasId}'
                         }
                     },
                     text: '[canvas]'
@@ -438,6 +438,8 @@ class canvas {
 
     createNewCanvas () {
         const newCanvas = prompt('canvas name?', 'newCanvas');
+        // if this camvas already exists, remove it to minimize confusion
+        if (store.getCanvasByName(newCanvas)) return;
         store.newCanvas(newCanvas);
         vm.emitWorkspaceUpdate();
         this.serialize();
