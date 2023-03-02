@@ -1,6 +1,6 @@
 const BlockType = require('../../extension-support/block-type');
 const ArgumentType = require('../../extension-support/argument-type');
-const {validateArray} = require('../../util/json-block-utilities');
+const { validateArray } = require('../../util/json-block-utilities');
 const AHHHHHHHHHHHHHH = require('../../util/array buffer');
 const BufferStuff = new AHHHHHHHHHHHHHH();
 
@@ -9,7 +9,7 @@ const BufferStuff = new AHHHHHHHHHHHHHH();
  * @constructor
  */
 class JgFilesBlocks {
-    constructor (runtime) {
+    constructor(runtime) {
         /**
          * The runtime instantiating this block package.
          * @type {Runtime}
@@ -20,7 +20,7 @@ class JgFilesBlocks {
     /**
      * @returns {object} metadata for this extension and its blocks.
      */
-    getInfo () {
+    getInfo() {
         return {
             id: 'jgFiles',
             name: 'Files',
@@ -48,7 +48,7 @@ class JgFilesBlocks {
                 },
                 {
                     opcode: 'askUserForFileOfTypeAsArrayBuffer',
-                    text: 'ask user for a binnary file of type [FILE_TYPE]',
+                    text: 'ask user for a binary file of type [FILE_TYPE]',
                     disableMonitor: true,
                     blockType: BlockType.REPORTER,
                     arguments: {
@@ -77,11 +77,11 @@ class JgFilesBlocks {
         };
     }
 
-    isFileReaderSupported () {
+    isFileReaderSupported() {
         return (window.FileReader !== null) && (window.document !== null);
     }
 
-    __askUserForFile (acceptTypes) {
+    __askUserForFile(acceptTypes) {
         try {
             return new Promise(resolve => {
                 const fileReader = new FileReader();
@@ -100,9 +100,9 @@ class JgFilesBlocks {
                     if (!file) {
                         resolve("");
                         return;
-                    } 
+                    }
                     fileReader.readAsText(file);
-                
+
                     input.remove();
                 };
                 input.onblur = () => {
@@ -110,12 +110,12 @@ class JgFilesBlocks {
                 };
                 input.focus();
                 input.click();
-            }); 
-        } catch (e) { 
-            return; 
+            });
+        } catch (e) {
+            return;
         }
     }
-    __askUserForFilearraybuffer (acceptTypes) {
+    __askUserForFilearraybuffer(acceptTypes) {
         try {
             return new Promise(resolve => {
                 const fileReader = new FileReader();
@@ -134,9 +134,9 @@ class JgFilesBlocks {
                     if (!file) {
                         resolve("");
                         return;
-                    } 
+                    }
                     fileReader.readAsArrayBuffer(file);
-                
+
                     input.remove();
                 };
                 input.onblur = () => {
@@ -144,13 +144,13 @@ class JgFilesBlocks {
                 };
                 input.focus();
                 input.click();
-            }); 
-        } catch (e) { 
-            return; 
+            });
+        } catch (e) {
+            return;
         }
     }
 
-    askUserForFileOfType (args) {
+    askUserForFileOfType(args) {
         const fileTypesAllowed = [];
         const input = args.FILE_TYPE
             .toLowerCase()
@@ -161,7 +161,7 @@ class JgFilesBlocks {
         });
         return this.__askUserForFile(fileTypesAllowed.join(","), false);
     }
-    askUserForFileOfTypeAsArrayBuffer (args) {
+    askUserForFileOfTypeAsArrayBuffer(args) {
         const fileTypesAllowed = [];
         const input = args.FILE_TYPE
             .toLowerCase()
@@ -173,7 +173,7 @@ class JgFilesBlocks {
         return this.__askUserForFilearraybuffer(fileTypesAllowed.join(","));
     }
 
-    downloadFile (args) {
+    downloadFile(args) {
         let content = "";
         let fileName = "text.txt";
 
