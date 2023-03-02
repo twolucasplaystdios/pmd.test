@@ -45,6 +45,7 @@ class canvas {
                 }
             }
         }
+        vm.emitWorkspaceUpdate();
     }
 
     serialize () {
