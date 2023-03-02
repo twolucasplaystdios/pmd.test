@@ -5,12 +5,12 @@ class canvasStorage {
     /**
      * initiats the storage
      */
-    constructor() {
-        this.canvases = {}
+    constructor () {
+        this.canvases = {};
     }
 
-    attachRuntime(runtime) {
-        this.runtime = runtime
+    attachRuntime (runtime) {
+        this.runtime = runtime;
     }
 
     /**
@@ -18,8 +18,8 @@ class canvasStorage {
      * @param {string} id the id of the canvas to get
      * @returns {Object} the canvas object with this id
      */
-    getCanvas(id) {
-        return this.canvases[id]
+    getCanvas (id) {
+        return this.canvases[id];
     }
 
     /**
@@ -27,10 +27,10 @@ class canvasStorage {
      * @param {string} id the canvas id to delete
      * @returns {Object} the deleted canvas
      */
-    deleteCanvas(id) {
-        const orignal = this.canvases[id]
-        delete this.canvases[id]
-        return orignal
+    deleteCanvas (id) {
+        const orignal = this.canvases[id];
+        delete this.canvases[id];
+        return orignal;
     }
 
     /**
@@ -39,10 +39,13 @@ class canvasStorage {
      * @param {boolean} publik whether or not to make this canvas publik
      * @returns {Object} the new canvas object
      */
-    newCanvas(name, width, height) {
-        const id = uid()
-        const element = document.createElement('canvas')
-        element.id = id
+    newCanvas (name, width, height) {
+        width = width || this.runtime.stageWidth;
+        height = height || this.runtime.stageHeight;
+        
+        const id = uid();
+        const element = document.createElement('canvas');
+        element.id = id;
         element.width = width;
         element.height = height;
 
@@ -59,32 +62,31 @@ class canvasStorage {
             drawableId: drawable,
             width: width, 
             height: height,
-            context: {
-                '2d': element.getContext('2d'),
-                '3d': element.getContext('webgl') || element.getContext("experimental-webgl")
-            }
-        }
-        this.canvases[id] = data
-        return data
+            context: element.getContext('2d')
+        };
+        this.canvases[id] = data;
+        return data;
     }
 
     /**
      * gets or creates a canvas with name equal to 
      * @param {String} name the name of the canvas
      */
-    getCanvasByName(name) {
-        return Object.values(this.canvases).find(canvas => canvas.name === name)
+    getCanvasByName (name) {
+        return Object.values(this.canvases).find(canvas => canvas.name === name);
     }
 
     /**
      * updates the canvases renderer
      * @param {String} id the id of the canvas to update
      */
-    updateCanvas(id) {
-        const canvas = this.getCanvas(id)
+    printCanvas (id) {
+        const penSkinId = this.runtime.renderer.getPenDrawableId();
+        const canvas = this.getCanvas(id);
         const printSkin = this.runtime.renderer._allSkins[canvas.skinId];
-        const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+        const imageData = canvas.context.getImageData(0, 0, canvas.width, canvas.height);
         printSkin._setTexture(imageData);
+        this.runtime.renderer.penStamp(penSkinId, canvas.skinId);
         this.runtime.requestRedraw();
     }
 
@@ -92,9 +94,9 @@ class canvasStorage {
      * gets all canvases 
      * @returns {Array}
      */
-    getAllCanvases() {
-        return Object.values(this.canvases)
+    getAllCanvases () {
+        return Object.values(this.canvases);
     }
 }
 
-module.exports = canvasStorage
+module.exports = canvasStorage;

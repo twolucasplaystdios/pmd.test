@@ -1,5 +1,6 @@
 const BlockType = require('../../extension-support/block-type');
 const ArgumentType = require('../../extension-support/argument-type');
+const Color = require('../../util/color');
 const cstore = require('./canvasStorage');
 const store = new cstore();
 
@@ -34,93 +35,6 @@ class canvas {
         });
     }
 
-    spawnCreateCanvasMenu (name) {
-        const modal = document.createElement('div');
-        modal.id = 'new-canvas-modal';
-        modal.innerHTML = `
-        <div 
-            class="ReactModal__Content ReactModal__Content--after-open modal_modal-content_1h3ll prompt_modal-content_1BfWj" 
-            tabindex="-1" 
-            role="dialog" 
-            aria-label="New Variable"
-        >
-            <div class="box_box_2jjDp" dir="ltr" style="flex-direction: column; flex-grow: 1;">
-                <div class="modal_header_1h7ps">
-                    <div class="modal_header-item_2zQTd modal_header-item-title_tLOU5">New Canvas</div>
-                    <div class="modal_header-item_2zQTd modal_header-item-close_2XDeL">
-                        <div 
-                            aria-label="Close" 
-                            class="close-button_close-button_lOp2G close-button_large_2oadS" 
-                            role="button" 
-                            tabindex="0"
-                        >
-                            <img 
-                                id="canvas-creator-close" 
-                                class="close-button_close-icon_HBCuO" 
-                                src="static/assets/cb666b99d3528f91b52f985dfb102afa.svg"
-                            />
-                        </div>
-                    </div>
-                </div>
-                <div class="prompt_body_18Z-I box_box_2jjDp">
-                    <div class="prompt_label_tWjYZ box_box_2jjDp">New canvas name:</div>
-                    <div class="box_box_2jjDp">
-                        <input 
-                            id="canvas-creator-name" 
-                            class="prompt_variable-name-text-input_1iu8-" 
-                            name="New canvas name:" 
-                            value="${name ? name : 'My Canvas'}"
-                        />
-                        <input id="canvas-creator-default" name="Default canvas content"/>
-                    </div>
-                    <div class="prompt_button-row_3Wc5Z box_box_2jjDp">
-                        <button id="canvas-creator-cancel" class="prompt_cancel-button_36cPC">
-                            <span>Cancel</span>
-                        </button>
-                        <button id="canvas-creator-ok" class="prompt_ok-button_3QFdD">
-                            <span>OK</span>
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </div>
-        `;
-        const body = document.getElementsByTagName('body').item(0);
-        body.appendChild(modal);
-        const closeFunc = () => {
-            modal.remove();
-        };
-        const okButton = document.getElementById("canvas-creator-ok");
-        const cancelButton = document.getElementById("canvas-creator-cancel");
-        const closeButton = document.getElementById("canvas-creator-close");
-        const nameInput = document.getElementById("canvas-creator-name");
-        const defaultImageInput = document.getElementById("canvas-creator-default");
-        const fileReader = new FileReader();
-        let defaultImage;
-        fileReader.onload = e => {
-            this.readAsImageElement(e.target.result).then(img => {
-                defaultImage = img;
-            });
-        };
-        okButton.onclick = () => {
-            store.newCanvas(nameInput.value, this.runtime.stageWidth, this.runtime.stageHeight, defaultImage);
-            // eslint-disable-next-line no-undef
-            vm.emitWorkspaceUpdate();
-        };
-        cancelButton.onclick = closeFunc;
-        closeButton.onclick = closeFunc;
-        defaultImageInput.onchange = () => {
-            const file = defaultImageInput.files[0];
-            if (!file) {
-                return;
-            } 
-            fileReader.readAsDataURL(file);
-        };
-        defaultImageInput.onblur = () => {
-            defaultImageInput.onchange();
-        };
-    }
-
     orderCategoryBlocks (blocks) {
         const button = blocks[0];
         const varBlock = blocks[1];
@@ -130,6 +44,9 @@ class canvas {
         const varBlocks = store.getAllCanvases().map(canvas => varBlock
             .replace('{canvasId}', canvas.id)
             .replace('{canvasName}', canvas.name));
+        if (!varBlocks.length) {
+            return button;
+        }
         // push the button to the top of the var list
         varBlocks
             .reverse()
@@ -162,9 +79,13 @@ class canvas {
                 {
                     opcode: 'canvasGetter',
                     blockType: BlockType.REPORTER,
-                    isDynamic: true,
-                    canvasId: '{canvasId}',
-                    text: '{canvasName}'
+                    arguments: {
+                        canvas: {
+                            type: ArgumentType.STRING,
+                            menu: 'canvas'
+                        }
+                    },
+                    text: '[canvas]'
                 },
                 "---",
                 {
@@ -180,32 +101,281 @@ class canvas {
                 },
                 {
                     blockType: BlockType.LABEL,
-                    text: "2D"
+                    text: "config"
                 },
                 {
-                    opcode: 'dfsh',
-                    blockType: BlockType.BOOLEAN,
+                    opcode: 'setGlobalCompositeOperation',
+                    text: 'set composite operation of [canvas] to [CompositeOperation]',
                     arguments: {
-                        json: {
+                        canvas: {
                             type: ArgumentType.STRING,
-                            defaultValue: "{}"
+                            menu: 'canvas',
+                            defaultValue: ""
+                        },
+                        CompositeOperation: {
+                            type: ArgumentType.STRING,
+                            menu: 'CompositeOperation',
+                            defaultValue: ""
                         }
                     },
-                    text: 'is json [json] valid?'
+                    blockType: BlockType.COMMAND
+                },
+                {
+                    opcode: 'setSize',
+                    text: 'set width: [width] height: [height] of [canvas]',
+                    arguments: {
+                        canvas: {
+                            type: ArgumentType.STRING,
+                            menu: 'canvas',
+                            defaultValue: ""
+                        },
+                        width: {
+                            type: ArgumentType.NUMBER,
+                            defaultValue: this.runtime.stageWidth
+                        },
+                        height: {
+                            type: ArgumentType.NUMBER,
+                            defaultValue: this.runtime.stageHeight
+                        }
+                    },
+                    blockType: BlockType.COMMAND
+                },
+                {
+                    opcode: 'setTransparency',
+                    text: 'set transparency of [canvas] to [transparency]',
+                    arguments: {
+                        canvas: {
+                            type: ArgumentType.STRING,
+                            menu: 'canvas',
+                            defaultValue: ""
+                        },
+                        transparency: {
+                            type: ArgumentType.NUMBER,
+                            defaultValue: '0'
+                        }
+                    },
+                    blockType: BlockType.COMMAND
+                },
+                {
+                    opcode: 'setFill',
+                    text: 'set fill color of [canvas] to [color]',
+                    arguments: {
+                        canvas: {
+                            type: ArgumentType.STRING,
+                            menu: 'canvas',
+                            defaultValue: ""
+                        },
+                        color: {
+                            type: ArgumentType.COLOR
+                        }
+                    },
+                    blockType: BlockType.COMMAND
+                },
+                {
+                    opcode: 'setBorderColor',
+                    text: 'set border color of [canvas] to [color]',
+                    arguments: {
+                        canvas: {
+                            type: ArgumentType.STRING,
+                            menu: 'canvas',
+                            defaultValue: ""
+                        },
+                        color: {
+                            type: ArgumentType.COLOR
+                        }
+                    },
+                    blockType: BlockType.COMMAND
                 },
                 {
                     blockType: BlockType.LABEL,
-                    text: "3D"
+                    text: "drawing"
+                },
+                {
+                    opcode: 'drawRect',
+                    text: 'draw rectangle at x: [x] y: [y] with width: [width] height: [height]',
+                    arguments: {
+                        canvas: {
+                            type: ArgumentType.STRING,
+                            menu: 'canvas',
+                            defaultValue: ""
+                        },
+                        x: {
+                            type: ArgumentType.NUMBER,
+                            defaultValue: '0'
+                        },
+                        y: {
+                            type: ArgumentType.NUMBER,
+                            defaultValue: '0'
+                        },
+                        width: {
+                            type: ArgumentType.NUMBER,
+                            defaultValue: this.runtime.stageWidth
+                        },
+                        height: {
+                            type: ArgumentType.NUMBER,
+                            defaultValue: this.runtime.stageHeight
+                        }
+                    },
+                    blockType: BlockType.COMMAND
+                },
+                {
+                    opcode: 'drawImage',
+                    text: 'draw image [src] at x: [x] y: [y]',
+                    arguments: {
+                        canvas: {
+                            type: ArgumentType.STRING,
+                            menu: 'canvas',
+                            defaultValue: ""
+                        },
+                        x: {
+                            type: ArgumentType.NUMBER,
+                            defaultValue: '0'
+                        },
+                        y: {
+                            type: ArgumentType.NUMBER,
+                            defaultValue: '0'
+                        },
+                        src: {
+                            type: ArgumentType.STRING,
+                            defaultValue: this.runtime.stageWidth
+                        }
+                    },
+                    blockType: BlockType.COMMAND
+                },
+                {
+                    blockType: BlockType.LABEL,
+                    text: "using"
+                },
+                {
+                    opcode: 'printCanvas',
+                    text: 'print canvas [canvas] to pen',
+                    arguments: {
+                        canvas: {
+                            type: ArgumentType.STRING,
+                            menu: 'canvas',
+                            defaultValue: ""
+                        }
+                    },
+                    blockType: BlockType.COMMAND
                 }
             ],
             menus: {
-                canvas: 'getCanvasMenuItems'
+                canvas: 'getCanvasMenuItems',
+                CompositeOperation: {
+                    items: [
+                        {
+                            "text": "source-over",
+                            "value": "source-over"
+                        },
+                        {
+                            "text": "source-in",
+                            "value": "source-in"
+                        },
+                        {
+                            "text": "source-out",
+                            "value": "source-out"
+                        },
+                        {
+                            "text": "source-atop",
+                            "value": "source-atop"
+                        },
+                        {
+                            "text": "destination-over",
+                            "value": "destination-over"
+                        },
+                        {
+                            "text": "destination-in",
+                            "value": "destination-in"
+                        },
+                        {
+                            "text": "destination-out",
+                            "value": "destination-out"
+                        },
+                        {
+                            "text": "destination-atop",
+                            "value": "destination-atop"
+                        },
+                        {
+                            "text": "lighter",
+                            "value": "lighter"
+                        },
+                        {
+                            "text": "copy",
+                            "value": "copy"
+                        },
+                        {
+                            "text": "xor",
+                            "value": "xor"
+                        },
+                        {
+                            "text": "multiply",
+                            "value": "multiply"
+                        },
+                        {
+                            "text": "screen",
+                            "value": "screen"
+                        },
+                        {
+                            "text": "overlay",
+                            "value": "overlay"
+                        },
+                        {
+                            "text": "darken",
+                            "value": "darken"
+                        },
+                        {
+                            "text": "lighten",
+                            "value": "lighten"
+                        },
+                        {
+                            "text": "color-dodge",
+                            "value": "color-dodge"
+                        },
+                        {
+                            "text": "color-burn",
+                            "value": "color-burn"
+                        },
+                        {
+                            "text": "hard-light",
+                            "value": "hard-light"
+                        },
+                        {
+                            "text": "soft-light",
+                            "value": "soft-light"
+                        },
+                        {
+                            "text": "difference",
+                            "value": "difference"
+                        },
+                        {
+                            "text": "exclusion",
+                            "value": "exclusion"
+                        },
+                        {
+                            "text": "hue",
+                            "value": "hue"
+                        },
+                        {
+                            "text": "saturation",
+                            "value": "saturation"
+                        },
+                        {
+                            "text": "color",
+                            "value": "color"
+                        },
+                        {
+                            "text": "luminosity",
+                            "value": "luminosity"
+                        }
+                    ]
+                }
             }
         };
     }
 
     createNewCanvas () {
-        this.spawnCreateCanvasMenu();
+        const newCanvas = prompt('canvas name?', 'newCanvas');
+        store.newCanvas(newCanvas);
     }
 
     getCanvasMenuItems () {
@@ -217,15 +387,54 @@ class canvas {
         }));
     }
 
-    canvasGetter (args, util, mutation) {
-        return store.getCanvas(mutation.canvasId).element.toDataURL('image/png');
+    canvasGetter (args) {
+        const canvasObj = store.getCanvas(args.canvas);
+        return canvasObj.element.toDataURL();
+    }
+
+    setGlobalCompositeOperation (args) {
+        const canvasObj = store.getCanvas(args.canvas);
+        canvasObj.context.globalCompositeOperation = args.CompositeOperation;
+    }
+
+    setBorderColor (args) {
+        const color = Color.decimalToHex(args.color);
+        const canvasObj = store.getCanvas(args.canvas);
+        canvasObj.context.strokeStyle = color;
+    }
+
+    setFill (args) {
+        const color = Color.decimalToHex(args.color);
+        const canvasObj = store.getCanvas(args.canvas);
+        canvasObj.context.fillStyle = color;
+    }
+
+    setSize (args) {
+        const canvasObj = store.getCanvas(args.canvas);
+        canvasObj.element.width = args.width;
+        canvasObj.element.height = args.height;
+        canvasObj.context = canvasObj.element.getContext('2d');
+    }
+
+    drawRect (args) {
+        const canvasObj = store.getCanvas(args.canvas);
+        canvasObj.context.fillRect(args.x, args.y, args.width, args.height);
+    }
+
+    drawImage (args) {
+        const canvasObj = store.getCanvas(args.canvas);
+        const image = new Image();
+        image.src = args.src;
+        canvasObj.context.drawImage(image, args.x, args.y);
+    }
+
+    setTransparency (args) {
+        const canvasObj = store.getCanvas(args.canvas);
+        canvasObj.context.globalAlpha = args.transparency / 100;
     }
 
     printCanvas (args) {
-        const penSkinId = this.runtime.renderer.getPenDrawableId();
-        const canvas = store.getCanvas(args.canvas);
-        this.runtime.renderer.penStamp(penSkinId, canvas.drawableId);
-        this.runtime.requestRedraw();
+        store.printCanvas(args.canvas);
     }
 }
 
