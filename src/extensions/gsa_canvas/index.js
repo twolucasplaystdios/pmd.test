@@ -444,7 +444,7 @@ class canvas {
 
     clearAria (args) {
         const canvasObj = store.getCanvas(args.canvas);
-        canvasObj.canvas.clearRect(args.x, args.y, args.width, args.height);
+        canvasObj.context.clearRect(args.x, args.y, args.width, args.height);
     }
 
     clearCanvas (args) {
