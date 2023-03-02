@@ -2,6 +2,7 @@ const BlockType = require('../../extension-support/block-type');
 const ArgumentType = require('../../extension-support/argument-type');
 const Color = require('../../util/color');
 const Runtime = require('../../engine/runtime');
+const uid = require('../../util/uid');
 const cstore = require('./canvasStorage');
 const store = new cstore();
 
@@ -18,6 +19,7 @@ class canvas {
         this.runtime = runtime;
         store.attachRuntime(runtime);
         runtime.on(Runtime.TARGETS_UPDATE, this.onload);
+        this.knownSerializeComments = {};
     }
 
     static get canvasStorageHeader () {
@@ -33,6 +35,7 @@ class canvas {
                 const json = store.text.slice(canvas.canvasStorageHeader.length);
                 try {
                     const canvasVariables = JSON.parse(json);
+                    this.knownSerializeComments[target.id] = store.id;
                     for (const variable of canvasVariables) {
                         store.newCanvas(variable.name, variable.width, variable.height, variable.id);
                     }
@@ -52,8 +55,16 @@ class canvas {
                 height: variable.height, 
                 id: variable.id
             })));
+        const storeText = `canvases: ${serializedVariables}`;
+        
         for (const target of targets) {
-            target.createComment(null, null, `canvases: ${serializedVariables}`, 0, 0, true);
+            if (!this.knownSerializeComments.hasOwnProperty(target.id)) {
+                const id = uid();
+                target.createComment(id, null, storeText, 0, 0, true);
+                this.knownSerializeComments[target.id] = id;
+                continue;
+            }
+            target.comments[this.knownSerializeComments[target.id]].text = storeText;
         }
     }
 
