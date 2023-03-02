@@ -45,7 +45,7 @@ class canvas {
             .replace('{canvasId}', canvas.id)
             .replace('{canvasName}', canvas.name));
         if (!varBlocks.length) {
-            return button;
+            return [button];
         }
         // push the button to the top of the var list
         varBlocks
