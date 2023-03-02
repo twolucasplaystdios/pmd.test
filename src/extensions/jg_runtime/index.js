@@ -215,7 +215,7 @@ class JgRuntimeBlocks {
         util.target.deleteCostume(index);
     }
     getIndexOfCostume (args, util) {
-        return util.target.getCostumeIndexByName(args.costume);
+        return util.target.getCostumeIndexByName(args.costume) + 1;
     }
     setStageSize (args) {
         let width = Number(args.WIDTH) || 480;
