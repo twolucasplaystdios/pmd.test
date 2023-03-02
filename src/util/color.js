@@ -47,22 +47,19 @@ class Color {
      * @return {RGBObject} rgb - {r: red [0,255], g: green [0,255], b: blue [0,255]}.
      */
     static decimalToRgb (decimal) {
-        const hexForLen = Number(decimal).toString(16);
-        const len = hexForLen.startsWith('-') 
-            ? hexForLen.length - 1 
-            : hexForLen.length;
+        const alpha = ((decimal >> 24) & 0xFF) !== 0x00;
         
         let r = (decimal >> 16) & 0xFF,
             g = (decimal >> 8) & 0xFF,
             b = decimal & 0xFF,
-            a = 255;
-        if (len > 6) {
+            a = 0;
+        if (alpha) {
             a = (decimal >> 24) & 0xFF;
             r = (decimal >> 16) & 0xFF;
             g = (decimal >> 8) & 0xFF;
             b = decimal & 0xFF;
         }
-        return {r: r, g: g, b: b, a: a};
+        return {r: r, g: g, b: b, a: (255 + (-a))};
     }
 
     /**
@@ -120,7 +117,7 @@ class Color {
      */
     static rgbToDecimal (rgb) {
         if (typeof rgb.a === 'number') {
-            return (rgb.a << 24) + (rgb.r << 16) + (rgb.g << 8) + rgb.b;
+            return ((255 + (-rgb.a)) << 24) + (rgb.r << 16) + (rgb.g << 8) + rgb.b;
         }
         return (rgb.r << 16) + (rgb.g << 8) + rgb.b;
     }
