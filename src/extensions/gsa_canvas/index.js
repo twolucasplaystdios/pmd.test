@@ -192,7 +192,7 @@ class canvas {
                 },
                 {
                     opcode: 'drawRect',
-                    text: 'draw rectangle at x: [x] y: [y] with width: [width] height: [height]',
+                    text: 'draw rectangle at x: [x] y: [y] with width: [width] height: [height] on [canvas]',
                     arguments: {
                         canvas: {
                             type: ArgumentType.STRING,
@@ -220,7 +220,7 @@ class canvas {
                 },
                 {
                     opcode: 'drawImage',
-                    text: 'draw image [src] at x: [x] y: [y]',
+                    text: 'draw image [src] at x: [x] y: [y] on [canvas]',
                     arguments: {
                         canvas: {
                             type: ArgumentType.STRING,
