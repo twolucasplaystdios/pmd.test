@@ -1420,7 +1420,7 @@ const deserialize = function (json, runtime, zip, isSingleSprite) {
     const extensions = {
         extensionIDs: new Set(),
         extensionURLs: new Map(),
-        extensionData: new Map(),
+        extensionData: {},
         patcher: extensionPatcher
     };
 
@@ -1434,7 +1434,7 @@ const deserialize = function (json, runtime, zip, isSingleSprite) {
     // Extract custom extension IDs, if they exist.
     if (json.extensionURLs) {
         extensions.extensionURLs = new Map(Object.entries(json.extensionURLs));
-        extensions.extensionData = new Map(Object.entries(json.extensionData));
+        extensions.extensionData = json.extensionData;
     }
 
     // First keep track of the current target order in the json,
