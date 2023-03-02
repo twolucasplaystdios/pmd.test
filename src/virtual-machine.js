@@ -687,7 +687,10 @@ class VirtualMachine extends EventEmitter {
 
         return this._loadExtensions(extensions.extensionIDs, extensions.extensionURLs).then(() => {
             for (const extension of extensions.extensionIDs) {
-                this.runtime[`ext_${extension}`].deserialize(extensions.extensionData[extension]);
+                if ((typeof this.runtime[`ext_${extension}`].deserialize === 'function') && 
+                    extensions.extensionData[extension]) {
+                    this.runtime[`ext_${extension}`].deserialize(extensions.extensionData[extension]);
+                }
             }
             targets.forEach(target => {
                 this.runtime.addTarget(target);
