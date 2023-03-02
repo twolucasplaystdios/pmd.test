@@ -187,7 +187,9 @@ class JgRuntimeBlocks {
                 ? this.runtime.storage.AssetType.ImageBitmap 
                 : this.runtime.storage.AssetType.ImageVector;
             
-            const dataType = blob.type;
+            const dataType = blob.type === 'image/svg+xml' 
+                ? 'svg' 
+                : blob.type.split('/')[1];
             
             blob.arrayBuffer()
                 .then(buffer => {
