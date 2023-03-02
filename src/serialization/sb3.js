@@ -729,6 +729,12 @@ const serialize = function (runtime, targetId, {allowOptimization = true} = {}) 
     // Assemble payload and return
     obj.meta = meta;
 
+    for (const extension of extensions) {
+        if (typeof runtime[`ext_${extension}`].serialize === 'function') {
+            runtime[`ext_${extension}`].serialize(obj);
+        }
+    }
+
     if (allowOptimization) {
         compress(obj);
     }

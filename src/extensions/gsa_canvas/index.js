@@ -1,8 +1,6 @@
 const BlockType = require('../../extension-support/block-type');
 const ArgumentType = require('../../extension-support/argument-type');
 const Color = require('../../util/color');
-const Runtime = require('../../engine/runtime');
-const uid = require('../../util/uid');
 const cstore = require('./canvasStorage');
 const store = new cstore();
 
@@ -18,56 +16,28 @@ class canvas {
          */
         this.runtime = runtime;
         store.attachRuntime(runtime);
-        runtime.on(Runtime.TARGETS_UPDATE, this.onload);
-        this.knownSerializeComments = {};
     }
 
     static get canvasStorageHeader () {
         return 'canvases: ';
     }
 
-    onload () {
+    deserialize (projectJSON) {
         store.canvases = {};
-        const targets = this.runtime.targets;
-        for (const target of targets) {
-            const comments = Object.values(target.comments);
-            const canvasStores = comments.filter(comment => comment.text.startsWith(canvas.canvasStorageHeader));
-            for (const store of canvasStores) {
-                const json = store.text.slice(canvas.canvasStorageHeader.length);
-                try {
-                    const canvasVariables = JSON.parse(json);
-                    this.knownSerializeComments[target.id] = store.id;
-                    for (const variable of canvasVariables) {
-                        store.newCanvas(variable.name, variable.width, variable.height, variable.id);
-                    }
-                } catch (err) {
-                    console.warn(`couldnt load comment ${store.id}:`, err);
-                }
-            }
+        for (const canvas of projectJSON.canvases) {
+            store.newCanvas(canvas.name, canvas.width, canvas.height, canvas.id);
         }
         vm.emitWorkspaceUpdate();
     }
 
-    serialize () {
-        const targets = this.runtime.targets;
-        const serializedVariables = JSON.stringify(store.getAllCanvases()
+    serialize (projectJSON) {
+        projectJSON.canvases = JSON.stringify(store.getAllCanvases()
             .map(variable => ({
                 name: variable.name, 
                 width: variable.width, 
                 height: variable.height, 
                 id: variable.id
             })));
-        const storeText = `canvases: ${serializedVariables}`;
-
-        for (const target of targets) {
-            if (!this.knownSerializeComments.hasOwnProperty(target.id)) {
-                const id = uid();
-                target.createComment(id, null, storeText, 0, 0, 0, 0, true);
-                this.knownSerializeComments[target.id] = id;
-                continue;
-            }
-            target.comments[this.knownSerializeComments[target.id]].text = storeText;
-        }
     }
 
     readAsImageElement (src) {
