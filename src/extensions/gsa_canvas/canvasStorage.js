@@ -72,20 +72,6 @@ class canvasStorage {
     }
 
     /**
-     * updates the canvases renderer
-     * @param {String} id the id of the canvas to update
-     */
-    printCanvas (id) {
-        const penSkinId = this.runtime.renderer.getPenDrawableId();
-        const canvas = this.getCanvas(id);
-        const printSkin = this.runtime.renderer._allSkins[canvas.skinId];
-        const imageData = canvas.context.getImageData(0, 0, canvas.width, canvas.height);
-        printSkin._setTexture(imageData);
-        this.runtime.renderer.penStamp(penSkinId, canvas.skinId);
-        this.runtime.requestRedraw();
-    }
-
-    /**
      * gets all canvases 
      * @returns {Array}
      */

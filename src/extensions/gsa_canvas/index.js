@@ -229,22 +229,6 @@ class canvas {
                         }
                     },
                     blockType: BlockType.COMMAND
-                },
-                {
-                    blockType: BlockType.LABEL,
-                    text: "using"
-                },
-                {
-                    opcode: 'printCanvas',
-                    text: 'print canvas [canvas] to pen',
-                    arguments: {
-                        canvas: {
-                            type: ArgumentType.STRING,
-                            menu: 'canvas',
-                            defaultValue: ""
-                        }
-                    },
-                    blockType: BlockType.COMMAND
                 }
             ],
             menus: {
@@ -420,10 +404,6 @@ class canvas {
     setTransparency (args) {
         const canvasObj = store.getCanvas(args.canvas);
         canvasObj.context.globalAlpha = args.transparency / 100;
-    }
-
-    printCanvas (args) {
-        store.printCanvas(args.canvas);
     }
 }
 
