@@ -69,6 +69,17 @@ class JgRuntimeBlocks {
                     }
                 },
                 {
+                    opcode: 'getIndexOfCostume',
+                    text: 'get costume index of [costume]',
+                    blockType: BlockType.COMMAND,
+                    arguments: {
+                        costume: {
+                            type: ArgumentType.STRING,
+                            defaultValue: "costume1"
+                        }
+                    }
+                },
+                {
                     opcode: 'setStageSize',
                     text: formatMessage({
                         id: 'jgRuntime.blocks.setStageSize',
@@ -202,6 +213,9 @@ class JgRuntimeBlocks {
         const index = (Number(args.COSTUME) ? Number(args.COSTUME) : 1) - 1;
         if (index < 0) return;
         util.target.deleteCostume(index);
+    }
+    getIndexOfCostume (args, util) {
+        return util.target.getCostumeIndexByName(args.costume);
     }
     setStageSize (args) {
         let width = Number(args.WIDTH) || 480;
