@@ -87,18 +87,6 @@ class canvas {
                     },
                     text: '[canvas]'
                 },
-                "---",
-                {
-                    opcode: 'printCanvas',
-                    blockType: BlockType.COMMAND,
-                    arguments: {
-                        canvas: {
-                            type: ArgumentType.STRING,
-                            menu: 'canvas'
-                        }
-                    },
-                    text: 'stamp canvas [canvas] to pen'
-                },
                 {
                     blockType: BlockType.LABEL,
                     text: "config"
@@ -237,7 +225,7 @@ class canvas {
                         },
                         src: {
                             type: ArgumentType.STRING,
-                            defaultValue: this.runtime.stageWidth
+                            defaultValue: 'https://penguinmod.site/favicon.ico'
                         }
                     },
                     blockType: BlockType.COMMAND
