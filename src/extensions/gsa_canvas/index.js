@@ -31,13 +31,13 @@ class canvas {
     }
 
     serialize () {
-        return JSON.stringify(store.getAllCanvases()
+        return store.getAllCanvases()
             .map(variable => ({
                 name: variable.name, 
                 width: variable.width, 
                 height: variable.height, 
                 id: variable.id
-            })));
+            }));
     }
 
     readAsImageElement (src) {
