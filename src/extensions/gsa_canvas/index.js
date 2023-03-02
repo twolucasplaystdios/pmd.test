@@ -376,7 +376,7 @@ class canvas {
     createNewCanvas () {
         const newCanvas = prompt('canvas name?', 'newCanvas');
         store.newCanvas(newCanvas);
-        this.runtime.vm.emitWorkspaceUpdate();
+        vm.emitWorkspaceUpdate();
     }
 
     getCanvasMenuItems () {

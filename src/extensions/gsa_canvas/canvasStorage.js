@@ -1,5 +1,4 @@
 const uid = require('../../util/uid');
-const StageLayering = require('../../engine/stage-layering');
 
 class canvasStorage {
     /**
@@ -50,16 +49,12 @@ class canvasStorage {
         element.height = height;
 
         const skin = this.runtime.renderer.createBitmapSkin(element, 1);
-        const drawable = this.runtime.renderer.createDrawable(StageLayering.PEN_LAYER);
-        this.runtime.renderer.updateDrawableSkinId(drawable, skin);
-        this.runtime.renderer.updateDrawableVisible(drawable, false);
 
         const data = {
             name: name,
             id: id,
             element: element,
             skinId: skin,
-            drawableId: drawable,
             width: width, 
             height: height,
             context: element.getContext('2d')
