@@ -9,7 +9,7 @@ const BufferStuff = new AHHHHHHHHHHHHHH();
  * @constructor
  */
 class JgFilesBlocks {
-    constructor(runtime) {
+    constructor (runtime) {
         /**
          * The runtime instantiating this block package.
          * @type {Runtime}
@@ -20,7 +20,7 @@ class JgFilesBlocks {
     /**
      * @returns {object} metadata for this extension and its blocks.
      */
-    getInfo() {
+    getInfo () {
         return {
             id: 'jgFiles',
             name: 'Files',
@@ -77,11 +77,11 @@ class JgFilesBlocks {
         };
     }
 
-    isFileReaderSupported() {
+    isFileReaderSupported () {
         return (window.FileReader !== null) && (window.document !== null);
     }
 
-    __askUserForFile(acceptTypes) {
+    __askUserForFile (acceptTypes) {
         try {
             return new Promise(resolve => {
                 const fileReader = new FileReader();
@@ -115,7 +115,7 @@ class JgFilesBlocks {
             return;
         }
     }
-    __askUserForFilearraybuffer(acceptTypes) {
+    __askUserForFilearraybuffer (acceptTypes) {
         try {
             return new Promise(resolve => {
                 const fileReader = new FileReader();
@@ -150,7 +150,7 @@ class JgFilesBlocks {
         }
     }
 
-    askUserForFileOfType(args) {
+    askUserForFileOfType (args) {
         const fileTypesAllowed = [];
         const input = args.FILE_TYPE
             .toLowerCase()
@@ -161,7 +161,7 @@ class JgFilesBlocks {
         });
         return this.__askUserForFile(fileTypesAllowed.join(","), false);
     }
-    askUserForFileOfTypeAsArrayBuffer(args) {
+    askUserForFileOfTypeAsArrayBuffer (args) {
         const fileTypesAllowed = [];
         const input = args.FILE_TYPE
             .toLowerCase()
@@ -173,7 +173,7 @@ class JgFilesBlocks {
         return this.__askUserForFilearraybuffer(fileTypesAllowed.join(","));
     }
 
-    downloadFile(args) {
+    downloadFile (args) {
         let content = "";
         let fileName = "text.txt";
 
