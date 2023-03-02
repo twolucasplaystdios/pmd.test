@@ -59,7 +59,7 @@ class Color {
             g = (decimal >> 8) & 0xFF;
             b = decimal & 0xFF;
         }
-        return {r: r, g: g, b: b, a: (255 + (-a))};
+        return {r: r, g: g, b: b, a: 255 - a};
     }
 
     /**
@@ -117,7 +117,7 @@ class Color {
      */
     static rgbToDecimal (rgb) {
         if (typeof rgb.a === 'number') {
-            return ((255 + (-rgb.a)) << 24) + (rgb.r << 16) + (rgb.g << 8) + rgb.b;
+            return ((255 - rgb.a) << 24) + (rgb.r << 16) + (rgb.g << 8) + rgb.b;
         }
         return (rgb.r << 16) + (rgb.g << 8) + rgb.b;
     }
