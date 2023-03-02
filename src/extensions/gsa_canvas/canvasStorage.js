@@ -35,14 +35,16 @@ class canvasStorage {
     /**
      * creates a new canvas
      * @param {string} name the name to give the new canvas
-     * @param {boolean} publik whether or not to make this canvas publik
+     * @param {number} width the width of the canvas
+     * @param {number} height the height of the canvas
+     * @param {string} opt_id the id of the canvas
      * @returns {Object} the new canvas object
      */
-    newCanvas (name, width, height) {
+    newCanvas (name, width, height, opt_id) {
         width = width || this.runtime.stageWidth;
         height = height || this.runtime.stageHeight;
         
-        const id = uid();
+        const id = opt_id || uid();
         const element = document.createElement('canvas');
         element.id = id;
         element.width = width;
