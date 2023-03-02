@@ -21,7 +21,8 @@ module.exports = {
         'one-var': 'off',
         'brace-style': 'off',
         'camelcase': 'off',
-        'comma-spacing': 'off'
+        'comma-spacing': 'off',
+        'no-negated-condition': 'off'
     },
     "globals": {
         "vm": true
