@@ -497,8 +497,12 @@ class Scratch3TextBlocks {
         const timer = new Timer();
         // On "first tick", set the text and force animation flags on and render
         const durationMs = Cast.toNumber(args.SECS || 2) * 1000; 
+        if (!args.TEXT) {
+            args.TEXT = textState.text;
+            if (!textState.text) return;
+        }
 
-        textState.text = this._formatText(args.TEXT) || textState.text;
+        textState.text = this._formatText(args.TEXT);
         textState.visible = true;
         textState.animating = true;
         textState.rainbow = true;
