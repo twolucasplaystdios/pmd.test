@@ -2,6 +2,7 @@ const formatMessage = require('format-message');
 const ArgumentType = require('../../extension-support/argument-type');
 const BlockType = require('../../extension-support/block-type');
 const Cast = require('../../util/cast');
+const Color = require('../../util/color');
 const Clone = require('../../util/clone');
 const Timer = require('../../util/timer');
 
@@ -44,7 +45,7 @@ class Scratch3TextBlocks {
             skinId: null,
             text: DefaultText,
             font: 'Handwriting',
-            color: 'hsla(225, 15%, 40%, 1',
+            color: 'hsla(225, 15%, 40%, 1)',
             // GUI's text-primary color
             size: 24,
             maxWidth: 480,
@@ -399,7 +400,7 @@ class Scratch3TextBlocks {
     setColor (args, util) {
         const textState = this._getTextState(util.target);
 
-        textState.color = args.COLOR;
+        textState.color = Color.decimalToHex(args.COLOR);
 
         this._renderText(util.target);
     }
