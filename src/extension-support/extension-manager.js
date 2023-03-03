@@ -67,6 +67,7 @@ const builtinExtensions = {
     GamepadExtension: () => require("../extensions/GamepadExtension"),
 
     // gsa: fill out your introduction stupet!!!
+    // no >:(
     // canvas: kinda obvius if you know anything about html canvases
     canvas: () => require('../extensions/gsa_canvas'),
     // tempVars: fill out your introduction stupet!!!

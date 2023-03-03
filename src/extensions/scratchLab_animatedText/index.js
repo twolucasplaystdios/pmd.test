@@ -588,11 +588,11 @@ class Scratch3TextBlocks {
         }));
     }
     _getTextState (target) {
-        let textState = target.getCustomState(Scratch3TextBlocks.STATE_KEY);
+        let textState = target.getCustomState(this.STATE_KEY);
 
         if (!textState) {
-            textState = Clone.simple(Scratch3TextBlocks.DEFAULT_TEXT_STATE);
-            target.setCustomState(Scratch3TextBlocks.STATE_KEY, textState);
+            textState = Clone.simple(this.DEFAULT_TEXT_STATE);
+            target.setCustomState(this.STATE_KEY, textState);
         }
 
         return textState;
@@ -630,12 +630,12 @@ class Scratch3TextBlocks {
      */
     _onTargetCreated (newTarget, sourceTarget) {
         if (sourceTarget) {
-            const sourceTextState = sourceTarget.getCustomState(Scratch3TextBlocks.STATE_KEY);
+            const sourceTextState = sourceTarget.getCustomState(this.STATE_KEY);
 
             if (sourceTextState) {
-                newTarget.setCustomState(Scratch3TextBlocks.STATE_KEY, Clone.simple(sourceTextState));
+                newTarget.setCustomState(this.STATE_KEY, Clone.simple(sourceTextState));
                 // Note here that clones do not share skins with their original target. This is a subtle but important
-                const newTargetState = newTarget.getCustomState(Scratch3TextBlocks.STATE_KEY); 
+                const newTargetState = newTarget.getCustomState(this.STATE_KEY); 
                 // departure from the rest of Scratch, where clones always stay in sync with the originals costume.
                 // The "rule" is anything that can be done with the blocks is clone-specific, 
                 // since that is where you make clones,
