@@ -226,14 +226,14 @@ class Scratch3TextBlocks {
             {
                 opcode: 'getVisible',
                 text: 'is text visible?',
-                blockType: BlockType.REPORTER
+                blockType: BlockType.BOOLEAN
             }, {
                 opcode: 'getWidth',
-                text: 'get width of text',
+                text: 'get width of the text',
                 blockType: BlockType.REPORTER
             }, {
                 opcode: 'getHeight',
-                text: 'get height of text',
+                text: 'get height of the text',
                 blockType: BlockType.REPORTER
             }],
             menus: {
