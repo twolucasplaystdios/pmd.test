@@ -144,20 +144,6 @@ class Scratch3TextBlocks {
                     }
                 }
             }, {
-                opcode: 'setSize',
-                text: formatMessage({
-                    id: 'text.setSize',
-                    default: 'set text size to [SIZE]',
-                    description: ''
-                }),
-                blockType: BlockType.COMMAND,
-                arguments: {
-                    SIZE: {
-                        type: ArgumentType.NUMBER,
-                        defaultValue: 30
-                    }
-                }
-            }, {
                 opcode: 'setWidth',
                 text: formatMessage({
                     id: 'text.setWidth',
