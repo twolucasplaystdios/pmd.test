@@ -401,24 +401,24 @@ class Scratch3TextBlocks {
     }
 
     getWidth (args, util) {
-        const textSize = this._getTextSize(util.target);
+        const textSkin = this._getTextSkin(util.target);
 
-        return textSize[0];
+        return textSkin.width;
     }
 
     getHeight (args, util) {
-        const textSize = this._getTextSize(util.target);
+        const textSkin = this._getTextSkin(util.target);
 
-        return textSize[1];
+        return textSkin.height;
     }
 
-    _getTextSize (target) {
+    _getTextSkin (target) {
         const textState = this._getTextState(target);
         if (!textState) return [0,0];
         if (!textState.skinId) return [0,0];
         const textSkin = this.runtime.renderer._allSkins[textState.skinId];
 
-        return Clone.simple(textSkin._size);
+        return textSkin;
     }
 
     /* 
