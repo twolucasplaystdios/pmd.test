@@ -1435,6 +1435,8 @@ const deserialize = function (json, runtime, zip, isSingleSprite) {
     // Extract custom extension IDs, if they exist.
     if (json.extensionURLs) {
         extensions.extensionURLs = new Map(Object.entries(json.extensionURLs));
+    }
+    if (json.extensionData) {
         extensions.extensionData = json.extensionData;
     }
 
