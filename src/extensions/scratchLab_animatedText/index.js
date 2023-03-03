@@ -35,6 +35,36 @@ class Scratch3TextBlocks {
         this.runtime.on('targetWasCreated', this._onTargetCreated);
         this.runtime.on('PROJECT_STOP_ALL', this.stopAll.bind(this));
     }
+    
+    get FONT_IDS () {
+        return [SANS_SERIF_ID, SERIF_ID, HANDWRITING_ID, MARKER_ID, CURLY_ID, PIXEL_ID];
+    }
+    get DEFAULT_TEXT_STATE () {
+        return {
+            skinId: null,
+            text: DefaultText,
+            font: 'Handwriting',
+            color: 'hsla(225, 15%, 40%, 1',
+            // GUI's text-primary color
+            size: 24,
+            maxWidth: 480,
+            align: 'center',
+            strokeWidth: 0,
+            strokeColor: 'black',
+            rainbow: false,
+            visible: false,
+            targetSize: null,
+            fullText: null
+        };
+    }
+
+    /**
+     * The key to load & store a target's text-related state.
+     * @type {string}
+     */
+    get STATE_KEY () {
+        return 'Scratch.text';
+    }
 
     getInfo () {
         return {
@@ -653,35 +683,6 @@ class Scratch3TextBlocks {
             this.runtime.renderer.destroySkin(textState.skinId);
             textState.skinId = null;
         }
-    }
-    get FONT_IDS () {
-        return [SANS_SERIF_ID, SERIF_ID, HANDWRITING_ID, MARKER_ID, CURLY_ID, PIXEL_ID];
-    }
-    get DEFAULT_TEXT_STATE () {
-        return {
-            skinId: null,
-            text: DefaultText,
-            font: 'Handwriting',
-            color: 'hsla(225, 15%, 40%, 1',
-            // GUI's text-primary color
-            size: 24,
-            maxWidth: 480,
-            align: 'center',
-            strokeWidth: 0,
-            strokeColor: 'black',
-            rainbow: false,
-            visible: false,
-            targetSize: null,
-            fullText: null
-        };
-    }
-
-    /**
-     * The key to load & store a target's text-related state.
-     * @type {string}
-     */
-    get STATE_KEY () {
-        return 'Scratch.text';
     }
 }
 
