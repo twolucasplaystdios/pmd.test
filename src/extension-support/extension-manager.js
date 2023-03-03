@@ -66,9 +66,12 @@ const builtinExtensions = {
     // cl: () => require("../extensions/cl"),
     GamepadExtension: () => require("../extensions/GamepadExtension"),
 
+    // gsa: fill out your introduction stupet!!!
     // canvas: kinda obvius if you know anything about html canvases
     canvas: () => require('../extensions/gsa_canvas'),
+    // tempVars: fill out your introduction stupet!!!
     tempVars: () => require('../extensions/gsa_tempVars'),
+    // colors: fill out your introduction stupet!!!
     colors: () => require('../extensions/gsa_colorUtilBlocks')
 };
 

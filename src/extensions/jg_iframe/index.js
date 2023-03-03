@@ -55,6 +55,8 @@ class JgIframeBlocks {
             return item.value;
         }), 0);
         this.iframeLoadedValue = false;
+        this.permission_AllowedWebsites = [];
+        this.displayWebsiteUrl = "";
     }
 
     /**
@@ -351,6 +353,44 @@ class JgIframeBlocks {
             }
         };
     }
+    // permissions
+    CheckIfSafeUrl(url) { // checks for non-kid friendly urls because that would be a big stinker
+        const origin = String(url).match(/((http(s|)|(ws|wss)):\/\/)([^\n]+)\.([^\n\/?#&]+)/gmi);
+        let returningValue = true;
+        for (let i = 0; i < origin.length; i++) {
+            const link = origin[i];
+            if (
+                link.endsWith(".xxx")
+                || link.endsWith(".adult")
+                || link.endsWith("." + atob("c2V4"))
+                || link.endsWith("." + atob("cG9ybg=="))
+            ) returningValue = false;
+            if (
+                link.includes("xxx")
+                || link.includes("adult")
+                || link.includes(atob("c2V4"))
+                || link.includes(atob("cG9ybg=="))
+                || link.includes(atob("Ym9vcnU="))
+                || link.includes(atob("aGVudGFp"))
+            ) returningValue = false;
+            // const mainName = link.match(/(?=(\.|\/\/))[^\n]+(?=(\.))/gmi)[0].replace(/(\/\/|)[^\n]+(?=(\.))/gmi, "").replace(/\/\//gmi, "")
+        }
+        return returningValue;
+    }
+    AskUserForWebsitePermission(url) {
+        if (!this.CheckIfSafeUrl(url)) return false;
+        const allowed = confirm("Allow this project to show " + url + "? This project will open this website if you allow this.");
+        if (!allowed) {
+            return false;
+        }
+        this.permission_AllowedWebsites.push(url);
+        return true;
+    }
+    IsWebsiteAllowed(url) {
+        if (!this.CheckIfSafeUrl(url)) return false;
+        return this.permission_AllowedWebsites.includes(url);
+    }
+
     // utilities
     GetCurrentCanvas() {
         return this.runtime.renderer.canvas;
@@ -430,6 +470,7 @@ class JgIframeBlocks {
         const iframe = this.SetNewIFrame();
         iframe.style.borderWidth = "0px"
         iframe.src = "data:text/html;base64,PERPQ1RZUEUgaHRtbD4KPGh0bWwgbGFuZz0iZW4tVVMiPgo8aGVhZD48L2hlYWQ+Cjxib2R5PjxoMT5IZWxsbyE8L2gxPjxwPllvdSd2ZSBqdXN0IGNyZWF0ZWQgYW4gaWZyYW1lIGVsZW1lbnQuPGJyPlVzZSB0aGlzIHRvIGVtYmVkIHNpdGVzIHdpdGggVVJMcyBvciBIVE1MIHVzaW5nIERhdGEgVVJJcy48L3A+PC9ib2R5Pgo8L2h0bWw+";
+        this.displayWebsiteUrl = iframe.src;
         this.SetIFramePosition(iframe, 0, 0, this.runtime.stageWidth, this.runtime.stageHeight, 90); // positions iframe to fit stage
         this.iframeFilters = ArrayToValue(EffectOptions.items.map(item => {
             return item.value;
@@ -445,7 +486,15 @@ class JgIframeBlocks {
     }
     setIframeUrl(args) {
         if (!this.GetIFrameState()) return; // iframe doesnt exist, stop
-        this.createdIframe.src = args.URL
+        if (!this.IsWebsiteAllowed(args.URL)) { // website isnt in the permitted sites list?
+            this.createdIframe.src = "about:blank";
+            if (!this.AskUserForWebsitePermission(args.URL)) { // ask user for permission to redirect (unless it is an adult site)
+                this.createdIframe.src = "about:blank";
+                this.displayWebsiteUrl = args.URL;
+            }
+        }
+        this.createdIframe.src = args.URL;
+        this.displayWebsiteUrl = this.createdIframe.src;
     }
     setIframePosLeft(args) {
         if (!this.GetIFrameState()) return; // iframe doesnt exist, stop
@@ -535,7 +584,7 @@ class JgIframeBlocks {
     }
     getIframeTargetUrl() {
         if (!this.GetIFrameState()) return; // iframe doesnt exist, stop
-        return this.createdIframe.src
+        return this.displayWebsiteUrl
     }
     iframeElementIsHidden() {
         if (!this.GetIFrameState()) return false; // iframe doesnt exist, stop

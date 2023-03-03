@@ -5,7 +5,7 @@ const beatgammit = {
     deflate: require('./beatgammit-deflate'),
     inflate: require('./beatgammit-inflate')
 };
-const { 
+const {
     validateArray
 } = require('../../util/json-block-utilities');
 // const Cast = require('../../util/cast');
@@ -15,7 +15,7 @@ const {
  * @constructor
  */
 class JgPrismBlocks {
-    constructor (runtime) {
+    constructor(runtime) {
         /**
          * The runtime instantiating this block package.
          * @type {Runtime}
@@ -23,6 +23,7 @@ class JgPrismBlocks {
         this.runtime = runtime;
         this.audioPlayer = new Audio();
         this.isJSPermissionGranted = false;
+        this.isCameraScreenshotEnabled = false;
 
         this.mouseScrollDelta = { x: 0, y: 0, z: 0 };
         addEventListener("wheel", e => {
@@ -38,7 +39,7 @@ class JgPrismBlocks {
     /**
      * @returns {object} metadata for this extension and its blocks.
      */
-    getInfo () {
+    getInfo() {
         return {
             id: 'jgPrism',
             name: 'Prism',
@@ -412,44 +413,44 @@ class JgPrismBlocks {
             ]
         };
     }
-    playAudioFromUrl (args) {
+    playAudioFromUrl(args) {
         this.audioPlayer.pause();
         this.audioPlayer.src = `https://api.allorigins.win/raw?url=${encodeURIComponent(String(args.URL))}`;
         this.audioPlayer.currentTime = 0;
         this.audioPlayer.play();
     }
-    setAudioToLooping () {
+    setAudioToLooping() {
         this.audioPlayer.loop = true;
     }
-    setAudioToNotLooping () {
+    setAudioToNotLooping() {
         this.audioPlayer.loop = false;
     }
-    pauseAudio () {
+    pauseAudio() {
         this.audioPlayer.pause();
     }
-    playAudio () {
+    playAudio() {
         this.audioPlayer.play();
     }
-    setAudioPlaybackSpeed (args) {
+    setAudioPlaybackSpeed(args) {
         this.audioPlayer.playbackRate = (isNaN(Number(args.SPEED)) ? 100 : Number(args.SPEED)) / 100;
     }
-    getAudioPlaybackSpeed () {
+    getAudioPlaybackSpeed() {
         return this.audioPlayer.playbackRate * 100;
     }
-    setAudioPosition (args) {
+    setAudioPosition(args) {
         this.audioPlayer.currentTime = isNaN(Number(args.POSITION)) ? 0 : Number(args.POSITION);
     }
-    getAudioPosition () {
+    getAudioPosition() {
         return this.audioPlayer.currentTime;
     }
-    setAudioVolume (args) {
+    setAudioVolume(args) {
         this.audioPlayer.volume = (isNaN(Number(args.VOLUME)) ? 100 : Number(args.VOLUME)) / 100;
     }
-    getAudioVolume () {
+    getAudioVolume() {
         return this.audioPlayer.volume * 100;
     }
     // eslint-disable-next-line no-unused-vars
-    evaluate (args, util) {
+    evaluate(args, util) {
         if (!(this.isJSPermissionGranted)) {
             this.isJSPermissionGranted = confirm("Allow this project to run custom unsafe code?");
         }
@@ -463,7 +464,7 @@ class JgPrismBlocks {
         }
     }
     // eslint-disable-next-line no-unused-vars
-    evaluate2 (args, util) {
+    evaluate2(args, util) {
         if (!(this.isJSPermissionGranted)) {
             this.isJSPermissionGranted = confirm("Allow this project to run custom unsafe code?");
             if (!this.isJSPermissionGranted) return "";
@@ -480,7 +481,7 @@ class JgPrismBlocks {
         return result;
     }
     // eslint-disable-next-line no-unused-vars
-    evaluate3 (args, util) {
+    evaluate3(args, util) {
         if (!(this.isJSPermissionGranted)) {
             this.isJSPermissionGranted = confirm("Allow this project to run custom unsafe code?");
             if (!this.isJSPermissionGranted) return false;
@@ -497,14 +498,21 @@ class JgPrismBlocks {
         // otherwise
         return result === true;
     }
-    screenshotStage () {
+    screenshotStage() {
+        if (this.runtime.ioDevices.video.provider.enabled) {
+            // user's camera is on, ask for permission to take a picture of them
+            if (!(this.isCameraScreenshotEnabled)) {
+                this.isCameraScreenshotEnabled = confirm("Allow this project to take pictures of you?");
+                if (!this.isCameraScreenshotEnabled) return "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAIAAACQd1PeAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAAMSURBVBhXY/j//z8ABf4C/qc1gYQAAAAASUVORK5CYII="; // 1 pixel of white
+            }
+        }
         return new Promise(resolve => {
             vm.renderer.requestSnapshot(uri => {
                 resolve(uri);
             });
         });
     }
-    dataUriOfCostume (args, util) {
+    dataUriOfCostume(args, util) {
         const index = Number(args.INDEX);
         if (isNaN(index)) return "";
         if (index < 1) return "";
@@ -515,7 +523,7 @@ class JgPrismBlocks {
         const dataURI = target.sprite.costumes[index - 1].asset.encodeDataURI();
         return String(dataURI);
     }
-    dataUriFromImageUrl (args) {
+    dataUriFromImageUrl(args) {
         return new Promise(resolve => {
             if (window && !window.FileReader) return resolve("");
             if (window && !window.fetch) return resolve("");
@@ -536,35 +544,35 @@ class JgPrismBlocks {
                 });
         });
     }
-    currentMouseScrollX () {
+    currentMouseScrollX() {
         return this.mouseScrollDelta.x;
     }
-    currentMouseScroll () {
+    currentMouseScroll() {
         return this.mouseScrollDelta.y;
     }
-    currentMouseScrollZ () {
+    currentMouseScrollZ() {
         return this.mouseScrollDelta.z;
     }
-    base64Encode (args) {
+    base64Encode(args) {
         return btoa(String(args.TEXT));
     }
-    base64Decode (args) {
+    base64Decode(args) {
         return atob(String(args.TEXT));
     }
-    fromCharacterCodeString (args) {
+    fromCharacterCodeString(args) {
         return String.fromCharCode(args.TEXT);
     }
-    toCharacterCodeString (args) {
+    toCharacterCodeString(args) {
         return String(args.TEXT).charCodeAt(0);
     }
-    lib_deflate_deflateArray (args) {
+    lib_deflate_deflateArray(args) {
         const array = validateArray(args.ARRAY).array;
 
         return JSON.stringify(beatgammit.deflate(array));
     }
-    lib_deflate_inflateArray (args) {
+    lib_deflate_inflateArray(args) {
         const array = validateArray(args.ARRAY).array;
-        
+
         return JSON.stringify(beatgammit.inflate(array));
     }
 }
