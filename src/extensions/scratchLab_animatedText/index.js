@@ -143,22 +143,21 @@ class Scratch3TextBlocks {
                         type: ArgumentType.COLOR
                     }
                 }
-            }, // {
-            //     opcode: 'setSize',
-            //     text: formatMessage({
-            //         id: 'text.setSize',
-            //         default: 'set text size to [SIZE]',
-            //         description: ''
-            //     }),
-            //     blockType: BlockType.COMMAND,
-            //     arguments: {
-            //         SIZE: {
-            //             type: ArgumentType.NUMBER,
-            //             defaultValue: 30
-            //         }
-            //     }
-            // },
-            {
+            }, {
+                opcode: 'setSize',
+                text: formatMessage({
+                    id: 'text.setSize',
+                    default: 'set text size to [SIZE]',
+                    description: ''
+                }),
+                blockType: BlockType.COMMAND,
+                arguments: {
+                    SIZE: {
+                        type: ArgumentType.NUMBER,
+                        defaultValue: 30
+                    }
+                }
+            }, {
                 opcode: 'setWidth',
                 text: formatMessage({
                     id: 'text.setWidth',
@@ -177,103 +176,66 @@ class Scratch3TextBlocks {
                         menu: 'ALIGN'
                     }
                 }
-            } // {
-                //     opcode: 'setAlign',
-                //     text: formatMessage({
-                //         id: 'text.setAlign',
-                //         default: 'align text [ALIGN] width [WIDTH]',
-                //         description: ''
-                //     }),
-                //     blockType: BlockType.COMMAND,
-                //     arguments: {
-                //         ALIGN: {
-                //             type: ArgumentType.STRING,
-                //             defaultValue: 'left',
-                //             menu: 'ALIGN'
-                //         },
-                //         WIDTH: {
-                //             type: ArgumentType.NUMBER,
-                //             defaultValue: 200
-                //         }
-                //     }
-                // },
-                // {
-                //     opcode: 'rainbow',
-                //     text: formatMessage({
-                //         id: 'text.rainbow',
-                //         default: 'rainbow for [SECS] seconds',
-                //         description: ''
-                //     }),
-                //     blockType: BlockType.COMMAND,
-                //     arguments: {
-                //         SECS: {
-                //             type: ArgumentType.NUMBER,
-                //             defaultValue: 1
-                //         }
-                //     }
-                // }
-                // '---',
-                // {
-                //     opcode: 'addText',
-                //     text: formatMessage({
-                //         id: 'text.addText',
-                //         default: 'add text [TEXT]',
-                //         description: ''
-                //     }),
-                //     blockType: BlockType.COMMAND,
-                //     arguments: {
-                //         TEXT: {
-                //             type: ArgumentType.STRING,
-                //             defaultValue: ' and more!'
-                //         }
-                //     }
-                // },
-                // {
-                //     opcode: 'addLine',
-                //     text: formatMessage({
-                //         id: 'text.addLine',
-                //         default: 'add line [TEXT]',
-                //         description: ''
-                //     }),
-                //     blockType: BlockType.COMMAND,
-                //     arguments: {
-                //         TEXT: {
-                //             type: ArgumentType.STRING,
-                //             defaultValue: 'more lines!'
-                //         }
-                //     }
-                // },
-                // '---',
-                // {
-                //     opcode: 'setOutlineWidth',
-                //     text: formatMessage({
-                //         id: 'text.setOutlineWidth',
-                //         default: 'set outline width to [WIDTH]',
-                //         description: ''
-                //     }),
-                //     blockType: BlockType.COMMAND,
-                //     arguments: {
-                //         WIDTH: {
-                //             type: ArgumentType.NUMBER,
-                //             defaultValue: 1
-                //         }
-                //     }
-                // },
-                // {
-                //     opcode: 'setOutlineColor',
-                //     text: formatMessage({
-                //         id: 'text.setOutlineColor',
-                //         default: 'set outline color to [COLOR]',
-                //         description: ''
-                //     }),
-                //     blockType: BlockType.COMMAND,
-                //     arguments: {
-                //         COLOR: {
-                //             type: ArgumentType.COLOR
-                //         }
-                //     }
-                // }
-            ],
+            }, {
+                opcode: 'rainbow',
+                text: formatMessage({
+                    id: 'text.rainbow',
+                    default: 'rainbow for [SECS] seconds',
+                    description: ''
+                }),
+                blockType: BlockType.COMMAND,
+                arguments: {
+                    SECS: {
+                        type: ArgumentType.NUMBER,
+                        defaultValue: 1
+                    }
+                }
+            },
+            '---',
+            {
+                opcode: 'addLine',
+                text: formatMessage({
+                    id: 'text.addLine',
+                    default: 'add line [TEXT]',
+                    description: ''
+                }),
+                blockType: BlockType.COMMAND,
+                arguments: {
+                    TEXT: {
+                        type: ArgumentType.STRING,
+                        defaultValue: 'more lines!'
+                    }
+                }
+            },
+            '---',
+            {
+                opcode: 'setOutlineWidth',
+                text: formatMessage({
+                    id: 'text.setOutlineWidth',
+                    default: 'set outline width to [WIDTH]',
+                    description: ''
+                }),
+                blockType: BlockType.COMMAND,
+                arguments: {
+                    WIDTH: {
+                        type: ArgumentType.NUMBER,
+                        defaultValue: 1
+                    }
+                }
+            }, {
+                opcode: 'setOutlineColor',
+                text: formatMessage({
+                    id: 'text.setOutlineColor',
+                    default: 'set outline color to [COLOR]',
+                    description: ''
+                }),
+                blockType: BlockType.COMMAND,
+                arguments: {
+                    COLOR: {
+                        type: ArgumentType.COLOR
+                    }
+                }
+            }],
             menus: {
                 FONT: {
                     items: [{
@@ -357,18 +319,6 @@ class Scratch3TextBlocks {
                 target: target
             });
         });
-    }
-    addText (args, util) {
-        const textState = this._getTextState(util.target);
-
-        textState.text += this._formatText(args.TEXT);
-        textState.visible = true;
-        textState.animating = false;
-
-        this._renderText(util.target); // Yield until the next tick.
-
-
-        return Promise.resolve();
     }
     addLine (args, util) {
         const textState = this._getTextState(util.target);
