@@ -4,13 +4,9 @@ const ArgumentType = require('../../extension-support/argument-type');
 const beatgammit = {
     deflate: require('./beatgammit-deflate'),
     inflate: require('./beatgammit-inflate')
-}
+};
 const { 
-    validateJSON, 
-    validateArray, 
-    stringToEqivalint, 
-    valueToString,
-    validateRegex 
+    validateArray
 } = require('../../util/json-block-utilities');
 // const Cast = require('../../util/cast');
 
@@ -19,7 +15,7 @@ const {
  * @constructor
  */
 class JgPrismBlocks {
-    constructor(runtime) {
+    constructor (runtime) {
         /**
          * The runtime instantiating this block package.
          * @type {Runtime}
@@ -28,21 +24,21 @@ class JgPrismBlocks {
         this.audioPlayer = new Audio();
         this.isJSPermissionGranted = false;
 
-        this.mouseScrollDelta = { x: 0, y: 0, z: 0 }
+        this.mouseScrollDelta = { x: 0, y: 0, z: 0 };
         addEventListener("wheel", e => {
-            this.mouseScrollDelta.x = e.deltaX
-            this.mouseScrollDelta.y = e.deltaY
-            this.mouseScrollDelta.z = e.deltaZ
-        })
+            this.mouseScrollDelta.x = e.deltaX;
+            this.mouseScrollDelta.y = e.deltaY;
+            this.mouseScrollDelta.z = e.deltaZ;
+        });
         setInterval(() => {
-            this.mouseScrollDelta = { x: 0, y: 0, z: 0 }
-        }, 65)
+            this.mouseScrollDelta = { x: 0, y: 0, z: 0 };
+        }, 65);
     }
 
     /**
      * @returns {object} metadata for this extension and its blocks.
      */
-    getInfo() {
+    getInfo () {
         return {
             id: 'jgPrism',
             name: 'Prism',
@@ -146,11 +142,7 @@ class JgPrismBlocks {
                 },
                 {
                     opcode: 'getAudioPosition',
-                    text: formatMessage({
-                        id: 'jgRuntime.blocks.getAudioPosition',
-                        default: 'audio position',
-                        description: 'Block that returns the position of the audio player in the currently playing audio.'
-                    }),
+                    text: 'audio position',
                     disableMonitor: false,
                     blockType: BlockType.REPORTER
                 },
@@ -420,55 +412,58 @@ class JgPrismBlocks {
             ]
         };
     }
-    playAudioFromUrl(args) {
+    playAudioFromUrl (args) {
         this.audioPlayer.pause();
-        this.audioPlayer.src = "https://api.allorigins.win/raw?url=" + encodeURIComponent(String(args.URL));
+        this.audioPlayer.src = `https://api.allorigins.win/raw?url=${encodeURIComponent(String(args.URL))}`;
         this.audioPlayer.currentTime = 0;
         this.audioPlayer.play();
     }
-    setAudioToLooping() {
+    setAudioToLooping () {
         this.audioPlayer.loop = true;
     }
-    setAudioToNotLooping() {
+    setAudioToNotLooping () {
         this.audioPlayer.loop = false;
     }
-    pauseAudio() {
+    pauseAudio () {
         this.audioPlayer.pause();
     }
-    playAudio() {
+    playAudio () {
         this.audioPlayer.play();
     }
-    setAudioPlaybackSpeed(args) {
+    setAudioPlaybackSpeed (args) {
         this.audioPlayer.playbackRate = (isNaN(Number(args.SPEED)) ? 100 : Number(args.SPEED)) / 100;
     }
-    getAudioPlaybackSpeed() {
+    getAudioPlaybackSpeed () {
         return this.audioPlayer.playbackRate * 100;
     }
-    setAudioPosition(args) {
+    setAudioPosition (args) {
         this.audioPlayer.currentTime = isNaN(Number(args.POSITION)) ? 0 : Number(args.POSITION);
     }
-    getAudioPosition() {
+    getAudioPosition () {
         return this.audioPlayer.currentTime;
     }
-    setAudioVolume(args) {
+    setAudioVolume (args) {
         this.audioPlayer.volume = (isNaN(Number(args.VOLUME)) ? 100 : Number(args.VOLUME)) / 100;
     }
-    getAudioVolume() {
+    getAudioVolume () {
         return this.audioPlayer.volume * 100;
     }
-    evaluate(args, util) {
+    // eslint-disable-next-line no-unused-vars
+    evaluate (args, util) {
         if (!(this.isJSPermissionGranted)) {
             this.isJSPermissionGranted = confirm("Allow this project to run custom unsafe code?");
         }
         // otherwise
         try {
+            // eslint-disable-next-line no-eval
             eval(String(args.JAVASCRIPT));
         } catch (e) {
             alert(e);
-            console.error(e)
+            console.error(e);
         }
     }
-    evaluate2(args, util) {
+    // eslint-disable-next-line no-unused-vars
+    evaluate2 (args, util) {
         if (!(this.isJSPermissionGranted)) {
             this.isJSPermissionGranted = confirm("Allow this project to run custom unsafe code?");
             if (!this.isJSPermissionGranted) return "";
@@ -476,14 +471,16 @@ class JgPrismBlocks {
         // otherwise
         let result = "";
         try {
+            // eslint-disable-next-line no-eval
             result = eval(String(args.JAVASCRIPT));
         } catch (e) {
             result = e;
-            console.error(e)
+            console.error(e);
         }
         return result;
     }
-    evaluate3(args, util) {
+    // eslint-disable-next-line no-unused-vars
+    evaluate3 (args, util) {
         if (!(this.isJSPermissionGranted)) {
             this.isJSPermissionGranted = confirm("Allow this project to run custom unsafe code?");
             if (!this.isJSPermissionGranted) return false;
@@ -491,77 +488,81 @@ class JgPrismBlocks {
         // otherwise
         let result = true;
         try {
+            // eslint-disable-next-line no-eval
             result = eval(String(args.JAVASCRIPT));
         } catch (e) {
             result = false;
-            console.error(e)
+            console.error(e);
         }
         // otherwise
-        return result == true;
+        return result === true;
     }
-    screenshotStage() {
-        return new Promise((resolve, _) => {
+    screenshotStage () {
+        return new Promise(resolve => {
             vm.renderer.requestSnapshot(uri => {
                 resolve(uri);
-            })
-        })
+            });
+        });
     }
-    dataUriOfCostume(args, util) {
+    dataUriOfCostume (args, util) {
         const index = Number(args.INDEX);
         if (isNaN(index)) return "";
         if (index < 1) return "";
 
-        let target = util.target
-        if (target.sprite.costumes[index - 1] == undefined || target.sprite.costumes[index - 1] == null) return "";
-        let dataURI = target.sprite.costumes[index - 1].asset.encodeDataURI();
+        const target = util.target;
+        // eslint-disable-next-line no-undefined
+        if (target.sprite.costumes[index - 1] === undefined || target.sprite.costumes[index - 1] === null) return "";
+        const dataURI = target.sprite.costumes[index - 1].asset.encodeDataURI();
         return String(dataURI);
     }
-    dataUriFromImageUrl(args, util) {
-        return new Promise((resolve, reject) => {
+    dataUriFromImageUrl (args) {
+        return new Promise(resolve => {
             if (window && !window.FileReader) return resolve("");
             if (window && !window.fetch) return resolve("");
-            fetch("https://api.allorigins.win/raw?url=" + encodeURIComponent(String(args.URL))).then(r => {
+            fetch(`https://api.allorigins.win/raw?url=${encodeURIComponent(String(args.URL))}`).then(r => {
                 r.blob().then(blob => {
                     const reader = new FileReader();
-                    reader.onload = (e) => {
-                      resolve(e.target.result);
-                    }
-                    reader.readAsDataURL(blob)
-                }).catch(err => {
-                    resolve("");
+                    reader.onload = e => {
+                        resolve(e.target.result);
+                    };
+                    reader.readAsDataURL(blob);
                 })
-            }).catch(err => {
-                resolve("");
+                    .catch(() => {
+                        resolve("");
+                    });
             })
-        })
+                .catch(() => {
+                    resolve("");
+                });
+        });
     }
-    currentMouseScrollX(args, util) {
+    currentMouseScrollX () {
         return this.mouseScrollDelta.x;
     }
-    currentMouseScroll(args, util) {
+    currentMouseScroll () {
         return this.mouseScrollDelta.y;
     }
-    currentMouseScrollZ(args, util) {
+    currentMouseScrollZ () {
         return this.mouseScrollDelta.z;
     }
-    base64Encode(args) {
+    base64Encode (args) {
         return btoa(String(args.TEXT));
     }
-    base64Decode(args) {
+    base64Decode (args) {
         return atob(String(args.TEXT));
     }
-    fromCharacterCodeString(args) {
+    fromCharacterCodeString (args) {
         return String.fromCharCode(args.TEXT);
     }
-    toCharacterCodeString(args) {
+    toCharacterCodeString (args) {
         return String(args.TEXT).charCodeAt(0);
     }
-    lib_deflate_deflateArray(args) {
+    lib_deflate_deflateArray (args) {
         const array = validateArray(args.ARRAY).array;
 
         return JSON.stringify(beatgammit.deflate(array));
     }
-    lib_deflate_inflateArray(args) {
+    lib_deflate_inflateArray (args) {
         const array = validateArray(args.ARRAY).array;
         
         return JSON.stringify(beatgammit.inflate(array));
