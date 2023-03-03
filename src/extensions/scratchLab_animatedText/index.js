@@ -221,7 +221,9 @@ class Scratch3TextBlocks {
                         type: ArgumentType.COLOR
                     }
                 }
-            }, {
+            }, 
+            '---',
+            {
                 opcode: 'getVisible',
                 text: 'is text visible?',
                 blockType: BlockType.REPORTER
