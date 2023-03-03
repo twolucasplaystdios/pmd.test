@@ -499,7 +499,7 @@ class Scratch3TextBlocks {
         const durationMs = Cast.toNumber(args.SECS || 2) * 1000; 
         if (!args.TEXT) {
             args.TEXT = textState.text;
-            if (!textState.text) return;
+            if (!textState.visible) return;
         }
 
         textState.text = this._formatText(args.TEXT);
