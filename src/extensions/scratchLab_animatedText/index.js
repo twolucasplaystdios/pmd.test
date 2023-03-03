@@ -309,7 +309,7 @@ class Scratch3TextBlocks {
     addLine (args, util) {
         const textState = this._getTextState(util.target);
 
-        textState.text += "\n".concat(this._formatText(args.TEXT));
+        textState.text += `\n${this._formatText(args.TEXT)}`;
         textState.visible = true;
         textState.animating = false;
 
@@ -373,7 +373,7 @@ class Scratch3TextBlocks {
     setOutlineColor (args, util) {
         const textState = this._getTextState(util.target);
 
-        textState.strokeColor = args.COLOR;
+        textState.strokeColor = Color.decimalToHex(args.COLOR);
         textState.visible = true;
 
         this._renderText(util.target);
