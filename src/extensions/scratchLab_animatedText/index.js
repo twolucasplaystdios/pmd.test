@@ -221,6 +221,18 @@ class Scratch3TextBlocks {
                         type: ArgumentType.COLOR
                     }
                 }
+            }, {
+                opcode: 'getVisible',
+                text: 'is text visible?',
+                blockType: BlockType.REPORTER
+            }, {
+                opcode: 'getWidth',
+                text: 'get width of text',
+                blockType: BlockType.REPORTER
+            }, {
+                opcode: 'getHeight',
+                text: 'get height of text',
+                blockType: BlockType.REPORTER
             }],
             menus: {
                 FONT: {
@@ -245,7 +257,8 @@ class Scratch3TextBlocks {
                     }, {
                         text: 'random font',
                         value: RANDOM_ID
-                    }]
+                    }],
+                    acceptReporters: true
                 },
                 ALIGN: {
                     items: [{
@@ -377,6 +390,33 @@ class Scratch3TextBlocks {
         textState.visible = true;
 
         this._renderText(util.target);
+    }
+
+    getVisble (args, util) {
+        const textState = this._getTextState(util.target);
+
+        return textState.visible;
+    }
+
+    getWidth (args, util) {
+        const textSize = this._getTextSize(util.target);
+
+        return textSize[0];
+    }
+
+    getHeight (args, util) {
+        const textSize = this._getTextSize(util.target);
+
+        return textSize[1];
+    }
+
+    _getTextSize (target) {
+        const textState = this._getTextState(target);
+        if (!textState) return [0,0];
+        if (!textState.skinId) return [0,0];
+        const textSkin = this.runtime.renderer._allSkins[textState.skinId];
+
+        return Clone.simple(textSkin._size);
     }
 
     /* 
