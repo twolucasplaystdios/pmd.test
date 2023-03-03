@@ -281,6 +281,7 @@ class ExtensionManager {
                 dispatch.callSync('extensions', 'registerExtensionServiceSync', serviceName);
                 this._loadedExtensions.set(extensionInfo.id, serviceName);
                 returnedIDs.push(extensionInfo.id);
+                this.runtime.compilerRegisterExtension(extensionInfo.id, extensionObject);
             }
 
             this._finishedLoadingExtensionScript();
