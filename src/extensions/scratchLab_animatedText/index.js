@@ -25,9 +25,9 @@ const RANDOM_ID = 'Random';
 class Scratch3TextBlocks {
     constructor (runtime) {
         /**
-       * The runtime instantiating this block package.
-       * @type {Runtime}
-       */
+         * The runtime instantiating this block package.
+         * @type {Runtime}
+         */
         this.runtime = runtime;
         this._onTargetWillExit = this._onTargetWillExit.bind(this);
         this.runtime.on('targetWasRemoved', this._onTargetWillExit);
@@ -35,7 +35,7 @@ class Scratch3TextBlocks {
         this.runtime.on('targetWasCreated', this._onTargetCreated);
         this.runtime.on('PROJECT_STOP_ALL', this.stopAll.bind(this));
     }
-    
+
     get FONT_IDS () {
         return [SANS_SERIF_ID, SERIF_ID, HANDWRITING_ID, MARKER_ID, CURLY_ID, PIXEL_ID];
     }
@@ -351,10 +351,8 @@ class Scratch3TextBlocks {
         return Promise.resolve();
     }
     stopAll () {
-        const _this = this;
-
         this.runtime.targets.forEach(target => {
-            _this.clearText({}, {
+            this.clearText({}, {
                 target: target
             });
         });
@@ -463,8 +461,6 @@ class Scratch3TextBlocks {
      * TODO abstract this shared functionality for all animations.
      */
     _animateText (args, util) {
-        const _this2 = this;
-
         const target = util.target;
 
         const textState = this._getTextState(target);
@@ -494,17 +490,15 @@ class Scratch3TextBlocks {
                     resolve();
                 }
 
-                _this2._renderText(target);
+                this._renderText(target);
 
-                _this2.runtime.requestRedraw();
+                this.runtime.requestRedraw();
             }, 60
                 /* ms, about 1 char every 2 frames */
             );
         }));
     }
     _zoomText (args, util) {
-        const _this3 = this;
-
         const target = util.target;
 
         const textState = this._getTextState(target);
@@ -538,10 +532,10 @@ class Scratch3TextBlocks {
                     resolve();
                 }
 
-                _this3._renderText(target);
+                this._renderText(target);
 
-                _this3.runtime.requestRedraw();
-            }, _this3.runtime.currentStepTime);
+                this.runtime.requestRedraw();
+            }, this.runtime.currentStepTime);
         }));
     }
     animateText (args, util) {
@@ -557,8 +551,6 @@ class Scratch3TextBlocks {
         }
     }
     rainbow (args, util) {
-        const _this4 = this;
-
         const target = util.target;
 
         const textState = this._getTextState(target);
@@ -591,8 +583,8 @@ class Scratch3TextBlocks {
                     resolve();
                 }
 
-                _this4._renderText(target);
-            }, _this4.runtime.currentStepTime);
+                this._renderText(target);
+            }, this.runtime.currentStepTime);
         }));
     }
     _getTextState (target) {
@@ -637,8 +629,6 @@ class Scratch3TextBlocks {
      * @private
      */
     _onTargetCreated (newTarget, sourceTarget) {
-        const _this5 = this;
-
         if (sourceTarget) {
             const sourceTextState = sourceTarget.getCustomState(Scratch3TextBlocks.STATE_KEY);
 
@@ -663,8 +653,8 @@ class Scratch3TextBlocks {
                 // wait for the first EVENT_TARGET_VISUAL_CHANGE for this.
                 newTargetState.animating = false; 
 
-                const onDrawableReady = function onDrawableReady () {
-                    _this5._renderText(newTarget);
+                const onDrawableReady = () => {
+                    this._renderText(newTarget);
 
                     newTarget.off('EVENT_TARGET_VISUAL_CHANGE', onDrawableReady);
                 };
