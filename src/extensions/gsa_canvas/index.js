@@ -27,7 +27,6 @@ class canvas {
         for (const canvas of data) {
             store.newCanvas(canvas.name, canvas.width, canvas.height, canvas.id);
         }
-        vm.emitWorkspaceUpdate();
     }
 
     serialize () {
