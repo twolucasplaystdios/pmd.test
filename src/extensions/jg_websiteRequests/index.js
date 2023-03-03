@@ -51,9 +51,9 @@ class JgWebsiteRequestBlocks {
                 {
                     opcode: 'decodeUrlForText',
                     text: formatMessage({
-                        id: 'jgWebsiteRequests.blocks.encodeTextForURL',
+                        id: 'jgWebsiteRequests.blocks.decodeUrlForText',
                         default: 'decode [TEXT] for text',
-                        description: 'Encodes text to be usable in a URL.'
+                        description: 'Decodes text used in query parameters and other areas.'
                     }),
                     disableMonitor: true,
                     blockType: BlockType.REPORTER,
@@ -61,9 +61,9 @@ class JgWebsiteRequestBlocks {
                         TEXT: {
                             type: ArgumentType.STRING,
                             defaultValue: formatMessage({
-                                id: 'jgWebsiteRequests.text_encode_for_url',
-                                default: 'Text here',
-                                description: 'The text to encode.'
+                                id: 'jgWebsiteRequests.text_decode_for_url',
+                                default: 'Text%20here',
+                                description: 'The text to decode.'
                             })
                         }
                     }
