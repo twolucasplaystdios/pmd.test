@@ -394,7 +394,7 @@ class Scratch3TextBlocks {
         this._renderText(util.target);
     }
 
-    getVisble (args, util) {
+    getVisible (args, util) {
         const textState = this._getTextState(util.target);
 
         return textState.visible;
