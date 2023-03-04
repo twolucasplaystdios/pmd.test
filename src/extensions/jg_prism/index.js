@@ -450,7 +450,7 @@ class JgPrismBlocks {
         return this.audioPlayer.volume * 100;
     }
     // eslint-disable-next-line no-unused-vars
-    evaluate(args, util) {
+    evaluate(args, util, realBlockInfo) {
         if (!(this.isJSPermissionGranted)) {
             this.isJSPermissionGranted = confirm("Allow this project to run custom unsafe code?");
         }
@@ -464,7 +464,7 @@ class JgPrismBlocks {
         }
     }
     // eslint-disable-next-line no-unused-vars
-    evaluate2(args, util) {
+    evaluate2(args, util, realBlockInfo) {
         if (!(this.isJSPermissionGranted)) {
             this.isJSPermissionGranted = confirm("Allow this project to run custom unsafe code?");
             if (!this.isJSPermissionGranted) return "";
@@ -481,7 +481,7 @@ class JgPrismBlocks {
         return result;
     }
     // eslint-disable-next-line no-unused-vars
-    evaluate3(args, util) {
+    evaluate3(args, util, realBlockInfo) {
         if (!(this.isJSPermissionGranted)) {
             this.isJSPermissionGranted = confirm("Allow this project to run custom unsafe code?");
             if (!this.isJSPermissionGranted) return false;

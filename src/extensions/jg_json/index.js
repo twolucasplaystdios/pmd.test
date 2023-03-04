@@ -613,9 +613,9 @@ class JgJSONBlocks {
         const array = validateArray(args.array).array;
         const index = args.index;
 
-        delete array[index];
+        array.splice(index, 1);
 
-        return JSON.stringify(array.filter(x => !x === null));
+        return JSON.stringify(array);
     }
 
     json_array_split (args) {
