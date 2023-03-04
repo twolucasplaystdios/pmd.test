@@ -356,6 +356,7 @@ class JgIframeBlocks {
     // permissions
     CheckIfSafeUrl(url) { // checks for non-kid friendly urls because that would be a big stinker
         const origin = String(url).match(/((http(s|)|(ws|wss)):\/\/)([^\n]+)\.([^\n\/?#&]+)/gmi);
+        if ((!origin) && (String(url).match(/data:[^\/]*\/[^;]*;base64,/gmi))) return true; // custom urls cannot be checked with this method, just say its safe for now
         let returningValue = true;
         for (let i = 0; i < origin.length; i++) {
             const link = origin[i];
@@ -379,10 +380,9 @@ class JgIframeBlocks {
     }
     AskUserForWebsitePermission(url) {
         if (!this.CheckIfSafeUrl(url)) return false;
-        const allowed = confirm("Allow this project to show " + url + "? This project will open this website if you allow this.");
-        if (!allowed) {
-            return false;
-        }
+        const isDataUri = String(url).match(/data:[^\/]*\/[^;]*;base64,/gmi)
+        const allowed = confirm("Allow this project to show " + (isDataUri ? "a custom website" : url) + "? This project will open this website if you allow this.");
+        if (!allowed) return false;
         this.permission_AllowedWebsites.push(url);
         return true;
     }
