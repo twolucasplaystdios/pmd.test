@@ -48,7 +48,7 @@ class JgPrismBlocks {
             blocks: [
                 {
                     blockType: BlockType.LABEL,
-                    text: "Audio"
+                    text: "Audio (legacy)"
                 },
                 {
                     opcode: 'playAudioFromUrl',
@@ -61,7 +61,7 @@ class JgPrismBlocks {
                     arguments: {
                         URL: {
                             type: ArgumentType.STRING,
-                            defaultValue: 'https://synthesis-service.scratch.mit.edu/synth?locale=en-US&gender=female&text=hello'
+                            defaultValue: 'https://pm-bapi.vercel.app/buauauau.mp3'
                         }
                     }
                 },
@@ -414,8 +414,9 @@ class JgPrismBlocks {
         };
     }
     playAudioFromUrl(args) {
+        if (!this.audioPlayer) this.audioPlayer = new Audio();
         this.audioPlayer.pause();
-        this.audioPlayer.src = `https://api.allorigins.win/raw?url=${encodeURIComponent(String(args.URL))}`;
+        this.audioPlayer.src = `${args.URL}`;
         this.audioPlayer.currentTime = 0;
         this.audioPlayer.play();
     }
