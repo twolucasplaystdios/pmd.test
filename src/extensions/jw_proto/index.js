@@ -7,7 +7,7 @@ const ArgumentType = require('../../extension-support/argument-type');
  * @constructor
  */
 class jwProto {
-    constructor (runtime) {
+    constructor(runtime) {
         /**
          * The runtime instantiating this block package.
          * @type {Runtime}
@@ -18,11 +18,11 @@ class jwProto {
     /**
      * @returns {object} metadata for this extension and its blocks.
      */
-    getInfo () {
+    getInfo() {
         return {
             autoLoad: true,
             id: 'jwProto',
-            name: 'Proto',
+            name: 'Labels', // change this back if you update the extension to have more things
             // blockIconURI: blockIconURI,
             color1: '#ffdc7a',
             color2: '#ffd45e',
@@ -119,18 +119,18 @@ class jwProto {
         };
     }
 
-    labelHat () {
+    labelHat() {
         return false;
     }
-    labelFunction (args) {
+    labelFunction(args) {
         args.substack1();
     }
-    labelCommand () {
+    labelCommand() {
     }
-    labelReporter (args) {
+    labelReporter(args) {
         return args.VALUE;
     }
-    labelBoolean (args) {
+    labelBoolean(args) {
         return args.VALUE;
     }
 }
