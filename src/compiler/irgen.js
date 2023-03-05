@@ -1415,6 +1415,13 @@ class ScriptTreeGenerator {
             };
         }
 
+        case 'sensing_set_of':
+            return {
+                kind: 'sensing.set.of',
+                property: block.fields.PROPERTY.value,
+                object: this.descendInputOfBlock(block, 'OBJECT'),
+                value: this.descendInputOfBlock(block, 'VALUE')
+            };
         case 'sensing_resettimer':
             return {
                 kind: 'timer.reset'

@@ -1191,6 +1191,46 @@ class JSGenerator {
             // blocks like legacy no-ops can return a literal `undefined`
             this.source += `debugger;\nif (${value} !== undefined) runtime.visualReport("${sanitize(this.script.topBlockId)}", ${value});\n`;
             break;
+        }        
+        case 'sensing.set.of': {
+            const object = this.descendInput(node.object).asString();
+            const value = this.descendInput(node.value);
+            const property = node.property;
+            const isStage = node.object.value === '_stage_';
+            const objectReference = 'objectReference';
+            
+            this.source += `const ${objectReference} = `;
+            this.source += isStage ? 'stage' : `runtime.getSpriteTargetByName(${object})\n`;
+            this.source += `if (${objectReference})`;
+            if (property === 'volume') {
+                this.source += `runtime.ext_scratch3_sound._updateVolume(${value.asNumber()}, ${objectReference})`;
+            }
+            if (isStage) {
+                this.source += `runtime.ext_scratch3_looks._setBackdrop(${objectReference}, ${value.type === TYPE_NUMBER ? value.asNumber() : value.asString()})`;
+                break;
+            } else {
+                switch (property) {
+                case 'x position':
+                    this.source += `${objectReference}.setXY(${value.asNumber()}, ${objectReference}.y`;
+                    break;
+                case 'y position':
+                    this.source += `${objectReference}.setXY(${objectReference}.x, ${value.asNumber()}`;
+                    break;
+                case 'direction':
+                    this.source += `${objectReference}.setDirection(${value.asNumber()})`;
+                    break;
+                case 'costume #':
+                    this.source += `runtime.ext_scratch3_looks._setCostume(${objectReference}, ${value.type === TYPE_NUMBER ? value.asNumber() : value.asString()})`;
+                    break;
+                case 'size':
+                    this.source += `${objectReference}.setSize(${value.asNumber()})`;
+                    break;
+                }
+            }
+            const variableReference = this.evaluateOnce(`${objectReference} && ${objectReference}.lookupVariableByNameAndType("${sanitize(property)}", "", true)`);
+            this.source += `if (${variableReference})`;
+            this.source += `${variableReference}.value = ${value}`;
+            break;
         }
 
         default:

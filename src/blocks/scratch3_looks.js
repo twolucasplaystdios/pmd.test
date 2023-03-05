@@ -401,14 +401,14 @@ class Scratch3LooksBlocks {
         util.target.setStretch(args.X, args.Y);
     }
 
-    async setFont (args, util) {
+    setFont (args, util) {
         this._setBubbleProperty(        
             util.target,
             ['FONT', 'FONT_SIZE'],
             [args.font, args.size]
         );
     }
-    async setColor (args, util) {
+    setColor (args, util) {
         const numColor = Cast.toNumber(args.color);
         if (!isNaN(numColor)) {
             args.color = Color.decimalToRgb(numColor);
@@ -420,7 +420,7 @@ class Scratch3LooksBlocks {
             [args.color]
         );
     }
-    async setShape (args, util) {
+    setShape (args, util) {
         if (args.prop === 'texlim') {
             this.SAY_BUBBLE_LIMIT = Math.max(args.color, 1);
             return;
