@@ -46,6 +46,8 @@ const builtinExtensions = {
     jgIframe: () => require("../extensions/jg_iframe"),
     // jgExtendedAudio: ok this is my real last call for help (for legal reasons this is a joj)
     jgExtendedAudio: () => require("../extensions/jg_audio"),
+    // jgScratchAuthenticate: easy to add its one block lmao!
+    jgScratchAuthenticate: () => require("../extensions/jg_scratchAuth"),
 
     // jw: hello it is i jwklong
     // jwUnite: literal features that should of been added in the first place
