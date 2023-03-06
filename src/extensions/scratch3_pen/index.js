@@ -1158,9 +1158,9 @@ class Scratch3PenBlocks {
     goPenLayer (args) {
         if (this.runtime.renderer) {
             if (args.OPTION === LayerParam.FRONT) {
-                this.renderer.setDrawableOrder(this._penDrawableID, Infinity, StageLayering.PEN_LAYER);
+                this.runtime.renderer.setDrawableOrder(this._penDrawableID, Infinity, StageLayering.PEN_LAYER);
             } else {
-                this.renderer.setDrawableOrder(this._penDrawableID, -Infinity, StageLayering.PEN_LAYER, false);
+                this.runtime.renderer.setDrawableOrder(this._penDrawableID, -Infinity, StageLayering.PEN_LAYER, false);
             }
         }
     }
