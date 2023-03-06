@@ -1156,7 +1156,7 @@ class Scratch3PenBlocks {
     }
 
     goPenLayer (args) {
-        this._getPenState();
+        this._getPenLayerID();
         if (!this._penDrawableId) return;
         if (this.runtime.renderer) {
             if (args.OPTION === LayerParam.FRONT) {
