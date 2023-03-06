@@ -42,6 +42,16 @@ const LayerParam = {
 };
 
 /**
+ * Enum for layer parameter values.
+ * @readonly
+ * @enum {string}
+ */
+const LayerNames = {
+    'front': StageLayering.PEN_LAYER,
+    'back': StageLayering.SPRITE_LAYER
+};
+
+/**
  * @typedef {object} PenState - the pen state associated with a particular target.
  * @property {Boolean} penDown - tracks whether the pen should draw for this target.
  * @property {number} color - the current color (hue) of the pen.
@@ -1158,18 +1168,18 @@ class Scratch3PenBlocks {
     goPenLayer (args) {
         this._getPenLayerID();
         if (!this._penDrawableId) return;
-        if (this.runtime.renderer) {
-            if (args.OPTION === LayerParam.FRONT) {
-                console.log('setting the layer order to', StageLayering.LAYER_GROUPS_PEN);
-                this.runtime.renderer.setLayerGroupOrdering(StageLayering.LAYER_GROUPS_PEN);
-                this._penDrawableId = this.runtime.renderer.setDrawableOrder(this._penDrawableId,
-                    Infinity, StageLayering.PEN_LAYER);
-            } else if (args.OPTION === LayerParam.BACK) {
-                console.log('setting the layer order to', StageLayering.LAYER_GROUPS);
-                this.runtime.renderer.setLayerGroupOrdering(StageLayering.LAYER_GROUPS);
-                this._penDrawableId = this.runtime.renderer.setDrawableOrder(this._penDrawableId,
-                    -Infinity, StageLayering.PEN_LAYER);
-            }
+        // layer order is already set correctly, dont do anything
+        if (this.runtime.renderer._groupOrdering.at(-1) === LayerNames[args.OPTION]) return;
+        if (args.OPTION === LayerParam.FRONT) {
+            console.log('setting the layer order to', StageLayering.LAYER_GROUPS_PEN);
+            this.runtime.renderer.setLayerGroupOrdering(StageLayering.LAYER_GROUPS_PEN);
+            this._penDrawableId = this.runtime.renderer.setDrawableOrder(this._penDrawableId,
+                Infinity, StageLayering.PEN_LAYER);
+        } else if (args.OPTION === LayerParam.BACK) {
+            console.log('setting the layer order to', StageLayering.LAYER_GROUPS);
+            this.runtime.renderer.setLayerGroupOrdering(StageLayering.LAYER_GROUPS);
+            this._penDrawableId = this.runtime.renderer.setDrawableOrder(this._penDrawableId,
+                -Infinity, StageLayering.PEN_LAYER);
         }
     }
 
