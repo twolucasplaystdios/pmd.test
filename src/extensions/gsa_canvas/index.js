@@ -460,10 +460,15 @@ class canvas {
     }
 
     drawImage (args) {
-        const canvasObj = store.getCanvas(args.canvas);
-        const image = new Image();
-        image.src = args.src;
-        canvasObj.context.drawImage(image, args.x, args.y);
+        return new Promise(resolve => {
+            const canvasObj = store.getCanvas(args.canvas);
+            const image = new Image();
+            image.onload = () => {
+                canvasObj.context.drawImage(image, args.x, args.y);
+                resolve();
+            };
+            image.src = args.src;
+        });
     }
 
     clearAria (args) {
