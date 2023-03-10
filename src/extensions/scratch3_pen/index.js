@@ -802,8 +802,8 @@ class Scratch3PenBlocks {
 
             const image = new Image();
             image.onload = () => {
-                const realX = (args.X * this._penRes) - (image.width / 2);
-                const realY = (args.Y * this._penRes) - (image.height / 2);
+                const realX = (args.X * this._penRes) - (this.bitmapCanvas.width / 2);
+                const realY = (args.Y * this._penRes) + (this.bitmapCanvas.height / 2);
                 ctx.drawImage(image, realX, -realY);
 
                 this._drawContextToPen(ctx);
@@ -820,8 +820,8 @@ class Scratch3PenBlocks {
 
             const image = new Image();
             image.onload = () => {
-                const realX = (args.X * this._penRes) - (image.width / 2);
-                const realY = (args.Y * this._penRes) - (image.height / 2);
+                const realX = (args.X * this._penRes) - (this.bitmapCanvas.width / 2);
+                const realY = (args.Y * this._penRes) + (this.bitmapCanvas.height / 2);
                 ctx.rotate((args.ROTATE - 90) * (Math.PI / 180));
                 ctx.drawImage(image, realX, -realY, args.WIDTH, args.HEIGHT);
 
