@@ -40,20 +40,7 @@ class JgScratchAuthenticateBlocks {
                         NAME: { type: ArgumentType.STRING, defaultValue: "PenguinMod" },
                     },
                     blockType: BlockType.REPORTER
-                },
-                {
-                    opcode: 'getPrivateCode',
-                    text: formatMessage({
-                        id: 'jgScratchAuthenticate.blocks.getPrivateCode',
-                        default: 'get authentication code with sign in location name set to [NAME]',
-                        description: "Block that returns the private code used to authenticate users on Scratch."
-                    }),
-                    disableMonitor: true,
-                    arguments: {
-                        NAME: { type: ArgumentType.STRING, defaultValue: "PenguinMod" },
-                    },
-                    blockType: BlockType.REPORTER
-                },
+                }
             ]
         };
     }
@@ -124,65 +111,6 @@ class JgScratchAuthenticateBlocks {
                         login.close();
                         resolve("");
                     })
-                } catch {
-                    // due to strange chrome bug, window still has the previous url on it so we need to wait until we switch to the auth site
-                    cantAccessAnymore = true;
-                    // now we cant access the location yet since the user hasnt left the authentication site
-                }
-            }, 10);
-        })
-    }
-    getPrivateCode(args) {
-        if (!this.keepAllowingAuthBlock) { // user closed popup before it was finished
-            if (!this.disableConfirmationShown) { // we didnt ask them to confirm yet or they only declined it once, so we let them know every time
-                const areYouSure = confirm("Sign in with Scratch? The project can only get your username.")
-                if (!areYouSure) { // they clicked no, dont show confirmation again
-                    this.disableConfirmationShown = true;
-                    return "The user has declined the ability to authenticate."
-                }
-            } else { // they already clicked no before
-                return "The user has declined the ability to authenticate."
-            }
-        }
-        return new Promise((resolve, reject) => {
-            const login = window.open(
-                `https://auth.itinerary.eu.org/auth/?redirect=${btoa(window.location.origin)}&name=${String(args.NAME).length > 0 ? encodeURIComponent(String(args.NAME).substring(0, 256)) : "PenguinMod"}`,
-                "Scratch Authentication",
-                `scrollbars=yes,resizable=yes,status=no,location=yes,toolbar=no,menubar=no,width=768,height=512,left=200,top=200`
-            );
-            if (!login) {
-                resolve("Authentication failed to appear."); // popup was blocked most likely
-                // reminder for future me to make an iframe appear if the window failed to appear
-            }
-            let cantAccessAnymore = false;
-            let finished = false; // finished will be set to true if we got the username or something went wrong
-            let interval = null; // goofy activity
-            interval = setInterval(() => {
-                if (login?.closed && (!finished)) {
-                    this.keepAllowingAuthBlock = false;
-                    clearInterval(interval);
-                    try {
-                        login.close();
-                    } catch {
-                        // what a shame we couldnt close the window that doesnt exist anymore
-                    }
-                    resolve("");
-                }
-                try {
-                    const query = login.location.search;
-                    if (!cantAccessAnymore) return;
-                    const parameters = new URLSearchParams(query);
-                    const privateCode = parameters.get("privateCode");
-                    if (!privateCode) {
-                        finished = true;
-                        clearInterval(interval);
-                        login.close();
-                        resolve("");
-                    }
-                    finished = true;
-                    clearInterval(interval);
-                    login.close();
-                    resolve(privateCode);
                 } catch {
                     // due to strange chrome bug, window still has the previous url on it so we need to wait until we switch to the auth site
                     cantAccessAnymore = true;
