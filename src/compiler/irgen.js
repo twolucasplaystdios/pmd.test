@@ -774,7 +774,7 @@ class ScriptTreeGenerator {
             const opcodeFunction = this.runtime.getOpcodeFunction(block.opcode);
             if (opcodeFunction) {
                 // It might be a non-compiled primitive from a standard category
-                if (compatBlocks.inputs.includes(block.opcode)) {
+                if (compatBlocks.outputBlocks.includes(block.opcode)) {
                     return this.descendCompatLayer(block);
                 }
                 // It might be an extension block.
@@ -1584,7 +1584,7 @@ class ScriptTreeGenerator {
             const opcodeFunction = this.runtime.getOpcodeFunction(block.opcode);
             if (opcodeFunction) {
                 // It might be a non-compiled primitive from a standard category
-                if (compatBlocks.stacked.includes(block.opcode)) {
+                if (compatBlocks.statementBlocks.includes(block.opcode)) {
                     return this.descendCompatLayer(block);
                 }
                 // It might be an extension block.

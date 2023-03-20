@@ -4,8 +4,9 @@
  */
 
 // Please keep these lists alphabetical.
+// no >:(
 
-const stacked = [
+const statementBlocks = [
     'control_clear_counter',
     'control_incr_counter',
     'looks_hideallsprites',
@@ -42,7 +43,7 @@ const stacked = [
     "control_case_next"
 ];
 
-const inputs = [
+const outputBlocks = [
     'control_get_counter',
     'motion_xscroll',
     'motion_yscroll',
@@ -81,6 +82,6 @@ const inputs = [
 ];
 
 module.exports = {
-    stacked,
-    inputs
+    statementBlocks,
+    outputBlocks
 };
