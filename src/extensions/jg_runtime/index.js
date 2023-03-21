@@ -45,7 +45,7 @@ class JgRuntimeBlocks {
                     arguments: {
                         URL: {
                             type: ArgumentType.STRING,
-                            defaultValue: 'https://penguinmod.github.io/PenguinMod-Gui/static/assets/9525874be2b1d66bd448bf53400011a9.svg'
+                            defaultValue: 'https://api.allorigins.win/raw?url=https://penguinmod.site/static/assets/9525874be2b1d66bd448bf53400011a9.svg'
                         },
                         name: {
                             type: ArgumentType.STRING,
