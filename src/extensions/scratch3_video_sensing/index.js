@@ -565,6 +565,10 @@ class Scratch3VideoSensingBlocks {
         if (state === VideoState.OFF) {
             this.runtime.ioDevices.video.disableVideo();
         } else {
+            if (typeof this.cameraAllowed !== 'boolean') {
+                this.cameraAllowed = confirm('this project uses video blocks, is it ok if it uses video?');
+            }
+            if (!this.cameraAllowed) return;
             this.runtime.ioDevices.video.enableVideo();
             // Mirror if state is ON. Do not mirror if state is ON_FLIPPED.
             this.runtime.ioDevices.video.mirror = state === VideoState.ON;
