@@ -1,13 +1,6 @@
 const formatMessage = require('format-message');
 const BlockType = require('../../extension-support/block-type');
 const ArgumentType = require('../../extension-support/argument-type');
-const {
-    validateJSON,
-    validateArray,
-    stringToEqivalint,
-    valueToString,
-    validateRegex
-} = require('../../util/json-block-utilities');
 // const Cast = require('../../util/cast');
 
 const EffectOptions = {
@@ -24,13 +17,20 @@ const EffectOptions = {
         { text: "sepia", value: "sepia" }
     ]
 };
-function ArrayToValue (array, value) {
+
+/**
+ * uhhhhhhhhhh
+ * @param {Array} array the array
+ * @param {*} value the value
+ * @returns {Object} an object
+ */
+const ArrayToValue = (array, value) => {
     const object = {};
     array.forEach(item => {
         object[String(item)] = value;
     });
     return object;
-}
+};
 
 /**
  * Class for IFRAME blocks
@@ -353,8 +353,9 @@ class JgIframeBlocks {
     }
     // permissions
     CheckIfSafeUrl (url) { // checks for non-kid friendly urls because that would be a big stinker
-        const origin = String(url).match(/((http(s|)|(ws|wss)):\/\/)([^\n]+)\.([^\n\/?#&]+)/gmi);
-        if ((!origin) && (String(url).match(/data:[^/]*\/[^;]*;base64,/gmi))) return true; // custom urls cannot be checked with this method, just say its safe for now
+        const origin = String(url).match(/((http(s|)|(ws|wss)):\/\/)([^\n]+)\.([^\n/?#&]+)/gmi);
+        // custom urls cannot be checked with this method, just say its safe for now
+        if ((!origin) && (String(url).match(/data:[^/]*\/[^;]*;base64,/gmi))) return true; 
         let returningValue = true;
         for (let i = 0; i < origin.length; i++) {
             const link = origin[i];
@@ -378,8 +379,9 @@ class JgIframeBlocks {
     }
     AskUserForWebsitePermission (url) {
         if (!this.CheckIfSafeUrl(url)) return false;
-        const isDataUri = String(url).match(/data:[^\/]*\/[^;]*;base64,/gmi);
-        const allowed = confirm(`Allow this project to show ${isDataUri ? "a custom website" : url}? This project will open this website if you allow this.`);
+        const isDataUri = String(url).match(/data:[^/]*\/[^;]*;base64,/gmi);
+        const urlMsg = isDataUri ? "a custom website" : url;
+        const allowed = confirm(`Allow this project to show ${urlMsg}? This project will open this website if you allow this.`);
         if (!allowed) return false;
         this.permission_AllowedWebsites.push(url);
         return true;
@@ -429,7 +431,8 @@ class JgIframeBlocks {
         xpos = ((xpos / stage.width) * 100);
         ypos = (((0 - ypos) / stage.height) * 100);
 
-        frame.style.transform = `translate(${xpos}%, ${ypos}%) rotate(${rotation - 90}deg)`; // epic maths to place x and y at the center
+        // epic maths to place x and y at the center
+        frame.style.transform = `translate(${xpos}%, ${ypos}%) rotate(${rotation - 90}deg)`; 
         this.iframeSettings = {
             x: x,
             y: y,
@@ -469,7 +472,8 @@ class JgIframeBlocks {
         iframe.style.borderWidth = "0px";
         iframe.src = "data:text/html;base64,PERPQ1RZUEUgaHRtbD4KPGh0bWwgbGFuZz0iZW4tVVMiPgo8aGVhZD48L2hlYWQ+Cjxib2R5PjxoMT5IZWxsbyE8L2gxPjxwPllvdSd2ZSBqdXN0IGNyZWF0ZWQgYW4gaWZyYW1lIGVsZW1lbnQuPGJyPlVzZSB0aGlzIHRvIGVtYmVkIHNpdGVzIHdpdGggVVJMcyBvciBIVE1MIHVzaW5nIERhdGEgVVJJcy48L3A+PC9ib2R5Pgo8L2h0bWw+";
         this.displayWebsiteUrl = iframe.src;
-        this.SetIFramePosition(iframe, 0, 0, this.runtime.stageWidth, this.runtime.stageHeight, 90); // positions iframe to fit stage
+        // positions iframe to fit stage
+        this.SetIFramePosition(iframe, 0, 0, this.runtime.stageWidth, this.runtime.stageHeight, 90); 
         this.iframeFilters = ArrayToValue(EffectOptions.items.map(item => item.value), 0); // reset all filter stuff
         this.GetCurrentCanvas().parentElement.prepend(iframe); // adds the iframe above the canvas
         return iframe;
@@ -484,7 +488,8 @@ class JgIframeBlocks {
         if (!this.GetIFrameState()) return; // iframe doesnt exist, stop
         if (!this.IsWebsiteAllowed(args.URL)) { // website isnt in the permitted sites list?
             this.createdIframe.src = "about:blank";
-            if (!this.AskUserForWebsitePermission(args.URL)) { // ask user for permission to redirect (unless it is an adult site)
+            // ask user for permission to redirect (unless it is an adult site)
+            if (!this.AskUserForWebsitePermission(args.URL)) { 
                 this.createdIframe.src = "about:blank";
                 this.displayWebsiteUrl = args.URL;
             }
@@ -584,7 +589,7 @@ class JgIframeBlocks {
     }
     iframeElementIsHidden () {
         if (!this.GetIFrameState()) return false; // iframe doesnt exist, stop
-        return this.createdIframe.style.display == "none";
+        return this.createdIframe.style.display === "none";
     }
 
     whenIframeIsLoaded () {
@@ -604,7 +609,7 @@ class JgIframeBlocks {
         this.iframeFilters[args.EFFECT] += Number(args.AMOUNT);
         this.ApplyFilterOptions(this.createdIframe);
     }
-    iframeElementClearEffects (args) {
+    iframeElementClearEffects () {
         if (!this.GetIFrameState()) return; // iframe doesnt exist, stop
         this.iframeFilters = ArrayToValue(EffectOptions.items.map(item => item.value), 0); // reset all values to 0
         this.ApplyFilterOptions(this.createdIframe);
