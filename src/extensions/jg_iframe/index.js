@@ -487,6 +487,7 @@ class JgIframeBlocks {
             if (!this.AskUserForWebsitePermission(args.URL)) { // ask user for permission to redirect (unless it is an adult site)
                 this.createdIframe.src = "about:blank";
                 this.displayWebsiteUrl = args.URL;
+                return;
             }
         }
         this.createdIframe.src = args.URL;

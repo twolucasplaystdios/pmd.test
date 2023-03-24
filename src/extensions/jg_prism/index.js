@@ -501,6 +501,14 @@ class JgPrismBlocks {
         return result === true;
     }
     screenshotStage () {
+        // DO NOT REMOVE, USER HAS NOT GIVEN PERMISSION TO SAVE CAMERA IMAGES.
+        if (this.runtime.ioDevices.video.provider.enabled) {
+            // user's camera is on, ask for permission to take a picture of them
+            if (!(this.isCameraScreenshotEnabled)) {
+                this.isCameraScreenshotEnabled = confirm("Allow this project to take pictures of you?");
+                if (!this.isCameraScreenshotEnabled) return "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAIAAACQd1PeAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAAMSURBVBhXY/j//z8ABf4C/qc1gYQAAAAASUVORK5CYII="; // 1 pixel of white
+            }
+        }
         return new Promise(resolve => {
             vm.renderer.requestSnapshot(uri => {
                 resolve(uri);
