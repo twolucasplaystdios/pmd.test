@@ -21,15 +21,15 @@ const EffectOptions = {
         { text: "blur", value: "blur" },
         { text: "invert", value: "invert" },
         { text: "saturate", value: "saturate" },
-        { text: "sepia", value: "sepia" },
+        { text: "sepia", value: "sepia" }
     ]
-}
-function ArrayToValue(array, value) {
-    const object = {}
+};
+function ArrayToValue (array, value) {
+    const object = {};
     array.forEach(item => {
-        object[String(item)] = value
-    })
-    return object
+        object[String(item)] = value;
+    });
+    return object;
 }
 
 /**
@@ -37,7 +37,7 @@ function ArrayToValue(array, value) {
  * @constructor
  */
 class JgIframeBlocks {
-    constructor(runtime) {
+    constructor (runtime) {
         /**
          * The runtime instantiating this block package.
          * @type {Runtime}
@@ -49,11 +49,9 @@ class JgIframeBlocks {
             y: 0,
             rotation: 90,
             width: 480,
-            height: 360,
+            height: 360
         };
-        this.iframeFilters = ArrayToValue(EffectOptions.items.map(item => {
-            return item.value;
-        }), 0);
+        this.iframeFilters = ArrayToValue(EffectOptions.items.map(item => item.value), 0);
         this.iframeLoadedValue = false;
         this.permission_AllowedWebsites = [];
         this.displayWebsiteUrl = "";
@@ -62,7 +60,7 @@ class JgIframeBlocks {
     /**
      * @returns {object} metadata for this extension and its blocks.
      */
-    getInfo() {
+    getInfo () {
         return {
             id: 'jgIframe',
             name: 'IFrame',
@@ -204,7 +202,7 @@ class JgIframeBlocks {
                         default: 'show iframe',
                         description: 'im too lazy to write these anymore tbh'
                     }),
-                    blockType: BlockType.COMMAND,
+                    blockType: BlockType.COMMAND
                 },
                 {
                     opcode: 'hideIframeElement',
@@ -213,7 +211,7 @@ class JgIframeBlocks {
                         default: 'hide iframe',
                         description: 'im too lazy to write these anymore tbh'
                     }),
-                    blockType: BlockType.COMMAND,
+                    blockType: BlockType.COMMAND
                 },
                 {
                     opcode: 'getIframeLeft',
@@ -346,7 +344,7 @@ class JgIframeBlocks {
                         }
                     }
                 },
-                "---",
+                "---"
             ],
             menus: {
                 effects: EffectOptions
@@ -354,17 +352,17 @@ class JgIframeBlocks {
         };
     }
     // permissions
-    CheckIfSafeUrl(url) { // checks for non-kid friendly urls because that would be a big stinker
+    CheckIfSafeUrl (url) { // checks for non-kid friendly urls because that would be a big stinker
         const origin = String(url).match(/((http(s|)|(ws|wss)):\/\/)([^\n]+)\.([^\n\/?#&]+)/gmi);
-        if ((!origin) && (String(url).match(/data:[^\/]*\/[^;]*;base64,/gmi))) return true; // custom urls cannot be checked with this method, just say its safe for now
+        if ((!origin) && (String(url).match(/data:[^/]*\/[^;]*;base64,/gmi))) return true; // custom urls cannot be checked with this method, just say its safe for now
         let returningValue = true;
         for (let i = 0; i < origin.length; i++) {
             const link = origin[i];
             if (
                 link.endsWith(".xxx")
                 || link.endsWith(".adult")
-                || link.endsWith("." + atob("c2V4"))
-                || link.endsWith("." + atob("cG9ybg=="))
+                || link.endsWith(`.${atob("c2V4")}`)
+                || link.endsWith(`.${atob("cG9ybg==")}`)
             ) returningValue = false;
             if (
                 link.includes("xxx")
@@ -378,80 +376,80 @@ class JgIframeBlocks {
         }
         return returningValue;
     }
-    AskUserForWebsitePermission(url) {
+    AskUserForWebsitePermission (url) {
         if (!this.CheckIfSafeUrl(url)) return false;
-        const isDataUri = String(url).match(/data:[^\/]*\/[^;]*;base64,/gmi)
-        const allowed = confirm("Allow this project to show " + (isDataUri ? "a custom website" : url) + "? This project will open this website if you allow this.");
+        const isDataUri = String(url).match(/data:[^\/]*\/[^;]*;base64,/gmi);
+        const allowed = confirm(`Allow this project to show ${isDataUri ? "a custom website" : url}? This project will open this website if you allow this.`);
         if (!allowed) return false;
         this.permission_AllowedWebsites.push(url);
         return true;
     }
-    IsWebsiteAllowed(url) {
+    IsWebsiteAllowed (url) {
         if (!this.CheckIfSafeUrl(url)) return false;
         return this.permission_AllowedWebsites.includes(url);
     }
 
     // utilities
-    GetCurrentCanvas() {
+    GetCurrentCanvas () {
         return this.runtime.renderer.canvas;
     }
-    SetNewIFrame() {
+    SetNewIFrame () {
         const iframe = document.createElement("iframe");
         iframe.onload = () => {
             this.iframeLoadedValue = true;
-        }
+        };
         this.createdIframe = iframe;
         return iframe;
     }
-    RemoveIFrame() {
+    RemoveIFrame () {
         if (this.createdIframe) {
             this.createdIframe.remove();
             this.createdIframe = null;
         }
     }
-    GetIFrameState() {
+    GetIFrameState () {
         if (this.createdIframe) {
             return true;
         }
         return false;
     }
-    SetIFramePosition(iframe, x, y, width, height, rotation) {
-        const frame = iframe
+    SetIFramePosition (iframe, x, y, width, height, rotation) {
+        const frame = iframe;
         const stage = {
             width: this.runtime.stageWidth,
             height: this.runtime.stageHeight
-        }
+        };
         frame.style.position = "absolute"; // position above canvas without pushing it down
-        frame.style.width = ((width / stage.width) * 100) + "%"; // convert pixel size to percentage for full screen
-        frame.style.height = ((height / stage.height) * 100) + "%";
+        frame.style.width = `${(width / stage.width) * 100}%`; // convert pixel size to percentage for full screen
+        frame.style.height = `${(height / stage.height) * 100}%`;
         frame.style.transformOrigin = "center center"; // rotation and translation begins at center
 
-        let xpos = x + (stage.width - width)
-        let ypos = y - (stage.height - height)
-        xpos = ((xpos / stage.width) * 100)
-        ypos = (((0 - ypos) / stage.height) * 100)
+        let xpos = x + (stage.width - width);
+        let ypos = y - (stage.height - height);
+        xpos = ((xpos / stage.width) * 100);
+        ypos = (((0 - ypos) / stage.height) * 100);
 
-        frame.style.transform = "translate(" + xpos + "%, " + ypos + "%) rotate(" + (rotation - 90) + "deg)"; // epic maths to place x and y at the center
+        frame.style.transform = `translate(${xpos}%, ${ypos}%) rotate(${rotation - 90}deg)`; // epic maths to place x and y at the center
         this.iframeSettings = {
             x: x,
             y: y,
             rotation: rotation,
             width: width,
-            height: height,
-        }
+            height: height
+        };
     }
-    GenerateCssFilter(color, grayscale, brightness, contrast, ghost, blur, invert, saturate, sepia) {
-        return "hue-rotate(" + ((color / 200) * 360) + "deg) " + // scratch color effect goes back to normal color at 200
-            "grayscale(" + grayscale + "%) " +
-            "brightness(" + (brightness + 100) + "%) " + // brightness at 0 will be 100
-            "contrast(" + (contrast + 100) + "%) " + // same thing here
-            "opacity(" + (100 - ghost) + "%) " + // opacity at 0 will be 100 but opacity at 100 will be 0
-            "blur(" + blur + "px) " +
-            "invert(" + invert + "%) " + // invert is actually a percentage lolol!
-            "saturate(" + (saturate + 100) + "%) " + // saturation at 0 will be 100
-            "sepia(" + sepia + "%)"
+    GenerateCssFilter (color, grayscale, brightness, contrast, ghost, blur, invert, saturate, sepia) {
+        return `hue-rotate(${(color / 200) * 360}deg) ` + // scratch color effect goes back to normal color at 200
+            `grayscale(${grayscale}%) ` +
+            `brightness(${brightness + 100}%) ` + // brightness at 0 will be 100
+            `contrast(${contrast + 100}%) ` + // same thing here
+            `opacity(${100 - ghost}%) ` + // opacity at 0 will be 100 but opacity at 100 will be 0
+            `blur(${blur}px) ` +
+            `invert(${invert}%) ` + // invert is actually a percentage lolol!
+            `saturate(${saturate + 100}%) ` + // saturation at 0 will be 100
+            `sepia(${sepia}%)`;
     }
-    ApplyFilterOptions(iframe) {
+    ApplyFilterOptions (iframe) {
         iframe.style.filter = this.GenerateCssFilter(
             this.iframeFilters.color,
             this.iframeFilters.grayscale,
@@ -462,29 +460,27 @@ class JgIframeBlocks {
             this.iframeFilters.invert,
             this.iframeFilters.saturate,
             this.iframeFilters.sepia,
-        )
+        );
     }
 
-    createIframeElement() {
+    createIframeElement () {
         this.RemoveIFrame();
         const iframe = this.SetNewIFrame();
-        iframe.style.borderWidth = "0px"
+        iframe.style.borderWidth = "0px";
         iframe.src = "data:text/html;base64,PERPQ1RZUEUgaHRtbD4KPGh0bWwgbGFuZz0iZW4tVVMiPgo8aGVhZD48L2hlYWQ+Cjxib2R5PjxoMT5IZWxsbyE8L2gxPjxwPllvdSd2ZSBqdXN0IGNyZWF0ZWQgYW4gaWZyYW1lIGVsZW1lbnQuPGJyPlVzZSB0aGlzIHRvIGVtYmVkIHNpdGVzIHdpdGggVVJMcyBvciBIVE1MIHVzaW5nIERhdGEgVVJJcy48L3A+PC9ib2R5Pgo8L2h0bWw+";
         this.displayWebsiteUrl = iframe.src;
         this.SetIFramePosition(iframe, 0, 0, this.runtime.stageWidth, this.runtime.stageHeight, 90); // positions iframe to fit stage
-        this.iframeFilters = ArrayToValue(EffectOptions.items.map(item => {
-            return item.value;
-        }), 0); // reset all filter stuff
+        this.iframeFilters = ArrayToValue(EffectOptions.items.map(item => item.value), 0); // reset all filter stuff
         this.GetCurrentCanvas().parentElement.prepend(iframe); // adds the iframe above the canvas
         return iframe;
     }
-    deleteIframeElement() {
+    deleteIframeElement () {
         this.RemoveIFrame();
     }
-    iframeElementExists() {
+    iframeElementExists () {
         return this.GetIFrameState();
     }
-    setIframeUrl(args) {
+    setIframeUrl (args) {
         if (!this.GetIFrameState()) return; // iframe doesnt exist, stop
         if (!this.IsWebsiteAllowed(args.URL)) { // website isnt in the permitted sites list?
             this.createdIframe.src = "about:blank";
@@ -496,7 +492,7 @@ class JgIframeBlocks {
         this.createdIframe.src = args.URL;
         this.displayWebsiteUrl = this.createdIframe.src;
     }
-    setIframePosLeft(args) {
+    setIframePosLeft (args) {
         if (!this.GetIFrameState()) return; // iframe doesnt exist, stop
         const iframe = this.createdIframe;
         this.SetIFramePosition(iframe,
@@ -507,7 +503,7 @@ class JgIframeBlocks {
             this.iframeSettings.rotation,
         );
     }
-    setIframePosTop(args) {
+    setIframePosTop (args) {
         if (!this.GetIFrameState()) return; // iframe doesnt exist, stop
         const iframe = this.createdIframe;
         this.SetIFramePosition(iframe,
@@ -518,7 +514,7 @@ class JgIframeBlocks {
             this.iframeSettings.rotation,
         );
     }
-    setIframeSizeWidth(args) {
+    setIframeSizeWidth (args) {
         if (!this.GetIFrameState()) return; // iframe doesnt exist, stop
         const iframe = this.createdIframe;
         this.SetIFramePosition(iframe,
@@ -529,7 +525,7 @@ class JgIframeBlocks {
             this.iframeSettings.rotation,
         );
     }
-    setIframeSizeHeight(args) {
+    setIframeSizeHeight (args) {
         if (!this.GetIFrameState()) return; // iframe doesnt exist, stop
         const iframe = this.createdIframe;
         this.SetIFramePosition(iframe,
@@ -540,7 +536,7 @@ class JgIframeBlocks {
             this.iframeSettings.rotation,
         );
     }
-    setIframeRotation(args) {
+    setIframeRotation (args) {
         if (!this.GetIFrameState()) return; // iframe doesnt exist, stop
         const iframe = this.createdIframe;
         this.SetIFramePosition(iframe,
@@ -551,71 +547,69 @@ class JgIframeBlocks {
             args.ROTATE,
         );
     }
-    showIframeElement() {
+    showIframeElement () {
         if (!this.GetIFrameState()) return; // iframe doesnt exist, stop
         const iframe = this.createdIframe;
-        iframe.style.display = ""
+        iframe.style.display = "";
     }
-    hideIframeElement() {
+    hideIframeElement () {
         if (!this.GetIFrameState()) return; // iframe doesnt exist, stop
         const iframe = this.createdIframe;
-        iframe.style.display = "none"
+        iframe.style.display = "none";
     }
 
-    getIframeLeft() {
+    getIframeLeft () {
         if (!this.GetIFrameState()) return; // iframe doesnt exist, stop
-        return this.iframeSettings.x
+        return this.iframeSettings.x;
     }
-    getIframeTop() {
+    getIframeTop () {
         if (!this.GetIFrameState()) return; // iframe doesnt exist, stop
-        return this.iframeSettings.y
+        return this.iframeSettings.y;
     }
-    getIframeWidth() {
+    getIframeWidth () {
         if (!this.GetIFrameState()) return; // iframe doesnt exist, stop
-        return this.iframeSettings.width
+        return this.iframeSettings.width;
     }
-    getIframeHeight() {
+    getIframeHeight () {
         if (!this.GetIFrameState()) return; // iframe doesnt exist, stop
-        return this.iframeSettings.height
+        return this.iframeSettings.height;
     }
-    getIframeRotation() {
+    getIframeRotation () {
         if (!this.GetIFrameState()) return; // iframe doesnt exist, stop
-        return this.iframeSettings.rotation
+        return this.iframeSettings.rotation;
     }
-    getIframeTargetUrl() {
+    getIframeTargetUrl () {
         if (!this.GetIFrameState()) return; // iframe doesnt exist, stop
-        return this.displayWebsiteUrl
+        return this.displayWebsiteUrl;
     }
-    iframeElementIsHidden() {
+    iframeElementIsHidden () {
         if (!this.GetIFrameState()) return false; // iframe doesnt exist, stop
-        return this.createdIframe.style.display == "none"
+        return this.createdIframe.style.display == "none";
     }
 
-    whenIframeIsLoaded() {
+    whenIframeIsLoaded () {
         const value = this.iframeLoadedValue;
         this.iframeLoadedValue = false;
         return value;
     }
 
     // effect functions lolol
-    iframeElementSetEffect(args) {
+    iframeElementSetEffect (args) {
         if (!this.GetIFrameState()) return; // iframe doesnt exist, stop
         this.iframeFilters[args.EFFECT] = Number(args.AMOUNT);
-        this.ApplyFilterOptions(this.createdIframe)
+        this.ApplyFilterOptions(this.createdIframe);
     }
-    iframeElementChangeEffect(args) {
+    iframeElementChangeEffect (args) {
         if (!this.GetIFrameState()) return; // iframe doesnt exist, stop
         this.iframeFilters[args.EFFECT] += Number(args.AMOUNT);
-        this.ApplyFilterOptions(this.createdIframe)
+        this.ApplyFilterOptions(this.createdIframe);
     }
-    iframeElementClearEffects(args) {
+    iframeElementClearEffects (args) {
         if (!this.GetIFrameState()) return; // iframe doesnt exist, stop
-        this.iframeFilters = ArrayToValue(EffectOptions.items.map(item => {
-            return item.value;
-        }), 0); // reset all values to 0
-        this.ApplyFilterOptions(this.createdIframe)
+        this.iframeFilters = ArrayToValue(EffectOptions.items.map(item => item.value), 0); // reset all values to 0
+        this.ApplyFilterOptions(this.createdIframe);
     }
-    getIframeEffectAmount(args) {
+    getIframeEffectAmount (args) {
         if (!this.GetIFrameState()) return 0; // iframe doesnt exist, stop
         return this.iframeFilters[args.EFFECT];
     }
