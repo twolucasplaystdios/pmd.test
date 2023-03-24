@@ -502,7 +502,7 @@ class JgPrismBlocks {
     }
     screenshotStage () {
         // DO NOT REMOVE, USER HAS NOT GIVEN PERMISSION TO SAVE CAMERA IMAGES.
-        if (this.runtime.ioDevices.video.provider.enabled) {
+        if (this.runtime.ext_videoSensing || this.runtime.ioDevices.video.provider.enabled) {
             // user's camera is on, ask for permission to take a picture of them
             if (!(this.isCameraScreenshotEnabled)) {
                 this.isCameraScreenshotEnabled = confirm("Allow this project to take pictures of you?");
