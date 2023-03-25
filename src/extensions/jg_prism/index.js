@@ -37,6 +37,15 @@ class JgPrismBlocks {
         }, 65);
     }
 
+    
+    /**
+     * dummy function for reseting user provided permisions when a save is loaded
+     */
+    deserialize () {
+        this.isJSPermissionGranted = false;
+        this.isCameraScreenshotEnabled = false;
+    }
+
     /**
      * @returns {object} metadata for this extension and its blocks.
      */

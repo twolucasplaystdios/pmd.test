@@ -19,6 +19,14 @@ class JgScratchAuthenticateBlocks {
         this.disableConfirmationShown = false;
     }
 
+    
+    /**
+     * dummy function for reseting user provided permisions when a save is loaded
+     */
+    deserialize () {
+        this.disableConfirmationShown = false;
+    }
+
     /**
      * @returns {object} metadata for this extension and its blocks.
      */

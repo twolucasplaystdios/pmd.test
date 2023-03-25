@@ -59,6 +59,13 @@ class JgIframeBlocks {
     }
 
     /**
+     * dummy function for reseting user provided permisions when a save is loaded
+     */
+    deserialize () {
+        this.permission_AllowedWebsites = [];
+    }
+
+    /**
      * @returns {object} metadata for this extension and its blocks.
      */
     getInfo () {

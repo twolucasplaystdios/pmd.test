@@ -8,6 +8,12 @@ const alwaysUnsafe = [
     "jgPrism_screenshotStage"
 ];
 
+/**
+ * gets if the current save contains any of the listed blocks
+ * @param {array} blockOpcodes a list of blocks to check for
+ * @param {array} targets all the current targets in the save
+ * @returns {boolean} if any of the listed blocks are in save
+ */
 const workspaceContains = (blockOpcodes, targets) => {
     for (const target of targets) {
         for (const block of Object.keys(target.blocks._blocks)) {
@@ -17,6 +23,12 @@ const workspaceContains = (blockOpcodes, targets) => {
     return false;
 };
 
+/**
+ * asks a user if they agree to something
+ * @param {string} msg the what to ask the user for
+ * @param {array} targets all of the current targets
+ * @returns {boolean} if the user agreed to it or not
+ */
 const ask = (msg, targets) => {
     if (workspaceContains(alwaysUnsafe, targets)) {
         const confirmId = uid();

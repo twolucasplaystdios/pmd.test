@@ -112,6 +112,14 @@ class Scratch3VideoSensingBlocks {
         }
     }
 
+    
+    /**
+     * dummy function for reseting user provided permisions when a save is loaded
+     */
+    deserialize () {
+        this.cameraAllowed = null;
+    }
+
     /**
      * After analyzing a frame the amount of milliseconds until another frame
      * is analyzed.
