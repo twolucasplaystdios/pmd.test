@@ -88,7 +88,7 @@ class tempVars {
         const name = `threadVar_${args.name}`;
         const oldNum = Number(tempVars[name]);
         const newNum = oldNum + args.value;
-        if (!tempVars[name] || !oldNum) {
+        if (!oldNum) {
             tempVars[name] = Number(args.value);
             return;
         }
