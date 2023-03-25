@@ -486,17 +486,26 @@ class JgIframeBlocks {
     }
     setIframeUrl (args) {
         if (!this.GetIFrameState()) return; // iframe doesnt exist, stop
-        if (!this.IsWebsiteAllowed(args.URL)) { // website isnt in the permitted sites list?
+        let usingProxy = false
+        let checkingUrl = args.URL
+        if (String(args.URL).startsWith("proxy://")) {
+            // use the penguin mod proxy but still say we are on proxy:// since its what the user input
+            // replace proxy:// with https:// though since we are still using the https protocol
+            usingProxy = true
+            checkingUrl = String(args.URL).replace("proxy://", "https://")
+        }
+        if (!this.IsWebsiteAllowed(checkingUrl)) { // website isnt in the permitted sites list?
             this.createdIframe.src = "about:blank";
             // ask user for permission to redirect (unless it is an adult site)
-            if (!this.AskUserForWebsitePermission(args.URL)) { 
+            if (!this.AskUserForWebsitePermission(checkingUrl)) { 
                 this.createdIframe.src = "about:blank";
                 this.displayWebsiteUrl = args.URL;
                 return;
             }
         }
-        this.createdIframe.src = args.URL;
-        this.displayWebsiteUrl = this.createdIframe.src;
+        this.createdIframe.src = (usingProxy ? `https://detaproxy-1-s1965152.deta.app/?url=${String(args.URL).replace("proxy://", "https://")}` : args.URL);
+        // tell the user we are on proxy:// still since it looks nicer than the disgusting deta url
+        this.displayWebsiteUrl = (usingProxy ? `${String(this.createdIframe.src).replace("https://detaproxy-1-s1965152.deta.app/?url=https://", "proxy://")}` : this.createdIframe.src);
     }
     setIframePosLeft (args) {
         if (!this.GetIFrameState()) return; // iframe doesnt exist, stop
