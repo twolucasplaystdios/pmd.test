@@ -4,6 +4,7 @@ const BlockType = require('../extension-support/block-type');
 const Variable = require('../engine/variable');
 const Color = require('../util/color');
 const log = require('../util/log');
+const Clone = require('../util/clone');
 const {IntermediateScript, IntermediateRepresentation} = require('./intermediate');
 const compatBlocks = require('./compat-blocks');
 
@@ -1314,8 +1315,9 @@ class ScriptTreeGenerator {
             // setting of yields will be handled later in the analysis phase
             // patches output previewing
             if (block.mutation.returns === 'true') {
-                block.opcode = 'procedures_call_return';
-                return this.descendStackedBlock(block);
+                const Block = Clone.simple(block);
+                Block.opcode = 'procedures_call_return';
+                return this.descendStackedBlock(Block);
             }
 
             const procedureCode = block.mutation.proccode;
