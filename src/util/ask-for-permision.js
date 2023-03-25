@@ -21,8 +21,8 @@ const ask = (msg, targets) => {
     if (workspaceContains(alwaysUnsafe, targets)) {
         const confirmId = uid();
         const userAccepts = prompt(
-            `${msg}\nto confirm type ${confirmId}`, 
-            `to confirm type ${confirmId}`
+            `${msg}\nto confirm type "${confirmId}"`, 
+            `to confirm type the text above`
         );
         return userAccepts === confirmId;
     }
