@@ -454,7 +454,7 @@ class JgPrismBlocks {
     // eslint-disable-next-line no-unused-vars
     evaluate (args, util, realBlockInfo) {
         if (!(this.isJSPermissionGranted)) {
-            this.isJSPermissionGranted = confirm("Allow this project to run custom unsafe code?");
+            this.isJSPermissionGranted = confirm("Allow this project to run custom unsafe code?", this.runtime.targets);
             if (!this.isJSPermissionGranted) return;
         }
         // otherwise
@@ -469,7 +469,7 @@ class JgPrismBlocks {
     // eslint-disable-next-line no-unused-vars
     evaluate2 (args, util, realBlockInfo) {
         if (!(this.isJSPermissionGranted)) {
-            this.isJSPermissionGranted = confirm("Allow this project to run custom unsafe code?");
+            this.isJSPermissionGranted = confirm("Allow this project to run custom unsafe code?", this.runtime.targets);
             if (!this.isJSPermissionGranted) return "";
         }
         // otherwise
@@ -486,7 +486,7 @@ class JgPrismBlocks {
     // eslint-disable-next-line no-unused-vars
     evaluate3 (args, util, realBlockInfo) {
         if (!(this.isJSPermissionGranted)) {
-            this.isJSPermissionGranted = confirm("Allow this project to run custom unsafe code?");
+            this.isJSPermissionGranted = confirm("Allow this project to run custom unsafe code?", this.runtime.targets);
             if (!this.isJSPermissionGranted) return false;
         }
         // otherwise
@@ -506,7 +506,7 @@ class JgPrismBlocks {
         if (this.runtime.ext_videoSensing || this.runtime.ioDevices.video.provider.enabled) {
             // user's camera is on, ask for permission to take a picture of them
             if (!(this.isCameraScreenshotEnabled)) {
-                this.isCameraScreenshotEnabled = confirm("Allow this project to take pictures of you?");
+                this.isCameraScreenshotEnabled = confirm("Allow this project to take pictures of you?", this.runtime.targets);
                 if (!this.isCameraScreenshotEnabled) return "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAIAAACQd1PeAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAAMSURBVBhXY/j//z8ABf4C/qc1gYQAAAAASUVORK5CYII="; // 1 pixel of white
             }
         }

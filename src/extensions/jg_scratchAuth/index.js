@@ -9,7 +9,7 @@ const confirm = require('../../util/ask-for-permision');
  * @constructor
  */
 class JgScratchAuthenticateBlocks {
-    constructor(runtime) {
+    constructor (runtime) {
         /**
          * The runtime instantiating this block package.
          * @type {Runtime}
@@ -22,7 +22,7 @@ class JgScratchAuthenticateBlocks {
     /**
      * @returns {object} metadata for this extension and its blocks.
      */
-    getInfo() {
+    getInfo () {
         return {
             id: 'jgScratchAuthenticate',
             name: 'Scratch Auth',
@@ -38,23 +38,23 @@ class JgScratchAuthenticateBlocks {
                     }),
                     disableMonitor: true,
                     arguments: {
-                        NAME: { type: ArgumentType.STRING, defaultValue: "PenguinMod" },
+                        NAME: { type: ArgumentType.STRING, defaultValue: "PenguinMod" }
                     },
                     blockType: BlockType.REPORTER
                 }
             ]
         };
     }
-    authenticate(args) {
+    authenticate (args) {
         if (!this.keepAllowingAuthBlock) { // user closed popup before it was finished
             if (!this.disableConfirmationShown) { // we didnt ask them to confirm yet or they only declined it once, so we let them know every time
-                const areYouSure = confirm("Sign in with Scratch? The project can only get your username.")
+                const areYouSure = confirm("Sign in with Scratch? The project can only get your username.", this.runtime.targets);
                 if (!areYouSure) { // they clicked no, dont show confirmation again
                     this.disableConfirmationShown = true;
-                    return "The user has declined the ability to authenticate."
+                    return "The user has declined the ability to authenticate.";
                 }
             } else { // they already clicked no before
-                return "The user has declined the ability to authenticate."
+                return "The user has declined the ability to authenticate.";
             }
         }
         return new Promise((resolve, reject) => {
@@ -101,24 +101,26 @@ class JgScratchAuthenticateBlocks {
                             resolve("");
                         }
                         resolve(String(json.username));
-                    }).catch(() => {
-                        finished = true;
-                        clearInterval(interval);
-                        login.close();
-                        resolve("");
-                    })).catch(() => {
-                        finished = true;
-                        clearInterval(interval);
-                        login.close();
-                        resolve("");
                     })
+                        .catch(() => {
+                            finished = true;
+                            clearInterval(interval);
+                            login.close();
+                            resolve("");
+                        }))
+                        .catch(() => {
+                            finished = true;
+                            clearInterval(interval);
+                            login.close();
+                            resolve("");
+                        });
                 } catch {
                     // due to strange chrome bug, window still has the previous url on it so we need to wait until we switch to the auth site
                     cantAccessAnymore = true;
                     // now we cant access the location yet since the user hasnt left the authentication site
                 }
             }, 10);
-        })
+        });
     }
 }
 

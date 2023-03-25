@@ -567,7 +567,7 @@ class Scratch3VideoSensingBlocks {
             this.runtime.ioDevices.video.disableVideo();
         } else {
             if (typeof this.cameraAllowed !== 'boolean') {
-                this.cameraAllowed = confirm('this project uses video blocks, is it ok if it uses video?');
+                this.cameraAllowed = confirm('this project uses video blocks, is it ok if it uses video?', this.runtime.targets);
             }
             if (!this.cameraAllowed) return;
             this.runtime.ioDevices.video.enableVideo();

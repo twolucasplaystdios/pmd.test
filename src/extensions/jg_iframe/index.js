@@ -382,7 +382,7 @@ class JgIframeBlocks {
         if (!this.CheckIfSafeUrl(url)) return false;
         const isDataUri = String(url).match(/data:[^/]*\/[^;]*;base64,/gmi);
         const urlMsg = isDataUri ? "a custom website" : url;
-        const allowed = confirm(`Allow this project to show ${urlMsg}? This project will open this website if you allow this.`);
+        const allowed = confirm(`Allow this project to show ${urlMsg}? This project will open this website if you allow this.`, this.runtime.targets);
         if (!allowed) return false;
         this.permission_AllowedWebsites.push(url);
         return true;
