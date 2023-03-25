@@ -6,6 +6,7 @@ const Clone = require('../../util/clone');
 const Cast = require('../../util/cast');
 const formatMessage = require('format-message');
 const Video = require('../../io/video');
+const confirm = require('../../util/ask-for-permision');
 
 const VideoMotion = require('./library');
 

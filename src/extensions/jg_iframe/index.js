@@ -1,6 +1,7 @@
 const formatMessage = require('format-message');
 const BlockType = require('../../extension-support/block-type');
 const ArgumentType = require('../../extension-support/argument-type');
+const confirm = require('../../util/ask-for-permision');
 // const Cast = require('../../util/cast');
 
 const EffectOptions = {
@@ -486,13 +487,13 @@ class JgIframeBlocks {
     }
     setIframeUrl (args) {
         if (!this.GetIFrameState()) return; // iframe doesnt exist, stop
-        let usingProxy = false
-        let checkingUrl = args.URL
+        let usingProxy = false;
+        let checkingUrl = args.URL;
         if (String(args.URL).startsWith("proxy://")) {
             // use the penguin mod proxy but still say we are on proxy:// since its what the user input
             // replace proxy:// with https:// though since we are still using the https protocol
-            usingProxy = true
-            checkingUrl = String(args.URL).replace("proxy://", "https://")
+            usingProxy = true;
+            checkingUrl = String(args.URL).replace("proxy://", "https://");
         }
         if (!this.IsWebsiteAllowed(checkingUrl)) { // website isnt in the permitted sites list?
             this.createdIframe.src = "about:blank";

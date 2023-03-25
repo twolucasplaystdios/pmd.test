@@ -1,6 +1,7 @@
 const formatMessage = require('format-message');
 const BlockType = require('../../extension-support/block-type');
 const ArgumentType = require('../../extension-support/argument-type');
+const confirm = require('../../util/ask-for-permision');
 // const Cast = require('../../util/cast');
 
 /**
