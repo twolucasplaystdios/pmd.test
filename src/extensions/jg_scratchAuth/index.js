@@ -1,7 +1,7 @@
 const formatMessage = require('format-message');
 const BlockType = require('../../extension-support/block-type');
 const ArgumentType = require('../../extension-support/argument-type');
-const confirm = require('../../util/ask-for-permision');
+const ProjectPermissionManager = require('../../util/project-permissions');
 // const Cast = require('../../util/cast');
 
 /**
@@ -56,7 +56,7 @@ class JgScratchAuthenticateBlocks {
     authenticate (args) {
         if (!this.keepAllowingAuthBlock) { // user closed popup before it was finished
             if (!this.disableConfirmationShown) { // we didnt ask them to confirm yet or they only declined it once, so we let them know every time
-                const areYouSure = confirm("Sign in with Scratch? The project can only get your username.", this.runtime.targets);
+                const areYouSure = ProjectPermissionManager.RequestPermission("scratchSignIn");
                 if (!areYouSure) { // they clicked no, dont show confirmation again
                     this.disableConfirmationShown = true;
                     return "The user has declined the ability to authenticate.";

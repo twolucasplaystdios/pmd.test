@@ -1,7 +1,7 @@
 const formatMessage = require('format-message');
 const BlockType = require('../../extension-support/block-type');
 const ArgumentType = require('../../extension-support/argument-type');
-const confirm = require('../../util/ask-for-permision');
+const ProjectPermissionManager = require('../../util/project-permissions');
 // const Cast = require('../../util/cast');
 
 const EffectOptions = {
@@ -360,43 +360,18 @@ class JgIframeBlocks {
         };
     }
     // permissions
-    CheckIfSafeUrl (url) { // checks for non-kid friendly urls because that would be a big stinker
-        const origin = String(url).match(/((http(s|)|(ws|wss)):\/\/)([^\n]+)\.([^\n/?#&]+)/gmi);
-        // custom urls cannot be checked with this method, just say its safe for now
-        if ((!origin) && (String(url).match(/data:[^/]*\/[^;]*;base64,/gmi))) return true; 
-        let returningValue = true;
-        for (let i = 0; i < origin.length; i++) {
-            const link = origin[i];
-            if (
-                link.endsWith(".xxx")
-                || link.endsWith(".adult")
-                || link.endsWith(`.${atob("c2V4")}`)
-                || link.endsWith(`.${atob("cG9ybg==")}`)
-            ) returningValue = false;
-            if (
-                link.includes("xxx")
-                || link.includes("adult")
-                || link.includes(atob("c2V4"))
-                || link.includes(atob("cG9ybg=="))
-                || link.includes(atob("Ym9vcnU="))
-                || link.includes(atob("aGVudGFp"))
-            ) returningValue = false;
-            // const mainName = link.match(/(?=(\.|\/\/))[^\n]+(?=(\.))/gmi)[0].replace(/(\/\/|)[^\n]+(?=(\.))/gmi, "").replace(/\/\//gmi, "")
-        }
-        return returningValue;
-    }
     AskUserForWebsitePermission (url) {
-        if (!this.CheckIfSafeUrl(url)) return false;
-        const isDataUri = String(url).match(/data:[^/]*\/[^;]*;base64,/gmi);
-        const urlMsg = isDataUri ? "a custom website" : url;
-        const allowed = confirm(`Allow this project to show ${urlMsg}? This project will open this website if you allow this.`, this.runtime.targets);
-        if (!allowed) return false;
-        this.permission_AllowedWebsites.push(url);
-        return true;
+        if (!ProjectPermissionManager.IsUrlSafe(url)) return false;
+        if (ProjectPermissionManager.permissions.allWebsites) return true;
+        if (ProjectPermissionManager.permissions.limitedWebsites[url]) return true;
+        const allowed = ProjectPermissionManager.RequestPermission("limitedWebsite", url);
+        return allowed;
     }
     IsWebsiteAllowed (url) {
-        if (!this.CheckIfSafeUrl(url)) return false;
-        return this.permission_AllowedWebsites.includes(url);
+        if (!ProjectPermissionManager.IsUrlSafe(url)) return false;
+        if (ProjectPermissionManager.permissions.allWebsites) return true;
+        if (ProjectPermissionManager.permissions.limitedWebsites[url]) return true;
+        return false;
     }
 
     // utilities
