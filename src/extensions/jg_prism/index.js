@@ -16,7 +16,7 @@ const {
  * @constructor
  */
 class JgPrismBlocks {
-    constructor (runtime) {
+    constructor(runtime) {
         /**
          * The runtime instantiating this block package.
          * @type {Runtime}
@@ -35,13 +35,15 @@ class JgPrismBlocks {
         setInterval(() => {
             this.mouseScrollDelta = { x: 0, y: 0, z: 0 };
         }, 65);
+
+        this.encodeCharacterLength = 6;
     }
 
-    
+
     /**
      * dummy function for reseting user provided permisions when a save is loaded
      */
-    deserialize () {
+    deserialize() {
         this.isJSPermissionGranted = false;
         this.isCameraScreenshotEnabled = false;
     }
@@ -49,7 +51,7 @@ class JgPrismBlocks {
     /**
      * @returns {object} metadata for this extension and its blocks.
      */
-    getInfo () {
+    getInfo() {
         return {
             id: 'jgPrism',
             name: 'Prism',
@@ -384,9 +386,11 @@ class JgPrismBlocks {
                         }
                     }
                 },
+                "---",
+                "---",
                 {
                     blockType: BlockType.LABEL,
-                    text: "JS Deflate implementation"
+                    text: "JS Deflate by BeatGammit"
                 },
                 {
                     opcode: 'lib_deflate_deflateArray',
@@ -419,49 +423,75 @@ class JgPrismBlocks {
                             defaultValue: "[]"
                         }
                     }
+                },
+                {
+                    blockType: BlockType.LABEL,
+                    text: "Numerical Encoding by cs2627883"
+                },
+                {
+                    opcode: 'NumericalEncode',
+                    blockType: BlockType.REPORTER,
+                    text: 'encode [DATA] to number',
+                    arguments: {
+                        DATA: {
+                            type: ArgumentType.STRING,
+                            defaultValue: 'Hello!'
+                        }
+                    }
+                },
+                {
+                    opcode: 'NumericalDecode',
+                    blockType: BlockType.REPORTER,
+                    text: 'decode [ENCODED] from number',
+                    arguments: {
+                        ENCODED: {
+                            type: ArgumentType.STRING,
+                            defaultValue: '000072000101000108000108000111000033'
+                        }
+                    }
                 }
             ]
         };
     }
-    playAudioFromUrl (args) {
+    playAudioFromUrl(args) {
         if (!this.audioPlayer) this.audioPlayer = new Audio();
         this.audioPlayer.pause();
         this.audioPlayer.src = `${args.URL}`;
         this.audioPlayer.currentTime = 0;
         this.audioPlayer.play();
     }
-    setAudioToLooping () {
+    setAudioToLooping() {
         this.audioPlayer.loop = true;
     }
-    setAudioToNotLooping () {
+    setAudioToNotLooping() {
         this.audioPlayer.loop = false;
     }
-    pauseAudio () {
+    pauseAudio() {
         this.audioPlayer.pause();
     }
-    playAudio () {
+    playAudio() {
         this.audioPlayer.play();
     }
-    setAudioPlaybackSpeed (args) {
+    setAudioPlaybackSpeed(args) {
         this.audioPlayer.playbackRate = (isNaN(Number(args.SPEED)) ? 100 : Number(args.SPEED)) / 100;
     }
-    getAudioPlaybackSpeed () {
+    getAudioPlaybackSpeed() {
         return this.audioPlayer.playbackRate * 100;
     }
-    setAudioPosition (args) {
+    setAudioPosition(args) {
         this.audioPlayer.currentTime = isNaN(Number(args.POSITION)) ? 0 : Number(args.POSITION);
     }
-    getAudioPosition () {
+    getAudioPosition() {
         return this.audioPlayer.currentTime;
     }
-    setAudioVolume (args) {
+    setAudioVolume(args) {
         this.audioPlayer.volume = (isNaN(Number(args.VOLUME)) ? 100 : Number(args.VOLUME)) / 100;
     }
-    getAudioVolume () {
+    getAudioVolume() {
         return this.audioPlayer.volume * 100;
     }
     // eslint-disable-next-line no-unused-vars
-    evaluate (args, util, realBlockInfo) {
+    evaluate(args, util, realBlockInfo) {
         if (!(this.isJSPermissionGranted)) {
             this.isJSPermissionGranted = ProjectPermissionManager.RequestPermission("javascript");
             if (!this.isJSPermissionGranted) return;
@@ -476,7 +506,7 @@ class JgPrismBlocks {
         }
     }
     // eslint-disable-next-line no-unused-vars
-    evaluate2 (args, util, realBlockInfo) {
+    evaluate2(args, util, realBlockInfo) {
         if (!(this.isJSPermissionGranted)) {
             this.isJSPermissionGranted = ProjectPermissionManager.RequestPermission("javascript");
             if (!this.isJSPermissionGranted) return "";
@@ -493,7 +523,7 @@ class JgPrismBlocks {
         return result;
     }
     // eslint-disable-next-line no-unused-vars
-    evaluate3 (args, util, realBlockInfo) {
+    evaluate3(args, util, realBlockInfo) {
         if (!(this.isJSPermissionGranted)) {
             this.isJSPermissionGranted = ProjectPermissionManager.RequestPermission("javascript");
             if (!this.isJSPermissionGranted) return false;
@@ -510,7 +540,7 @@ class JgPrismBlocks {
         // otherwise
         return result === true;
     }
-    screenshotStage () {
+    screenshotStage() {
         // DO NOT REMOVE, USER HAS NOT GIVEN PERMISSION TO SAVE CAMERA IMAGES.
         if (this.runtime.ext_videoSensing || this.runtime.ioDevices.video.provider.enabled) {
             // user's camera is on, ask for permission to take a picture of them
@@ -525,7 +555,7 @@ class JgPrismBlocks {
             });
         });
     }
-    dataUriOfCostume (args, util) {
+    dataUriOfCostume(args, util) {
         const index = Number(args.INDEX);
         if (isNaN(index)) return "";
         if (index < 1) return "";
@@ -536,7 +566,7 @@ class JgPrismBlocks {
         const dataURI = target.sprite.costumes[index - 1].asset.encodeDataURI();
         return String(dataURI);
     }
-    dataUriFromImageUrl (args) {
+    dataUriFromImageUrl(args) {
         return new Promise(resolve => {
             if (window && !window.FileReader) return resolve("");
             if (window && !window.fetch) return resolve("");
@@ -557,36 +587,66 @@ class JgPrismBlocks {
                 });
         });
     }
-    currentMouseScrollX () {
+    currentMouseScrollX() {
         return this.mouseScrollDelta.x;
     }
-    currentMouseScroll () {
+    currentMouseScroll() {
         return this.mouseScrollDelta.y;
     }
-    currentMouseScrollZ () {
+    currentMouseScrollZ() {
         return this.mouseScrollDelta.z;
     }
-    base64Encode (args) {
+    base64Encode(args) {
         return btoa(String(args.TEXT));
     }
-    base64Decode (args) {
+    base64Decode(args) {
         return atob(String(args.TEXT));
     }
-    fromCharacterCodeString (args) {
+    fromCharacterCodeString(args) {
         return String.fromCharCode(args.TEXT);
     }
-    toCharacterCodeString (args) {
+    toCharacterCodeString(args) {
         return String(args.TEXT).charCodeAt(0);
     }
-    lib_deflate_deflateArray (args) {
+    lib_deflate_deflateArray(args) {
         const array = validateArray(args.ARRAY).array;
 
         return JSON.stringify(beatgammit.deflate(array));
     }
-    lib_deflate_inflateArray (args) {
+    lib_deflate_inflateArray(args) {
         const array = validateArray(args.ARRAY).array;
 
         return JSON.stringify(beatgammit.inflate(array));
+    }
+
+    NumericalEncode(args) {
+        const toencode = String(args.DATA);
+        let encoded = "";
+        for (let i = 0; i < toencode.length; ++i) {
+            // Get char code of character
+            let encodedchar = String(toencode.charCodeAt(i));
+            // Pad encodedchar with 0s to ensure all encodedchars are the same length
+            encodedchar = "0".repeat(this.encodeCharacterLength - encodedchar.length) + encodedchar;
+            encoded += encodedchar;
+        }
+        return encoded;
+    }
+    NumericalDecode(args) {
+        const todecode = String(args.ENCODED);
+        if (todecode == "") {
+            return "";
+        }
+        let decoded = "";
+        // Create regex to split by char length
+        const regex = new RegExp('.{1,' + this.encodeCharacterLength + '}', 'g');
+        // Split into array of characters
+        let encodedchars = todecode.match(regex);
+        for (let i = 0; i < encodedchars.length; i++) {
+            // Get character from char code
+            let decodedchar = String.fromCharCode(encodedchars[i]);
+            decoded += decodedchar;
+        }
+        return decoded;
     }
 }
 
