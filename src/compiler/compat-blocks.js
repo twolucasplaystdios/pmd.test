@@ -5,6 +5,7 @@
 
 // Please keep these lists alphabetical.
 // no >:(
+// haha cry about it - jerem
 
 const statementBlocks = [
     'control_clear_counter',
@@ -78,7 +79,8 @@ const outputBlocks = [
     "looks_sayHeight",
     "looks_sayWidth",
     "sensing_isUpperCase",
-    "operator_toUpperLowerCase"
+    "operator_toUpperLowerCase",
+    "looks_getSpriteVisible"
 ];
 
 module.exports = {

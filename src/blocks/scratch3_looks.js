@@ -349,6 +349,7 @@ class Scratch3LooksBlocks {
             looks_setShape: this.setShape,
             looks_show: this.show,
             looks_hide: this.hide,
+            looks_getSpriteVisible: this.getSpriteVisible,
             looks_hideallsprites: () => {}, // legacy no-op block
             looks_switchcostumeto: this.switchCostume,
             looks_switchbackdropto: this.switchBackdrop,
@@ -501,6 +502,10 @@ class Scratch3LooksBlocks {
     hide (args, util) {
         util.target.setVisible(false);
         this._renderBubble(util.target);
+    }
+    
+    getSpriteVisible (args, util) {
+        return util.target.visible;
     }
 
     /**
