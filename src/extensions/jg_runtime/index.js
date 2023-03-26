@@ -163,6 +163,7 @@ class JgRuntimeBlocks {
                     disableMonitor: false,
                     blockType: BlockType.REPORTER
                 },
+                // keeping this one here for compatibility since i dont know how to hide blocks lolollol
                 {
                     opcode: 'getIsClone',
                     text: formatMessage({

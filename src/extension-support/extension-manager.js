@@ -50,6 +50,8 @@ const builtinExtensions = {
     jgScratchAuthenticate: () => require("../extensions/jg_scratchAuth"),
     // jgPermissions: someones gonna get mad at me for this one i bet
     jgPermissions: () => require("../extensions/jg_permissions"),
+    // jgClones: funny clone manager
+    jgClones: () => require("../extensions/jg_clones"),
 
     // jw: hello it is i jwklong
     // jwUnite: literal features that should of been added in the first place
