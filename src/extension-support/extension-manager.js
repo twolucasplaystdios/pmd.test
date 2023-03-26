@@ -48,8 +48,8 @@ const builtinExtensions = {
     jgExtendedAudio: () => require("../extensions/jg_audio"),
     // jgScratchAuthenticate: easy to add its one block lmao!
     jgScratchAuthenticate: () => require("../extensions/jg_scratchAuth"),
-    // jgPermissions: someones gonna get mad at me for this one i bet
-    jgPermissions: () => require("../extensions/jg_permissions"),
+    // JgPermissionBlocks: someones gonna get mad at me for this one i bet
+    JgPermissionBlocks: () => require("../extensions/jg_permissions"),
     // jgClones: funny clone manager
     jgClones: () => require("../extensions/jg_clones"),
 
@@ -72,7 +72,7 @@ const builtinExtensions = {
     jwStructs: () => require("../extensions/jw_structs"),
     // mikedev: ghytfhygfvbl
     // cl: () => require("../extensions/cl"),
-    GamepadExtension: () => require("../extensions/GamepadExtension"),
+    Gamepad: () => require("../extensions/GamepadExtension"),
 
     // gsa: fill out your introduction stupet!!!
     // no >:(

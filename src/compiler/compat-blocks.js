@@ -41,7 +41,8 @@ const statementBlocks = [
     "control_switch_default",
     "control_case",
     "control_exitCase",
-    "control_case_next"
+    "control_case_next",
+    "control_backToGreenFlag"
 ];
 
 const outputBlocks = [
