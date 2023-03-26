@@ -276,8 +276,10 @@ class JgCloneToolBlocks {
     // menus
     getSpriteMenu () {
         const targets = this.runtime.targets;
+        const emptyMenu = [{ text: "", value: "" }];
+        if (!targets) return emptyMenu;
         const menu = targets.filter(target => target.isOriginal && (!target.isStage)).map(target => ({ text: target.sprite.name, value: target.sprite.name }));
-        return menu;
+        return (menu.length > 0) ? menu : emptyMenu;
     }
     getSpriteVariablesMenu () {
         const target = vm.editingTarget;
