@@ -40,10 +40,17 @@ class ProjectPermissionManager {
     }
     static RequestPermission(name, ...args) {
         if (ProjectPermissionManager.disabledPermissions.includes(name)) return false;
+
         if (name == "limitedWebsite") {
             if (args.length < 1) throw new Error("No URL specified what are you trying to get permission for bro");
             if (!ProjectPermissionManager.IsUrlSafe(args[0])) return false;
         };
+
+        // check if we already gave permission to do this
+        if (name == "limitedWebsite") {
+            if (ProjectPermissionManager.permissions.limitedWebsites[args[0]] == true) return true;
+        };
+        if (ProjectPermissionManager.permissions[name]) return true;
 
         let string = `Allow this project to ${ProjectPermissionManager.permissionMessages[name]}?`;
         for (let i = 0; i < args.length; i++) {
