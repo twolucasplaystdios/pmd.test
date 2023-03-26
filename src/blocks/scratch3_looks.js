@@ -359,6 +359,7 @@ class Scratch3LooksBlocks {
             looks_changeeffectby: this.changeEffect,
             looks_seteffectto: this.setEffect,
             looks_cleargraphiceffects: this.clearEffects,
+            looks_getEffectValue: this.getEffectValue,
             looks_changesizeby: this.changeSize,
             looks_setsizeto: this.setSize,
             looks_changestretchby: () => {},
@@ -506,6 +507,14 @@ class Scratch3LooksBlocks {
     
     getSpriteVisible (args, util) {
         return util.target.visible;
+    }
+    
+    getEffectValue (args, util) {
+        const effect = Cast.toString(args.EFFECT).toLowerCase();
+        const effects = util.target.effects;
+        if (!effects.hasOwnProperty(effect)) return 0;
+        const value = Cast.toNumber(effects[effect]);
+        return value;
     }
 
     /**

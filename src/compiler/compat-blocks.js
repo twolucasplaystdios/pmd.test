@@ -80,7 +80,8 @@ const outputBlocks = [
     "looks_sayWidth",
     "sensing_isUpperCase",
     "operator_toUpperLowerCase",
-    "looks_getSpriteVisible"
+    "looks_getSpriteVisible",
+    "looks_getEffectValue"
 ];
 
 module.exports = {
