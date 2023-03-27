@@ -81,7 +81,11 @@ const builtinExtensions = {
     // tempVars: fill out your introduction stupet!!!
     tempVars: () => require('../extensions/gsa_tempVars'),
     // colors: fill out your introduction stupet!!!
-    colors: () => require('../extensions/gsa_colorUtilBlocks')
+    colors: () => require('../extensions/gsa_colorUtilBlocks'),
+
+    // silvxrcat: ...
+    // oddMessage: ...
+    oddMessage: () => require("../extensions/silvxrcat_oddmessages"),
 };
 
 const preload = [
