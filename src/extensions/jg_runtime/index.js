@@ -173,7 +173,28 @@ class JgRuntimeBlocks {
                     }),
                     disableMonitor: true,
                     blockType: BlockType.BOOLEAN
-                }
+                },
+                "---",
+                "---",
+                {
+                    blockType: BlockType.LABEL,
+                    text: "Potentially Dangerous"
+                },
+                {
+                    opcode: 'deleteSprite',
+                    text: formatMessage({
+                        id: 'jgRuntime.blocks.deleteSprite',
+                        default: 'delete sprite named [NAME]',
+                        description: 'Deletes a sprite with the specified name.'
+                    }),
+                    blockType: BlockType.COMMAND,
+                    arguments: {
+                        NAME: {
+                            type: ArgumentType.STRING,
+                            defaultValue: "Sprite1"
+                        }
+                    }
+                },
             ]
         };
     }
@@ -260,6 +281,11 @@ class JgRuntimeBlocks {
         let frameRate = Number(args.FRAMERATE) || 1;
         if (frameRate <= 0) frameRate = 1;
         this.runtime.frameLoop.setFramerate(frameRate);
+    }
+    deleteSprite(args) {
+        const target = this.runtime.getSpriteTargetByName(args.NAME);
+        if (!target) return;
+        vm.deleteSprite(target.id);
     }
 }
 
