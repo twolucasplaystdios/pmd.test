@@ -52,6 +52,8 @@ const builtinExtensions = {
     JgPermissionBlocks: () => require("../extensions/jg_permissions"),
     // jgClones: funny clone manager
     jgClones: () => require("../extensions/jg_clones"),
+    // jgTween: epic animation
+    jgTween: () => require("../extensions/jg_tween"),
 
     // jw: hello it is i jwklong
     // jwUnite: literal features that should of been added in the first place
