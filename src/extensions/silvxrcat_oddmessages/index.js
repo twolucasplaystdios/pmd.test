@@ -42,7 +42,6 @@ class OddMessage {
                         },
                         b: {
                             type: 'string',
-                            defaultValue: 'variable',
                             menu: 'variables',
                         },
                     },
@@ -55,7 +54,6 @@ class OddMessage {
                     arguments: {
                         a: {
                             type: 'string',
-                            defaultValue: 'variable',
                             menu: 'variables',
                         },
                     },
@@ -67,12 +65,10 @@ class OddMessage {
                     arguments: {
                         a: {
                             type: 'string',
-                            defaultValue: 'variable',
                             menu: 'variables',
                         },
                         b: {
                             type: 'string',
-                            defaultValue: 'list',
                             menu: 'lists',
                         },
                     },
@@ -84,7 +80,6 @@ class OddMessage {
                     arguments: {
                         a: {
                             type: 'string',
-                            defaultValue: 'variable',
                             menu: 'variables',
                         },
                     },
@@ -181,7 +176,11 @@ class OddMessage {
     on({ a, b }) {
         if (this.messageQueue.length == 0) return false;
         if (this.messageQueue[0][0] == a) {
-            this.runtime.getTargetForStage().lookupVariableByNameAndType(b).value = this.messageQueue[0][1];
+            const stage = this.runtime.getTargetForStage();
+            if (!stage) return true;
+            const variable = stage.lookupVariableByNameAndType(b);
+            if (!variable) return true;
+            variable.value = this.messageQueue[0][1];
             this.messageQueue.shift();
             return true
         } else {

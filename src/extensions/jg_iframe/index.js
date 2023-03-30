@@ -56,6 +56,10 @@ class JgIframeBlocks {
         this.iframeLoadedValue = false;
         this.permission_AllowedWebsites = [];
         this.displayWebsiteUrl = "";
+        this.runtime.on('PROJECT_STOP_ALL', () => {
+            // stop button clicked so delete the iframe
+            this.RemoveIFrame();
+        });
     }
 
     /**
