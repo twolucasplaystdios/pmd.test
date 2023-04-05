@@ -84,6 +84,12 @@ class RenderedTarget extends Target {
         this.y = 0;
 
         /**
+         * the transform for this sprite.
+         * @type {Array}
+         */
+        this.transform = [0, 0];
+
+        /**
          * Scratch direction. Currently should range from -179 to 180.
          * @type {number}
          */
@@ -291,6 +297,13 @@ class RenderedTarget extends Target {
             this.onTargetMoved(this, oldX, oldY, force);
         }
         this.runtime.requestTargetsUpdate(this);
+    }
+
+    setTransform (transform) {
+        if (!Array.isArray(transform) || transform.length !== 2) 
+            throw new TypeError('expected an array of length 2 for the transform input');
+        
+        this.transform = [transform[0], transform[1]];
     }
 
     /**
