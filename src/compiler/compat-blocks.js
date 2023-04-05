@@ -42,7 +42,9 @@ const statementBlocks = [
     "control_case",
     "control_exitCase",
     "control_case_next",
-    "control_backToGreenFlag"
+    "control_backToGreenFlag",
+    'looks_setHorizTransform',
+    'looks_setVertTransform'
 ];
 
 const outputBlocks = [
