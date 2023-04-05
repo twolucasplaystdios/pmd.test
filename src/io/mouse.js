@@ -30,7 +30,6 @@ class Mouse {
         // They were separated into two opcodes for labeling,
         // but should act the same way.
         // Intentionally not checking isStage to make it work when sharing blocks.
-        // @todo the blocks should be converted from one to another when shared
         this.runtime.startHats('event_whenthisspriteclicked',
             null, target);
         this.runtime.startHats('event_whenstageclicked',

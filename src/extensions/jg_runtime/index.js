@@ -8,7 +8,7 @@ const ArgumentType = require('../../extension-support/argument-type');
  * @constructor
  */
 class JgRuntimeBlocks {
-    constructor(runtime) {
+    constructor (runtime) {
         /**
          * The runtime instantiating this block package.
          * @type {Runtime}
@@ -16,7 +16,7 @@ class JgRuntimeBlocks {
         this.runtime = runtime;
     }
 
-    _typeIsBitmap(type) {
+    _typeIsBitmap (type) {
         return (
             type === 'image/png' ||
             type === 'image/bmp' ||
@@ -31,7 +31,7 @@ class JgRuntimeBlocks {
     /**
      * @returns {object} metadata for this extension and its blocks.
      */
-    getInfo() {
+    getInfo () {
         return {
             id: 'jgRuntime',
             name: 'Runtime',
@@ -194,12 +194,12 @@ class JgRuntimeBlocks {
                             defaultValue: "Sprite1"
                         }
                     }
-                },
+                }
             ]
         };
     }
-    addCostumeUrl(args, util) {
-        return new Promise((resolve, reject) => {
+    addCostumeUrl (args, util) {
+        return new Promise(resolve => {
             fetch(args.URL, { method: 'GET' }).then(x => x.blob().then(blob => {
                 if (!(
                     (this._typeIsBitmap(blob.type)) ||
@@ -241,48 +241,48 @@ class JgRuntimeBlocks {
                         console.warn(err);
                         resolve();
                     });
-            }).catch(resolve)).catch(resolve);
-        })
+            }));
+        });
     }
-    deleteCostume(args, util) {
+    deleteCostume (args, util) {
         const index = (Number(args.COSTUME) ? Number(args.COSTUME) : 1) - 1;
         if (index < 0) return;
         util.target.deleteCostume(index);
     }
-    getIndexOfCostume(args, util) {
+    getIndexOfCostume (args, util) {
         return util.target.getCostumeIndexByName(args.costume) + 1;
     }
-    setStageSize(args) {
+    setStageSize (args) {
         let width = Number(args.WIDTH) || 480;
         let height = Number(args.HEIGHT) || 360;
         if (width <= 0) width = 1;
         if (height <= 0) height = 1;
         if (vm) vm.setStageSize(width, height);
     }
-    turboModeEnabled() {
+    turboModeEnabled () {
         return this.runtime.turboMode;
     }
-    amountOfClones() {
+    amountOfClones () {
         return this.runtime._cloneCounter;
     }
-    getStageWidth() {
+    getStageWidth () {
         return this.runtime.stageWidth;
     }
-    getStageHeight() {
+    getStageHeight () {
         return this.runtime.stageHeight;
     }
-    getMaxFrameRate() {
+    getMaxFrameRate () {
         return this.runtime.frameLoop.framerate;
     }
-    getIsClone(_, util) {
+    getIsClone (_, util) {
         return !(util.target.isOriginal);
     }
-    setMaxFrameRate(args) {
+    setMaxFrameRate (args) {
         let frameRate = Number(args.FRAMERATE) || 1;
         if (frameRate <= 0) frameRate = 1;
         this.runtime.frameLoop.setFramerate(frameRate);
     }
-    deleteSprite(args) {
+    deleteSprite (args) {
         const target = this.runtime.getSpriteTargetByName(args.NAME);
         if (!target) return;
         vm.deleteSprite(target.id);
