@@ -341,7 +341,7 @@ class RenderedTarget extends Target {
         this.stretch = [x, y];
         if (this.renderer) {
             const {direction: renderedDirection, scale} = this._getRenderedDirectionAndScale();
-            this.renderer.updateDrawableDirectionScale(this.drawableID, renderedDirection, scale);
+            this.renderer.updateDrawableDirectionScale(this.drawableID, renderedDirection, scale, this.transform);
             if (this.visible) {
                 this.emitVisualChange();
                 this.runtime.requestRedraw();
@@ -365,7 +365,7 @@ class RenderedTarget extends Target {
         this.direction = MathUtil.wrapClamp(direction, -179, 180);
         if (this.renderer) {
             const {direction: renderedDirection, scale} = this._getRenderedDirectionAndScale();
-            this.renderer.updateDrawableDirectionScale(this.drawableID, renderedDirection, scale);
+            this.renderer.updateDrawableDirectionScale(this.drawableID, renderedDirection, scale, this.transform);
             if (this.visible) {
                 this.emitVisualChange();
                 this.runtime.requestRedraw();
@@ -425,7 +425,7 @@ class RenderedTarget extends Target {
             ) : Infinity;
             this.size = MathUtil.clamp(size / 100, minScale, maxScale) * 100;
             const {direction, scale} = this._getRenderedDirectionAndScale();
-            this.renderer.updateDrawableDirectionScale(this.drawableID, direction, scale);
+            this.renderer.updateDrawableDirectionScale(this.drawableID, direction, scale, this.transform);
             if (this.visible) {
                 this.emitVisualChange();
                 this.runtime.requestRedraw();
@@ -630,7 +630,7 @@ class RenderedTarget extends Target {
         }
         if (this.renderer) {
             const {direction, scale} = this._getRenderedDirectionAndScale();
-            this.renderer.updateDrawableDirectionScale(this.drawableID, direction, scale);
+            this.renderer.updateDrawableDirectionScale(this.drawableID, direction, scale, this.transform);
             if (this.visible) {
                 this.emitVisualChange();
                 this.runtime.requestRedraw();
@@ -727,7 +727,7 @@ class RenderedTarget extends Target {
         if (this.renderer) {
             const {direction, scale} = this._getRenderedDirectionAndScale();
             this.renderer.updateDrawablePosition(this.drawableID, [this.x, this.y]);
-            this.renderer.updateDrawableDirectionScale(this.drawableID, direction, scale);
+            this.renderer.updateDrawableDirectionScale(this.drawableID, direction, scale, this.transform);
             this.renderer.updateDrawableVisible(this.drawableID, this.visible);
 
             const costume = this.getCostumes()[this.currentCostume];
