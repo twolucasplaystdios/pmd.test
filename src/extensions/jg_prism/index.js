@@ -541,6 +541,15 @@ class JgPrismBlocks {
         return result === true;
     }
     screenshotStage() {
+        // should we look for an external canvas
+        if (this.runtime.prism_screenshot_checkForExternalCanvas) {
+            // if so, does one exist (this will check for more than 1 in the future)
+            if (this.runtime.prism_screenshot_externalCanvas) {
+                // we dont need to check camera permissions since external canvases
+                // will never have the ability to get camera data
+                return this.runtime.prism_screenshot_externalCanvas.toDataURL();
+            }
+        }
         // DO NOT REMOVE, USER HAS NOT GIVEN PERMISSION TO SAVE CAMERA IMAGES.
         if (this.runtime.ext_videoSensing || this.runtime.ioDevices.video.provider.enabled) {
             // user's camera is on, ask for permission to take a picture of them

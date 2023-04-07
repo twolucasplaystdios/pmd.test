@@ -427,6 +427,12 @@ class JgIframeBlocks {
             width: width,
             height: height
         };
+
+        // when switching between project page & editor, we need to place the iframe again since it gets lost
+        if (iframe.parentElement !== this.GetCurrentCanvas().parentElement) {
+            /* todo: create layers so that iframe appears above 3d every time this is done */
+            this.GetCurrentCanvas().parentElement.prepend(iframe);
+        }
     }
     GenerateCssFilter (color, grayscale, brightness, contrast, ghost, blur, invert, saturate, sepia) {
         return `hue-rotate(${(color / 200) * 360}deg) ` + // scratch color effect goes back to normal color at 200
