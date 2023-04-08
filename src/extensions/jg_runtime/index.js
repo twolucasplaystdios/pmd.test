@@ -104,7 +104,7 @@ class JgRuntimeBlocks {
                     arguments: {
                         NAME: {
                             type: ArgumentType.STRING,
-                            defaultValue: "pop"
+                            defaultValue: "Pop"
                         }
                     }
                 },
