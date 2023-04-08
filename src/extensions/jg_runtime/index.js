@@ -1,7 +1,7 @@
 const formatMessage = require('format-message');
 const BlockType = require('../../extension-support/block-type');
 const ArgumentType = require('../../extension-support/argument-type');
-// const Cast = require('../../util/cast');
+const BufferUtil = new (require('../../util/array buffer'));
 
 // ShovelUtils
 let fps = 0;
@@ -215,6 +215,37 @@ class JgRuntimeBlocks {
                 },
                 "---",
                 {
+                    opcode: 'getDataOption',
+                    text: formatMessage({
+                        id: 'jgRuntime.blocks.getDataOption',
+                        default: 'get binary data of [OPTION] named [NAME]',
+                        description: 'Block that returns the binary data of a sprite, sound or costume.'
+                    }),
+                    disableMonitor: false,
+                    blockType: BlockType.REPORTER,
+                    arguments: {
+                        OPTION: {
+                            type: ArgumentType.STRING,
+                            menu: "objectType"
+                        },
+                        NAME: {
+                            type: ArgumentType.STRING,
+                            defaultValue: "Sprite1"
+                        }
+                    }
+                },
+                {
+                    opcode: 'getAllSprites',
+                    text: formatMessage({
+                        id: 'jgRuntime.blocks.getAllSprites',
+                        default: 'get all sprites',
+                        description: 'Block that returns a list of sprite names.'
+                    }),
+                    disableMonitor: false,
+                    blockType: BlockType.REPORTER
+                },
+                "---",
+                {
                     blockType: BlockType.LABEL,
                     text: "Potentially Dangerous"
                 },
@@ -280,7 +311,17 @@ class JgRuntimeBlocks {
                     disableMonitor: true,
                     blockType: BlockType.BOOLEAN
                 },
-            ]
+            ],
+            menus: {
+                objectType: {
+                    acceptReporters: true,
+                    items: [
+                        "sprite",
+                        "costume",
+                        "sound",
+                    ].map(item => ({ text: item, value: item }))
+                }
+            }
         };
     }
     addCostumeUrl(args, util) {
@@ -385,6 +426,52 @@ class JgRuntimeBlocks {
         const target = this.runtime.getSpriteTargetByName(args.NAME);
         if (!target) return;
         vm.deleteSprite(target.id);
+    }
+
+    getDataOption(args, util) {
+        switch (args.OPTION) {
+            case "sprite": {
+                const sprites = this.runtime.targets.filter(target => target.isOriginal);
+                const sprite = sprites.filter(sprite => sprite.sprite.name === args.NAME)[0];
+                if (!sprite) return "[]";
+                return new Promise(resolve => {
+                    vm.exportSprite(sprite.id).then(blob => {
+                        blob.arrayBuffer().then(arrayBuffer => {
+                            const array = BufferUtil.bufferToArray(arrayBuffer);
+                            const stringified = JSON.stringify(array);
+                            resolve(stringified);
+                        }).catch(() => resolve("[]"));
+                    }).catch(() => resolve("[]"));
+                });
+            }
+            case "costume": {
+                const costumes = util.target.getCostumes();
+                const index = util.target.getCostumeIndexByName(args.NAME);
+                if (!costumes[index]) return "[]";
+                const costume = costumes[index];
+                const data = costume.asset.data;
+
+                const array = BufferUtil.bufferToArray(data.buffer);
+                const stringified = JSON.stringify(array);
+                return stringified;
+            }
+            case "sound": {
+                const sounds = util.target.getSounds();
+                const index = this.getIndexOfSound(args, util) - 1;
+                if (!sounds[index]) return "[]";
+                const sound = sounds[index];
+                const data = sound.asset.data;
+
+                const array = BufferUtil.bufferToArray(data.buffer);
+                const stringified = JSON.stringify(array);
+                return stringified;
+            }
+            default:
+                return "[]";
+        }
+    }
+    getAllSprites() {
+        return JSON.stringify(this.runtime.targets.filter(target => target.isOriginal && !target.isStage).map(target => target.sprite.name));
     }
 
     // ShovelUtils
