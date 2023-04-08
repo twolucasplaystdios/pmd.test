@@ -54,6 +54,11 @@ const builtinExtensions = {
     jgClones: () => require("../extensions/jg_clones"),
     // jgTween: epic animation
     jgTween: () => require("../extensions/jg_tween"),
+    // jg3d: holy sh
+    jg3d: () => require("../extensions/jg_3d"),
+
+    // jgStorage: event extension requested by Fir & silvxrcat
+    jgStorage: () => require("../extensions/jg_storage"),
 
     // jw: hello it is i jwklong
     // jwUnite: literal features that should of been added in the first place
