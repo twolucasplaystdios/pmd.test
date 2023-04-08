@@ -215,6 +215,73 @@ class JgRuntimeBlocks {
                 },
                 "---",
                 {
+                    opcode: 'variables_createVariable',
+                    text: 'create variable named [NAME] for [SCOPE]',
+                    blockType: BlockType.COMMAND,
+                    arguments: {
+                        NAME: { type: ArgumentType.STRING, defaultValue: "my variable" },
+                        SCOPE: { type: ArgumentType.STRING, menu: "variableScope" }
+                    }
+                },
+                {
+                    opcode: 'variables_createCloudVariable',
+                    text: 'create cloud variable named [NAME]',
+                    blockType: BlockType.COMMAND,
+                    arguments: {
+                        NAME: { type: ArgumentType.STRING, defaultValue: "cloud variable" },
+                    }
+                },
+                {
+                    opcode: 'variables_createList',
+                    text: 'create list named [NAME] for [SCOPE]',
+                    blockType: BlockType.COMMAND,
+                    arguments: {
+                        NAME: { type: ArgumentType.STRING, defaultValue: "list" },
+                        SCOPE: { type: ArgumentType.STRING, menu: "variableScope" }
+                    }
+                },
+                {
+                    opcode: 'variables_getVariable',
+                    text: 'get value of variable named [NAME] in [SCOPE]',
+                    disableMonitor: true,
+                    blockType: BlockType.REPORTER,
+                    arguments: {
+                        NAME: { type: ArgumentType.STRING, defaultValue: "my variable" },
+                        SCOPE: { type: ArgumentType.STRING, menu: "variableTypes" }
+                    }
+                },
+                {
+                    opcode: 'variables_getList',
+                    text: 'get array of list named [NAME] in [SCOPE]',
+                    disableMonitor: true,
+                    blockType: BlockType.REPORTER,
+                    arguments: {
+                        NAME: { type: ArgumentType.STRING, defaultValue: "list" },
+                        SCOPE: { type: ArgumentType.STRING, menu: "variableScope" }
+                    }
+                },
+                {
+                    opcode: 'variables_existsVariable',
+                    text: 'variable named [NAME] exists in [SCOPE]?',
+                    disableMonitor: true,
+                    blockType: BlockType.BOOLEAN,
+                    arguments: {
+                        NAME: { type: ArgumentType.STRING, defaultValue: "my variable" },
+                        SCOPE: { type: ArgumentType.STRING, menu: "variableTypes" }
+                    }
+                },
+                {
+                    opcode: 'variables_existsList',
+                    text: 'list named [NAME] exists in [SCOPE]?',
+                    disableMonitor: true,
+                    blockType: BlockType.BOOLEAN,
+                    arguments: {
+                        NAME: { type: ArgumentType.STRING, defaultValue: "list" },
+                        SCOPE: { type: ArgumentType.STRING, menu: "variableScope" }
+                    }
+                },
+                "---",
+                {
                     opcode: 'getDataOption',
                     text: formatMessage({
                         id: 'jgRuntime.blocks.getDataOption',
@@ -301,6 +368,25 @@ class JgRuntimeBlocks {
                 },
                 "---",
                 {
+                    opcode: 'variables_deleteVariable',
+                    text: 'delete variable named [NAME] in [SCOPE]',
+                    blockType: BlockType.COMMAND,
+                    arguments: {
+                        NAME: { type: ArgumentType.STRING, defaultValue: "my variable" },
+                        SCOPE: { type: ArgumentType.STRING, menu: "variableTypes" }
+                    }
+                },
+                {
+                    opcode: 'variables_deleteList',
+                    text: 'delete list named [NAME] in [SCOPE]',
+                    blockType: BlockType.COMMAND,
+                    arguments: {
+                        NAME: { type: ArgumentType.STRING, defaultValue: "list" },
+                        SCOPE: { type: ArgumentType.STRING, menu: "variableScope" }
+                    }
+                },
+                "---",
+                {
                     opcode: 'deleteSprite',
                     text: formatMessage({
                         id: 'jgRuntime.blocks.deleteSprite',
@@ -340,10 +426,36 @@ class JgRuntimeBlocks {
                         "costume",
                         "sound",
                     ].map(item => ({ text: item, value: item }))
-                }
+                },
+                variableScope: {
+                    acceptReporters: true,
+                    items: [
+                        "all sprites",
+                        "this sprite",
+                    ].map(item => ({ text: item, value: item }))
+                },
+                variableTypes: {
+                    acceptReporters: true,
+                    items: [
+                        "all sprites",
+                        "this sprite",
+                        "cloud",
+                    ].map(item => ({ text: item, value: item }))
+                },
             }
         };
     }
+    // utils
+    _generateScratchId() {
+        const characters = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z", "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z", "0", "1", "2", "3", "4", "5", "6", "7", "8", "9", "/", "|", ",", ".", "{", "}", "[", "]", "(", ")", "+", "-", "!", "?", "`"];
+        const array = Array.from(Array(20).keys());
+        const normalArray = array.map(() => {
+            return characters[Math.round(Math.random() * (characters.length - 1))]
+        })
+        return normalArray.join("");
+    }
+
+    // blocks
     addCostumeUrl(args, util) {
         return new Promise(resolve => {
             fetch(args.URL, { method: 'GET' }).then(x => x.blob().then(blob => {
@@ -567,6 +679,201 @@ class JgRuntimeBlocks {
                 }).catch(resolve);
             }).catch(resolve);
         });
+    }
+
+    // variables
+    variables_createVariable(args, util) {
+        const variableName = args.NAME;
+        switch (args.SCOPE) {
+            case "all sprites": {
+                return this.runtime.createNewGlobalVariable(variableName);
+            }
+            case "this sprite": {
+                const id = this._generateScratchId();
+                return util.target.createVariable(id, variableName, "");
+            }
+        }
+    }
+    variables_createCloudVariable(args) {
+        const variableName = `☁ ${args.NAME}`;
+        const stage = this.runtime.getTargetForStage();
+        if (!stage) return;
+        const id = this._generateScratchId();
+        stage.createVariable(id, variableName, "", true);
+    }
+    variables_createList(args, util) {
+        const variableName = args.NAME;
+        switch (args.SCOPE) {
+            case "all sprites": {
+                return this.runtime.createNewGlobalVariable(variableName, null, "list");
+            }
+            case "this sprite": {
+                const id = this._generateScratchId();
+                return util.target.createVariable(id, variableName, "list");
+            }
+        }
+    }
+    variables_getVariable(args, util) {
+        const variableName = args.NAME;
+        let target;
+        let isCloud = false;
+        switch (args.SCOPE) {
+            case "all sprites": {
+                target = this.runtime.getTargetForStage();
+                break;
+            }
+            case "this sprite": {
+                target = util.target;
+                break;
+            }
+            case "cloud": {
+                target = this.runtime.getTargetForStage();
+                isCloud = true;
+                break;
+            }
+            default:
+                return "";
+        }
+        const variables = Object.values(target.variables).filter(variable => variable.type !== "list").filter(variable => {
+            if (variable.isCloud) {
+                return String(variable.name).replace("☁ ", "") === variableName;
+            }
+            if (isCloud) return false; // above check should have already told us its a cloud variable
+            return variable.name === variableName;
+        });
+        if (!variables) return "";
+        const variable = variables[0];
+        if (!variable) return "";
+        return variable.value;
+    }
+    variables_getList(args, util) {
+        const variableName = args.NAME;
+        let target;
+        switch (args.SCOPE) {
+            case "all sprites": {
+                target = this.runtime.getTargetForStage();
+                break;
+            }
+            case "this sprite": {
+                target = util.target;
+                break;
+            }
+            default:
+                return "[]";
+        }
+        const variables = Object.values(target.variables).filter(variable => variable.type === "list").filter(variable => variable.name === variableName);
+        if (!variables) return "[]";
+        const variable = variables[0];
+        if (!variable) return "[]";
+        return JSON.stringify(variable.value);
+    }
+    variables_deleteVariable(args, util) {
+        const variableName = args.NAME;
+        let target;
+        let isCloud = false;
+        switch (args.SCOPE) {
+            case "all sprites": {
+                target = this.runtime.getTargetForStage();
+                break;
+            }
+            case "this sprite": {
+                target = util.target;
+                break;
+            }
+            case "cloud": {
+                target = this.runtime.getTargetForStage();
+                isCloud = true;
+                break;
+            }
+            default:
+                return;
+        }
+        const variables = Object.values(target.variables).filter(variable => variable.type !== "list").filter(variable => {
+            if (variable.isCloud) {
+                return String(variable.name).replace("☁ ", "") === variableName;
+            }
+            if (isCloud) return false; // above check should have already told us its a cloud variable
+            return variable.name === variableName;
+        });
+        if (!variables) return;
+        const variable = variables[0];
+        if (!variable) return;
+        return target.deleteVariable(variable.id);
+    }
+    variables_deleteList(args, util) {
+        const variableName = args.NAME;
+        let target;
+        switch (args.SCOPE) {
+            case "all sprites": {
+                target = this.runtime.getTargetForStage();
+                break;
+            }
+            case "this sprite": {
+                target = util.target;
+                break;
+            }
+            default:
+                return;
+        }
+        const variables = Object.values(target.variables).filter(variable => variable.type === "list").filter(variable => variable.name === variableName);
+        if (!variables) return;
+        const variable = variables[0];
+        if (!variable) return;
+        return target.deleteVariable(variable.id);
+    }
+    variables_existsVariable(args, util) {
+        const variableName = args.NAME;
+        let target;
+        let isCloud = false;
+        switch (args.SCOPE) {
+            case "all sprites": {
+                target = this.runtime.getTargetForStage();
+                break;
+            }
+            case "this sprite": {
+                target = util.target;
+                break;
+            }
+            case "cloud": {
+                target = this.runtime.getTargetForStage();
+                isCloud = true;
+                break;
+            }
+            default:
+                return false;
+        }
+        const variables = Object.values(target.variables).filter(variable => variable.type !== "list").filter(variable => {
+            if (variable.isCloud) {
+                return String(variable.name).replace("☁ ", "") === variableName;
+            }
+            if (isCloud) return false; // above check should have already told us its a cloud variable
+            return variable.name === variableName;
+        });
+        if (!variables) return false;
+        const variable = variables[0];
+        if (!variable) return false;
+        return true;
+    }
+    variables_existsList(args, util) {
+        const variableName = args.NAME;
+        let target;
+        switch (args.SCOPE) {
+            case "all sprites": {
+                target = this.runtime.getTargetForStage();
+                break;
+            }
+            case "this sprite": {
+                target = util.target;
+                break;
+            }
+            default:
+                return false;
+        }
+        const variables = Object.values(target.variables).filter(variable => variable.type === "list").filter(variable => variable.name === variableName);
+        if (!variables) return false;
+        const variable = variables[0];
+        if (!variable) return false;
+        return true;
     }
 }
 
