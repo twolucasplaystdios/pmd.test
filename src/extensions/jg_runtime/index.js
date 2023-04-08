@@ -57,6 +57,17 @@ class JgRuntimeBlocks {
             color2: '#555555',
             blocks: [
                 {
+                    opcode: 'addSpriteUrl',
+                    text: 'add sprite from [URL]',
+                    blockType: BlockType.COMMAND,
+                    arguments: {
+                        URL: {
+                            type: ArgumentType.STRING,
+                            defaultValue: 'https://api.allorigins.win/raw?url=https://github.com/PenguinMod/FreshPkg/raw/main/pkgs/anticors/anticors.sprite3'
+                        }
+                    }
+                },
+                {
                     opcode: 'addCostumeUrl',
                     text: 'add costume [name] from [URL]',
                     blockType: BlockType.COMMAND,
@@ -400,6 +411,17 @@ class JgRuntimeBlocks {
                     }));
                 }).catch(resolve);
         })
+    }
+
+    // GameUtils
+    addSpriteUrl(args) {
+        return new Promise((resolve) => {
+            fetch(args.URL).then(response => {
+                response.arrayBuffer().then(arrayBuffer => {
+                    vm.addSprite(arrayBuffer).finally(resolve);
+                }).catch(resolve);
+            }).catch(resolve);
+        });
     }
 }
 
