@@ -235,6 +235,26 @@ class JgRuntimeBlocks {
                     }
                 },
                 {
+                    opcode: 'getDataUriOption',
+                    text: formatMessage({
+                        id: 'jgRuntime.blocks.getDataUriOption',
+                        default: 'get data uri of [OPTION] named [NAME]',
+                        description: 'Block that returns the data URI of a sprite, sound or costume.'
+                    }),
+                    disableMonitor: false,
+                    blockType: BlockType.REPORTER,
+                    arguments: {
+                        OPTION: {
+                            type: ArgumentType.STRING,
+                            menu: "objectType"
+                        },
+                        NAME: {
+                            type: ArgumentType.STRING,
+                            defaultValue: "Sprite1"
+                        }
+                    }
+                },
+                {
                     opcode: 'getAllSprites',
                     text: formatMessage({
                         id: 'jgRuntime.blocks.getAllSprites',
@@ -468,6 +488,44 @@ class JgRuntimeBlocks {
             }
             default:
                 return "[]";
+        }
+    }
+    getDataUriOption(args, util) {
+        switch (args.OPTION) {
+            case "sprite": {
+                const sprites = this.runtime.targets.filter(target => target.isOriginal);
+                const sprite = sprites.filter(sprite => sprite.sprite.name === args.NAME)[0];
+                if (!sprite) return "";
+                return new Promise(resolve => {
+                    vm.exportSprite(sprite.id).then(blob => {
+                        const reader = new FileReader();
+                        reader.onload = () => resolve(reader.result);
+                        reader.onerror = () => resolve("");
+                        reader.onabort = () => resolve("");
+                        reader.readAsDataURL(blob);
+                    }).catch(() => resolve(""));
+                });
+            }
+            case "costume": {
+                const costumes = util.target.getCostumes();
+                const index = util.target.getCostumeIndexByName(args.NAME);
+                if (!costumes[index]) return "";
+                const costume = costumes[index];
+                const data = costume.asset;
+
+                return data.encodeDataURI();
+            }
+            case "sound": {
+                const sounds = util.target.getSounds();
+                const index = this.getIndexOfSound(args, util) - 1;
+                if (!sounds[index]) return "";
+                const sound = sounds[index];
+                const data = sound.asset;
+
+                return data.encodeDataURI();
+            }
+            default:
+                return "";
         }
     }
     getAllSprites() {
