@@ -3,20 +3,38 @@ const BlockType = require('../../extension-support/block-type');
 const ArgumentType = require('../../extension-support/argument-type');
 // const Cast = require('../../util/cast');
 
+// ShovelUtils
+let fps = 0;
+
 /**
  * Class for Runtime blocks
  * @constructor
  */
 class JgRuntimeBlocks {
-    constructor (runtime) {
+    constructor(runtime) {
         /**
          * The runtime instantiating this block package.
          * @type {Runtime}
          */
         this.runtime = runtime;
+
+        // ShovelUtils
+        // Based on from https://www.growingwiththeweb.com/2017/12/fast-simple-js-fps-counter.html
+        const times = [];
+        fps = this.runtime.frameLoop.framerate;
+        const oldStep = this.runtime._step;
+        this.runtime._step = function (...args) {
+            oldStep.call(this, ...args);
+            const now = performance.now();
+            while (times.length > 0 && times[0] <= now - 1000) {
+                times.shift();
+            }
+            times.push(now);
+            fps = times.length;
+        };
     }
 
-    _typeIsBitmap (type) {
+    _typeIsBitmap(type) {
         return (
             type === 'image/png' ||
             type === 'image/bmp' ||
@@ -31,7 +49,7 @@ class JgRuntimeBlocks {
     /**
      * @returns {object} metadata for this extension and its blocks.
      */
-    getInfo () {
+    getInfo() {
         return {
             id: 'jgRuntime',
             name: 'Runtime',
@@ -54,17 +72,17 @@ class JgRuntimeBlocks {
                     }
                 },
                 {
-                    opcode: 'deleteCostume',
-                    text: formatMessage({
-                        id: 'jgRuntime.blocks.deleteCostume',
-                        default: 'delete costume at index [COSTUME]',
-                        description: 'Deletes a costume at the specified index.'
-                    }),
+                    opcode: 'addSoundUrl',
+                    text: 'add sound [NAME] from [URL]',
                     blockType: BlockType.COMMAND,
                     arguments: {
-                        COSTUME: {
-                            type: ArgumentType.NUMBER,
-                            defaultValue: 1
+                        URL: {
+                            type: ArgumentType.STRING,
+                            defaultValue: 'https://pm-bapi.vercel.app/buauauau.mp3'
+                        },
+                        NAME: {
+                            type: ArgumentType.STRING,
+                            defaultValue: 'Buauauau'
                         }
                     }
                 },
@@ -76,6 +94,17 @@ class JgRuntimeBlocks {
                         costume: {
                             type: ArgumentType.STRING,
                             defaultValue: "costume1"
+                        }
+                    }
+                },
+                {
+                    opcode: 'getIndexOfSound',
+                    text: 'get sound index of [NAME]',
+                    blockType: BlockType.REPORTER,
+                    arguments: {
+                        NAME: {
+                            type: ArgumentType.STRING,
+                            defaultValue: "pop"
                         }
                     }
                 },
@@ -163,23 +192,52 @@ class JgRuntimeBlocks {
                     disableMonitor: false,
                     blockType: BlockType.REPORTER
                 },
-                // keeping this one here for compatibility since i dont know how to hide blocks lolollol
                 {
-                    opcode: 'getIsClone',
+                    opcode: 'getFrameRate',
                     text: formatMessage({
-                        id: 'jgRuntime.blocks.getIsClone',
-                        default: 'is clone?',
-                        description: 'Block that returns whether the sprite is a clone or not.'
+                        id: 'jgRuntime.blocks.getFrameRate',
+                        default: 'framerate',
+                        description: 'Block that returns the amount of FPS.'
                     }),
-                    disableMonitor: true,
-                    blockType: BlockType.BOOLEAN
+                    disableMonitor: false,
+                    blockType: BlockType.REPORTER
                 },
-                "---",
                 "---",
                 {
                     blockType: BlockType.LABEL,
                     text: "Potentially Dangerous"
                 },
+                {
+                    opcode: 'deleteCostume',
+                    text: formatMessage({
+                        id: 'jgRuntime.blocks.deleteCostume',
+                        default: 'delete costume at index [COSTUME]',
+                        description: 'Deletes a costume at the specified index.'
+                    }),
+                    blockType: BlockType.COMMAND,
+                    arguments: {
+                        COSTUME: {
+                            type: ArgumentType.NUMBER,
+                            defaultValue: 1
+                        }
+                    }
+                },
+                {
+                    opcode: 'deleteSound',
+                    text: formatMessage({
+                        id: 'jgRuntime.blocks.deleteSound',
+                        default: 'delete sound at index [SOUND]',
+                        description: 'Deletes a sound at the specified index.'
+                    }),
+                    blockType: BlockType.COMMAND,
+                    arguments: {
+                        SOUND: {
+                            type: ArgumentType.NUMBER,
+                            defaultValue: 1
+                        }
+                    }
+                },
+                "---",
                 {
                     opcode: 'deleteSprite',
                     text: formatMessage({
@@ -194,11 +252,27 @@ class JgRuntimeBlocks {
                             defaultValue: "Sprite1"
                         }
                     }
-                }
+                },
+                "---",
+                // keeping these here for compatibility since i dont know how to hide blocks lolollol
+                {
+                    blockType: BlockType.LABEL,
+                    text: "Deprecated (exists elsewhere)"
+                },
+                {
+                    opcode: 'getIsClone',
+                    text: formatMessage({
+                        id: 'jgRuntime.blocks.getIsClone',
+                        default: 'is clone? (deprecated)',
+                        description: 'Block that returns whether the sprite is a clone or not.'
+                    }),
+                    disableMonitor: true,
+                    blockType: BlockType.BOOLEAN
+                },
             ]
         };
     }
-    addCostumeUrl (args, util) {
+    addCostumeUrl(args, util) {
         return new Promise(resolve => {
             fetch(args.URL, { method: 'GET' }).then(x => x.blob().then(blob => {
                 if (!(
@@ -244,48 +318,88 @@ class JgRuntimeBlocks {
             }));
         });
     }
-    deleteCostume (args, util) {
+    deleteCostume(args, util) {
         const index = (Number(args.COSTUME) ? Number(args.COSTUME) : 1) - 1;
         if (index < 0) return;
         util.target.deleteCostume(index);
     }
-    getIndexOfCostume (args, util) {
+    deleteSound(args, util) {
+        const index = (Number(args.SOUND) ? Number(args.SOUND) : 1) - 1;
+        if (index < 0) return;
+        util.target.deleteSound(index);
+    }
+    getIndexOfCostume(args, util) {
         return util.target.getCostumeIndexByName(args.costume) + 1;
     }
-    setStageSize (args) {
+    getIndexOfSound(args, util) {
+        let index = 0;
+        const sounds = util.target.getSounds();
+        for (let i = 0; i < sounds.length; i++) {
+            const sound = sounds[i];
+            if (sound.name === args.NAME) index = i + 1;
+        }
+        return index;
+    }
+    setStageSize(args) {
         let width = Number(args.WIDTH) || 480;
         let height = Number(args.HEIGHT) || 360;
         if (width <= 0) width = 1;
         if (height <= 0) height = 1;
         if (vm) vm.setStageSize(width, height);
     }
-    turboModeEnabled () {
+    turboModeEnabled() {
         return this.runtime.turboMode;
     }
-    amountOfClones () {
+    amountOfClones() {
         return this.runtime._cloneCounter;
     }
-    getStageWidth () {
+    getStageWidth() {
         return this.runtime.stageWidth;
     }
-    getStageHeight () {
+    getStageHeight() {
         return this.runtime.stageHeight;
     }
-    getMaxFrameRate () {
+    getMaxFrameRate() {
         return this.runtime.frameLoop.framerate;
     }
-    getIsClone (_, util) {
+    getIsClone(_, util) {
         return !(util.target.isOriginal);
     }
-    setMaxFrameRate (args) {
+    setMaxFrameRate(args) {
         let frameRate = Number(args.FRAMERATE) || 1;
         if (frameRate <= 0) frameRate = 1;
         this.runtime.frameLoop.setFramerate(frameRate);
     }
-    deleteSprite (args) {
+    deleteSprite(args) {
         const target = this.runtime.getSpriteTargetByName(args.NAME);
         if (!target) return;
         vm.deleteSprite(target.id);
+    }
+
+    // ShovelUtils
+    getFrameRate() {
+        return fps;
+    }
+    addSoundUrl(args) {
+        return new Promise((resolve) => {
+            fetch(args.URL)
+                .then((r) => r.arrayBuffer())
+                .then((arrayBuffer) => {
+                    const storage = this.runtime.storage;
+                    const asset = new storage.Asset(
+                        storage.AssetType.Sound,
+                        null,
+                        storage.DataFormat.MP3,
+                        new Uint8Array(arrayBuffer),
+                        true
+                    );
+                    resolve(vm.addSound({
+                        md5: asset.assetId + '.' + asset.dataFormat,
+                        asset: asset,
+                        name: args.NAME
+                    }));
+                }).catch(resolve);
+        })
     }
 }
 
