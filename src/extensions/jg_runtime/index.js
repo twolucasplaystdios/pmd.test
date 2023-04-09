@@ -321,13 +321,22 @@ class JgRuntimeBlocks {
                         }
                     }
                 },
+                "---",
                 {
                     opcode: 'getAllSprites',
-                    text: formatMessage({
-                        id: 'jgRuntime.blocks.getAllSprites',
-                        default: 'get all sprites',
-                        description: 'Block that returns a list of sprite names.'
-                    }),
+                    text: 'get all sprites',
+                    disableMonitor: false,
+                    blockType: BlockType.REPORTER
+                },
+                {
+                    opcode: 'getAllCostumes',
+                    text: 'get all costumes',
+                    disableMonitor: false,
+                    blockType: BlockType.REPORTER
+                },
+                {
+                    opcode: 'getAllSounds',
+                    text: 'get all sounds',
                     disableMonitor: false,
                     blockType: BlockType.REPORTER
                 },
@@ -642,6 +651,14 @@ class JgRuntimeBlocks {
     }
     getAllSprites() {
         return JSON.stringify(this.runtime.targets.filter(target => target.isOriginal && !target.isStage).map(target => target.sprite.name));
+    }
+    getAllCostumes(_, util) {
+        const costumes = util.target.getCostumes();
+        return JSON.stringify(costumes.map(costume => costume.name));
+    }
+    getAllSounds(_, util) {
+        const sounds = util.target.getSounds();
+        return JSON.stringify(sounds.map(sound => sound.name));
     }
 
     // ShovelUtils
