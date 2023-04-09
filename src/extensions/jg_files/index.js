@@ -48,7 +48,7 @@ class JgFilesBlocks {
                 },
                 {
                     opcode: 'askUserForFileOfTypeAsArrayBuffer',
-                    text: 'ask user for a binary file of type [FILE_TYPE]',
+                    text: 'ask user for an array buffer file of type [FILE_TYPE]',
                     disableMonitor: true,
                     blockType: BlockType.REPORTER,
                     arguments: {
@@ -72,6 +72,36 @@ class JgFilesBlocks {
                             defaultValue: 'text.txt'
                         }
                     }
+                },
+                {
+                    opcode: 'downloadFileDataUri',
+                    text: 'download data uri [FILE_CONTENT] as file name [FILE_NAME]',
+                    blockType: BlockType.COMMAND,
+                    arguments: {
+                        FILE_CONTENT: {
+                            type: ArgumentType.STRING,
+                            defaultValue: 'data:image/png;base64,'
+                        },
+                        FILE_NAME: {
+                            type: ArgumentType.STRING,
+                            defaultValue: 'content.png'
+                        }
+                    }
+                },
+                {
+                    opcode: 'downloadFileBuffer',
+                    text: 'download array buffer [FILE_CONTENT] as file name [FILE_NAME]',
+                    blockType: BlockType.COMMAND,
+                    arguments: {
+                        FILE_CONTENT: {
+                            type: ArgumentType.STRING,
+                            defaultValue: '[]'
+                        },
+                        FILE_NAME: {
+                            type: ArgumentType.STRING,
+                            defaultValue: 'data.bin'
+                        }
+                    }
                 }
             ]
         };
@@ -79,6 +109,15 @@ class JgFilesBlocks {
 
     isFileReaderSupported () {
         return (window.FileReader !== null) && (window.document !== null);
+    }
+
+    dataURLtoBlob(dataurl) {
+        var arr = dataurl.split(','), mime = arr[0].match(/:(.*?);/)[1],
+            bstr = atob(arr[1]), n = bstr.length, u8arr = new Uint8Array(n);
+        while (n--) {
+            u8arr[n] = bstr.charCodeAt(n);
+        }
+        return new Blob([u8arr], { type: mime });
     }
 
     __askUserForFile (acceptTypes) {
@@ -173,7 +212,7 @@ class JgFilesBlocks {
         return this.__askUserForFilearraybuffer(fileTypesAllowed.join(","));
     }
 
-    downloadFile (args) {
+    downloadFile (args, _, __, downloadArray, downloadBase64) {
         let content = "";
         let fileName = "text.txt";
 
@@ -181,12 +220,16 @@ class JgFilesBlocks {
         fileName = String(args.FILE_NAME) || fileName;
 
         const array = validateArray(args.FILE_CONTENT);
-        if (array.isValid) {
+        if (array.isValid && downloadArray) {
             content = BufferStuff.arrayToBuffer(array.array);
-            fileName = (fileName === 'text.txt' ? 'raw.bin' : fileName);
         }
 
-        const blob = new Blob([content]);
+        let blob;
+        if (downloadBase64) {
+            blob = this.dataURLtoBlob(content);
+        } else {
+            blob = new Blob([content]);
+        }
         const a = document.createElement("a");
         a.style.display = "none";
         document.body.append(a);
@@ -196,6 +239,12 @@ class JgFilesBlocks {
         a.click();
         window.URL.revokeObjectURL(url);
         a.remove();
+    }
+    downloadFileDataUri(args) {
+        return this.downloadFile(args, null, null, false, true);
+    }
+    downloadFileBuffer(args) {
+        return this.downloadFile(args, null, null, true, false);
     }
 }
 
