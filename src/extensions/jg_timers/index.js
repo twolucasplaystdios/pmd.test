@@ -1,8 +1,3 @@
-/*
-todo:
-literally every function is not done yet
-*/
-
 const BlockType = require('../../extension-support/block-type');
 const ArgumentType = require('../../extension-support/argument-type');
 const Cast = require('../../util/cast');
