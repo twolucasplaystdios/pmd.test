@@ -59,6 +59,8 @@ const builtinExtensions = {
 
     // jgStorage: event extension requested by Fir & silvxrcat
     jgStorage: () => require("../extensions/jg_storage"),
+    // jgTimers: event extension requested by Arrow
+    jgTimers: () => require("../extensions/jg_timers"),
 
     // jw: hello it is i jwklong
     // jwUnite: literal features that should of been added in the first place

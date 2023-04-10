@@ -263,7 +263,7 @@ class AudioExtension {
 
     createAudioGroup() {
         const newGroup = prompt('Set a name for this Audio Group:', 'audio group ' + (Helper.GetAllAudioGroups().length + 1));
-        if (Helper.GetAudioGroup(newGroup)) return;
+        if (Helper.GetAudioGroup(newGroup)) return alert(`"${newGroup}" is taken!`);
         Helper.AddAudioGroup(newGroup);
         vm.emitWorkspaceUpdate();
         this.serialize();
