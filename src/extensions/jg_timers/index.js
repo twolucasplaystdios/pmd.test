@@ -49,6 +49,11 @@ class JgTimersBlocks {
                         NAME: { type: ArgumentType.STRING, defaultValue: "timer" }
                     }
                 },
+                {
+                    opcode: 'deleteAllTimer',
+                    text: 'delete all timers',
+                    blockType: BlockType.COMMAND
+                },
 
                 { text: "Values", blockType: BlockType.LABEL, },
 
@@ -81,6 +86,13 @@ class JgTimersBlocks {
                     }
                 },
 
+                {
+                    opcode: 'getAllTimer',
+                    text: 'get all timers',
+                    blockType: BlockType.REPORTER,
+                    disableMonitor: false
+                },
+
                 { text: "Operations", blockType: BlockType.LABEL, },
 
                 {
@@ -102,6 +114,14 @@ class JgTimersBlocks {
                 {
                     opcode: 'stopTimer',
                     text: 'stop timer [NAME]',
+                    blockType: BlockType.COMMAND,
+                    arguments: {
+                        NAME: { type: ArgumentType.STRING, defaultValue: "timer" }
+                    }
+                },
+                {
+                    opcode: 'resetTimer',
+                    text: 'reset timer [NAME]',
                     blockType: BlockType.COMMAND,
                     arguments: {
                         NAME: { type: ArgumentType.STRING, defaultValue: "timer" }
@@ -149,6 +169,9 @@ class JgTimersBlocks {
         if (!timer) return;
         delete this.timers[args.NAME];
     }
+    deleteAllTimer() {
+        this.timers = {};
+    }
 
     getTimer(args) {
         const timer = this.timers[args.NAME];
@@ -182,6 +205,9 @@ class JgTimersBlocks {
         if (!timer) return false;
         return true;
     }
+    getAllTimer() {
+        return JSON.stringify(this._getTimersArray().map(timer => timer.name));
+    }
 
     startTimer(args) {
         const timer = this.timers[args.NAME];
@@ -197,6 +223,11 @@ class JgTimersBlocks {
         const timer = this.timers[args.NAME];
         if (!timer) return;
         timer.instance.stop();
+    }
+    resetTimer(args) {
+        const timer = this.timers[args.NAME];
+        if (!timer) return;
+        timer.instance.reset();
     }
 
     addTimer(args) {

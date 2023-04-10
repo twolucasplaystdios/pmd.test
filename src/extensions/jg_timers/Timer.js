@@ -31,6 +31,12 @@ class Timer {
         this.pauseTime = Date.now();
     }
 
+    reset () {
+        this.stopped = true;
+        this.pauseTime = Date.now();
+        this.startTime = Date.now();
+    }
+
     add (seconds) {
         this.startTime -= seconds;
     }
