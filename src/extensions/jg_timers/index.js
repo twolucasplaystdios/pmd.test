@@ -62,6 +62,16 @@ class JgTimersBlocks {
                     }
                 },
                 {
+                    opcode: 'getTimerData',
+                    text: 'get [DATA] of timer named [NAME]',
+                    blockType: BlockType.REPORTER,
+                    disableMonitor: false,
+                    arguments: {
+                        DATA: { type: ArgumentType.STRING, menu: "timerData" },
+                        NAME: { type: ArgumentType.STRING, defaultValue: "timer" }
+                    }
+                },
+                {
                     opcode: 'existsTimer',
                     text: 'timer named [NAME] exists?',
                     blockType: BlockType.BOOLEAN,
@@ -106,7 +116,21 @@ class JgTimersBlocks {
                         NAME: { type: ArgumentType.STRING, defaultValue: "timer" }
                     }
                 },
-            ]
+            ],
+            menus: {
+                timerData: {
+                    acceptReporters: true,
+                    items: [
+                        "milliseconds",
+                        "minutes",
+                        "hours",
+                        // haha funny options
+                        "days",
+                        "weeks",
+                        "years"
+                    ].map(item => ({ text: item, value: item }))
+                }
+            }
         };
     }
 
@@ -131,6 +155,27 @@ class JgTimersBlocks {
         if (!timer) return "";
         const time = timer.instance.getTime(true);
         return Cast.toNumber(time);
+    }
+    getTimerData(args) {
+        const timer = this.timers[args.NAME];
+        if (!timer) return "";
+        const seconds = Cast.toNumber(timer.instance.getTime(true));
+        switch (args.DATA) {
+            case "milliseconds":
+                return seconds * 1000;
+            case "minutes":
+                return Math.floor(seconds / 60);
+            case "hours":
+                return Math.floor(seconds / 3600);
+            case "days":
+                return Math.floor(seconds / 86400);
+            case "weeks":
+                return Math.floor(seconds / 604800);
+            case "years":
+                return Math.floor(seconds / 31536000);
+            default:
+                return seconds;
+        }
     }
     existsTimer(args) {
         const timer = this.timers[args.NAME];

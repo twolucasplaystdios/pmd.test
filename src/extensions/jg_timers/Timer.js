@@ -8,6 +8,9 @@ class Timer {
     }
 
     start () {
+        const paused = (this.pauseTime !== null);
+        // check if we are stopped or paused before continuing
+        if (!(this.stopped || paused)) return;
         if (this.stopped) {
             this.startTime = Date.now();
         } else {
@@ -23,6 +26,7 @@ class Timer {
         this.pauseTime = Date.now();
     }
     stop () {
+        if (this.stopped) return;
         this.stopped = true;
         this.pauseTime = Date.now();
     }
