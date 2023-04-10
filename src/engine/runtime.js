@@ -1160,11 +1160,19 @@ class Runtime extends EventEmitter {
                 outputShape: menuInfo.acceptReporters ?
                     ScratchBlocksConstants.OUTPUT_SHAPE_ROUND : ScratchBlocksConstants.OUTPUT_SHAPE_SQUARE,
                 args0: [
-                    {
-                        type: 'field_dropdown',
-                        name: menuName,
-                        options: menuItems
-                    }
+                    (typeof menuInfo.variableType === 'string' ? 
+                        {
+                            type: 'field_variable_getter',
+                            name: menuName,
+                            variableType: menuInfo.variableType === 'scaler' 
+                                ? '' 
+                                : menuInfo.variableType
+                        } : 
+                        {
+                            type: 'field_dropdown',
+                            name: menuName,
+                            options: menuItems
+                        })
                 ]
             }
         };

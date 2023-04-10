@@ -92,7 +92,7 @@ const builtinExtensions = {
 
     // silvxrcat: ...
     // oddMessage: ...
-    oddMessage: () => require("../extensions/silvxrcat_oddmessages"),
+    oddMessage: () => require("../extensions/silvxrcat_oddmessages")
 };
 
 const preload = [
@@ -497,12 +497,12 @@ class ExtensionManager {
             try {
                 let result;
                 switch (blockInfo) {
-                    case '---': // separator
-                        result = '---';
-                        break;
-                    default: // an ExtensionBlockMetadata object
-                        result = this._prepareBlockInfo(serviceName, blockInfo);
-                        break;
+                case '---': // separator
+                    result = '---';
+                    break;
+                default: // an ExtensionBlockMetadata object
+                    result = this._prepareBlockInfo(serviceName, blockInfo);
+                    break;
                 }
                 results.push(result);
             } catch (e) {
@@ -569,15 +569,15 @@ class ExtensionManager {
             item => {
                 item = maybeFormatMessage(item, extensionMessageContext);
                 switch (typeof item) {
-                    case 'object':
-                        return [
-                            maybeFormatMessage(item.text, extensionMessageContext),
-                            item.value
-                        ];
-                    case 'string':
-                        return [item, item];
-                    default:
-                        return item;
+                case 'object':
+                    return [
+                        maybeFormatMessage(item.text, extensionMessageContext),
+                        item.value
+                    ];
+                case 'string':
+                    return [item, item];
+                default:
+                    return item;
                 }
             });
 
@@ -589,12 +589,12 @@ class ExtensionManager {
 
     _normalize(thing, to) {
         switch (to) {
-            case 'string': return String(thing);
-            case 'bigint':
-            case 'number': return Number(thing);
-            case 'boolean': return String(thing) === 'true';
-            case 'function': return new Function(thing);
-            default: return String(thing);
+        case 'string': return String(thing);
+        case 'bigint':
+        case 'number': return Number(thing);
+        case 'boolean': return String(thing) === 'true';
+        case 'function': return new Function(thing);
+        default: return String(thing);
         }
     }
 
@@ -616,94 +616,94 @@ class ExtensionManager {
         blockInfo.text = blockInfo.text || blockInfo.opcode;
 
         switch (blockInfo.blockType) {
-            case BlockType.EVENT:
-                if (blockInfo.func) {
-                    log.warn(`Ignoring function "${blockInfo.func}" for event block ${blockInfo.opcode}`);
-                }
-                break;
-            case BlockType.BUTTON:
-                if (!blockInfo.opcode) {
-                    throw new Error(`Missing opcode for button: ${blockInfo.text}`);
-                }
+        case BlockType.EVENT:
+            if (blockInfo.func) {
+                log.warn(`Ignoring function "${blockInfo.func}" for event block ${blockInfo.opcode}`);
+            }
+            break;
+        case BlockType.BUTTON:
+            if (!blockInfo.opcode) {
+                throw new Error(`Missing opcode for button: ${blockInfo.text}`);
+            }
 
-                const funcName = blockInfo.opcode;
-                const callBlockFunc = (...args) => dispatch.call(serviceName, funcName, ...args);
+            const funcName = blockInfo.opcode;
+            const callBlockFunc = (...args) => dispatch.call(serviceName, funcName, ...args);
 
-                blockInfo.func = callBlockFunc;
-                break;
-            case BlockType.LABEL:
-                break;
-            default: {
-                if (!blockInfo.opcode) {
-                    throw new Error('Missing opcode for block');
-                }
+            blockInfo.func = callBlockFunc;
+            break;
+        case BlockType.LABEL:
+            break;
+        default: {
+            if (!blockInfo.opcode) {
+                throw new Error('Missing opcode for block');
+            }
 
-                const funcName = blockInfo.func ? this._sanitizeID(blockInfo.func) : blockInfo.opcode;
+            const funcName = blockInfo.func ? this._sanitizeID(blockInfo.func) : blockInfo.opcode;
 
-                const getBlockInfo = blockInfo.isDynamic ?
-                    args => args && args.mutation && args.mutation.blockInfo :
-                    () => blockInfo;
-                const callBlockFunc = (() => {
-                    if (dispatch._isRemoteService(serviceName)) {
-                        return (args, util, realBlockInfo) =>
-                            dispatch.call(serviceName, funcName, args, util, realBlockInfo)
-                                .then(result => {
-                                    // Scratch is only designed to handle these types.
-                                    // If any other value comes in such as undefined, null, an object, etc.
-                                    // we'll convert it to a string to avoid undefined behavior.
-                                    if (
-                                        typeof result === 'number' ||
+            const getBlockInfo = blockInfo.isDynamic ?
+                args => args && args.mutation && args.mutation.blockInfo :
+                () => blockInfo;
+            const callBlockFunc = (() => {
+                if (dispatch._isRemoteService(serviceName)) {
+                    return (args, util, realBlockInfo) =>
+                        dispatch.call(serviceName, funcName, args, util, realBlockInfo)
+                            .then(result => {
+                                // Scratch is only designed to handle these types.
+                                // If any other value comes in such as undefined, null, an object, etc.
+                                // we'll convert it to a string to avoid undefined behavior.
+                                if (
+                                    typeof result === 'number' ||
                                         typeof result === 'string' ||
                                         typeof result === 'boolean'
-                                    ) {
-                                        return result;
-                                    }
-                                    return `${result}`;
-                                })
-                                // When an error happens, instead of returning undefined, we'll return a stringified
-                                // version of the error so that it can be debugged.
-                                .catch(err => {
-                                    // We want the full error including stack to be printed but the log helper
-                                    // messes with that.
-                                    // eslint-disable-next-line no-console
-                                    console.error('Custom extension block error', err);
-                                    return `${err}`;
-                                });
-                    }
+                                ) {
+                                    return result;
+                                }
+                                return `${result}`;
+                            })
+                        // When an error happens, instead of returning undefined, we'll return a stringified
+                        // version of the error so that it can be debugged.
+                            .catch(err => {
+                                // We want the full error including stack to be printed but the log helper
+                                // messes with that.
+                                // eslint-disable-next-line no-console
+                                console.error('Custom extension block error', err);
+                                return `${err}`;
+                            });
+                }
 
-                    // avoid promise latency if we can call direct
-                    const serviceObject = dispatch.services[serviceName];
-                    if (!serviceObject[funcName]) {
-                        // The function might show up later as a dynamic property of the service object
-                        log.warn(`Could not find extension block function called ${funcName}`);
-                    }
-                    return (args, util, realBlockInfo) =>
-                        serviceObject[funcName](args, util, realBlockInfo);
-                })();
+                // avoid promise latency if we can call direct
+                const serviceObject = dispatch.services[serviceName];
+                if (!serviceObject[funcName]) {
+                    // The function might show up later as a dynamic property of the service object
+                    log.warn(`Could not find extension block function called ${funcName}`);
+                }
+                return (args, util, realBlockInfo) =>
+                    serviceObject[funcName](args, util, realBlockInfo);
+            })();
 
-                blockInfo.func = (args, util) => {
-                    const normal = {
-                        'angle': "number",
-                        'Boolean': "boolean",
-                        'color': "number",
-                        'number': "number",
-                        'string': "string",
-                        'matrix': "string",
-                        'note': "number",
-                        'image': "string",
-                        'polygon': "object"
-                    };
-                    const realBlockInfo = getBlockInfo(args);
-                    Object.keys(realBlockInfo.arguments).forEach(arg => {
-                        const expected = normal[realBlockInfo.arguments[arg].type];
-                        if (arg.startsWith('substack')) return;
-                        if (!(typeof args[arg] === expected)) args[arg] = this._normalize(args[arg], expected);
-                    });
-                    // TODO: filter args using the keys of realBlockInfo.arguments? maybe only if sandboxed?
-                    return callBlockFunc(args, util, realBlockInfo);
+            blockInfo.func = (args, util) => {
+                const normal = {
+                    'angle': "number",
+                    'Boolean': "boolean",
+                    'color': "number",
+                    'number': "number",
+                    'string': "string",
+                    'matrix': "string",
+                    'note': "number",
+                    'image': "string",
+                    'polygon': "object"
                 };
-                break;
-            }
+                const realBlockInfo = getBlockInfo(args);
+                Object.keys(realBlockInfo.arguments).forEach(arg => {
+                    const expected = normal[realBlockInfo.arguments[arg].type];
+                    if (arg.startsWith('substack')) return;
+                    if (!(typeof args[arg] === expected)) args[arg] = this._normalize(args[arg], expected);
+                });
+                // TODO: filter args using the keys of realBlockInfo.arguments? maybe only if sandboxed?
+                return callBlockFunc(args, util, realBlockInfo);
+            };
+            break;
+        }
         }
 
         return blockInfo;

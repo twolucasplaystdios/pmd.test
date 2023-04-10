@@ -22,7 +22,9 @@ module.exports = {
         'brace-style': 'off',
         'camelcase': 'off',
         'comma-spacing': 'off',
-        'no-negated-condition': 'off'
+        'no-negated-condition': 'off',
+        // @todo please jg, stop having your formater REMOVE THE SPACES
+        'space-before-function-paren': 'off'
     },
     "globals": {
         "vm": true
