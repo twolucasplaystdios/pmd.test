@@ -44,7 +44,8 @@ const statementBlocks = [
     "control_case_next",
     "control_backToGreenFlag",
     'looks_setHorizTransform',
-    'looks_setVertTransform'
+    'looks_setVertTransform',
+    'looks_layersSetLayer'
 ];
 
 const outputBlocks = [
@@ -84,7 +85,8 @@ const outputBlocks = [
     "sensing_isUpperCase",
     "operator_toUpperLowerCase",
     "looks_getSpriteVisible",
-    "looks_getEffectValue"
+    "looks_getEffectValue",
+    'looks_layersGetLayer'
 ];
 
 module.exports = {

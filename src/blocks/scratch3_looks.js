@@ -366,6 +366,8 @@ class Scratch3LooksBlocks {
             looks_setstretchto: this.stretchSet,
             looks_gotofrontback: this.goToFrontBack,
             looks_goforwardbackwardlayers: this.goForwardBackwardLayers,
+            looks_layersSetLayer: this.setSpriteLayer,
+            looks_layersGetLayer: this.getSpriteLayer,
             looks_size: this.getSize,
             looks_costumenumbername: this.getCostumeNumberName,
             looks_backdropnumbername: this.getBackdropNumberName,
@@ -375,6 +377,19 @@ class Scratch3LooksBlocks {
             looks_sayWidth: this.getBubbleWidth,
             looks_sayHeight: this.getBubbleHeight
         };
+    }
+
+    getSpriteLayer (_, util) {
+        const target = util.target;
+        return target.getLayerOrder();
+    }
+
+    setSpriteLayer (args, util) {
+        const target = util.target;
+        const targetLayer = Cast.toNumber(args.NUM);
+        const currentLayer = target.getLayerOrder();
+        // i dont know how to set layer lol
+        target.goForwardLayers(targetLayer - currentLayer);
     }
 
     _getBubbleSize (target) {
