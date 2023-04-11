@@ -185,6 +185,12 @@ class Jg3DBlocks {
         return Cast.toNumber(this.camera.position[v]);
     }
 
+    setSceneBackgroundColor(args) {
+        if (!this.scene) return;
+        const color = Cast.toNumber(args.COLOR);
+        this.scene.background = new Three.Color(color);
+    }
+
     getCameraZoom() {
         if (!this.camera) return "";
         return Cast.toNumber(this.camera.zoom) * 100;
@@ -192,6 +198,31 @@ class Jg3DBlocks {
     setCameraZoom(args) {
         if (!this.camera) return;
         this.camera.zoom = Cast.toNumber(args.ZOOM) / 100;
+    }
+
+    getCameraClipPlane(args) {
+        if (!this.camera) return "";
+        const plane = args.CLIPPLANE;
+        if (!["near", "far"].includes(plane)) return "";
+        return this.camera[plane];
+    }
+
+    getCameraAspectRatio() {
+        if (!this.camera) return "";
+        return Cast.toNumber(this.camera.aspect);
+    }
+    getCameraFov() {
+        if (!this.camera) return "";
+        return Cast.toNumber(this.camera.fov);
+    }
+
+    isCameraPerspective() {
+        if (!this.camera) return false;
+        return Cast.toBoolean(this.camera.isPerspectiveCamera);
+    }
+    isCameraOrthographic() {
+        if (!this.camera) return false;
+        return Cast.toBoolean(!this.camera.isPerspectiveCamera);
     }
 }
 

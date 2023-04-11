@@ -148,6 +148,12 @@ module.exports = {
         seperator,
         createCommandBlock('render'),
 
+        infoLabel("Scene customization"),
+
+        createCommandBlock('setSceneBackgroundColor', "set background color to [COLOR]", {
+            COLOR: infoArgument("COLOR")
+        }),
+
         infoLabel("Camera controls"),
 
         createCommandBlock(
@@ -174,6 +180,7 @@ module.exports = {
         seperator,
         createBooleanBlock("isCameraPerspective", "is scene camera a perspective camera?"),
         createBooleanBlock("isCameraOrthographic", "is scene camera an orthographic camera?"),
+        seperator,
     ],
     menus: {
         cameraType: infoMenu(["perspective", "orthographic"]),
