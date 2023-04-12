@@ -167,11 +167,12 @@ class Scratch3SoundBlocks {
     stopSpecificSound (args, util) {
         const index = this._getSoundIndex(args.SOUND_MENU, util);
         if (index < 0) return;
-        const { soundId } = sprite.sounds[index];
 
         const target = util.target;
         const sprite = target.sprite;
         if (!sprite) return;
+        
+        const { soundId } = sprite.sounds[index];
 
         const soundBank = sprite.soundBank
         if (!soundBank) return;
