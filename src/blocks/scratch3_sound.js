@@ -153,7 +153,8 @@ class Scratch3SoundBlocks {
             sound_changevolumeby: this.changeVolume,
             sound_volume: this.getVolume,
             sound_isSoundPlaying: this.isSoundPlaying,
-            sound_getEffectValue: this.getEffectValue
+            sound_getEffectValue: this.getEffectValue,
+            sound_getLength: this.getLength
         };
     }
 
@@ -196,6 +197,27 @@ class Scratch3SoundBlocks {
         if (!players.hasOwnProperty(soundId)) return false;
 
         return players[soundId].isPlaying == true;
+    }
+
+    getLength (args, util) {
+        const index = this._getSoundIndex(args.SOUND_MENU, util);
+        if (index < 0) return 0;
+
+        const target = util.target;
+        const sprite = target.sprite;
+        if (!sprite) return 0;
+
+        const { soundId } = sprite.sounds[index];
+
+        const soundBank = sprite.soundBank
+        if (!soundBank) return 0;
+        const players = soundBank.soundPlayers;
+        if (!players) return 0;
+        if (!players.hasOwnProperty(soundId)) return 0;
+        const buffer = players[soundId].buffer;
+        if (!buffer) return 0;
+
+        return Cast.toNumber(buffer.duration);
     }
 
     stopSpecificSound (args, util) {

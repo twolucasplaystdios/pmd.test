@@ -89,7 +89,8 @@ const outputBlocks = [
     "looks_getEffectValue",
     'looks_layersGetLayer',
     'sound_isSoundPlaying',
-    'sound_getEffectValue'
+    'sound_getEffectValue',
+    'sound_getLength'
 ];
 
 module.exports = {
