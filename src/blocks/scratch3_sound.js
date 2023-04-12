@@ -151,7 +151,9 @@ class Scratch3SoundBlocks {
             sound_effects_menu: this.effectsMenu,
             sound_setvolumeto: this.setVolume,
             sound_changevolumeby: this.changeVolume,
-            sound_volume: this.getVolume
+            sound_volume: this.getVolume,
+            sound_isSoundPlaying: this.isSoundPlaying,
+            sound_getEffectValue: this.getEffectValue
         };
     }
 
@@ -162,6 +164,38 @@ class Scratch3SoundBlocks {
                 getId: targetId => `${targetId}_volume`
             }
         };
+    }
+
+    getEffectValue (args, util) {
+        const target = util.target;
+
+        const effects = target.soundEffects;
+        if (!effects) return 0;
+
+        const effect = Cast.toString(args.EFFECT).toLowerCase();
+        if (!effects.hasOwnProperty(effect)) return 0;
+        const value = Cast.toNumber(effects[effect]);
+
+        return value;
+    }
+
+    isSoundPlaying (args, util) {
+        const index = this._getSoundIndex(args.SOUND_MENU, util);
+        if (index < 0) return false;
+
+        const target = util.target;
+        const sprite = target.sprite;
+        if (!sprite) return false;
+
+        const { soundId } = sprite.sounds[index];
+
+        const soundBank = sprite.soundBank
+        if (!soundBank) return false;
+        const players = soundBank.soundPlayers;
+        if (!players) return false;
+        if (!players.hasOwnProperty(soundId)) return false;
+
+        return players[soundId].isPlaying == true;
     }
 
     stopSpecificSound (args, util) {

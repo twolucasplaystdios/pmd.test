@@ -87,7 +87,9 @@ const outputBlocks = [
     "operator_toUpperLowerCase",
     "looks_getSpriteVisible",
     "looks_getEffectValue",
-    'looks_layersGetLayer'
+    'looks_layersGetLayer',
+    'sound_isSoundPlaying',
+    'sound_getEffectValue'
 ];
 
 module.exports = {
