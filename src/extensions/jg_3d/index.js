@@ -3,6 +3,8 @@ const Clone = require('../../util/clone');
 const ExtensionInfo = require("./info");
 const Three = require("three")
 
+const IsLocal = String(window.location.href).startsWith(`http://localhost:`)
+
 /**
  * Class for 3D blocks
  * @constructor
@@ -14,6 +16,12 @@ class Jg3DBlocks {
          * @type {Runtime}
          */
         this.runtime = runtime;
+
+        if (!IsLocal) {
+            // you have to actually try to use this extension
+            return window.location.reload();
+        }
+
         // prism has screenshots, lets tell it to use OUR canvas for them
         this.runtime.prism_screenshot_checkForExternalCanvas = true;
         this.runtime.prism_screenshot_externalCanvas = null;
@@ -53,6 +61,28 @@ class Jg3DBlocks {
      * @returns {object} metadata for this extension and its blocks.
      */
     getInfo() {
+        if (!IsLocal) {
+            // you have to actually try to use this extension
+            window.location.reload();
+            return {
+                id: "jg3d",
+                name: 'nope',
+                color1: '#FF0000',
+                color2: '#aa0000',
+                blocks: [
+                    {
+                        opcode: "_1",
+                        text: "you're gonna have to",
+                        blockType: "command"
+                    },
+                    {
+                        opcode: "_2",
+                        text: "try a little harder than that",
+                        blockType: "command"
+                    },
+                ]
+            };
+        }
         return ExtensionInfo;
     }
 

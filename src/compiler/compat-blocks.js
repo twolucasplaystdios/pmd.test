@@ -31,6 +31,7 @@ const statementBlocks = [
     'sound_cleareffects',
     'sound_play',
     'sound_playuntildone',
+    'sound_stop',
     'sound_seteffectto',
     'sound_setvolumeto',
     'sound_stopallsounds',

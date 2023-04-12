@@ -62,6 +62,9 @@ const builtinExtensions = {
     // jgTimers: event extension requested by Arrow
     jgTimers: () => require("../extensions/jg_timers"),
 
+    // jgDev: test extension used for making core blocks
+    jgDev: () => require("../extensions/jg_dev"),
+
     // jw: hello it is i jwklong
     // jwUnite: literal features that should of been added in the first place
     jwUnite: () => require("../extensions/jw_unite"),

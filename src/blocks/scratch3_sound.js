@@ -141,6 +141,7 @@ class Scratch3SoundBlocks {
         return {
             sound_play: this.playSound,
             sound_playuntildone: this.playSoundAndWait,
+            sound_stop: this.stopSpecificSound,
             sound_stopallsounds: this.stopAllSounds,
             sound_seteffectto: this.setEffect,
             sound_changeeffectby: this.changeEffect,
@@ -161,6 +162,21 @@ class Scratch3SoundBlocks {
                 getId: targetId => `${targetId}_volume`
             }
         };
+    }
+
+    stopSpecificSound (args, util) {
+        const index = this._getSoundIndex(args.SOUND_MENU, util);
+        if (index < 0) return;
+        const { soundId } = sprite.sounds[index];
+
+        const target = util.target;
+        const sprite = target.sprite;
+        if (!sprite) return;
+
+        const soundBank = sprite.soundBank
+        if (!soundBank) return;
+
+        soundBank.stop(target, soundId);
     }
 
     playSound (args, util) {
