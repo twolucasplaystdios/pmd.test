@@ -15,7 +15,7 @@ const EasingMethods = [
     "back",
     "elastic",
     "bounce"
-]
+];
 
 /**
  * Class for Tween blocks
