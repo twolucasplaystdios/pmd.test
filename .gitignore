@@ -20,3 +20,13 @@ npm-*
 
 # Localization
 /translations
+
+# he he haw
+/src/extensions/jg_3d
+/src/extensions/jg_3d/
+/src/extensions/jg_3d/*
+./src/extensions/jg_3d
+./src/extensions/jg_3d/
+./src/extensions/jg_3d/*
+/src/extensions/jg_3d/index.js
+./src/extensions/jg_3d/index.js
