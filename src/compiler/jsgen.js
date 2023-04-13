@@ -1197,39 +1197,45 @@ class JSGenerator {
             const value = this.descendInput(node.value);
             const property = node.property;
             const isStage = node.object.value === '_stage_';
-            const objectReference = 'objectReference';
-            
-            this.source += `const ${objectReference} = `;
-            this.source += isStage ? 'stage' : `runtime.getSpriteTargetByName(${object})\n`;
+            const objectReference = isStage ? 'stage' : this.evaluateOnce(`runtime.getSpriteTargetByName(${object})`);
+
             this.source += `if (${objectReference})`;
-            if (property === 'volume') {
-                this.source += `runtime.ext_scratch3_sound._updateVolume(${value.asNumber()}, ${objectReference})`;
-            }
-            if (isStage) {
-                this.source += `runtime.ext_scratch3_looks._setBackdrop(${objectReference}, ${value.type === TYPE_NUMBER ? value.asNumber() : value.asString()})`;
+
+            switch (property) {
+            case 'volume':
+                this.source += `runtime.ext_scratch3_sound._updateVolume(${value.asNumber()}, ${objectReference});`;
                 break;
-            } else {
-                switch (property) {
-                case 'x position':
-                    this.source += `${objectReference}.setXY(${value.asNumber()}, ${objectReference}.y`;
-                    break;
-                case 'y position':
-                    this.source += `${objectReference}.setXY(${objectReference}.x, ${value.asNumber()}`;
-                    break;
-                case 'direction':
-                    this.source += `${objectReference}.setDirection(${value.asNumber()})`;
-                    break;
-                case 'costume #':
-                    this.source += `runtime.ext_scratch3_looks._setCostume(${objectReference}, ${value.type === TYPE_NUMBER ? value.asNumber() : value.asString()})`;
-                    break;
-                case 'size':
-                    this.source += `${objectReference}.setSize(${value.asNumber()})`;
-                    break;
-                }
+            case 'x position':
+                // comment
+                this.source += `${objectReference}.setXY(${value.asNumber()}, ${objectReference}.y);`;
+                break;
+            case 'y position':
+                this.source += `${objectReference}.setXY(${objectReference}.x, ${value.asNumber()});`;
+                break;
+            case 'direction':
+                this.source += `${objectReference}.setDirection(${value.asNumber()});`;
+                break;
+            case 'costume':
+                const costume = value.type === TYPE_NUMBER 
+                    ? value.asNumber() 
+                    : value.asString();
+                this.source += `runtime.ext_scratch3_looks._setCostume(${objectReference}, ${costume})`;
+                break;
+            case 'backdrop':
+                const backdrop = value.type === TYPE_NUMBER 
+                    ? value.asNumber() 
+                    : value.asString();
+                this.source += `runtime.ext_scratch3_looks._setBackdrop(${objectReference}, ${backdrop});`;
+                break;
+            case 'size':
+                this.source += `${objectReference}.setSize(${value.asNumber()});`;
+                break;
+            default:
+                const variableReference = this.evaluateOnce(`${objectReference} && ${objectReference}.lookupVariableByNameAndType("${sanitize(property)}", "", true)`);
+                this.source += `if (${variableReference}) `;
+                this.source += `${variableReference}.value = ${value.asString()};`;
+                break;
             }
-            const variableReference = this.evaluateOnce(`${objectReference} && ${objectReference}.lookupVariableByNameAndType("${sanitize(property)}", "", true)`);
-            this.source += `if (${variableReference})`;
-            this.source += `${variableReference}.value = ${value}`;
             break;
         }
 
