@@ -702,6 +702,7 @@ const serialize = function (runtime, targetId, {allowOptimization = true} = {}) 
         const urlsToSave = {};
         obj.extensionData = {};
         for (const extension of extensions) {
+            if (!runtime[`ext_${extension}`]) continue;
             const url = extensionURLs[extension];
             if (typeof url === 'string') {
                 urlsToSave[extension] = url;
