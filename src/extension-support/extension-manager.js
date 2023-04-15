@@ -251,8 +251,11 @@ class ExtensionManager {
         const extension = builtinExtensions[extensionId]();
         const extensionInstance = new extension(this.runtime);
         const serviceName = this._registerInternalExtension(extensionInstance);
+        // devs are stupid so uh
+        // get the ACTUAL id of the ext so that saving/loading doesnt error
+        const realId = extensionInstance.getInfo().id;
         this._loadedExtensions.set(extensionId, serviceName);
-        this.runtime.compilerRegisterExtension(extensionId, extensionInstance);
+        this.runtime.compilerRegisterExtension(realId, extensionInstance);
     }
 
     _isValidExtensionURL(extensionURL) {
