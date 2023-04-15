@@ -375,14 +375,14 @@ const getExtensionIdForOpcode = function (opcode) {
  * compressed primitives and the list of all extension IDs present
  * in the serialized blocks.
  */
-const serializeBlocks = function (blocks) {
+const serializeBlocks = function (blocks, runtime) {
     const obj = Object.create(null);
     const extensionIDs = new Set();
     for (const blockID in blocks) {
         if (!blocks.hasOwnProperty(blockID)) continue;
         obj[blockID] = serializeBlock(blocks[blockID], blocks);
         const extensionID = getExtensionIdForOpcode(blocks[blockID].opcode);
-        if (extensionID) {
+        if (extensionID && runtime[`ext_${extensionID}`]) {
             extensionIDs.add(extensionID);
         }
     }
@@ -562,7 +562,7 @@ const serializeComments = function (comments) {
  * @param {Set} extensions A set of extensions to add extension IDs to
  * @return {object} A serialized representation of the given target.
  */
-const serializeTarget = function (target, extensions) {
+const serializeTarget = function (target, extensions, runtime) {
     const obj = Object.create(null);
     let targetExtensions = [];
     obj.isStage = target.isStage;
@@ -571,7 +571,7 @@ const serializeTarget = function (target, extensions) {
     obj.variables = vars.variables;
     obj.lists = vars.lists;
     obj.broadcasts = vars.broadcasts;
-    [obj.blocks, targetExtensions] = serializeBlocks(target.blocks);
+    [obj.blocks, targetExtensions] = serializeBlocks(target.blocks, runtime);
     obj.comments = serializeComments(target.comments);
 
     // TODO remove this check/patch when (#1901) is fixed
@@ -674,7 +674,7 @@ const serialize = function (runtime, targetId, {allowOptimization = true} = {}) 
         });
     }
 
-    const serializedTargets = flattenedOriginalTargets.map(t => serializeTarget(t, extensions));
+    const serializedTargets = flattenedOriginalTargets.map(t => serializeTarget(t, extensions, runtime));
 
     if (targetId) {
         return serializedTargets[0];
@@ -702,7 +702,6 @@ const serialize = function (runtime, targetId, {allowOptimization = true} = {}) 
         const urlsToSave = {};
         obj.extensionData = {};
         for (const extension of extensions) {
-            if (!runtime[`ext_${extension}`]) continue;
             const url = extensionURLs[extension];
             if (typeof url === 'string') {
                 urlsToSave[extension] = url;
