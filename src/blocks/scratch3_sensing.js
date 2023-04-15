@@ -138,7 +138,9 @@ class Scratch3SensingBlocks {
         // so im gonna do this the lazy way
         // no. String(Number(value)) === value does infact do the job X)
         // also what was originaly here was inificiant as hell
-        return String(Number(args.TEXT1)) === args.TEXT1 && !isNaN(Number(args.TEXT1));
+
+        // jg: why dont you literally just do what "is text" did but the opposite
+        return !this.thing_is_text(args);
     }
     thing_is_text (args) {
         // WHY IS NAN NOT EQUAL TO ITSELF
