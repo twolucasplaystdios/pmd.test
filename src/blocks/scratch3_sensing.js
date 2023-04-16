@@ -149,7 +149,7 @@ class Scratch3SensingBlocks {
         return isNaN(Number(args.TEXT1));
     }
     mobile () {
-        return navigator.userAgent.includes("Mobile") || window.matchMedia("(max-width: 767px)").matches;
+        return typeof window !== 'undefined' && 'ontouchstart' in window;
     }
 
     regextest (args) {
