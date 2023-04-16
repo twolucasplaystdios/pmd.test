@@ -90,7 +90,9 @@ const outputBlocks = [
     'looks_layersGetLayer',
     'sound_isSoundPlaying',
     'sound_getEffectValue',
-    'sound_getLength'
+    'sound_getLength',
+    "sensing_directionTo",
+    "sensing_distanceTo"
 ];
 
 module.exports = {
