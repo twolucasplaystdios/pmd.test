@@ -45,6 +45,21 @@ class JgDevBlocks {
                         INPUT: { type: ArgumentType.COSTUME },
                         INPUT2: { type: ArgumentType.SOUND }
                     }
+                },
+                {
+                    opcode: 'doodooBlockLolol',
+                    text: 'ignore blocks inside [INPUT]',
+                    branchCount: 1,
+                    blockType: BlockType.CONDITIONAL,
+                    arguments: {
+                        INPUT: { type: ArgumentType.BOOLEAN }
+                    }
+                },
+                {
+                    opcode: 'whatthescallop',
+                    text: 'bruh',
+                    branchCount: 85,
+                    blockType: BlockType.CONDITIONAL
                 }
             ]
         };
@@ -67,6 +82,19 @@ class JgDevBlocks {
     logArgs1(args) {
         console.log(args)
         return JSON.stringify(args)
+    }
+
+    doodooBlockLolol(args, util) {
+        if (args.INPUT === true) return
+        console.log(args, util)
+        util.startBranch(1, false)
+        console.log(util.target.getCurrentCostume())
+    }
+
+    whatthescallop(_, util) {
+        for (let i = 0; i < 85; i++) {
+            util.startBranch(i + 1, false)
+        }
     }
 }
 
