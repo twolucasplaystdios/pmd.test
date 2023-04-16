@@ -2,6 +2,19 @@ const ScratchCommon = require('./tw-extension-api-common');
 const AsyncLimiter = require('../util/async-limiter');
 
 /**
+ * Parse a URL object or return null.
+ * @param {string} url
+ * @returns {URL|null}
+ */
+const parseURL = url => {
+    try {
+        return new URL(url, location.href);
+    } catch (e) {
+        return null;
+    }
+};
+
+/**
  * Sets up the global.Scratch API for an unsandboxed extension.
  * @param {VirtualMachine} vm
  * @returns {Promise<object[]>} Resolves with a list of extension objects when Scratch.extensions.register is called.
@@ -17,6 +30,66 @@ const createUnsandboxedExtensionAPI = vm => new Promise(resolve => {
     global.Scratch = Object.assign({}, global.Scratch || {}, ScratchCommon);
     global.Scratch.vm = vm;
     global.Scratch.renderer = vm.runtime.renderer;
+
+    global.Scratch.canFetch = async url => {
+        const parsed = parseURL(url);
+        if (!parsed) {
+            return false;
+        }
+        // Always allow protocols that don't involve a remote request.
+        if (parsed.protocol === 'blob:' || parsed.protocol === 'data:') {
+            return true;
+        }
+        return true;
+    };
+    global.Scratch.canOpenWindow = async url => {
+        const parsed = parseURL(url);
+        if (!parsed) {
+            return false;
+        }
+        // Always reject protocols that would allow code execution.
+        // eslint-disable-next-line no-script-url
+        if (parsed.protocol === 'javascript:') {
+            return false;
+        }
+        return true;
+    };
+    global.Scratch.canRedirect = async url => {
+        const parsed = parseURL(url);
+        if (!parsed) {
+            return false;
+        }
+        // Always reject protocols that would allow code execution.
+        // eslint-disable-next-line no-script-url
+        if (parsed.protocol === 'javascript:') {
+            return false;
+        }
+        return true;
+    };
+
+    global.Scratch.fetch = async (url, options) => {
+        const actualURL = url instanceof Request ? url.url : url;
+        if (!await global.Scratch.canFetch(actualURL)) {
+            throw new Error(`Permission to fetch ${actualURL} rejected.`);
+        }
+        return fetch(url, {
+            ...options,
+            redirect: 'error'
+        });
+    };
+    global.Scratch.openWindow = async (url, features) => {
+        if (!await global.Scratch.canOpenWindow(url)) {
+            throw new Error(`Permission to open tab ${url} rejected.`);
+        }
+        return window.open(url, '_blank', features);
+    };
+    global.Scratch.redirect = async url => {
+        if (!await global.Scratch.canRedirect(url)) {
+            throw new Error(`Permission to redirect to ${url} rejected.`);
+        }
+        location.href = url;
+    };
+
     global.Scratch.extensions = {
         unsandboxed: true,
         register
