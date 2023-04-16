@@ -36,6 +36,15 @@ class JgDevBlocks {
                     arguments: {
                         ID: { type: ArgumentType.STRING, defaultValue: "id" }
                     }
+                },
+                {
+                    opcode: 'logArgs1',
+                    text: 'costume input [INPUT] sound input [INPUT2]',
+                    blockType: BlockType.REPORTER,
+                    arguments: {
+                        INPUT: { type: ArgumentType.COSTUME },
+                        INPUT2: { type: ArgumentType.SOUND }
+                    }
                 }
             ]
         };
@@ -53,6 +62,11 @@ class JgDevBlocks {
 
         const id = Cast.toString(args.ID);
         soundBank.stop(target, id);
+    }
+
+    logArgs1(args) {
+        console.log(args)
+        return JSON.stringify(args)
     }
 }
 

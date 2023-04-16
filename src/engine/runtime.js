@@ -115,6 +115,18 @@ const ArgumentTypeMap = (() => {
             type: 'polygon'
         }
     };
+    map[ArgumentType.COSTUME] = {
+        shadow: {
+            type: 'looks_costume',
+            fieldName: 'COSTUME'
+        }
+    };
+    map[ArgumentType.SOUND] = {
+        shadow: {
+            type: 'sound_sounds_menu',
+            fieldName: 'SOUND_MENU'
+        }
+    };
     return map;
 })();
 

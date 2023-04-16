@@ -46,7 +46,17 @@ const ArgumentType = {
     /**
      * creates an input with n x,y inputs
      */
-    POLYGON: 'polygon'
+    POLYGON: 'polygon',
+
+    /**
+     * Costume menu (taken from tw)
+     */
+    COSTUME: 'costume',
+
+    /**
+     * Sound menu (taken from tw)
+     */
+    SOUND: 'sound'
 };
 
 module.exports = ArgumentType;
