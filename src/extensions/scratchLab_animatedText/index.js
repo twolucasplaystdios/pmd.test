@@ -21,6 +21,14 @@ const HANDWRITING_ID = 'Handwriting';
 const MARKER_ID = 'Marker';
 const CURLY_ID = 'Curly';
 const PIXEL_ID = 'Pixel';
+
+/* PenguinMod Fonts */
+const PLAYFUL_ID = 'Playful';
+const BUBBLY_ID = 'Bubbly';
+const BITSANDBYTES_ID = 'Bits and Bytes';
+const TECHNOLOGICAL_ID = 'Technological';
+const SCRATCH_ID = 'Scratch';
+
 const RANDOM_ID = 'Random';
 
 class Scratch3TextBlocks {
@@ -38,7 +46,7 @@ class Scratch3TextBlocks {
     }
 
     get FONT_IDS () {
-        return [SANS_SERIF_ID, SERIF_ID, HANDWRITING_ID, MARKER_ID, CURLY_ID, PIXEL_ID];
+        return [SANS_SERIF_ID, SERIF_ID, HANDWRITING_ID, MARKER_ID, CURLY_ID, PIXEL_ID, PLAYFUL_ID, BUBBLY_ID, BITSANDBYTES_ID, TECHNOLOGICAL_ID, SCRATCH_ID];
     }
     get DEFAULT_TEXT_STATE () {
         return {
@@ -256,6 +264,21 @@ class Scratch3TextBlocks {
                     }, {
                         text: 'Pixel',
                         value: PIXEL_ID
+                    }, {
+                        text: 'Playful',
+                        value: PLAYFUL_ID
+                    }, {
+                        text: 'Bubbly',
+                        value: BUBBLY_ID
+                    }, {
+                        text: 'Bits and Bytes',
+                        value: BITSANDBYTES_ID
+                    }, {
+                        text: 'Technological',
+                        value: TECHNOLOGICAL_ID
+                    }, {
+                        text: 'Scratch',
+                        value: SCRATCH_ID
                     }, {
                         text: 'random font',
                         value: RANDOM_ID
