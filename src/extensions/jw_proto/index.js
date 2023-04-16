@@ -53,6 +53,7 @@ class jwProto {
                     disableMonitor: true,
                     blockType: BlockType.COMMAND,
                     branchCount: 1,
+                    hideFromPalette: true,
                     arguments: {
                         LABEL: {
                             type: ArgumentType.STRING,
