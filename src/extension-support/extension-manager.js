@@ -5,6 +5,8 @@ const maybeFormatMessage = require('../util/maybe-format-message');
 const BlockType = require('./block-type');
 const SecurityManager = require('./tw-security-manager');
 
+const IsLocal = String(window.location.href).startsWith(`http://localhost:`);
+
 // These extensions are currently built into the VM repository but should not be loaded at startup.
 // TODO: move these out into a separate repository?
 // TODO: change extension spec so that library info, including extension ID, can be collected through static methods
@@ -103,6 +105,10 @@ const builtinExtensions = {
 const preload = [
     "jwProto"
 ];
+
+if (IsLocal) {
+    preload.push("jgDev");
+}
 
 /**
  * @typedef {object} ArgumentInfo - Information about an extension block argument

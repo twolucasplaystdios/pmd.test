@@ -47,6 +47,23 @@ class JgDevBlocks {
                     }
                 },
                 {
+                    opcode: 'setEffectName',
+                    text: 'set [EFFECT] to [VALUE]',
+                    blockType: BlockType.COMMAND,
+                    arguments: {
+                        EFFECT: { type: ArgumentType.STRING, defaultValue: "color" },
+                        VALUE: { type: ArgumentType.NUMBER, defaultValue: 0 },
+                    }
+                },
+                {
+                    opcode: 'setBlurEffect',
+                    text: 'set blur [PX]px',
+                    blockType: BlockType.COMMAND,
+                    arguments: {
+                        PX: { type: ArgumentType.NUMBER, defaultValue: 0 }
+                    }
+                },
+                {
                     opcode: 'doodooBlockLolol',
                     text: 'ignore blocks inside [INPUT]',
                     branchCount: 1,
@@ -55,12 +72,12 @@ class JgDevBlocks {
                         INPUT: { type: ArgumentType.BOOLEAN }
                     }
                 },
-                {
-                    opcode: 'whatthescallop',
-                    text: 'bruh',
-                    branchCount: 85,
-                    blockType: BlockType.CONDITIONAL
-                }
+                // {
+                //     opcode: 'whatthescallop',
+                //     text: 'bruh',
+                //     branchCount: 85,
+                //     blockType: BlockType.CONDITIONAL
+                // }
             ]
         };
     }
@@ -82,6 +99,15 @@ class JgDevBlocks {
     logArgs1(args) {
         console.log(args)
         return JSON.stringify(args)
+    }
+
+    setEffectName(args, util) {
+        const PX = Cast.toNumber(args.VALUE)
+        util.target.setEffect(args.EFFECT, PX)
+    }
+    setBlurEffect(args, util) {
+        const PX = Cast.toNumber(args.PX)
+        util.target.setEffect("blur", PX)
     }
 
     doodooBlockLolol(args, util) {
