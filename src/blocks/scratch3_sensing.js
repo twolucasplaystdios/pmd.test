@@ -140,6 +140,10 @@ class Scratch3SensingBlocks {
         // also what was originaly here was inificiant as hell
 
         // jg: why dont you literally just do what "is text" did but the opposite
+        // except also account for numbers that end with . (that aint a number)
+        if (Cast.toString(args.TEXT1).endsWith(".")) {
+            return false;
+        }
         return !this.thing_is_text(args);
     }
     thing_is_text (args) {
