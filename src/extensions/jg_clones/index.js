@@ -211,6 +211,10 @@ class JgCloneToolBlocks {
                         "mosaic effect",
                         "brightness effect",
                         "ghost effect",
+                        "red effect",
+                        "green effect",
+                        "blue effect",
+                        "opaque effect",
                     ].map(item => ({ text: item, value: item }))
                 }
             }
@@ -338,6 +342,14 @@ class JgCloneToolBlocks {
                 return clone.effects.brightness;
             case "ghost effect":
                 return clone.effects.ghost;
+            case "red effect":
+                return clone.effects.red;
+            case "green effect":
+                return clone.effects.green;
+            case "blue effect":
+                return clone.effects.blue;
+            case "opaque effect":
+                return clone.effects.opaque;
             default:
                 return clone[property];
         }
@@ -394,6 +406,14 @@ class JgCloneToolBlocks {
                 return mainSprite.effects.brightness;
             case "ghost effect":
                 return mainSprite.effects.ghost;
+            case "red effect":
+                return mainSprite.effects.red;
+            case "green effect":
+                return mainSprite.effects.green;
+            case "blue effect":
+                return mainSprite.effects.blue;
+            case "opaque effect":
+                return mainSprite.effects.opaque;
             default:
                 return mainSprite[property];
         }
