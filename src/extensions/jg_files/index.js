@@ -59,6 +59,18 @@ class JgFilesBlocks {
                     }
                 },
                 {
+                    opcode: 'askUserForFileOfTypeAsDataUri',
+                    text: 'ask user for a data uri file of type [FILE_TYPE]',
+                    disableMonitor: true,
+                    blockType: BlockType.REPORTER,
+                    arguments: {
+                        FILE_TYPE: {
+                            type: ArgumentType.STRING,
+                            defaultValue: 'png'
+                        }
+                    }
+                },
+                {
                     opcode: 'downloadFile',
                     text: 'download content [FILE_CONTENT] as file name [FILE_NAME]',
                     blockType: BlockType.COMMAND,
@@ -188,6 +200,40 @@ class JgFilesBlocks {
             return;
         }
     }
+    __askUserForFiledatauri (acceptTypes) {
+        try {
+            return new Promise(resolve => {
+                const fileReader = new FileReader();
+                fileReader.onload = e => {
+                    resolve(e.target.result);
+                };
+                const input = document.createElement("input");
+                input.type = "file";
+                if (acceptTypes !== null) {
+                    input.accept = acceptTypes;
+                }
+                input.style.display = "none";
+                document.body.append(input);
+                input.onchange = () => {
+                    const file = input.files[0];
+                    if (!file) {
+                        resolve("");
+                        return;
+                    }
+                    fileReader.readAsDataURL(file);
+
+                    input.remove();
+                };
+                input.onblur = () => {
+                    input.onchange();
+                };
+                input.focus();
+                input.click();
+            });
+        } catch (e) {
+            return;
+        }
+    }
 
     askUserForFileOfType (args) {
         const fileTypesAllowed = [];
@@ -205,11 +251,22 @@ class JgFilesBlocks {
         const input = args.FILE_TYPE
             .toLowerCase()
             .replace(/.,/gmi, "");
-        if (input === "any") return this.__askUserForFileasarraybuffer(null);
+        if (input === "any") return this.__askUserForFilearraybuffer(null);
         input.split(" ").forEach(type => {
             fileTypesAllowed.push(`.${type}`);
         });
         return this.__askUserForFilearraybuffer(fileTypesAllowed.join(","));
+    }
+    askUserForFileOfTypeAsDataUri (args) {
+        const fileTypesAllowed = [];
+        const input = args.FILE_TYPE
+            .toLowerCase()
+            .replace(/.,/gmi, "");
+        if (input === "any") return this.__askUserForFiledatauri(null);
+        input.split(" ").forEach(type => {
+            fileTypesAllowed.push(`.${type}`);
+        });
+        return this.__askUserForFiledatauri(fileTypesAllowed.join(","));
     }
 
     downloadFile (args, _, __, downloadArray, downloadBase64) {
