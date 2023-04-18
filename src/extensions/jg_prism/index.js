@@ -11,6 +11,8 @@ const {
 } = require('../../util/json-block-utilities');
 // const Cast = require('../../util/cast');
 
+const warningIcon = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAC8SURBVDhPpZPBDYMwDEWhJw4MQzdgG0bi0APDlHuPZRv6X2xUaqJWpE8y2Pk/JkRJFVnXtVOMiqdig5yxzm1HJDZu+gWexqcZDCjuqHtcRo/gfTdRkf2yy7kGMG4i/5wlGYSXObqL9MFsRQw06C0voq9ZhxcHasH7m4cV/AUNFkuLWGgwW17EzB5wPB9Wn+aanmoysVGRJAovI5PLydAqzh7l1mWDAUV2JQE8n5P3SORo3xTxOjMWrnNVvQChGZRpEqnWPQAAAABJRU5ErkJggg==";
+
 /**
  * Class for Prism blocks
  * @constructor
@@ -434,6 +436,7 @@ class JgPrismBlocks {
                         description: 'Block that runs JavaScript code.'
                     }),
                     blockType: BlockType.COMMAND,
+                    blockIconURI: warningIcon,
                     arguments: {
                         JAVASCRIPT: {
                             type: ArgumentType.STRING,
@@ -450,6 +453,7 @@ class JgPrismBlocks {
                     }),
                     blockType: BlockType.REPORTER,
                     disableMonitor: true,
+                    blockIconURI: warningIcon,
                     arguments: {
                         JAVASCRIPT: {
                             type: ArgumentType.STRING,
@@ -465,6 +469,7 @@ class JgPrismBlocks {
                         description: 'Block that runs JavaScript code.'
                     }),
                     blockType: BlockType.HAT,
+                    blockIconURI: warningIcon,
                     arguments: {
                         JAVASCRIPT: {
                             type: ArgumentType.STRING,

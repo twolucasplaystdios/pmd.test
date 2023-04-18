@@ -2,6 +2,7 @@
 const formatMessage = require('format-message');
 const BlockType = require('../../extension-support/block-type');
 const ArgumentType = require('../../extension-support/argument-type');
+const Cast = require('../../util/cast');
 const { 
     validateJSON, 
     validateArray, 
@@ -227,6 +228,41 @@ class JgJSONBlocks {
                         }
                     },
                     text: 'in array [array] add [item]'
+                },
+                "---",
+                {
+                    opcode: 'json_array_concatLayer1',
+                    blockType: BlockType.REPORTER,
+                    arguments: {
+                        array1: {
+                            type: ArgumentType.STRING,
+                            defaultValue: "[\"A\", \"B\", \"C\"]"
+                        },
+                        array2: {
+                            type: ArgumentType.STRING,
+                            defaultValue: "[\"D\", \"E\", \"F\"]"
+                        }
+                    },
+                    text: 'add items from array [array2] to array [array1]'
+                },
+                {
+                    opcode: 'json_array_concatLayer2',
+                    blockType: BlockType.REPORTER,
+                    arguments: {
+                        array1: {
+                            type: ArgumentType.STRING,
+                            defaultValue: "[\"A\", \"B\", \"C\"]"
+                        },
+                        array2: {
+                            type: ArgumentType.STRING,
+                            defaultValue: "[\"D\", \"E\", \"F\"]"
+                        },
+                        array3: {
+                            type: ArgumentType.STRING,
+                            defaultValue: "[\"G\", \"H\", \"I\"]"
+                        }
+                    },
+                    text: 'add items from array [array2] and array [array3] to array [array1]'
                 }, 
                 "---",
                 {
@@ -316,6 +352,21 @@ class JgJSONBlocks {
                         }
                     },
                     text: 'in array [array] get [index]'
+                },
+                {
+                    opcode: 'json_array_indexofNostart',
+                    blockType: BlockType.REPORTER,
+                    arguments: {
+                        array: {
+                            type: ArgumentType.STRING,
+                            defaultValue: "[\"A\", \"B\", \"C\"]"
+                        },
+                        value: {
+                            type: ArgumentType.STRING,
+                            defaultValue: "value"
+                        }
+                    },
+                    text: 'in array [array] get index of [value]'
                 }, 
                 {
                     opcode: 'json_array_indexof',
@@ -338,7 +389,7 @@ class JgJSONBlocks {
                             })
                         }
                     },
-                    text: 'in array [array] get [number] index of [value]'
+                    text: 'in array [array] from [number] get index of [value]'
                 }, 
                 {
                     opcode: 'json_array_length',
@@ -369,7 +420,23 @@ class JgJSONBlocks {
                         }
                     },
                     text: 'array [array] contains [value] ?'
-                }, 
+                },
+                "---",
+                {
+                    opcode: 'json_array_flat',
+                    blockType: BlockType.REPORTER,
+                    arguments: {
+                        array: {
+                            type: ArgumentType.STRING,
+                            defaultValue: "[[\"A\", \"B\"], [\"C\", \"D\"]]"
+                        },
+                        layer: {
+                            type: ArgumentType.NUMBER,
+                            defaultValue: 1
+                        }
+                    },
+                    text: 'flatten nested array [array] by [layer] layers'
+                },
                 "---",
                 {
                     opcode: 'json_array_getrange',
@@ -539,6 +606,13 @@ class JgJSONBlocks {
 
         return array.indexOf(stringToEqivalint(value), number);
     }
+    
+    json_array_indexofNostart (args) {
+        const array = validateArray(args.array).array;
+        const value = args.value;
+
+        return array.indexOf(stringToEqivalint(value));
+    }
 
     json_array_set (args) {
         const array = validateArray(args.array).array;
@@ -582,6 +656,34 @@ class JgJSONBlocks {
         array.push(stringToEqivalint(value));
 
         return JSON.stringify(array);
+    }
+
+    json_array_concatLayer1 (args) {
+        const array1 = validateArray(args.array1).array;
+        const array2 = validateArray(args.array2).array;
+
+        const array = array1.concat(array2);
+
+        return JSON.stringify(array);
+    }
+
+    json_array_concatLayer2 (args) {
+        const array1 = validateArray(args.array1).array;
+        const array2 = validateArray(args.array2).array;
+        const array3 = validateArray(args.array3).array;
+
+        const array = array1.concat(array2, array3);
+
+        return JSON.stringify(array);
+    }
+
+    json_array_flat (args) {
+        const array = validateArray(args.array).array;
+        const depth = Cast.toNumber(args.layer);
+
+        const flattened = array.flat(depth);
+
+        return JSON.stringify(flattened);
     }
 
     json_array_tolist (args, util) {

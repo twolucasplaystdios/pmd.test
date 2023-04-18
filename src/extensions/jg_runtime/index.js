@@ -342,6 +342,31 @@ class JgRuntimeBlocks {
                 },
                 "---",
                 {
+                    opcode: 'getAllVariables',
+                    text: 'get all variables [ALLSCOPE]',
+                    disableMonitor: false,
+                    blockType: BlockType.REPORTER,
+                    arguments: {
+                        ALLSCOPE: {
+                            type: ArgumentType.STRING,
+                            menu: "allVariableType"
+                        }
+                    }
+                },
+                {
+                    opcode: 'getAllLists',
+                    text: 'get all lists [ALLSCOPE]',
+                    disableMonitor: false,
+                    blockType: BlockType.REPORTER,
+                    arguments: {
+                        ALLSCOPE: {
+                            type: ArgumentType.STRING,
+                            menu: "allVariableScope"
+                        }
+                    }
+                },
+                "---",
+                {
                     blockType: BlockType.LABEL,
                     text: "Potentially Dangerous"
                 },
@@ -411,11 +436,6 @@ class JgRuntimeBlocks {
                     }
                 },
                 "---",
-                // keeping these here for compatibility since i dont know how to hide blocks lolollol
-                {
-                    blockType: BlockType.LABEL,
-                    text: "Deprecated (exists elsewhere)"
-                },
                 {
                     opcode: 'getIsClone',
                     text: formatMessage({
@@ -424,6 +444,7 @@ class JgRuntimeBlocks {
                         description: 'Block that returns whether the sprite is a clone or not.'
                     }),
                     disableMonitor: true,
+                    hideFromPalette: true,
                     blockType: BlockType.BOOLEAN
                 },
             ],
@@ -441,6 +462,23 @@ class JgRuntimeBlocks {
                     items: [
                         "all sprites",
                         "this sprite",
+                    ].map(item => ({ text: item, value: item }))
+                },
+                allVariableScope: {
+                    acceptReporters: true,
+                    items: [
+                        "for all sprites",
+                        "in every sprite",
+                        "in this sprite",
+                    ].map(item => ({ text: item, value: item }))
+                },
+                allVariableType: {
+                    acceptReporters: true,
+                    items: [
+                        "for all sprites",
+                        "in every sprite",
+                        "in this sprite",
+                        "in the cloud",
                     ].map(item => ({ text: item, value: item }))
                 },
                 variableTypes: {
@@ -466,6 +504,7 @@ class JgRuntimeBlocks {
 
     // blocks
     addCostumeUrl(args, util) {
+        const targetId = util.target.id;
         return new Promise(resolve => {
             fetch(args.URL, { method: 'GET' }).then(x => x.blob().then(blob => {
                 if (!(
@@ -496,7 +535,7 @@ class JgRuntimeBlocks {
                             md5ext: name,
                             name: args.name
                         };
-                        const request = vm.addCostume(name, spriteJson, util.target.id);
+                        const request = vm.addCostume(name, spriteJson, targetId);
                         if (request.then) {
                             request.then(resolve);
                         } else {
@@ -661,11 +700,74 @@ class JgRuntimeBlocks {
         return JSON.stringify(sounds.map(sound => sound.name));
     }
 
+    getAllVariables(args, util) {
+        switch (args.ALLSCOPE) {
+            case "for all sprites": {
+                const stage = this.runtime.getTargetForStage();
+                if (!stage) return "[]";
+                const variables = stage.variables;
+                if (!variables) return "[]";
+                return JSON.stringify(Object.values(variables).filter(v => v.type !== "list").map(v => v.name));
+            }
+            case "in every sprite": {
+                const targets = this.runtime.targets;
+                if (!targets) return "[]";
+                const variables = targets.filter(t => t.isOriginal).map(t => t.variables);
+                if (!variables) return "[]";
+                return JSON.stringify(variables.map(v => Object.values(v)).map(v => v.filter(v => v.type !== "list").map(v => v.name)).flat(1));
+            }
+            case "in this sprite": {
+                const target = util.target;
+                if (!target) return "[]";
+                const variables = target.variables;
+                if (!variables) return "[]";
+                return JSON.stringify(Object.values(variables).filter(v => v.type !== "list").map(v => v.name));
+            }
+            case "in the cloud": {
+                const stage = this.runtime.getTargetForStage();
+                if (!stage) return "[]";
+                const variables = stage.variables;
+                if (!variables) return "[]";
+                return JSON.stringify(Object.values(variables).filter(v => v.type !== "list").filter(v => v.isCloud === true).map(v => v.name));
+            }
+            default:
+                return "[]";
+        }
+    }
+    getAllLists(args, util) {
+        switch (args.ALLSCOPE) {
+            case "for all sprites": {
+                const stage = this.runtime.getTargetForStage();
+                if (!stage) return "[]";
+                const variables = stage.variables;
+                if (!variables) return "[]";
+                return JSON.stringify(Object.values(variables).filter(v => v.type === "list").map(v => v.name));
+            }
+            case "in every sprite": {
+                const targets = this.runtime.targets;
+                if (!targets) return "[]";
+                const variables = targets.filter(t => t.isOriginal).map(t => t.variables);
+                if (!variables) return "[]";
+                return JSON.stringify(variables.map(v => Object.values(v)).map(v => v.filter(v => v.type === "list").map(v => v.name)).flat(1));
+            }
+            case "in this sprite": {
+                const target = util.target;
+                if (!target) return "[]";
+                const variables = target.variables;
+                if (!variables) return "[]";
+                return JSON.stringify(Object.values(variables).filter(v => v.type === "list").map(v => v.name));
+            }
+            default:
+                return "[]";
+        }
+    }
+
     // ShovelUtils
     getFrameRate() {
         return fps;
     }
-    addSoundUrl(args) {
+    addSoundUrl(args, util) {
+        const targetId = util.target.id;
         return new Promise((resolve) => {
             fetch(args.URL)
                 .then((r) => r.arrayBuffer())
@@ -682,7 +784,7 @@ class JgRuntimeBlocks {
                         md5: asset.assetId + '.' + asset.dataFormat,
                         asset: asset,
                         name: args.NAME
-                    }));
+                    }, targetId));
                 }).catch(resolve);
         })
     }
