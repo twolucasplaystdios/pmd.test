@@ -59,10 +59,6 @@ class JgPrismBlocks {
             color2: '#AD66FF',
             blocks: [
                 {
-                    blockType: BlockType.LABEL,
-                    text: "Audio (legacy)"
-                },
-                {
                     opcode: 'playAudioFromUrl',
                     text: formatMessage({
                         id: 'jgPrism.blocks.playAudioFromUrl',
@@ -70,6 +66,7 @@ class JgPrismBlocks {
                         description: 'Plays sound from a URL.'
                     }),
                     blockType: BlockType.COMMAND,
+                    hideFromPalette: true,
                     arguments: {
                         URL: {
                             type: ArgumentType.STRING,
@@ -84,6 +81,7 @@ class JgPrismBlocks {
                         default: 'set audio to loop',
                         description: 'Sets the audio to be looping.'
                     }),
+                    hideFromPalette: true,
                     blockType: BlockType.COMMAND
                 },
                 {
@@ -93,6 +91,7 @@ class JgPrismBlocks {
                         default: 'set audio to not loop',
                         description: 'Sets the audio to not be looping.'
                     }),
+                    hideFromPalette: true,
                     blockType: BlockType.COMMAND
                 },
                 {
@@ -102,6 +101,7 @@ class JgPrismBlocks {
                         default: 'pause audio',
                         description: 'Pauses the audio player.'
                     }),
+                    hideFromPalette: true,
                     blockType: BlockType.COMMAND
                 },
                 {
@@ -111,6 +111,7 @@ class JgPrismBlocks {
                         default: 'resume audio',
                         description: 'Resumes the audio player.'
                     }),
+                    hideFromPalette: true,
                     blockType: BlockType.COMMAND
                 },
                 {
@@ -120,6 +121,7 @@ class JgPrismBlocks {
                         default: 'set audio speed to [SPEED]%',
                         description: 'Sets the speed of the audio player.'
                     }),
+                    hideFromPalette: true,
                     blockType: BlockType.COMMAND,
                     arguments: {
                         SPEED: {
@@ -135,6 +137,7 @@ class JgPrismBlocks {
                         default: 'audio speed',
                         description: 'Block that returns the playback speed of the audio player.'
                     }),
+                    hideFromPalette: true,
                     disableMonitor: false,
                     blockType: BlockType.REPORTER
                 },
@@ -146,6 +149,7 @@ class JgPrismBlocks {
                         description: 'Sets the position of the current audio in the audio player.'
                     }),
                     blockType: BlockType.COMMAND,
+                    hideFromPalette: true,
                     arguments: {
                         POSITION: {
                             type: ArgumentType.NUMBER,
@@ -157,6 +161,7 @@ class JgPrismBlocks {
                     opcode: 'getAudioPosition',
                     text: 'audio position',
                     disableMonitor: false,
+                    hideFromPalette: true,
                     blockType: BlockType.REPORTER
                 },
                 {
@@ -167,6 +172,7 @@ class JgPrismBlocks {
                         description: 'Sets the volume of the current audio in the audio player.'
                     }),
                     blockType: BlockType.COMMAND,
+                    hideFromPalette: true,
                     arguments: {
                         VOLUME: {
                             type: ArgumentType.NUMBER,
@@ -182,57 +188,8 @@ class JgPrismBlocks {
                         description: 'Block that returns the volume of the audio player.'
                     }),
                     disableMonitor: false,
+                    hideFromPalette: true,
                     blockType: BlockType.REPORTER
-                },
-                {
-                    blockType: BlockType.LABEL,
-                    text: "JavaScript"
-                },
-                {
-                    opcode: 'evaluate',
-                    text: formatMessage({
-                        id: 'jgRuntime.blocks.evaluate',
-                        default: 'eval [JAVASCRIPT]',
-                        description: 'Block that runs JavaScript code.'
-                    }),
-                    blockType: BlockType.COMMAND,
-                    arguments: {
-                        JAVASCRIPT: {
-                            type: ArgumentType.STRING,
-                            defaultValue: "console.log('Hello!')"
-                        }
-                    }
-                },
-                {
-                    opcode: 'evaluate2',
-                    text: formatMessage({
-                        id: 'jgRuntime.blocks.evaluate2',
-                        default: 'eval [JAVASCRIPT]',
-                        description: 'Block that runs JavaScript code and returns the result of it.'
-                    }),
-                    blockType: BlockType.REPORTER,
-                    disableMonitor: true,
-                    arguments: {
-                        JAVASCRIPT: {
-                            type: ArgumentType.STRING,
-                            defaultValue: "Math.random()"
-                        }
-                    }
-                },
-                {
-                    opcode: 'evaluate3',
-                    text: formatMessage({
-                        id: 'jgRuntime.blocks.evaluate3',
-                        default: 'eval [JAVASCRIPT]',
-                        description: 'Block that runs JavaScript code.'
-                    }),
-                    blockType: BlockType.HAT,
-                    arguments: {
-                        JAVASCRIPT: {
-                            type: ArgumentType.STRING,
-                            defaultValue: "Math.round(Math.random()) == 1"
-                        }
-                    }
                 },
                 {
                     blockType: BlockType.LABEL,
@@ -447,6 +404,71 @@ class JgPrismBlocks {
                         ENCODED: {
                             type: ArgumentType.STRING,
                             defaultValue: '000072000101000108000108000111000033'
+                        }
+                    }
+                },
+                "---",
+                {
+                    blockType: BlockType.LABEL,
+                    text: "Deprecated blocks"
+                },
+                "---",
+                {
+                    blockType: BlockType.LABEL,
+                    text: "Don't use any of the blocks below."
+                },
+                {
+                    blockType: BlockType.LABEL,
+                    text: "They will be removed soon."
+                },
+                "---",
+                {
+                    blockType: BlockType.LABEL,
+                    text: "(Deprecated) JavaScript"
+                },
+                {
+                    opcode: 'evaluate',
+                    text: formatMessage({
+                        id: 'jgRuntime.blocks.evaluate',
+                        default: 'eval [JAVASCRIPT]',
+                        description: 'Block that runs JavaScript code.'
+                    }),
+                    blockType: BlockType.COMMAND,
+                    arguments: {
+                        JAVASCRIPT: {
+                            type: ArgumentType.STRING,
+                            defaultValue: "console.log('Hello!')"
+                        }
+                    }
+                },
+                {
+                    opcode: 'evaluate2',
+                    text: formatMessage({
+                        id: 'jgRuntime.blocks.evaluate2',
+                        default: 'eval [JAVASCRIPT]',
+                        description: 'Block that runs JavaScript code and returns the result of it.'
+                    }),
+                    blockType: BlockType.REPORTER,
+                    disableMonitor: true,
+                    arguments: {
+                        JAVASCRIPT: {
+                            type: ArgumentType.STRING,
+                            defaultValue: "Math.random()"
+                        }
+                    }
+                },
+                {
+                    opcode: 'evaluate3',
+                    text: formatMessage({
+                        id: 'jgRuntime.blocks.evaluate3',
+                        default: 'eval [JAVASCRIPT]',
+                        description: 'Block that runs JavaScript code.'
+                    }),
+                    blockType: BlockType.HAT,
+                    arguments: {
+                        JAVASCRIPT: {
+                            type: ArgumentType.STRING,
+                            defaultValue: "Math.round(Math.random()) == 1"
                         }
                     }
                 }
