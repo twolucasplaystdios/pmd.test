@@ -26,15 +26,29 @@ class JgPermissionBlocks {
             color2: '#0093FF',
             blocks: [
                 {
+                    // tw says deleting menu elements is unsafe
                     opcode: 'requestPermission',
+                    text: 'request [PERMISSION] permission',
+                    disableMonitor: false,
+                    blockType: BlockType.BOOLEAN,
+                    hideFromPalette: true,
+                    arguments: {
+                        PERMISSION: {
+                            type: ArgumentType.STRING,
+                            menu: 'permissions',
+                            defaultValue: "javascript"
+                        }
+                    }
+                },
+                {
+                    opcode: 'requestPermission2',
                     text: 'request [PERMISSION] permission',
                     disableMonitor: false,
                     blockType: BlockType.BOOLEAN,
                     arguments: {
                         PERMISSION: {
                             type: ArgumentType.STRING,
-                            menu: 'permissions',
-                            defaultValue: "javascript"
+                            menu: 'permissions2'
                         }
                     }
                 },
@@ -58,7 +72,9 @@ class JgPermissionBlocks {
                 },
             ],
             menus: {
-                permissions: "fetchPermissionsList"
+                permissions: "fetchPermissionsList",
+                // tw says deleting menu elements is unsafe
+                permissions2: "fetchPermissionsList2"
             }
         };
     }
@@ -70,7 +86,21 @@ class JgPermissionBlocks {
         }));
     }
 
+    fetchPermissionsList2() {
+        // tw says deleting menu elements is unsafe
+        return Object.getOwnPropertyNames(ProjectPermissionManager.permissions).filter(name => typeof ProjectPermissionManager.permissions[name] === "boolean").filter(name => name !== "javascript").map(permissionName => ({
+            text: permissionName,
+            value: permissionName
+        }));
+    }
+
     requestPermission(args) {
+        const permission = args.PERMISSION;
+        if (ProjectPermissionManager.permissions[permission] == true) return true;
+        return ProjectPermissionManager.RequestPermission(permission);
+    }
+    requestPermission2(args) {
+        // tw says deleting menu elements is unsafe
         const permission = args.PERMISSION;
         if (ProjectPermissionManager.permissions[permission] == true) return true;
         return ProjectPermissionManager.RequestPermission(permission);

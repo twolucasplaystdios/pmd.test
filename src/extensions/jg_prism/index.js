@@ -409,25 +409,25 @@ class JgPrismBlocks {
                         }
                     }
                 },
-                "---",
-                {
-                    blockType: BlockType.LABEL,
-                    text: "Deprecated blocks"
-                },
-                "---",
-                {
-                    blockType: BlockType.LABEL,
-                    text: "Don't use any of the blocks below."
-                },
-                {
-                    blockType: BlockType.LABEL,
-                    text: "They will be removed soon."
-                },
-                "---",
-                {
-                    blockType: BlockType.LABEL,
-                    text: "(Deprecated) JavaScript"
-                },
+                // "---",
+                // {
+                //     blockType: BlockType.LABEL,
+                //     text: "Deprecated blocks"
+                // },
+                // "---",
+                // {
+                //     blockType: BlockType.LABEL,
+                //     text: "Don't use any of the blocks below."
+                // },
+                // {
+                //     blockType: BlockType.LABEL,
+                //     text: "They will be removed soon."
+                // },
+                // "---",
+                // {
+                //     blockType: BlockType.LABEL,
+                //     text: "(Deprecated) JavaScript"
+                // },
                 {
                     opcode: 'evaluate',
                     text: formatMessage({
@@ -437,6 +437,7 @@ class JgPrismBlocks {
                     }),
                     blockType: BlockType.COMMAND,
                     blockIconURI: warningIcon,
+                    hideFromPalette: true,
                     arguments: {
                         JAVASCRIPT: {
                             type: ArgumentType.STRING,
@@ -454,6 +455,7 @@ class JgPrismBlocks {
                     blockType: BlockType.REPORTER,
                     disableMonitor: true,
                     blockIconURI: warningIcon,
+                    hideFromPalette: true,
                     arguments: {
                         JAVASCRIPT: {
                             type: ArgumentType.STRING,
@@ -470,6 +472,7 @@ class JgPrismBlocks {
                     }),
                     blockType: BlockType.HAT,
                     blockIconURI: warningIcon,
+                    hideFromPalette: true,
                     arguments: {
                         JAVASCRIPT: {
                             type: ArgumentType.STRING,
@@ -518,54 +521,56 @@ class JgPrismBlocks {
         return this.audioPlayer.volume * 100;
     }
     // eslint-disable-next-line no-unused-vars
-    evaluate(args, util, realBlockInfo) {
-        if (!(this.isJSPermissionGranted)) {
-            this.isJSPermissionGranted = ProjectPermissionManager.RequestPermission("javascript");
-            if (!this.isJSPermissionGranted) return;
-        }
-        // otherwise
-        try {
-            // eslint-disable-next-line no-eval
-            eval(String(args.JAVASCRIPT));
-        } catch (e) {
-            alert(e);
-            console.error(e);
-        }
+    evaluate() {
+        // if (!(this.isJSPermissionGranted)) {
+        //     this.isJSPermissionGranted = ProjectPermissionManager.RequestPermission("javascript");
+        //     if (!this.isJSPermissionGranted) return;
+        // }
+        // // otherwise
+        // try {
+        //     // eslint-disable-next-line no-eval
+        //     eval(String(args.JAVASCRIPT));
+        // } catch (e) {
+        //     alert(e);
+        //     console.error(e);
+        // }
     }
     // eslint-disable-next-line no-unused-vars
-    evaluate2(args, util, realBlockInfo) {
-        if (!(this.isJSPermissionGranted)) {
-            this.isJSPermissionGranted = ProjectPermissionManager.RequestPermission("javascript");
-            if (!this.isJSPermissionGranted) return "";
-        }
-        // otherwise
-        let result = "";
-        try {
-            // eslint-disable-next-line no-eval
-            result = eval(String(args.JAVASCRIPT));
-        } catch (e) {
-            result = e;
-            console.error(e);
-        }
-        return result;
+    evaluate2() {
+        // if (!(this.isJSPermissionGranted)) {
+        //     this.isJSPermissionGranted = ProjectPermissionManager.RequestPermission("javascript");
+        //     if (!this.isJSPermissionGranted) return "";
+        // }
+        // // otherwise
+        // let result = "";
+        // try {
+        //     // eslint-disable-next-line no-eval
+        //     result = eval(String(args.JAVASCRIPT));
+        // } catch (e) {
+        //     result = e;
+        //     console.error(e);
+        // }
+        // return result;
+        return "";
     }
     // eslint-disable-next-line no-unused-vars
-    evaluate3(args, util, realBlockInfo) {
-        if (!(this.isJSPermissionGranted)) {
-            this.isJSPermissionGranted = ProjectPermissionManager.RequestPermission("javascript");
-            if (!this.isJSPermissionGranted) return false;
-        }
-        // otherwise
-        let result = true;
-        try {
-            // eslint-disable-next-line no-eval
-            result = eval(String(args.JAVASCRIPT));
-        } catch (e) {
-            result = false;
-            console.error(e);
-        }
-        // otherwise
-        return result === true;
+    evaluate3() {
+        // if (!(this.isJSPermissionGranted)) {
+        //     this.isJSPermissionGranted = ProjectPermissionManager.RequestPermission("javascript");
+        //     if (!this.isJSPermissionGranted) return false;
+        // }
+        // // otherwise
+        // let result = true;
+        // try {
+        //     // eslint-disable-next-line no-eval
+        //     result = eval(String(args.JAVASCRIPT));
+        // } catch (e) {
+        //     result = false;
+        //     console.error(e);
+        // }
+        // // otherwise
+        // return result === true;
+        return false;
     }
     screenshotStage() {
         // should we look for an external canvas
