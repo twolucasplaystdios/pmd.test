@@ -23,7 +23,7 @@ class JgFilesBlocks {
     getInfo () {
         return {
             id: 'jgFiles',
-            name: 'Files',
+            name: 'Files (legacy)',
             color1: '#ffbb00',
             color2: '#ffaa00',
             // docsURI: 'https://docs.turbowarp.org/blocks',
