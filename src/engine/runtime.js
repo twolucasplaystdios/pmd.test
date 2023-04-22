@@ -849,6 +849,14 @@ class Runtime extends EventEmitter {
     }
 
     /**
+     * Event name when _step() has been called.
+     * @const {string}
+     */
+    static get RUNTIME_STEP_START () {
+        return 'RUNTIME_STEP_START';
+    }
+
+    /**
      * Event name for reporting that a block was updated and needs to be rerendered.
      * @const {string}
      */
@@ -2328,6 +2336,9 @@ class Runtime extends EventEmitter {
      * inactive threads after each iteration.
      */
     _step () {
+        // pm: emit this event because i want it
+        this.emit(Runtime.RUNTIME_STEP_START);
+
         if (this.interpolationEnabled) {
             interpolate.setupInitialState(this);
         }

@@ -16,6 +16,10 @@ class Scratch3EventBlocks {
                 KEY_OPTION: 'any'
             });
         });
+
+        this.runtime.on('RUNTIME_STEP_START', () => {
+            this.runtime.startHats('event_always');
+        })
     }
 
     /**
@@ -28,12 +32,9 @@ class Scratch3EventBlocks {
             event_whentouchingobject: this.touchingObject,
             event_broadcast: this.broadcast,
             event_broadcastandwait: this.broadcastAndWait,
-            event_whengreaterthan: this.hatGreaterThanPredicate,
-            event_always: this.always
+            event_whengreaterthan: this.hatGreaterThanPredicate
         };
     }
-
-    always () { return true; }
 
     whenanything (args) {
         return Boolean(args.ANYTHING || false);
@@ -45,7 +46,8 @@ class Scratch3EventBlocks {
                 restartExistingThreads: true
             },
             event_always: {
-                restartExistingThreads: false
+                restartExistingThreads: false,
+                edgeActivated: true
             },
             event_whenkeypressed: {
                 restartExistingThreads: false
