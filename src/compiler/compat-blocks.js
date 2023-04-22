@@ -103,7 +103,8 @@ const outputBlocks = [
     "sensing_mousescrolling",
     "sensing_mouseclicked",
     "sensing_thing_has_text",
-    "sensing_thing_has_number"
+    "sensing_thing_has_number",
+    "sensing_objecttouchingobject"
 ];
 
 module.exports = {

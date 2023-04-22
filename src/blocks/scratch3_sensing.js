@@ -55,6 +55,7 @@ class Scratch3SensingBlocks {
      */
     getPrimitives () {
         return {
+            sensing_objecttouchingobject: this.objectTouchingObject,
             sensing_touchingobject: this.touchingObject,
             sensing_touchingcolor: this.touchingColor,
             sensing_coloristouchingcolor: this.colorTouchingColor,
@@ -163,7 +164,7 @@ class Scratch3SensingBlocks {
 
         // jg: why dont you literally just do what "is text" did but the opposite
         // except also account for numbers that end with . (that aint a number)
-        if (Cast.toString(args.TEXT1).endsWith(".")) {
+        if (Cast.toString(args.TEXT1).trim().endsWith(".")) {
             return false;
         }
         return !this.thing_is_text(args);
@@ -286,6 +287,14 @@ class Scratch3SensingBlocks {
 
     getAnswer () {
         return this._answer;
+    }
+    
+    objectTouchingObject (args, util) {
+        const object1 = (args.FULLTOUCHINGOBJECTMENU  ) === "_myself_" ? util.target.getName() : args.FULLTOUCHINGOBJECTMENU;
+        const object2 = (args.SPRITETOUCHINGOBJECTMENU) === "_myself_" ? util.target.getName() : args.SPRITETOUCHINGOBJECTMENU;
+        const target = this.runtime.getSpriteTargetByName(object2);
+        if (!target) return false;
+        return target.isTouchingObject(object1);
     }
 
     touchingObject (args, util) {
