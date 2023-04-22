@@ -94,8 +94,8 @@ class Mouse {
 
             const previousDownState = this._isDown;
             this._isDown = data.isDown;
-            this._isClicked = data.isDown;
             if (data.isDown) {
+                this._isClicked = true;
                 // increment click id
                 this._clickId++;
                 if (this._clickId > 16777216) {
