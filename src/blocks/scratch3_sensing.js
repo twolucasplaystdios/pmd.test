@@ -291,7 +291,10 @@ class Scratch3SensingBlocks {
     
     objectTouchingObject (args, util) {
         const object1 = (args.FULLTOUCHINGOBJECTMENU  ) === "_myself_" ? util.target.getName() : args.FULLTOUCHINGOBJECTMENU;
-        const object2 = (args.SPRITETOUCHINGOBJECTMENU) === "_myself_" ? util.target.getName() : args.SPRITETOUCHINGOBJECTMENU;
+        const object2 = args.SPRITETOUCHINGOBJECTMENU;
+        if (object2 === "_myself_") {
+            return util.target.isTouchingObject(object1);
+        }
         const target = this.runtime.getSpriteTargetByName(object2);
         if (!target) return false;
         return target.isTouchingObject(object1);
