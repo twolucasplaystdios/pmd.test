@@ -28,6 +28,7 @@ const {exportCostume} = require('./serialization/tw-costume-import-export');
 const Base64Util = require('./util/base64-util');
 
 const RESERVED_NAMES = ['_mouse_', '_stage_', '_edge_', '_myself_', '_random_'];
+const PM_LIBRARY_API = "https://pmobjectlibrary.jeremygamer13.repl.co/";
 
 const CORE_EXTENSIONS = [
     // 'motion',
@@ -920,6 +921,32 @@ class VirtualMachine extends EventEmitter {
         const target = optTargetId ? this.runtime.getTargetById(optTargetId) :
             this.editingTarget;
         if (target) {
+            if (soundObject.fromPenguinModLibrary === true) {
+                return new Promise((resolve, reject) => {
+                    fetch(`${PM_LIBRARY_API}?file=${soundObject.libraryId}`)
+                        .then((r) => r.arrayBuffer())
+                        .then((arrayBuffer) => {
+                            const storage = this.runtime.storage;
+                            const asset = new storage.Asset(
+                                storage.AssetType.Sound,
+                                null,
+                                storage.DataFormat.MP3,
+                                new Uint8Array(arrayBuffer),
+                                true
+                            );
+                            const newSoundObject = {
+                                md5: asset.assetId + '.' + asset.dataFormat,
+                                asset: asset,
+                                name: soundObject.name
+                            }
+                            loadSound(newSoundObject, this.runtime, target.sprite.soundBank).then(soundAsset => {
+                                target.addSound(newSoundObject);
+                                this.emitTargetsUpdate();
+                                resolve(soundAsset, newSoundObject);
+                            })
+                        }).catch(reject);
+                });
+            }
             return loadSound(soundObject, this.runtime, target.sprite.soundBank).then(() => {
                 target.addSound(soundObject);
                 this.emitTargetsUpdate();
