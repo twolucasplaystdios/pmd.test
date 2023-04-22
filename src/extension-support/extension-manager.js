@@ -34,6 +34,8 @@ const builtinExtensions = {
     // garbomuffin: *silence*
     // tw: core extension
     tw: () => require('../extensions/tw'),
+    // twFiles: replaces jgFiles as it works better on other devices
+    twFiles: () => require('../extensions/tw_files'),
 
     // jg: jeremyes esxsitenisonsnsn
     // jgFiles: support for reading user files
