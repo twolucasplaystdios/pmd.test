@@ -5,6 +5,8 @@ const maybeFormatMessage = require('../util/maybe-format-message');
 const BlockType = require('./block-type');
 const SecurityManager = require('./tw-security-manager');
 
+const AddonSwitches = require('./extension-addon-switchers');
+
 const IsLocal = String(window.location.href).startsWith(`http://localhost:`);
 
 // These extensions are currently built into the VM repository but should not be loaded at startup.
@@ -105,6 +107,8 @@ const builtinExtensions = {
     // lmsutilsblocks: ...
     lmsutilsblocks: () => require('../extensions/lmsutilsblocks')
 };
+
+const coreExtensionList = Object.getOwnPropertyNames(builtinExtensions);
 
 const preload = [
     "jwProto"
@@ -217,6 +221,14 @@ class ExtensionManager {
         preload.forEach(value => {
             this.loadExtensionURL(value);
         });
+    }
+
+    getCoreExtensionList() {
+        return coreExtensionList;
+    }
+
+    getAddonBlockSwitches() {
+        return AddonSwitches();
     }
 
     /**
