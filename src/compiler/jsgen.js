@@ -895,6 +895,20 @@ class JSGenerator {
             this.source += `}\n`;
             break;
         }
+        case 'control.waitOrUntil': {
+            const duration = this.localVariables.next();
+            const condition = this.descendInput(node.condition).asBoolean();
+            this.source += `thread.timer = timer();\n`;
+            this.source += `var ${duration} = Math.max(0, 1000 * ${this.descendInput(node.seconds).asNumber()});\n`;
+            this.requestRedraw();
+            // always yield at least once, even on 0 second durations
+            this.yieldNotWarp();
+            this.source += `while ((thread.timer.timeElapsed() < ${duration}) && (!(${condition}))) {\n`;
+            this.yieldStuckOrNotWarp();
+            this.source += '}\n';
+            this.source += 'thread.timer = null;\n';
+            break;
+        }
         case 'control.while':
             this.resetVariableInputs();
             this.source += `while (${this.descendInput(node.condition).asBoolean()}) {\n`;

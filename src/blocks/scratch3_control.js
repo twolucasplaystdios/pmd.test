@@ -140,18 +140,18 @@ class Scratch3ControlBlocks {
 
     waitOrUntil (args, util) {
         const condition = Cast.toBoolean(args.CONDITION);
-        if (condition) return;
-        if (util.stackTimerNeedsInit()) {
-            const duration = Math.max(0, 1000 * Cast.toNumber(args.DURATION));
+        if (!condition) {
+            if (util.stackTimerNeedsInit()) {
+                const duration = Math.max(0, 1000 * Cast.toNumber(args.DURATION));
 
-            util.startStackTimer(duration);
-            this.runtime.requestRedraw();
-            util.yield();
-        } else if (condition) {
-            util.defaultStatus();
-            this.runtime.requestRedraw();
-        } else if (!util.stackTimerFinished()) {
-            util.yield();
+                util.startStackTimer(duration);
+                this.runtime.requestRedraw();
+                util.yield();
+                return;
+            }
+            if (!util.stackTimerFinished()) {
+                util.yield();
+            }
         }
     }
 

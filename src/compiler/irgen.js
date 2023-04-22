@@ -963,6 +963,13 @@ class ScriptTreeGenerator {
                 kind: 'control.waitUntil',
                 condition: this.descendInputOfBlock(block, 'CONDITION')
             };
+        case 'control_waitsecondsoruntil':
+            this.script.yields = true;
+            return {
+                kind: 'control.waitOrUntil',
+                seconds: this.descendInputOfBlock(block, 'DURATION'),
+                condition: this.descendInputOfBlock(block, 'CONDITION')
+            };
         case 'control_while':
             this.analyzeLoop();
             return {
