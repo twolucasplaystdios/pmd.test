@@ -216,6 +216,8 @@ class JgPrismBlocks {
                     }),
                     blockType: BlockType.REPORTER,
                     disableMonitor: true,
+                    // these blocks will be replaced in the future
+                    // hideFromPalette: true,
                     arguments: {
                         INDEX: {
                             type: ArgumentType.NUMBER,
@@ -232,6 +234,8 @@ class JgPrismBlocks {
                     }),
                     blockType: BlockType.REPORTER,
                     disableMonitor: true,
+                    // these blocks will be replaced in the future
+                    // hideFromPalette: true,
                     arguments: {
                         URL: {
                             type: ArgumentType.STRING,
@@ -239,10 +243,10 @@ class JgPrismBlocks {
                         }
                     }
                 },
-                {
-                    blockType: BlockType.LABEL,
-                    text: "More Mouse Inputs"
-                },
+                // {
+                //     blockType: BlockType.LABEL,
+                //     text: "More Mouse Inputs"
+                // },
                 {
                     opcode: 'currentMouseScrollX',
                     text: formatMessage({
@@ -251,6 +255,8 @@ class JgPrismBlocks {
                         description: 'im too lazy to write these anymore tbh'
                     }),
                     disableMonitor: false,
+                    hideFromPalette: true,
+                    blockIconURI: warningIcon,
                     blockType: BlockType.REPORTER
                 },
                 {
@@ -261,6 +267,8 @@ class JgPrismBlocks {
                         description: 'im too lazy to write these anymore tbh'
                     }),
                     disableMonitor: false,
+                    hideFromPalette: true,
+                    blockIconURI: warningIcon,
                     blockType: BlockType.REPORTER
                 },
                 {
@@ -271,6 +279,8 @@ class JgPrismBlocks {
                         description: 'im too lazy to write these anymore tbh'
                     }),
                     disableMonitor: false,
+                    hideFromPalette: true,
+                    blockIconURI: warningIcon,
                     blockType: BlockType.REPORTER
                 },
                 {
@@ -309,10 +319,10 @@ class JgPrismBlocks {
                         }
                     }
                 },
-                {
-                    blockType: BlockType.LABEL,
-                    text: "String Character Codes"
-                },
+                // {
+                //     blockType: BlockType.LABEL,
+                //     text: "String Character Codes"
+                // },
                 {
                     opcode: 'fromCharacterCodeString',
                     text: formatMessage({
@@ -322,6 +332,8 @@ class JgPrismBlocks {
                     }),
                     blockType: BlockType.REPORTER,
                     disableMonitor: true,
+                    hideFromPalette: true,
+                    blockIconURI: warningIcon,
                     arguments: {
                         TEXT: {
                             type: ArgumentType.NUMBER,
@@ -338,6 +350,8 @@ class JgPrismBlocks {
                     }),
                     blockType: BlockType.REPORTER,
                     disableMonitor: true,
+                    hideFromPalette: true,
+                    blockIconURI: warningIcon,
                     arguments: {
                         TEXT: {
                             type: ArgumentType.STRING,
@@ -638,10 +652,22 @@ class JgPrismBlocks {
         return this.mouseScrollDelta.z;
     }
     base64Encode(args) {
-        return btoa(String(args.TEXT));
+        let result = "";
+        try {
+            result = btoa(String(args.TEXT));
+        } catch {
+            // what a shame
+        }
+        return result;
     }
     base64Decode(args) {
-        return atob(String(args.TEXT));
+        let result = "";
+        try {
+            result = atob(String(args.TEXT));
+        } catch {
+            // what a shame
+        }
+        return result;
     }
     fromCharacterCodeString(args) {
         return String.fromCharCode(args.TEXT);

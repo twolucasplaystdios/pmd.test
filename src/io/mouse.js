@@ -12,6 +12,9 @@ class Mouse {
         this._buttons = new Set();
         this.usesRightClickDown = false;
         this._isDown = false;
+        // pm: keep track of clicks
+        this._isClicked = false;
+        this._clickId = 0;
         /**
          * Reference to the owning Runtime.
          * Can be used, for example, to activate hats.
@@ -91,6 +94,23 @@ class Mouse {
 
             const previousDownState = this._isDown;
             this._isDown = data.isDown;
+            this._isClicked = data.isDown;
+            if (data.isDown) {
+                // increment click id
+                this._clickId++;
+                if (this._clickId > 16777216) {
+                    this._clickId = 0;
+                }
+            }
+            const thisClickId = this._clickId;
+            // reset after 2 ticks
+            this.runtime.once("RUNTIME_STEP_START", () => {
+                this.runtime.once("RUNTIME_STEP_START", () => {
+                    // check if click id is equal (otherwise we clicked this frame too)
+                    if (thisClickId !== this._clickId) return;
+                    this._isClicked = false;
+                })
+            })
 
             // Do not trigger if down state has not changed
             if (previousDownState === this._isDown) return;
@@ -160,6 +180,14 @@ class Mouse {
      */
     getIsDown () {
         return this._isDown;
+    }
+
+    /**
+     * pm: Get if the mouse was pressed down on this tick.
+     * @return {boolean} Is the mouse clicked?
+     */
+    getIsClicked () {
+        return this._isClicked;
     }
 
     /**

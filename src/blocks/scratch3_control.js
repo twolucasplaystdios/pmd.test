@@ -29,12 +29,15 @@ class Scratch3ControlBlocks {
             control_for_each: this.forEach,
             control_forever: this.forever,
             control_wait: this.wait,
+            control_waittick: this.waitTick,
+            control_waitsecondsoruntil: this.waitOrUntil,
             control_wait_until: this.waitUntil,
             control_if: this.if,
             control_if_else: this.ifElse,
             control_stop: this.stop,
             control_create_clone_of: this.createClone,
             control_delete_this_clone: this.deleteClone,
+            control_delete_clones_of: this.deleteClonesOf,
             control_get_counter: this.getCounter,
             control_incr_counter: this.incrCounter,
             control_clear_counter: this.clearCounter,
@@ -130,6 +133,27 @@ class Scratch3ControlBlocks {
             util.yield();
         }
     }
+    
+    waitTick (_, util) {
+        util.yieldTick();
+    }
+
+    waitOrUntil (args, util) {
+        const condition = Cast.toBoolean(args.CONDITION);
+        if (condition) return;
+        if (util.stackTimerNeedsInit()) {
+            const duration = Math.max(0, 1000 * Cast.toNumber(args.DURATION));
+
+            util.startStackTimer(duration);
+            this.runtime.requestRedraw();
+            util.yield();
+        } else if (condition) {
+            util.defaultStatus();
+            this.runtime.requestRedraw();
+        } else if (!util.stackTimerFinished()) {
+            util.yield();
+        }
+    }
 
     if (args, util) {
         const condition = Cast.toBoolean(args.CONDITION);
@@ -188,6 +212,30 @@ class Scratch3ControlBlocks {
         if (util.target.isOriginal) return;
         this.runtime.disposeTarget(util.target);
         this.runtime.stopForTarget(util.target);
+    }
+
+    deleteClonesOf (args, util) {
+        const cloneOption = Cast.toString(args.CLONE_OPTION);
+        // Set clone target
+        let cloneTarget;
+        if (cloneOption === '_myself_') {
+            cloneTarget = util.target;
+        } else {
+            cloneTarget = this.runtime.getSpriteTargetByName(cloneOption);
+        }
+
+        // If clone target is not found, return
+        if (!cloneTarget) return;
+        const sprite = cloneTarget.sprite;
+        if (!sprite) return;
+        if (!sprite.clones) return;
+        const cloneList = [].concat(sprite.clones);
+        cloneList.forEach(clone => {
+            if (clone.isOriginal) return;
+            if (clone.isStage) return;
+            this.runtime.disposeTarget(clone);
+            this.runtime.stopForTarget(clone);
+        })
     }
 
     getCounter () {

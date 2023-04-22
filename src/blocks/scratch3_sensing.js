@@ -82,8 +82,30 @@ class Scratch3SensingBlocks {
             sensing_getspritewithattrib: this.getspritewithattrib,
             sensing_directionTo: this.getDirectionToFrom,
             sensing_distanceTo: this.getDistanceToFrom,
-            sensing_isUpperCase: this.isCharecterUppercase
+            sensing_isUpperCase: this.isCharecterUppercase,
+            sensing_mouseclicked: this.mouseClicked,
+            sensing_keyhit: this.keyHit,
+            sensing_mousescrolling: this.mouseScrolling
         };
+    }
+
+    mouseClicked (_, util) {
+        return util.ioQuery('mouse', 'getIsClicked');
+    }
+    keyHit (args, util) {
+        return util.ioQuery('keyboard', 'getKeyIsHit', [args.KEY_OPTION]);
+    }
+    mouseScrolling (args, util) {
+        const delta = util.ioQuery('mouseWheel', 'getScrollDelta');
+        const option = args.SCROLL_OPTION;
+        switch (option) {
+            case "up":
+                return delta < 0;
+            case "down":
+                return delta > 0;
+            default:
+                return false;
+        }
     }
 
     isCharecterUppercase (args) {

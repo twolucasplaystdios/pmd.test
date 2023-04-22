@@ -17,6 +17,34 @@ class Scratch3EventBlocks {
             });
         });
 
+        this.runtime.on('KEY_HIT', key => {
+            this.runtime.startHats('event_whenkeyhit', {
+                KEY_OPTION: key
+            });
+            this.runtime.startHats('event_whenkeyhit', {
+                KEY_OPTION: 'any'
+            });
+        });
+
+        this.isStarting = false;
+        this.runtime.on('PROJECT_START_BEFORE_RESET', () => {
+            // we need to remember that the project is starting
+            // otherwise the stop block will run when flag is clicked
+            this.isStarting = true;
+        })
+        this.runtime.on('PROJECT_STOP_ALL', () => {
+            // if green flag is clicked, dont bother starting the hat
+            if (this.isStarting) {
+                this.isStarting = false;
+                return;
+            }
+            // we need to wait for runtime to step once
+            // otherwise the hat will be stopped as soon as it starts
+            this.runtime.once('RUNTIME_STEP_START', () => {
+                this.runtime.startHats('event_whenstopclicked');
+            })
+            this.isStarting = false;
+        })
         this.runtime.on('RUNTIME_STEP_START', () => {
             this.runtime.startHats('event_always');
         })
@@ -45,11 +73,20 @@ class Scratch3EventBlocks {
             event_whenflagclicked: {
                 restartExistingThreads: true
             },
+            event_whenstopclicked: {
+                restartExistingThreads: true
+            },
             event_always: {
                 restartExistingThreads: false,
                 edgeActivated: true
             },
             event_whenkeypressed: {
+                restartExistingThreads: false
+            },
+            event_whenkeyhit: {
+                restartExistingThreads: false
+            },
+            event_whenmousescrolled: {
                 restartExistingThreads: false
             },
             event_whenanything: {

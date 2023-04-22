@@ -487,6 +487,9 @@ class Runtime extends EventEmitter {
             this.setExternalCommunicationMethod('cloudVariables', enabled);
         });
 
+        // pm: remove listener warning
+        this.setMaxListeners(50);
+
         /**
          * If set to true, features such as reading colors from the user's webcam will be disabled
          * when the project has access to any external communication method to protect user privacy.
@@ -612,6 +615,14 @@ class Runtime extends EventEmitter {
     }
 
     /**
+     * Event name when the mouse is scrolled
+     * @const {string}
+     */
+    static get MOUSE_SCROLLED () {
+        return 'MOUSE_SCROLLED';
+    }
+
+    /**
      * Event name for compiler errors.
      * @const {string}
      */
@@ -626,6 +637,14 @@ class Runtime extends EventEmitter {
      */
     static get PROJECT_START () {
         return 'PROJECT_START';
+    }
+
+    /**
+     * Event name when the project is started (but before it runs stopAll)
+     * @const {string}
+     */
+    static get PROJECT_START_BEFORE_RESET () {
+        return 'PROJECT_START_BEFORE_RESET';
     }
 
     /**
@@ -2268,7 +2287,8 @@ class Runtime extends EventEmitter {
     /**
      * Start all threads that start with the green flag.
      */
-    greenFlag () {
+    greenFlag() {
+        this.emit(Runtime.PROJECT_START_BEFORE_RESET);
         this.stopAll();
         this.emit(Runtime.PROJECT_START);
         this.updateCurrentMSecs();

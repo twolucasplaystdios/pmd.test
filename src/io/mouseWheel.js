@@ -5,6 +5,8 @@ class MouseWheel {
          * @type{!Runtime}
          */
         this.runtime = runtime;
+        // pm: track scroll deltaY
+        this.scrollDelta = 0;
     }
 
     /**
@@ -12,16 +14,36 @@ class MouseWheel {
      * @param  {object} data Data from DOM event.
      */
     postData (data) {
+        // pm: store scroll delta
+        this.scrollDelta = data.deltaY;
+        // wait 2 ticks then set back to zero since we dont get a post for scroll stop
+        this.runtime.once("RUNTIME_STEP_START", () => {
+            this.runtime.once("RUNTIME_STEP_START", () => {
+                this.scrollDelta = 0;
+            })
+        })
+
         const matchFields = {};
+        // pm: we need to track scrolling seperately for another block
+        // we cant reuse matchFields as we need to give a different name
+        const scrollFields = {};
         if (data.deltaY < 0) {
             matchFields.KEY_OPTION = 'up arrow';
+            scrollFields.KEY_OPTION = 'up';
         } else if (data.deltaY > 0) {
             matchFields.KEY_OPTION = 'down arrow';
+            scrollFields.KEY_OPTION = 'down';
         } else {
             return;
         }
 
         this.runtime.startHats('event_whenkeypressed', matchFields);
+        this.runtime.startHats('event_whenmousescrolled', scrollFields);
+    }
+
+    // pm: expose scroll delta for sensing block
+    getScrollDelta () {
+        return this.scrollDelta;
     }
 }
 

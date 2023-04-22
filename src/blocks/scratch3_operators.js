@@ -41,7 +41,9 @@ class Scratch3OperatorsBlocks {
             operator_getLettersFromIndexToIndexInText: this.getLettersFromIndexToIndexInText,
             operator_readLineInMultilineText: this.readLineInMultilineText,
             operator_newLine: this.newLine,
+            operator_tabCharacter: this.tabCharacter,
             operator_stringify: this.stringify,
+            operator_boolify: this.boolify,
             operator_lerpFunc: this.lerpFunc,
             operator_advMath: this.advMath,
             operator_constrainnumber: this.constrainnumber,
@@ -49,8 +51,20 @@ class Scratch3OperatorsBlocks {
             operator_falseBoolean: this.false,
             operator_randomBoolean: this.randomBoolean,
             operator_indexOfTextInText: this.indexOfTextInText,
-            operator_toUpperLowerCase: this.toCase
+            operator_toUpperLowerCase: this.toCase,
+            operator_character_to_code: this.charToCode,
+            operator_code_to_character: this.codeToChar
         };
+    }
+
+    charToCode (args) {
+        const char = Cast.toString(args.ONE);
+        if (!char) return NaN;
+        return char.charCodeAt(0);
+    }
+    codeToChar (args) {
+        const code = Cast.toNumber(args.ONE);
+        return String.fromCharCode(code);
     }
 
     toCase (args) {
@@ -101,9 +115,13 @@ class Scratch3OperatorsBlocks {
         }
     }
 
-    stringify (args) { return args.ONE; }
+    stringify (args) { return Cast.toString(args.ONE); }
+
+    boolify (args) { return Cast.toBoolean(args.ONE); }
 
     newLine () { return "\n"; }
+
+    tabCharacter () { return "\t"; }
 
     readLineInMultilineText (args) {
         const line = (Cast.toNumber(args.LINE) ? Cast.toNumber(args.LINE) : 1) - 1;

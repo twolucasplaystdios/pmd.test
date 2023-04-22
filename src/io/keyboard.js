@@ -44,6 +44,8 @@ class Keyboard {
          * @type{Array.<string>}
          */
         this._keysPressed = [];
+        // pm: keep track of hit keys
+        this._keysHit = [];
         /**
          * Reference to the owning Runtime.
          * Can be used, for example, to activate hats.
@@ -164,7 +166,20 @@ class Keyboard {
             this.runtime.emit('KEY_PRESSED', scratchKey);
             // If not already present, add to the list.
             if (index < 0) {
+                // pm: key isnt present? we hit it for the first time
+                this.runtime.emit('KEY_HIT', scratchKey);
                 this._keysPressed.push(scratchKey);
+                // pm: keep track of hit keys
+                this._keysHit.push(scratchKey);
+                // wait 2 ticks then remove from list
+                this.runtime.once("RUNTIME_STEP_START", () => {
+                    this.runtime.once("RUNTIME_STEP_START", () => {
+                        const index = this._keysHit.indexOf(scratchKey);
+                        if (index > -1) {
+                            this._keysHit.splice(index, 1);
+                        }
+                    })
+                })
             }
         } else if (index > -1) {
             // If already present, remove from the list.
@@ -197,6 +212,19 @@ class Keyboard {
         }
         const scratchKey = this._keyArgToScratchKey(keyArg);
         return this._keysPressed.indexOf(scratchKey) > -1;
+    }
+    
+    /**
+     * pm: Get if key was hit this tick for a specified key.
+     * @param  {Any} keyArg key argument.
+     * @return {boolean} Is the specified key hit?
+     */
+    getKeyIsHit (keyArg) {
+        if (keyArg === 'any') {
+            return this._keysHit.length > 0;
+        }
+        const scratchKey = this._keyArgToScratchKey(keyArg);
+        return this._keysHit.indexOf(scratchKey) > -1;
     }
 
     // tw: expose last pressed key

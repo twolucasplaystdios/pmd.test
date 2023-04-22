@@ -109,6 +109,13 @@ class BlockUtility {
     }
 
     /**
+     * pm: Set the thread to the running state.
+     */
+    defaultStatus () {
+        this.thread.status = Thread.STATUS_RUNNING;
+    }
+
+    /**
      * Set the thread to yield until the next tick of the runtime.
      */
     yieldTick () {

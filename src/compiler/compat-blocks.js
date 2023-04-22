@@ -46,7 +46,9 @@ const statementBlocks = [
     "control_backToGreenFlag",
     'looks_setHorizTransform',
     'looks_setVertTransform',
-    'looks_layersSetLayer'
+    'looks_layersSetLayer',
+    'control_waitsecondsoruntil',
+    'control_delete_clones_of'
 ];
 
 const outputBlocks = [
@@ -92,7 +94,16 @@ const outputBlocks = [
     'sound_getEffectValue',
     'sound_getLength',
     "sensing_directionTo",
-    "sensing_distanceTo"
+    "sensing_distanceTo",
+    "operator_boolify",
+    "operator_tabCharacter",
+    "operator_character_to_code",
+    "operator_code_to_character",
+    "sensing_keyhit",
+    "sensing_mousescrolling",
+    "sensing_mouseclicked",
+    "sensing_thing_has_text",
+    "sensing_thing_has_number"
 ];
 
 module.exports = {
