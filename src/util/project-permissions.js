@@ -18,7 +18,7 @@ class ProjectPermissionManager {
         limitedWebsite: "display $0",
     };
     static permissionDrawbacks = {
-        javascript: ["do literally anything in your browser"],
+        javascript: [],
         camera: ["enable or disable your video camera"],
         allWebsites: ["display websites on screen", "visit potentionally bypassed websites", "display websites made inside the project", "play audio, show pop-ups, or follow redirects inside of any sites visited"],
         cameraPictures: ["take a screenshot while your camera is visible"],
