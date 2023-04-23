@@ -113,6 +113,7 @@ const builtinExtensions = {
 const coreExtensionList = Object.getOwnPropertyNames(builtinExtensions);
 
 const preload = [
+    "colors",
     "jwProto"
 ];
 

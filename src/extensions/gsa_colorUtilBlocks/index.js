@@ -2,6 +2,7 @@ const BlockType = require('../../extension-support/block-type');
 const ArgumentType = require('../../extension-support/argument-type');
 const Color = require('../../util/color');
 const {validateJSON} = require('../../util/json-block-utilities');
+const Cast = require('../../util/cast');
 
 /**
  * Class for TurboWarp blocks
@@ -27,10 +28,25 @@ class colorBlocks {
     getInfo () {
         return {
             id: 'colors',
-            name: 'Color Util',
+            name: 'Colors',
             color1: '#ff4c4c',
             color2: '#e64444',
             blocks: [
+                {
+                    opcode: 'colorPicker',
+                    text: '[OUTPUT] of [COLOR]',
+                    disableMonitor: true,
+                    arguments: {
+                        OUTPUT: {
+                            type: ArgumentType.STRING,
+                            menu: "outputColorType"
+                        },
+                        COLOR: {
+                            type: ArgumentType.COLOR
+                        }
+                    },
+                    blockType: BlockType.REPORTER
+                },
                 {
                     opcode: 'defaultBlack',
                     text: 'black',
@@ -45,7 +61,7 @@ class colorBlocks {
                 },
                 {
                     blockType: BlockType.LABEL,
-                    text: 'rgb'
+                    text: 'RGB'
                 },
                 {
                     opcode: 'rgbToDecimal',
@@ -82,7 +98,7 @@ class colorBlocks {
                 },
                 {
                     blockType: BlockType.LABEL,
-                    text: 'hex'
+                    text: 'Hex'
                 },
                 {
                     opcode: 'hexToDecimal',
@@ -119,7 +135,7 @@ class colorBlocks {
                 },
                 {
                     blockType: BlockType.LABEL,
-                    text: 'decimal'
+                    text: 'Decimal'
                 },
                 {
                     opcode: 'decimalToHex',
@@ -156,7 +172,7 @@ class colorBlocks {
                 },
                 {
                     blockType: BlockType.LABEL,
-                    text: 'hsv'
+                    text: 'HSV'
                 },
                 {
                     opcode: 'hsvToHex',
@@ -194,7 +210,7 @@ class colorBlocks {
                 "---",
                 {
                     blockType: BlockType.LABEL,
-                    text: 'other'
+                    text: 'Other'
                 },
                 {
                     opcode: 'csbMaker',
@@ -284,7 +300,18 @@ class colorBlocks {
                     },
                     blockType: BlockType.REPORTER
                 }
-            ]
+            ],
+            menus: {
+                outputColorType: {
+                    items: [
+                        { text: 'decimal', value: "decimal" },
+                        { text: 'rgb', value: "rgb" },
+                        { text: 'hsv', value: "hsv" },
+                        { text: 'hex', value: "hex" },
+                    ],
+                    acceptReporters: true
+                }
+            }
         };
     }
 
@@ -293,6 +320,21 @@ class colorBlocks {
     }
     defaultWhite () {
         return JSON.stringify(Color.RGB_WHITE);
+    }
+
+    colorPicker (args) {
+        const color = Cast.toNumber(args.COLOR);
+        const argsColor = { color: color };
+        switch (Cast.toString(args.OUTPUT).toLowerCase()) {
+            case "rgb":
+                return this.decimalToRgb(argsColor);
+            case "hsv":
+                return this.decimalToHsv(argsColor);
+            case "hex":
+                return this.decimalToHex(argsColor);
+            default:
+                return color;
+        }
     }
 
     csbMaker (args) {
