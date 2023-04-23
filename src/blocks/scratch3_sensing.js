@@ -78,6 +78,7 @@ class Scratch3SensingBlocks {
             sensing_userid: () => {}, // legacy no-op block
             sensing_regextest: this.regextest,
             sensing_thing_is_number: this.thing_is_number,
+            sensing_thing_has_number: this.thing_has_number,
             sensing_mobile: this.mobile,
             sensing_thing_is_text: this.thing_is_text,
             sensing_getspritewithattrib: this.getspritewithattrib,
@@ -175,6 +176,11 @@ class Scratch3SensingBlocks {
         // because nan is how numbers say the value put into me is not a number
         return isNaN(Number(args.TEXT1));
     }
+
+    thing_has_number(args) {
+        return /\d/.test(Cast.toString(args.TEXT1));
+    }
+
     mobile () {
         return typeof window !== 'undefined' && 'ontouchstart' in window;
     }
