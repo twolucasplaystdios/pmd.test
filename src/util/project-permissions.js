@@ -32,6 +32,12 @@ class ProjectPermissionManager {
     ];
     static disabledPermissions = [];
 
+    static get skipPermissionRequest() {
+        if (!vm) return false;
+        if (!vm.runtime) return false;
+        return vm.runtime.isProjectPermissionManagerDisabled === true;
+    }
+
     static GenerateCode(length) {
         return Array.from(new Array(length).keys()).map(() => { return Math.round(Math.random() * 9) }).join(""); // generates something like 281964
     }
@@ -39,6 +45,9 @@ class ProjectPermissionManager {
         return String(string).replace(/ /gmi, "").toLowerCase();
     }
     static RequestPermission(name, ...args) {
+        // packager
+        if (ProjectPermissionManager.skipPermissionRequest === true) return true;
+
         if (ProjectPermissionManager.disabledPermissions.includes(name)) return false;
 
         if (name == "limitedWebsite") {
@@ -84,6 +93,9 @@ class ProjectPermissionManager {
         return allowed;
     };
     static RequestAllPermissions() {
+        // packager
+        if (ProjectPermissionManager.skipPermissionRequest === true) return true;
+        
         if (ProjectPermissionManager.disabledPermissions.includes("all")) return false;
         const permissions = [];
         Object.getOwnPropertyNames(ProjectPermissionManager.permissions).forEach(permissionName => {

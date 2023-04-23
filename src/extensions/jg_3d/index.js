@@ -67,6 +67,7 @@ class Jg3DBlocks {
         canvas.style.height = "100%";
     }
     appendElementAboveScratchCanvas(element) {
+        element.style.zIndex = 450;
         this.getScratchCanvas().parentElement.prepend(element);
     }
     needsToResizeCanvas() {

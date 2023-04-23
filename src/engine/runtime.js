@@ -475,6 +475,12 @@ class Runtime extends EventEmitter {
         this.isPackaged = false;
 
         /**
+         * PM: In the packager, the Project Permission Manager can be disabled.
+         * This option is used by the PenguinMod Packager.
+         */
+        this.isProjectPermissionManagerDisabled = false;
+
+        /**
          * Contains information about the external communication methods that the scripts inside the project
          * can use to send data from inside the project to an external server.
          * Do not update this directly. Use Runtime.setExternalCommunicationMethod() instead.
