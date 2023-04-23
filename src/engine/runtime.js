@@ -470,7 +470,7 @@ class Runtime extends EventEmitter {
          * to make projects load faster and use less memory.
          * This is not designed to protect projects from copying as someone can still copy the data that
          * gets fed into the runtime in the first place.
-         * This mode is used by the TurboWarp Packager.
+         * This mode is used by the PenguinMod Packager and the TurboWarp Packager.
          */
         this.isPackaged = false;
 
