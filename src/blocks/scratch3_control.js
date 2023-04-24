@@ -40,10 +40,20 @@ class Scratch3ControlBlocks {
             control_delete_clones_of: this.deleteClonesOf,
             control_get_counter: this.getCounter,
             control_incr_counter: this.incrCounter,
+            control_decr_counter: this.decrCounter,
+            control_set_counter: this.setCounter,
             control_clear_counter: this.clearCounter,
             control_all_at_once: this.allAtOnce,
             control_backToGreenFlag: this.backToGreenFlag,
             control_if_return_else_return: this.if_return_else_return
+        };
+    }
+
+    getMonitored () {
+        return {
+            control_get_counter: {
+                getId: () => 'get_counter'
+            }
         };
     }
 
@@ -242,12 +252,21 @@ class Scratch3ControlBlocks {
         return this._counter;
     }
 
+    setCounter (args) {
+        const num = Cast.toNumber(args.VALUE);
+        this._counter = num;
+    }
+
     clearCounter () {
         this._counter = 0;
     }
 
     incrCounter () {
         this._counter++;
+    }
+    
+    decrCounter () {
+        this._counter--;
     }
 
     allAtOnce (util) {

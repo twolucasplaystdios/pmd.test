@@ -10,6 +10,8 @@
 const statementBlocks = [
     'control_clear_counter',
     'control_incr_counter',
+    'control_decr_counter',
+    'control_set_counter',
     'looks_hideallsprites',
     'looks_say',
     'looks_sayforsecs',
