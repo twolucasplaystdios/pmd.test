@@ -35,6 +35,7 @@ class Scratch3ControlBlocks {
             control_if: this.if,
             control_if_else: this.ifElse,
             control_stop: this.stop,
+            control_stop_sprite: this.stopSprite,
             control_create_clone_of: this.createClone,
             control_delete_this_clone: this.deleteClone,
             control_delete_clones_of: this.deleteClonesOf,
@@ -191,6 +192,21 @@ class Scratch3ControlBlocks {
         } else if (option === 'this script') {
             util.stopThisScript();
         }
+    }
+
+    stopSprite (args, util) {
+        const option = args.STOP_OPTION;
+        // Set target
+        let target;
+        if (option === '_myself_') {
+            target = util.target;
+        } else if (option === '_stage_') {
+            target = this.runtime.getTargetForStage();
+        } else {
+            target = this.runtime.getSpriteTargetByName(option);
+        }
+        if (!target) return;
+        this.runtime.stopForTarget(target);
     }
 
     createClone (args, util) {

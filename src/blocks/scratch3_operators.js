@@ -23,12 +23,16 @@ class Scratch3OperatorsBlocks {
             operator_divide: this.divide,
             operator_lt: this.lt,
             operator_equals: this.equals,
+            operator_notequal: this.notequals,
             operator_gt: this.gt,
+            operator_ltorequal: this.ltorequal,
+            operator_gtorequal: this.gtorequal,
             operator_and: this.and,
             operator_or: this.or,
             operator_not: this.not,
             operator_random: this.random,
             operator_join: this.join,
+            operator_join3: this.join3,
             operator_letter_of: this.letterOf,
             operator_length: this.length,
             operator_contains: this.contains,
@@ -38,6 +42,7 @@ class Scratch3OperatorsBlocks {
             operator_advlog: this.advlog,
             operator_regexmatch: this.regexmatch,
             operator_replaceAll: this.replaceAll,
+            operator_replaceFirst: this.replaceFirst,
             operator_getLettersFromIndexToIndexInText: this.getLettersFromIndexToIndexInText,
             operator_readLineInMultilineText: this.readLineInMultilineText,
             operator_newLine: this.newLine,
@@ -51,9 +56,13 @@ class Scratch3OperatorsBlocks {
             operator_falseBoolean: this.false,
             operator_randomBoolean: this.randomBoolean,
             operator_indexOfTextInText: this.indexOfTextInText,
+            operator_lastIndexOfTextInText: this.lastIndexOfTextInText,
             operator_toUpperLowerCase: this.toCase,
             operator_character_to_code: this.charToCode,
-            operator_code_to_character: this.codeToChar
+            operator_code_to_character: this.codeToChar,
+            operator_textStartsOrEndsWith: this.textStartsOrEndsWith,
+            operator_countAppearTimes: this.countAppearTimes,
+            operator_textIncludesLetterFrom: this.textIncludesLetterFrom
         };
     }
 
@@ -85,6 +94,49 @@ class Scratch3OperatorsBlocks {
             index = searchin.indexOf(lookfor) + 1;
         }
         return index;
+    }
+
+    lastIndexOfTextInText (args) {
+        const lookfor = Cast.toString(args.TEXT1);
+        const searchin = Cast.toString(args.TEXT2);
+        let index = 0;
+        if (searchin.includes(lookfor)) {
+            index = searchin.lastIndexOf(lookfor) + 1;
+        }
+        return index;
+    }
+
+    textStartsOrEndsWith (args) {
+        const text = Cast.toString(args.TEXT1);
+        const startsOrEnds = Cast.toString(args.OPTION);
+        const withh = Cast.toString(args.TEXT2);
+        return (startsOrEnds === "starts") ? (text.startsWith(withh)) : (text.endsWith(withh));
+    }
+
+    countAppearTimes (args) {
+        const text = Cast.toString(args.TEXT2);
+        const otherText = Cast.toString(args.TEXT1);
+
+        const aray = text.split(otherText);
+        if (aray.length <= 1) {
+            return 0;
+        }
+
+        return aray.length - 1;
+    }
+
+    textIncludesLetterFrom (args) {
+        const text = Cast.toString(args.TEXT1);
+        const from = Cast.toString(args.TEXT2);
+
+        let includes = false;
+
+        const aray = from.split("");
+        aray.forEach(i => {
+            if (text.includes(i)) includes = true;
+        })
+
+        return includes;
     }
 
     true () { return true; }
@@ -139,7 +191,10 @@ class Scratch3OperatorsBlocks {
     }
 
     replaceAll (args) {
-        return args.text.replaceAll(args.term, args.res);
+        return Cast.toString(args.text).replaceAll(args.term, args.res);
+    }
+    replaceFirst (args) {
+        return Cast.toString(args.text).replace(args.term, args.res);
     }
 
     regexmatch (args) {
@@ -173,8 +228,20 @@ class Scratch3OperatorsBlocks {
         return Cast.compare(args.OPERAND1, args.OPERAND2) === 0;
     }
 
+    notequals (args) {
+        return !this.equals(args);
+    }
+
     gt (args) {
         return Cast.compare(args.OPERAND1, args.OPERAND2) > 0;
+    }
+
+    gtorequal (args) {
+        return !this.lt(args);
+    }
+
+    ltorequal (args) {
+        return !this.gt(args);
     }
 
     and (args) {
@@ -207,6 +274,10 @@ class Scratch3OperatorsBlocks {
 
     join (args) {
         return Cast.toString(args.STRING1) + Cast.toString(args.STRING2);
+    }
+
+    join3 (args) {
+        return Cast.toString(args.STRING1) + Cast.toString(args.STRING2) + Cast.toString(args.STRING3);
     }
 
     letterOf (args) {

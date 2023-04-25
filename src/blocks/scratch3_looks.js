@@ -350,12 +350,15 @@ class Scratch3LooksBlocks {
             looks_show: this.show,
             looks_hide: this.hide,
             looks_getSpriteVisible: this.getSpriteVisible,
+            looks_getOtherSpriteVisible: this.getOtherSpriteVisible,
             looks_hideallsprites: () => {}, // legacy no-op block
             looks_switchcostumeto: this.switchCostume,
             looks_switchbackdropto: this.switchBackdrop,
             looks_switchbackdroptoandwait: this.switchBackdropAndWait,
             looks_nextcostume: this.nextCostume,
             looks_nextbackdrop: this.nextBackdrop,
+            looks_previouscostume: this.previousCostume,
+            looks_previousbackdrop: this.previousBackdrop,
             looks_changeeffectby: this.changeEffect,
             looks_seteffectto: this.setEffect,
             looks_cleargraphiceffects: this.clearEffects,
@@ -375,7 +378,8 @@ class Scratch3LooksBlocks {
             looks_stretchGetX: this.getStretchX,
             looks_stretchGetY: this.getStretchY,
             looks_sayWidth: this.getBubbleWidth,
-            looks_sayHeight: this.getBubbleHeight
+            looks_sayHeight: this.getBubbleHeight,
+            looks_changeVisibilityOfSprite: this.showOrHideSprite,
         };
     }
 
@@ -519,9 +523,41 @@ class Scratch3LooksBlocks {
         util.target.setVisible(false);
         this._renderBubble(util.target);
     }
+
+    showOrHideSprite (args, util) {
+        const option = args.VISIBLE_OPTION;
+        const visibleOption = Cast.toString(args.VISIBLE_TYPE).toLowerCase();
+        // Set target
+        let target;
+        if (option === '_myself_') {
+            target = util.target;
+        } else if (option === '_stage_') {
+            target = this.runtime.getTargetForStage();
+        } else {
+            target = this.runtime.getSpriteTargetByName(option);
+        }
+        if (!target) return;
+        target.setVisible(visibleOption === 'show');
+        this._renderBubble(target);
+    }
     
     getSpriteVisible (args, util) {
         return util.target.visible;
+    }
+
+    getOtherSpriteVisible (args, util) {
+        const option = args.VISIBLE_OPTION;
+        // Set target
+        let target;
+        if (option === '_myself_') {
+            target = util.target;
+        } else if (option === '_stage_') {
+            target = this.runtime.getTargetForStage();
+        } else {
+            target = this.runtime.getSpriteTargetByName(option);
+        }
+        if (!target) return;
+        return target.visible;
     }
     
     getEffectValue (args, util) {
@@ -625,6 +661,12 @@ class Scratch3LooksBlocks {
         );
     }
 
+    previousCostume (args, util) {
+        this._setCostume(
+            util.target, util.target.currentCostume - 1, true
+        );
+    }
+
     switchBackdrop (args) {
         this._setBackdrop(this.runtime.getTargetForStage(), args.BACKDROP);
     }
@@ -671,6 +713,13 @@ class Scratch3LooksBlocks {
         const stage = this.runtime.getTargetForStage();
         this._setBackdrop(
             stage, stage.currentCostume + 1, true
+        );
+    }
+
+    previousBackdrop() {
+        const stage = this.runtime.getTargetForStage();
+        this._setBackdrop(
+            stage, stage.currentCostume - 1, true
         );
     }
 

@@ -920,7 +920,29 @@ class JSGenerator {
             }
             this.source += `}\n`;
             break;
-
+        case 'control.runAsSprite':
+            const stage = 'runtime.getTargetForStage()';
+            const sprite = this.descendInput(node.sprite).asString();
+            const isStage = sprite === '"_stage_"';
+            
+            // save the original target
+            const originalTarget = this.localVariables.next();
+            this.source += `const ${originalTarget} = target;\n`;
+            // pm: unknown behavior may appear so lets use try catch
+            this.source += `try {\n`;
+            // set target
+            const targetSprite = isStage ? stage : `runtime.getSpriteTargetByName(${sprite})`;
+            this.source += `const target = (${targetSprite});\n`;
+            // only run if target is found
+            this.source += `if (target) {\n`;
+            // set thread target (for compat blocks)
+            this.source += `thread.target = target;\n`;
+            this.descendStack(node.substack, new Frame(false));
+            // undo thread target change
+            this.source += `thread.target = ${originalTarget};\n`;
+            this.source += `}\n`;
+            this.source += `} catch (e) { console.log('as sprite function failed;', e); thread.target = ${originalTarget}; }\n`;
+            break;
         case 'event.broadcast':
             this.source += `startHats("event_whenbroadcastreceived", { BROADCAST_OPTION: ${this.descendInput(node.broadcast).asString()} });\n`;
             this.resetVariableInputs();

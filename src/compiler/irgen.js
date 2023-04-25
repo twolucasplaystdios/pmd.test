@@ -979,7 +979,12 @@ class ScriptTreeGenerator {
                 // We should consider analyzing this like we do for control_repeat_until
                 warpTimer: false
             };
-
+        case 'control_run_as_sprite':
+            return {
+                kind: 'control.runAsSprite',
+                sprite: this.descendInputOfBlock(block, 'RUN_AS_OPTION'),
+                substack: this.descendSubstack(block, 'SUBSTACK')
+            };
         case 'data_addtolist':
             return {
                 kind: 'list.add',

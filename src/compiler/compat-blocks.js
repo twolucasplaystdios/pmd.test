@@ -50,7 +50,11 @@ const statementBlocks = [
     'looks_setVertTransform',
     'looks_layersSetLayer',
     'control_waitsecondsoruntil',
-    'control_delete_clones_of'
+    'control_delete_clones_of',
+    'control_stop_sprite',
+    'looks_changeVisibilityOfSprite',
+    'looks_previouscostume',
+    'looks_previousbackdrop'
 ];
 
 const outputBlocks = [
@@ -106,7 +110,17 @@ const outputBlocks = [
     "sensing_mouseclicked",
     "sensing_thing_has_text",
     "sensing_thing_has_number",
-    "sensing_objecttouchingobject"
+    "sensing_objecttouchingobject",
+    'looks_getOtherSpriteVisible',
+    'operator_gtorequal',
+    'operator_ltorequal',
+    'operator_notequal',
+    'operator_join3',
+    'operator_replaceFirst',
+    'operator_lastIndexOfTextInText',
+    'operator_countAppearTimes',
+    'operator_textIncludesLetterFrom',
+    'operator_textStartsOrEndsWith'
 ];
 
 module.exports = {
