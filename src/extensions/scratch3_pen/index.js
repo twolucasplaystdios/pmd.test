@@ -818,12 +818,15 @@ class Scratch3PenBlocks {
         return new Promise(resolve => {
             const ctx = this._getBitmapCanvas();
 
+            const requestedSizing = [args.WIDTH, args.HEIGHT];
+            const calculatedSizing = [requestedSizing[0] * this._penRes, requestedSizing[1] * this._penRes];
+
             const image = new Image();
             image.onload = () => {
                 const realX = (args.X * this._penRes) - (this.bitmapCanvas.width / 2);
                 const realY = (args.Y * this._penRes) + (this.bitmapCanvas.height / 2);
                 ctx.rotate((args.ROTATE - 90) * (Math.PI / 180));
-                ctx.drawImage(image, realX, -realY, args.WIDTH, args.HEIGHT);
+                ctx.drawImage(image, realX, -realY, calculatedSizing[0], calculatedSizing[1]);
 
                 this._drawContextToPen(ctx);
                 resolve();
