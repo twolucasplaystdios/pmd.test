@@ -104,6 +104,8 @@ class Scratch3PenBlocks {
 
         runtime.on('targetWasCreated', this._onTargetCreated);
         runtime.on('RUNTIME_DISPOSED', this.clear.bind(this));
+
+        this.preloadedImages = {};
     }
 
     /**
@@ -451,6 +453,32 @@ class Scratch3PenBlocks {
                     }
                 },
                 {
+                    opcode: 'preloadUriImage',
+                    blockType: BlockType.COMMAND,
+                    text: 'preload image [URI] as [NAME]',
+                    arguments: {
+                        URI: {
+                            type: ArgumentType.STRING,
+                            defaultValue: DefaultDrawImage
+                        },
+                        NAME: {
+                            type: ArgumentType.STRING,
+                            defaultValue: "preloaded image"
+                        }
+                    }
+                },
+                {
+                    opcode: 'unloadUriImage',
+                    blockType: BlockType.COMMAND,
+                    text: 'unload image [NAME]',
+                    arguments: {
+                        NAME: {
+                            type: ArgumentType.STRING,
+                            defaultValue: "preloaded image"
+                        }
+                    }
+                },
+                {
                     opcode: 'drawUriImage',
                     blockType: BlockType.COMMAND,
                     text: formatMessage({
@@ -503,7 +531,54 @@ class Scratch3PenBlocks {
                             defaultValue: 64
                         },
                         ROTATE: {
+                            type: ArgumentType.ANGLE,
+                            defaultValue: 90
+                        }
+                    }
+                },
+                {
+                    opcode: 'drawUriImageWHCX1Y1X2Y2R',
+                    blockType: BlockType.COMMAND,
+                    text: 'draw image [URI] at x:[X] y:[Y] width:[WIDTH] height:[HEIGHT] cropping from x:[CROPX] y:[CROPY] width:[CROPW] height:[CROPH] pointed at: [ROTATE]',
+                    arguments: {
+                        URI: {
+                            type: ArgumentType.STRING,
+                            defaultValue: DefaultDrawImage
+                        },
+                        X: {
                             type: ArgumentType.NUMBER,
+                            defaultValue: 0
+                        },
+                        Y: {
+                            type: ArgumentType.NUMBER,
+                            defaultValue: 0
+                        },
+                        WIDTH: {
+                            type: ArgumentType.NUMBER,
+                            defaultValue: 64
+                        },
+                        HEIGHT: {
+                            type: ArgumentType.NUMBER,
+                            defaultValue: 64
+                        },
+                        CROPX: {
+                            type: ArgumentType.NUMBER,
+                            defaultValue: 0
+                        },
+                        CROPY: {
+                            type: ArgumentType.NUMBER,
+                            defaultValue: 0
+                        },
+                        CROPW: {
+                            type: ArgumentType.NUMBER,
+                            defaultValue: 100
+                        },
+                        CROPH: {
+                            type: ArgumentType.NUMBER,
+                            defaultValue: 100
+                        },
+                        ROTATE: {
+                            type: ArgumentType.ANGLE,
                             defaultValue: 90
                         }
                     }
@@ -796,44 +871,121 @@ class Scratch3PenBlocks {
         this._drawContextToPen(ctx);
     }
 
-    drawUriImage (args) {
-        return new Promise(resolve => {
-            const ctx = this._getBitmapCanvas();
+    _drawUriImagePromiseHandler (thiss) {
+        return ((resolve, args, preloadedImage) => {
+            let URI, X, Y, WIDTH, HEIGHT, ROTATE, CROPX, CROPY, CROPW, CROPH = null;
+            if (args) {
+                URI    = args.URI;
+                X      = args.X;
+                Y      = args.Y;
+                WIDTH  = args.WIDTH;
+                HEIGHT = args.HEIGHT;
+                ROTATE = args.ROTATE;
+                CROPX  = args.CROPX;
+                CROPY  = args.CROPY;
+                CROPW  = args.CROPW;
+                CROPH  = args.CROPH;
+            }
 
+            const ctx = thiss._getBitmapCanvas();
+
+            // convert NaN to 0
+            const requestedSizing = [
+                Cast.toNumber(WIDTH),
+                Cast.toNumber(HEIGHT)
+            ];
+
+            function handler(image) {
+                const realX = (Cast.toNumber(X) * thiss._penRes) - (thiss.bitmapCanvas.width / 2);
+                const realY = (Cast.toNumber(Y) * thiss._penRes) + (thiss.bitmapCanvas.height / 2);
+                if (requestedSizing[0] || requestedSizing[1]) {
+                    ctx.rotate((Cast.toNumber(ROTATE) - 90) * (Math.PI / 180));
+
+                    // if one of these is not specified,
+                    // use sizes from the image
+                    if (!requestedSizing[0]) {
+                        requestedSizing[0] = image.width;
+                    }
+                    if (!requestedSizing[1]) {
+                        requestedSizing[1] = image.height;
+                    }
+
+                    const calculatedSizing = [requestedSizing[0] * thiss._penRes, requestedSizing[1] * thiss._penRes];
+                    // check for cropx only since they are all
+                    // required for a proper crop
+                    if (typeof CROPX !== "undefined") {
+                        // we dont need to correct positions
+                        // or sizing since its relative to image
+                        // not the canvas size
+                        const CX = Cast.toNumber(CROPX);
+                        const CY = Cast.toNumber(CROPY);
+                        // convert NaN to 0
+                        const requestedCSizing = [
+                            Cast.toNumber(CROPW),
+                            Cast.toNumber(CROPH)
+                        ];
+
+                        ctx.drawImage(image, CX, CY, requestedCSizing[0], requestedCSizing[1], realX, -realY, calculatedSizing[0], calculatedSizing[1]);
+                    } else {
+                        ctx.drawImage(image, realX, -realY, calculatedSizing[0], calculatedSizing[1]);
+                    }
+                } else {
+                    ctx.drawImage(image, realX, -realY);
+                }
+
+                thiss._drawContextToPen(ctx);
+                if (resolve) resolve();
+            }
+            if (preloadedImage) {
+                return handler(preloadedImage);
+            }
             const image = new Image();
-            image.onload = () => {
-                const realX = (args.X * this._penRes) - (this.bitmapCanvas.width / 2);
-                const realY = (args.Y * this._penRes) + (this.bitmapCanvas.height / 2);
-                ctx.drawImage(image, realX, -realY);
-
-                this._drawContextToPen(ctx);
-                resolve();
-            };
+            image.onload = () => handler(image);
             image.onerror = () => resolve(); // ignore loading errors lmao!
-            image.src = args.URI;
+            image.src = Cast.toString(URI);
         });
     }
-
-    drawUriImageWHR (args) {
+    _drawUriImage(args) {
+        const thiss = this;
+        const uri = Cast.toString(args.URI);
+        if (this.preloadedImages.hasOwnProperty(uri)) {
+            // we already loaded this image before
+            const func = this._drawUriImagePromiseHandler(thiss);
+            return func(null, args, this.preloadedImages[uri]);
+        }
         return new Promise(resolve => {
-            const ctx = this._getBitmapCanvas();
+            const func = this._drawUriImagePromiseHandler(thiss);
+            func(resolve, args);
+        })
+    }
 
-            const requestedSizing = [args.WIDTH, args.HEIGHT];
-            const calculatedSizing = [requestedSizing[0] * this._penRes, requestedSizing[1] * this._penRes];
+    drawUriImage (args) {
+        return this._drawUriImage(args);
+    }
+    drawUriImageWHR (args) {
+        return this._drawUriImage(args);
+    }
+    drawUriImageWHCX1Y1X2Y2R (args) {
+        return this._drawUriImage(args);
+    }
 
+    preloadUriImage ({ URI, NAME }) {
+        return new Promise(resolve => {
             const image = new Image();
             image.onload = () => {
-                const realX = (args.X * this._penRes) - (this.bitmapCanvas.width / 2);
-                const realY = (args.Y * this._penRes) + (this.bitmapCanvas.height / 2);
-                ctx.rotate((args.ROTATE - 90) * (Math.PI / 180));
-                ctx.drawImage(image, realX, -realY, calculatedSizing[0], calculatedSizing[1]);
-
-                this._drawContextToPen(ctx);
+                this.preloadedImages[Cast.toString(NAME)] = image;
                 resolve();
-            };
-            image.onerror = () => resolve(); // ignore loading errors lmao!
-            image.src = args.URI;
-        });
+            }
+            image.onerror = resolve; // ignore loading errors lmao!
+            image.src = Cast.toString(URI);
+        })
+    }
+    unloadUriImage ({ NAME }) {
+        const name = Cast.toString(NAME);
+        if (this.preloadedImages.hasOwnProperty(name)) {
+            this.preloadedImages[name].remove();
+            delete this.preloadedImages[name];
+        }
     }
 
     drawRect (args) {
