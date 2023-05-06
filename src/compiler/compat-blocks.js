@@ -120,7 +120,11 @@ const outputBlocks = [
     'operator_lastIndexOfTextInText',
     'operator_countAppearTimes',
     'operator_textIncludesLetterFrom',
-    'operator_textStartsOrEndsWith'
+    'operator_textStartsOrEndsWith',
+    'sensing_fingerdown',
+    'sensing_fingertapped',
+    'sensing_fingerx',
+    'sensing_fingery'
 ];
 
 module.exports = {

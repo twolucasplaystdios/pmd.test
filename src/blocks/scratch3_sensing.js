@@ -87,7 +87,11 @@ class Scratch3SensingBlocks {
             sensing_isUpperCase: this.isCharecterUppercase,
             sensing_mouseclicked: this.mouseClicked,
             sensing_keyhit: this.keyHit,
-            sensing_mousescrolling: this.mouseScrolling
+            sensing_mousescrolling: this.mouseScrolling,
+            sensing_fingerdown: this.fingerDown,
+            sensing_fingertapped: this.fingerTapped,
+            sensing_fingerx: this.getFingerX,
+            sensing_fingery: this.getFingerY
         };
     }
 
@@ -366,6 +370,22 @@ class Scratch3SensingBlocks {
 
     getMouseDown (args, util) {
         return util.ioQuery('mouse', 'getIsDown');
+    }
+
+    getFingerX (args, util) {
+        return util.ioQuery('touch', 'getScratchX', [Cast.toNumber(args.FINGER_OPTION) - 1]);
+    }
+
+    getFingerY (args, util) {
+        return util.ioQuery('touch', 'getScratchY', [Cast.toNumber(args.FINGER_OPTION) - 1]);
+    }
+
+    fingerDown (args, util) {
+        return util.ioQuery('touch', 'getIsDown', [Cast.toNumber(args.FINGER_OPTION) - 1]);
+    }
+
+    fingerTapped (args, util) {
+        return util.ioQuery('touch', 'getIsTapped', [Cast.toNumber(args.FINGER_OPTION) - 1]);
     }
 
     current (args) {
