@@ -237,11 +237,27 @@ class RenderedTarget extends Target {
     }
 
     /**
+     * pm: Rotation style for "look at"/flipping & spinning.
+     * @type {string}
+     */
+    static get ROTATION_STYLE_LOOK_AT () {
+        return 'look at';
+    }
+
+    /**
      * Rotation style for "left-right"/flipping.
      * @type {string}
      */
     static get ROTATION_STYLE_LEFT_RIGHT () {
         return 'left-right';
+    }
+
+    /**
+     * pm: Rotation style for "up-down"/flipping.
+     * @type {string}
+     */
+    static get ROTATION_STYLE_UP_DOWN () {
+        return 'up-down';
     }
 
     /**
@@ -326,6 +342,15 @@ class RenderedTarget extends Target {
             finalDirection = 90;
             const scaleFlip = (this.direction < 0) ? -1 : 1;
             finalScale = [scaleFlip * this.size, this.size];
+        } else if (this.rotationStyle === RenderedTarget.ROTATION_STYLE_UP_DOWN) {
+            // pm: Force rendered direction to be 90, and flip drawable if needed.
+            finalDirection = 90;
+            const scaleFlip = ((this.direction > 90) || (this.direction < -90)) ? -1 : 1;
+            finalScale = [this.size, scaleFlip * this.size];
+        } else if (this.rotationStyle === RenderedTarget.ROTATION_STYLE_LOOK_AT) {
+            // pm: Flip drawable if we are looking left.
+            const scaleFlip = (this.direction < 0) ? -1 : 1;
+            finalScale = [this.size, scaleFlip * this.size];
         }
         finalScale[0] *= this.stretch[0] / 100;
         finalScale[1] *= this.stretch[1] / 100;
@@ -631,6 +656,10 @@ class RenderedTarget extends Target {
             this.rotationStyle = RenderedTarget.ROTATION_STYLE_ALL_AROUND;
         } else if (rotationStyle === RenderedTarget.ROTATION_STYLE_LEFT_RIGHT) {
             this.rotationStyle = RenderedTarget.ROTATION_STYLE_LEFT_RIGHT;
+        } else if (rotationStyle === RenderedTarget.ROTATION_STYLE_UP_DOWN) {
+            this.rotationStyle = RenderedTarget.ROTATION_STYLE_UP_DOWN;
+        } else if (rotationStyle === RenderedTarget.ROTATION_STYLE_LOOK_AT) {
+            this.rotationStyle = RenderedTarget.ROTATION_STYLE_LOOK_AT;
         }
         if (this.renderer) {
             const {direction, scale} = this._getRenderedDirectionAndScale();
