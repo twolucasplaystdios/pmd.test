@@ -28,6 +28,7 @@ class Scratch3OperatorsBlocks {
             operator_ltorequal: this.ltorequal,
             operator_gtorequal: this.gtorequal,
             operator_and: this.and,
+            operator_nand: this.nand,
             operator_or: this.or,
             operator_not: this.not,
             operator_random: this.random,
@@ -67,7 +68,8 @@ class Scratch3OperatorsBlocks {
             operator_javascript_boolean: this.javascriptBoolean
         };
     }
-
+    
+    
     // eslint-disable-next-line no-unused-vars
     javascriptOutput (args, util, realBlockInfo) {
         const js = Cast.toString(args.JS);
@@ -259,6 +261,10 @@ class Scratch3OperatorsBlocks {
 
     and (args) {
         return Cast.toBoolean(args.OPERAND1) && Cast.toBoolean(args.OPERAND2);
+    }
+    
+    nand (args) {
+        return Cast.toBoolean(!(args.OPERAND1) && Cast.toBoolean(args.OPERAND2));
     }
 
     or (args) {
