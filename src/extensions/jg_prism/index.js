@@ -541,13 +541,13 @@ class JgPrismBlocks {
         //     if (!this.isJSPermissionGranted) return;
         // }
         // // otherwise
-        // try {
-        //     // eslint-disable-next-line no-eval
-        //     eval(String(args.JAVASCRIPT));
-        // } catch (e) {
-        //     alert(e);
-        //     console.error(e);
-        // }
+        try {
+            // eslint-disable-next-line no-eval
+            eval(String(args.JAVASCRIPT));
+        } catch (e) {
+            alert(e);
+            console.error(e);
+        }
     }
     // eslint-disable-next-line no-unused-vars
     evaluate2() {
@@ -556,16 +556,16 @@ class JgPrismBlocks {
         //     if (!this.isJSPermissionGranted) return "";
         // }
         // // otherwise
-        // let result = "";
-        // try {
-        //     // eslint-disable-next-line no-eval
-        //     result = eval(String(args.JAVASCRIPT));
-        // } catch (e) {
-        //     result = e;
-        //     console.error(e);
-        // }
-        // return result;
-        return "";
+        let result = "";
+        try {
+            // eslint-disable-next-line no-eval
+            result = eval(String(args.JAVASCRIPT));
+        } catch (e) {
+            result = e;
+            console.error(e);
+        }
+        return result;
+        // return "";
     }
     // eslint-disable-next-line no-unused-vars
     evaluate3() {
@@ -574,17 +574,17 @@ class JgPrismBlocks {
         //     if (!this.isJSPermissionGranted) return false;
         // }
         // // otherwise
-        // let result = true;
-        // try {
-        //     // eslint-disable-next-line no-eval
-        //     result = eval(String(args.JAVASCRIPT));
-        // } catch (e) {
-        //     result = false;
-        //     console.error(e);
-        // }
+        let result = true;
+        try {
+            // eslint-disable-next-line no-eval
+            result = eval(String(args.JAVASCRIPT));
+        } catch (e) {
+            result = false;
+            console.error(e);
+        }
         // // otherwise
-        // return result === true;
-        return false;
+        return result === true;
+        // return false;
     }
     screenshotStage() {
         // should we look for an external canvas
