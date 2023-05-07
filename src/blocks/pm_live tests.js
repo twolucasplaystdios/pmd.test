@@ -27,11 +27,23 @@ class pmLiveTests {
     setVerticalTransform (args, {target}) {
         const percent = Cast.toNumber(args.PERCENT) / 100;
         target.setTransform([percent, target.transform[1]]);
+        if (target.visible) {
+            vm.runtime.renderer.dirty = true;
+            target.emitVisualChange();
+            target.runtime.requestRedraw();
+            target.runtime.requestTargetsUpdate(target);
+        }
     }
 
     setHorizontalTransform (args, {target}) {
         const percent = Cast.toNumber(args.PERCENT) / 100;
         target.setTransform([target.transform[0], percent]);
+        if (target.visible) {
+            vm.runtime.renderer.dirty = true;
+            target.emitVisualChange();
+            target.runtime.requestRedraw();
+            target.runtime.requestTargetsUpdate(target);
+        }
     }
 }
 
