@@ -75,7 +75,8 @@ class Scratch3ControlBlocks {
         };
     }
 
-    runJavascript (args) {
+    // eslint-disable-next-line no-unused-vars
+    runJavascript (args, util, realBlockInfo) {
         const js = Cast.toString(args.JS);
         return eval(js);
     }

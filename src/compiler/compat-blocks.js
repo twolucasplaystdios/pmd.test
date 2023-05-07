@@ -149,7 +149,8 @@ const outputBlocks = [
     'sensing_getbrowser',
     'sensing_geturl',
     'operator_javascript_output',
-    'operator_javascript_boolean'
+    'operator_javascript_boolean',
+    'sensing_getxyoftouchingsprite'
 ];
 
 module.exports = {

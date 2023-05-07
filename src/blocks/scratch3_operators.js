@@ -68,11 +68,13 @@ class Scratch3OperatorsBlocks {
         };
     }
 
-    javascriptOutput (args) {
+    // eslint-disable-next-line no-unused-vars
+    javascriptOutput (args, util, realBlockInfo) {
         const js = Cast.toString(args.JS);
         return eval(js);
     }
-    javascriptBoolean (args) {
+    // eslint-disable-next-line no-unused-vars
+    javascriptBoolean (args, util, realBlockInfo) {
         const js = Cast.toString(args.JS);
         return eval(js) === true;
     }

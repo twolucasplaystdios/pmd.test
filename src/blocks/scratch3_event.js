@@ -68,8 +68,9 @@ class Scratch3EventBlocks {
     whenanything (args) {
         return Boolean(args.ANYTHING || false);
     }
-    
-    whenjavascript (args) {
+
+    // eslint-disable-next-line no-unused-vars
+    whenjavascript (args, util, realBlockInfo) {
         const js = Cast.toString(args.JS);
         return eval(js) === true;
     }

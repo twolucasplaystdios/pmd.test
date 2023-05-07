@@ -97,7 +97,8 @@ class Scratch3SensingBlocks {
             sensing_getdragmode: this.getDragMode,
             sensing_getoperatingsystem: this.getOS,
             sensing_getbrowser: this.getBrowser,
-            sensing_geturl: this.getUrl
+            sensing_geturl: this.getUrl,
+            sensing_getxyoftouchingsprite: this.getXYOfTouchingSprite
         };
     }
 
@@ -383,6 +384,22 @@ class Scratch3SensingBlocks {
 
     touchingObject (args, util) {
         return util.target.isTouchingObject(args.TOUCHINGOBJECTMENU);
+    }
+
+    getXYOfTouchingSprite (args, util) {
+        const object = args.SPRITE;
+        if (object === '_mouse_') {
+            // we can just return mouse pos
+            // if mouse is touching us, the mouse size is practically 1x1 anyways
+            const x = util.ioQuery('mouse', 'getScratchX');
+            const y = util.ioQuery('mouse', 'getScratchY');
+            if (args.XY === 'y') return y;
+            return x;
+        }
+        const point = util.target.spriteTouchingPoint(object);
+        if (!point) return '';
+        if (args.XY === 'y') return point[1];
+        return point[0];
     }
 
     touchingColor (args, util) {
