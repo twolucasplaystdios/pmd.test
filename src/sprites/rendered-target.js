@@ -890,6 +890,26 @@ class RenderedTarget extends Target {
     }
 
     /**
+     * Return whether touching any of a named sprite's clones.
+     * @param {string} spriteName Name of the sprite.
+     * @return {boolean} True iff touching a clone of the sprite.
+     */
+    spriteTouchingPoint (spriteName) {
+        spriteName = Cast.toString(spriteName);
+        const firstClone = this.runtime.getSpriteTargetByName(spriteName);
+        if (!firstClone || !this.renderer) {
+            return null;
+        }
+        // Filter out dragging targets. This means a sprite that is being dragged
+        // can detect other sprites using touching <sprite>, but cannot be detected
+        // by other sprites while it is being dragged. This matches Scratch 2.0 behavior.
+        const drawableCandidates = firstClone.sprite.clones.filter(clone => !clone.dragging)
+            .map(clone => clone.drawableID);
+        return this.renderer.getTouchingDrawablesPoint(
+            this.drawableID, drawableCandidates);
+    }
+
+    /**
      * Return whether touching a color.
      * @param {Array.<number>} rgb [r,g,b], values between 0-255.
      * @return {Promise.<boolean>} True iff the rendered target is touching the color.

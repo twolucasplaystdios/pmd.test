@@ -380,6 +380,7 @@ class Scratch3LooksBlocks {
             looks_sayWidth: this.getBubbleWidth,
             looks_sayHeight: this.getBubbleHeight,
             looks_changeVisibilityOfSprite: this.showOrHideSprite,
+            looks_stoptalking: this.stopTalking,
         };
     }
 
@@ -476,6 +477,10 @@ class Scratch3LooksBlocks {
     }
     _say (message, target) { // used by compiler
         this.runtime.emit(Scratch3LooksBlocks.SAY_OR_THINK, target, 'say', message);
+    }
+
+    stopTalking (_, util) {
+        this.say({ MESSAGE: '' }, util);
     }
 
     sayforsecs (args, util) {

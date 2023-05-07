@@ -62,8 +62,19 @@ class Scratch3OperatorsBlocks {
             operator_code_to_character: this.codeToChar,
             operator_textStartsOrEndsWith: this.textStartsOrEndsWith,
             operator_countAppearTimes: this.countAppearTimes,
-            operator_textIncludesLetterFrom: this.textIncludesLetterFrom
+            operator_textIncludesLetterFrom: this.textIncludesLetterFrom,
+            operator_javascript_output: this.javascriptOutput,
+            operator_javascript_boolean: this.javascriptBoolean
         };
+    }
+
+    javascriptOutput (args) {
+        const js = Cast.toString(args.JS);
+        return eval(js);
+    }
+    javascriptBoolean (args) {
+        const js = Cast.toString(args.JS);
+        return eval(js) === true;
     }
 
     charToCode (args) {

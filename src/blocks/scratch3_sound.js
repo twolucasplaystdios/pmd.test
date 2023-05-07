@@ -140,6 +140,7 @@ class Scratch3SoundBlocks {
     getPrimitives () {
         return {
             sound_play: this.playSound,
+            sound_playallsounds: this.playSoundAllLolOpAOIUHFoiubea87fge87iufwhef87wye87fn,
             sound_playuntildone: this.playSoundAndWait,
             sound_stop: this.stopSpecificSound,
             sound_stopallsounds: this.stopAllSounds,
@@ -315,6 +316,18 @@ class Scratch3SoundBlocks {
         const allTargets = this.runtime.targets;
         for (let i = 0; i < allTargets.length; i++) {
             this._stopAllSoundsForTarget(allTargets[i]);
+        }
+    }
+
+    playSoundAllLolOpAOIUHFoiubea87fge87iufwhef87wye87fn (_, util) {
+        const target = util.target;
+        const sprite = target.sprite;
+        if (!sprite) return;
+        for (let i = 0; i < sprite.sounds.length; i++) {
+            const { soundId } = sprite.sounds[i];
+            if (sprite.soundBank) {
+                sprite.soundBank.playSound(target, soundId);
+            }
         }
     }
 

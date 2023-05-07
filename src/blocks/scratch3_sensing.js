@@ -91,8 +91,79 @@ class Scratch3SensingBlocks {
             sensing_fingerdown: this.fingerDown,
             sensing_fingertapped: this.fingerTapped,
             sensing_fingerx: this.getFingerX,
-            sensing_fingery: this.getFingerY
+            sensing_fingery: this.getFingerY,
+            sensing_setclipboard: this.setClipboard,
+            sensing_getclipboard: this.getClipboard,
+            sensing_getdragmode: this.getDragMode,
+            sensing_getoperatingsystem: this.getOS,
+            sensing_getbrowser: this.getBrowser,
+            sensing_geturl: this.getUrl
         };
+    }
+
+    getOS () {
+        if (!('userAgent' in navigator)) return 'Unknown';
+        const agent = navigator.userAgent;
+        if (agent.includes('Mac OS')) {
+            return 'MacOS';
+        }
+        if (agent.includes('CrOS')) {
+            return 'ChromeOS';
+        }
+        if (agent.includes('Linux')) {
+            return 'Linux';
+        }
+        if (agent.includes('Windows')) {
+            return 'Windows';
+        }
+        if (agent.includes('iPad') || agent.includes('iPod') || agent.includes('iPhone')) {
+            return 'iOS';
+        }
+        if (agent.includes('Android')) {
+            return 'Android';
+        }
+        return 'Unknown';
+    }
+    getBrowser () {
+        if (!('userAgent' in navigator)) return 'Unknown';
+        const agent = navigator.userAgent;
+        if (agent.includes('Chrome')) {
+            return 'Chrome';
+        }
+        if (agent.includes('MSIE') || agent.includes('rv:')) {
+            return 'Internet Explorer';
+        }
+        if (agent.includes('Firefox')) {
+            return 'Firefox';
+        }
+        if (agent.includes('Safari')) {
+            return 'Safari';
+        }
+        return 'Unknown';
+    }
+    getUrl () {
+        if (!('href' in location)) return '';
+        return location.href;
+    }
+
+    setClipboard (args) {
+        const text = Cast.toString(args.ITEM);
+        if (!navigator) return;
+        if (('clipboard' in navigator) && ('writeText' in navigator.clipboard)) {
+            navigator.clipboard.writeText(text);
+        }
+    }
+    getClipboard () {
+        if (!navigator) return '';
+        if (('clipboard' in navigator) && ('readText' in navigator.clipboard)) {
+            return navigator.clipboard.readText();
+        } else {
+            return '';
+        }
+    }
+
+    getDragMode (_, util) {
+        return util.target.draggable;
     }
 
     mouseClicked (_, util) {
