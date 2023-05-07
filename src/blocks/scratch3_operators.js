@@ -30,6 +30,9 @@ class Scratch3OperatorsBlocks {
             operator_gtorequal: this.gtorequal,
             operator_and: this.and,
             operator_nand: this.nand,
+            operator_nor: this.nor,
+            operator_xor: this.xor,
+            operator_xnor: this.xnor,
             operator_or: this.or,
             operator_not: this.not,
             operator_random: this.random,
@@ -266,6 +269,20 @@ class Scratch3OperatorsBlocks {
     
     nand (args) {
         return !(Cast.toBoolean(args.OPERAND1) && Cast.toBoolean(args.OPERAND2));
+    }
+
+    nor (args) {
+        return !(Cast.toBoolean(args.OPERAND1) || Cast.toBoolean(args.OPERAND2));
+    }
+
+    xor (args) {
+        const op1 = Cast.toBoolean(args.OPERAND1);
+        const op2 = Cast.toBoolean(args.OPERAND2);
+        return (op1 ? !op2 : op2);
+    }
+
+    xnor (args) {
+        return !this.xor(args);
     }
 
     or (args) {

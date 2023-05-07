@@ -153,7 +153,10 @@ const outputBlocks = [
     'operator_javascript_output',
     'operator_javascript_boolean',
     'sensing_getxyoftouchingsprite',
-    'operator_nand'
+    'operator_nand',
+    'operator_nor',
+    'operator_xor',
+    'operator_xnor'
 ];
 
 module.exports = {
