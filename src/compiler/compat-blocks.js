@@ -150,7 +150,8 @@ const outputBlocks = [
     'sensing_geturl',
     'operator_javascript_output',
     'operator_javascript_boolean',
-    'sensing_getxyoftouchingsprite'
+    'sensing_getxyoftouchingsprite',
+    'operator_nand'
 ];
 
 module.exports = {

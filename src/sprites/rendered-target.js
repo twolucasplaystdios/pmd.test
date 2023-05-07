@@ -321,9 +321,20 @@ class RenderedTarget extends Target {
 
     setTransform (transform) {
         if (!Array.isArray(transform) || transform.length !== 2) 
-            throw new TypeError('expected an array of length 2 for the transform input');
-        
+            throw new TypeError('Expected an Array of length 2 for the transform input');
+        if (this.isStage) {
+            return;
+        }
         this.transform = [transform[0], transform[1]];
+        if (this.renderer) {
+            const {direction: renderedDirection, scale} = this._getRenderedDirectionAndScale();
+            this.renderer.updateDrawableDirectionScale(this.drawableID, renderedDirection, scale, this.transform);
+            if (this.visible) {
+                this.emitVisualChange();
+                this.runtime.requestRedraw();
+            }
+        }
+        this.runtime.requestTargetsUpdate(this);
     }
 
     /**
