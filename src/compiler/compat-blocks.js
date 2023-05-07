@@ -72,7 +72,9 @@ const statementBlocks = [
     'motion_ifonspritebounce',
     'motion_ifonxybounce',
     'motion_move_sprite_to_scene_side',
-    'control_javascript_command'
+    'control_javascript_command',
+    'looks_changeVisibilityOfSpriteShow',
+    'looks_changeVisibilityOfSpriteHide'
 ];
 
 const outputBlocks = [

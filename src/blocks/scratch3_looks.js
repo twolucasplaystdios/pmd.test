@@ -380,6 +380,8 @@ class Scratch3LooksBlocks {
             looks_sayWidth: this.getBubbleWidth,
             looks_sayHeight: this.getBubbleHeight,
             looks_changeVisibilityOfSprite: this.showOrHideSprite,
+            looks_changeVisibilityOfSpriteShow: this.showSprite,
+            looks_changeVisibilityOfSpriteHide: this.hideSprite,
             looks_stoptalking: this.stopTalking,
         };
     }
@@ -544,6 +546,13 @@ class Scratch3LooksBlocks {
         if (!target) return;
         target.setVisible(visibleOption === 'show');
         this._renderBubble(target);
+    }
+
+    showSprite (args, util) {
+        this.showOrHideSprite({ VISIBLE_OPTION: args.VISIBLE_OPTION, VISIBLE_TYPE: "show" }, util);
+    }
+    hideSprite (args, util) {
+        this.showOrHideSprite({ VISIBLE_OPTION: args.VISIBLE_OPTION, VISIBLE_TYPE: "hide" }, util);
     }
     
     getSpriteVisible (args, util) {
