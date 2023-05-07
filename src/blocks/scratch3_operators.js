@@ -264,7 +264,7 @@ class Scratch3OperatorsBlocks {
     }
     
     nand (args) {
-        return Cast.toBoolean(!(args.OPERAND1) && Cast.toBoolean(args.OPERAND2));
+        return !(Cast.toBoolean(args.OPERAND1) && Cast.toBoolean(args.OPERAND2));
     }
 
     or (args) {
