@@ -15,6 +15,7 @@ class Scratch3OperatorsBlocks {
      * Retrieve the block primitives implemented by this package.
      * @return {object.<string, Function>} Mapping of opcode to Function.
      */
+    //
     getPrimitives () {
         return {
             operator_add: this.add,
