@@ -91,7 +91,7 @@ class Scratch3PenBlocks {
          * @type {object}
          */
         this.printTextAttribute = {
-            bold: false,
+            weight: '400',
             underline: false,
             italic: false,
             size: '28',
@@ -426,6 +426,21 @@ class Scratch3PenBlocks {
                     arguments: {
                         COLOR: {
                             type: ArgumentType.COLOR
+                        }
+                    }
+                },
+                {
+                    opcode: 'setPrintFontWeight',
+                    blockType: BlockType.COMMAND,
+                    text: formatMessage({
+                        id: 'pen.setPrintFontWeight',
+                        default: 'set print font weight to [WEIGHT]',
+                        description: 'set print font weight'
+                    }),
+                    arguments: {
+                        WEIGHT: {
+                            type: ArgumentType.NUMBER,
+                            defaultValue: 700
                         }
                     }
                 },
@@ -854,11 +869,14 @@ class Scratch3PenBlocks {
         const hex = Color.rgbToHex(rgb);
         this.printTextAttribute.color = hex;
     }
-
+    setPrintFontWeight (args) {
+        this.printTextAttribute.weight = args.WEIGHT;
+    }
     printText (args) {
         const ctx = this._getBitmapCanvas();
 
         let resultFont = '';
+        resultFont += `${this.printTextAttribute.weight} `
         resultFont += `${this.printTextAttribute.size * this._penRes}px `;
         resultFont += this.printTextAttribute.font;
         ctx.font = resultFont;
