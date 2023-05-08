@@ -156,7 +156,8 @@ const outputBlocks = [
     'operator_nand',
     'operator_nor',
     'operator_xor',
-    'operator_xnor'
+    'operator_xnor',
+    'looks_getinputofcostume'
 ];
 
 module.exports = {

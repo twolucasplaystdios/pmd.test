@@ -383,6 +383,7 @@ class Scratch3LooksBlocks {
             looks_changeVisibilityOfSpriteShow: this.showSprite,
             looks_changeVisibilityOfSpriteHide: this.hideSprite,
             looks_stoptalking: this.stopTalking,
+            looks_getinputofcostume: this.getCostumeValue,
         };
     }
 
@@ -614,6 +615,49 @@ class Scratch3LooksBlocks {
 
         // Per 2.0, 'switch costume' can't start threads even in the Stage.
         return [];
+    }
+
+    costumeValueToDefaultNone (value) {
+        switch (value) {
+            case 'width':
+            case 'height':
+            case 'rotation center x':
+            case 'rotation center y':
+                return 0;
+            default:
+                return '';
+        }
+    }
+    getCostumeValue (args, util) {
+        let costumeIndex = 0;
+        const target = util.target
+        const requestedCostume = args.COSTUME;
+        const requestedValue = Cast.toString(args.INPUT);
+        if (typeof requestedCostume === 'number') {
+            // Numbers should be treated as costume indices, always
+            costumeIndex = (requestedCostume === 0) ? 0 : requestedCostume - 1;
+        } else {
+            costumeIndex = target.getCostumeIndexByName(Cast.toString(requestedCostume));
+        }
+        if (costumeIndex < 0) return costumeValueToDefaultNone(requestedValue);
+        if (!target.sprite) return costumeValueToDefaultNone(requestedValue);
+        if (!target.sprite.costumes_) return costumeValueToDefaultNone(requestedValue);
+        const costume = target.sprite.costumes_[costumeIndex];
+        if (!costume) return costumeValueToDefaultNone(requestedValue);
+        switch (requestedValue) {
+            case 'width':
+                return costume.size[0];
+            case 'height':
+                return costume.size[1];
+            case 'rotation center x':
+                return costume.rotationCenterX;
+            case 'rotation center y':
+                return costume.rotationCenterY;
+            case 'drawing mode':
+                return ((costume.dataFormat === "svg") ? "Vector" : "Bitmap");
+            default:
+                return '';
+        }
     }
 
     /**
