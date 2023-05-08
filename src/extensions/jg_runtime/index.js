@@ -605,7 +605,7 @@ class JgRuntimeBlocks {
     deleteSprite(args) {
         const target = this.runtime.getSpriteTargetByName(args.NAME);
         if (!target) return;
-        vm.deleteSprite(target.id);
+        vm.deleteSpriteInternal(target.id);
     }
 
     getDataOption(args, util) {
