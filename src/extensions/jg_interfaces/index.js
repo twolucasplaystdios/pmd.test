@@ -172,12 +172,11 @@ class jgAdvancedText {
     // util
     createElement(type, properties) {
         const element = new UI.Button(this.UIClient, properties);
-        this.UIClient.AddToCanvas(element);
     }
 
     // blocks
     createButton(args) {
-        this.createButton('Button', {
+        this.createElement('Button', {
             id: Cast.toString(args.NAME),
             label: Cast.toString(args.TEXT),
             shown: true
