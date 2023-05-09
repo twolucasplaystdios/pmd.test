@@ -12,6 +12,7 @@ const Icons = {
     Checkbox: require('./checkbox.png'),
     Dropdown: require('./dropdown.png'),
     Multiselect: require('./multiselect.png'),
+    Slider: require('./slider.png'),
 }
 
 /**
@@ -125,6 +126,26 @@ class jgAdvancedText {
                         LABEL: {
                             type: ArgumentType.STRING,
                             defaultValue: ' '
+                        }
+                    },
+                    blockType: BlockType.COMMAND
+                },
+                {
+                    opcode: 'createSlider',
+                    text: 'create slider named: [NAME] minimum number: [MIN] maximum number: [MAX]',
+                    blockIconURI: Icons.Slider,
+                    arguments: {
+                        NAME: {
+                            type: ArgumentType.STRING,
+                            defaultValue: 'Slider'
+                        },
+                        MIN: {
+                            type: ArgumentType.NUMBER,
+                            defaultValue: 0
+                        },
+                        MAX: {
+                            type: ArgumentType.NUMBER,
+                            defaultValue: 100
                         }
                     },
                     blockType: BlockType.COMMAND

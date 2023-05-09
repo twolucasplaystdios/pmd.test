@@ -3,6 +3,7 @@ class Button {
         this.id = id;
         this.label = label;
         this._element = document.createElement("button");
+        this._element.style = `position:absolute;left:0%;top:0%`
         if (shown === false) {
             this._element.style.display = "none";
         }
@@ -13,12 +14,21 @@ class Button {
         }
 
         addToClient.AddToCanvas(this._element);
+        if (addToClient.buttons[id]) {
+            addToClient.buttons[id].dispose();
+            delete addToClient.buttons[id];
+        }
+        addToClient.buttons[id] = this;
     }
     show() {
         this._element.style.display = "";
     }
     hide() {
         this._element.style.display = "none";
+    }
+
+    dispose() {
+        this._element.remove();
     }
 }
 
@@ -27,6 +37,8 @@ class UI {
         this.runtime = runtime;
         this._div = document.createElement("div");
         this.Realign();
+
+        this.buttons = {};
     }
 
     static Button = Button;
@@ -45,6 +57,20 @@ class UI {
      */
     AddToCanvas(element) {
         this._div.append(element);
+        this.Realign();
+    }
+
+    /**
+     * Dispose of all UI elements.
+     */
+    DisposeAll() {
+        const buttons = Object.values(this.buttons);
+        const elements = [].concat(buttons);
+
+        elements.forEach(element => {
+            element.dispose();
+        })
+
         this.Realign();
     }
 }
