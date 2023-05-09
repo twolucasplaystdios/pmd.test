@@ -100,8 +100,7 @@ class JgScratchAuthenticateBlocks {
                         login.close();
                         resolve("");
                     }
-                    // we use allorigins.win because scratch auth has cors on it for literally no reason??
-                    fetch(`https://api.allorigins.win/raw?url=https://auth.itinerary.eu.org/api/auth/verifyToken?privateCode=${privateCode}`).then(res => res.json().then(json => {
+                    fetch(`https://pm-bapi.vercel.app/api/verifyToken?privateCode=${privateCode}`).then(res => res.json().then(json => {
                         finished = true;
                         clearInterval(interval);
                         login.close();
