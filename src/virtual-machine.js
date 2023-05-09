@@ -28,7 +28,7 @@ const {exportCostume} = require('./serialization/tw-costume-import-export');
 const Base64Util = require('./util/base64-util');
 
 const RESERVED_NAMES = ['_mouse_', '_stage_', '_edge_', '_myself_', '_random_'];
-const PM_LIBRARY_API = "https://pmobjectlibrary.jeremygamer13.repl.co/";
+const PM_LIBRARY_API = "https://penguinmod-objectlibraries.vercel.app/";
 
 const CORE_EXTENSIONS = [
     // 'motion',
@@ -923,7 +923,7 @@ class VirtualMachine extends EventEmitter {
         if (target) {
             if (soundObject.fromPenguinModLibrary === true) {
                 return new Promise((resolve, reject) => {
-                    fetch(`${PM_LIBRARY_API}?file=${soundObject.libraryId}`)
+                    fetch(`${PM_LIBRARY_API}files/${soundObject.libraryId}`)
                         .then((r) => r.arrayBuffer())
                         .then((arrayBuffer) => {
                             const storage = this.runtime.storage;
