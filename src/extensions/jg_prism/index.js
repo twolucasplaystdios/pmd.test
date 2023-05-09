@@ -535,7 +535,7 @@ class JgPrismBlocks {
         return this.audioPlayer.volume * 100;
     }
     // eslint-disable-next-line no-unused-vars
-    evaluate() {
+    evaluate(args, util, realBlockInfo) {
         // if (!(this.isJSPermissionGranted)) {
         //     this.isJSPermissionGranted = ProjectPermissionManager.RequestPermission("javascript");
         //     if (!this.isJSPermissionGranted) return;
@@ -550,7 +550,7 @@ class JgPrismBlocks {
         }
     }
     // eslint-disable-next-line no-unused-vars
-    evaluate2() {
+    evaluate2(args, util, realBlockInfo) {
         // if (!(this.isJSPermissionGranted)) {
         //     this.isJSPermissionGranted = ProjectPermissionManager.RequestPermission("javascript");
         //     if (!this.isJSPermissionGranted) return "";
@@ -568,7 +568,7 @@ class JgPrismBlocks {
         // return "";
     }
     // eslint-disable-next-line no-unused-vars
-    evaluate3() {
+    evaluate3(args, util, realBlockInfo) {
         // if (!(this.isJSPermissionGranted)) {
         //     this.isJSPermissionGranted = ProjectPermissionManager.RequestPermission("javascript");
         //     if (!this.isJSPermissionGranted) return false;
