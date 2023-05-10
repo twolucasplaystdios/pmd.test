@@ -74,7 +74,12 @@ const statementBlocks = [
     'motion_move_sprite_to_scene_side',
     'control_javascript_command',
     'looks_changeVisibilityOfSpriteShow',
-    'looks_changeVisibilityOfSpriteHide'
+    'looks_changeVisibilityOfSpriteHide',
+    'sound_pause',
+    'sound_set_stop_fadeout_to',
+    'sound_play_at_seconds',
+    'sound_play_at_seconds_until_done',
+    'sound_pauseallsounds'
 ];
 
 const outputBlocks = [
@@ -157,7 +162,9 @@ const outputBlocks = [
     'operator_nor',
     'operator_xor',
     'operator_xnor',
-    'looks_getinputofcostume'
+    'looks_getinputofcostume',
+    'sound_getTimePosition',
+    'sound_getSoundVolume'
 ];
 
 module.exports = {
