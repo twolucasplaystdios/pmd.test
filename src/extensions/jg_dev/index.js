@@ -48,6 +48,15 @@ class JgDevBlocks {
                     }
                 },
                 {
+                    opcode: 'transitionSound',
+                    text: 'set sound [ID] volume transition to seconds [SEX]',
+                    blockType: BlockType.COMMAND,
+                    arguments: {
+                        ID: { type: ArgumentType.SOUND, defaultValue: "sound to set fade out effect on" },
+                        SEX: { type: ArgumentType.NUMBER, defaultValue: 1 },
+                    }
+                },
+                {
                     opcode: 'logArgs1',
                     text: 'costume input [INPUT] sound input [INPUT2]',
                     blockType: BlockType.REPORTER,
@@ -158,6 +167,23 @@ class JgDevBlocks {
         if (!soundBank) return;
 
         soundBank.playSound(target, soundId, Cast.toNumber(args.SEX));
+    }
+    transitionSound(args, util) {
+        const id = Cast.toString(args.ID);
+        const index = this._getSoundIndex(id, util);
+        if (index < 0) return;
+
+        const target = util.target;
+        const sprite = target.sprite;
+        if (!sprite) return;
+        if (!sprite.sounds) return;
+
+        const { soundId } = sprite.sounds[index];
+
+        const soundBank = sprite.soundBank
+        if (!soundBank) return;
+
+        soundBank.soundPlayers[soundId].stopFadeDecay = Cast.toNumber(args.SEX);
     }
 
     logArgs1(args) {
