@@ -7,7 +7,10 @@ const SecurityManager = require('./tw-security-manager');
 
 const AddonSwitches = require('./extension-addon-switchers');
 
+const urlParams = new URLSearchParams(location.search);
+
 const IsLocal = String(window.location.href).startsWith(`http://localhost:`);
+const IsLiveTests = urlParams.has('livetests');
 
 // These extensions are currently built into the VM repository but should not be loaded at startup.
 // TODO: move these out into a separate repository?
@@ -135,7 +138,7 @@ const preload = [
     "jwProto"
 ];
 
-if (IsLocal) {
+if (IsLocal || IsLiveTests) {
     preload.push("jgDev");
 }
 
