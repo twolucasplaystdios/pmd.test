@@ -133,10 +133,7 @@ const builtinExtensions = {
 
 const coreExtensionList = Object.getOwnPropertyNames(builtinExtensions);
 
-const preload = [
-    "colors",
-    "jwProto"
-];
+const preload = [];
 
 if (IsLocal || IsLiveTests) {
     preload.push("jgDev");
