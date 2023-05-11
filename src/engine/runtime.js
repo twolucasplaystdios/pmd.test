@@ -1606,9 +1606,11 @@ class Runtime extends EventEmitter {
             }
 
             // A <field> displays a dynamic value: a user-editable text field, a drop-down menu, etc.
-            // Leave out the field if defaultValue or fieldName are not specified
-            if (defaultValue && fieldName) {
-                context.inputList.push(`<field name="${fieldName}">${defaultValue}</field>`);
+            // Leave out the field if fieldName is not specified OR it is a menu and there is no default value
+            if (fieldName) {
+                if (!(argInfo.menu && (!defaultValue))) {
+                    context.inputList.push(`<field name="${fieldName}">${defaultValue}</field>`);
+                }
             }
 
             if (shadowType) {
