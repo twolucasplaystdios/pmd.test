@@ -19,6 +19,22 @@ const EffectOptions = {
     ]
 };
 
+const urlToReportUrl = (url) => {
+    const split = String(url).split('://');
+    let idx = 1;
+    if (split.length <= 1) {
+        idx = 0;
+    }
+    const afterProtoc = split[idx];
+    if (!afterProtoc) return '';
+    const urlSplit = afterProtoc.split(/[?#&\/\\]+/gmi);
+    return urlSplit[0];
+};
+
+// to avoid taking 1290 years for each url set
+// we save the ones that we already checked
+const safeOriginUrls = {};
+
 /**
  * uhhhhhhhhhh
  * @param {Array} array the array
@@ -32,6 +48,26 @@ const ArrayToValue = (array, value) => {
     });
     return object;
 };
+
+const isUrlRatedSafe = (url) => {
+    return new Promise((resolve) => {
+        const saveUrl = urlToReportUrl(url);
+        if (safeOriginUrls.hasOwnProperty(saveUrl)) {
+            return resolve(safeOriginUrls[saveUrl]);
+        }
+
+        fetch(`https://pm-bapi.vercel.app/api/safeurl?url=${url}`).then(res => {
+            if (!res.ok) {
+                resolve(true);
+                return;
+            }
+            res.json().then(status => {
+                safeOriginUrls[saveUrl] = status.safe;
+                resolve(status.safe);
+            }).catch(() => resolve(true));
+        }).catch(() => resolve(true));
+    })
+}
 
 /**
  * Class for IFRAME blocks
@@ -202,7 +238,7 @@ class JgIframeBlocks {
                     blockType: BlockType.COMMAND,
                     arguments: {
                         ROTATE: {
-                            type: ArgumentType.NUMBER,
+                            type: ArgumentType.ANGLE,
                             defaultValue: 90
                         }
                     }
@@ -364,18 +400,11 @@ class JgIframeBlocks {
         };
     }
     // permissions
-    AskUserForWebsitePermission (url) {
+    async IsWebsiteAllowed (url) {
+        if (ProjectPermissionManager.IsDataUrl(url)) return true;
         if (!ProjectPermissionManager.IsUrlSafe(url)) return false;
-        if (ProjectPermissionManager.permissions.allWebsites) return true;
-        if (ProjectPermissionManager.permissions.limitedWebsites[url]) return true;
-        const allowed = ProjectPermissionManager.RequestPermission("limitedWebsite", url);
-        return allowed;
-    }
-    IsWebsiteAllowed (url) {
-        if (!ProjectPermissionManager.IsUrlSafe(url)) return false;
-        if (ProjectPermissionManager.permissions.allWebsites) return true;
-        if (ProjectPermissionManager.permissions.limitedWebsites[url]) return true;
-        return false;
+        const safe = await isUrlRatedSafe(url);
+        return safe;
     }
 
     // utilities
@@ -488,18 +517,16 @@ class JgIframeBlocks {
             usingProxy = true;
             checkingUrl = String(args.URL).replace("proxy://", "https://");
         }
-        if (!this.IsWebsiteAllowed(checkingUrl)) { // website isnt in the permitted sites list?
-            this.createdIframe.src = "about:blank";
-            // ask user for permission to redirect (unless it is an adult site)
-            if (!this.AskUserForWebsitePermission(checkingUrl)) { 
+        this.IsWebsiteAllowed(checkingUrl).then(safe => {
+            if (!safe) { // website isnt in the permitted sites list?
                 this.createdIframe.src = "about:blank";
                 this.displayWebsiteUrl = args.URL;
                 return;
             }
-        }
-        this.createdIframe.src = (usingProxy ? `https://detaproxy-1-s1965152.deta.app/?url=${String(args.URL).replace("proxy://", "https://")}` : args.URL);
-        // tell the user we are on proxy:// still since it looks nicer than the disgusting deta url
-        this.displayWebsiteUrl = (usingProxy ? `${String(this.createdIframe.src).replace("https://detaproxy-1-s1965152.deta.app/?url=https://", "proxy://")}` : this.createdIframe.src);
+            this.createdIframe.src = (usingProxy ? `https://detaproxy-1-s1965152.deta.app/?url=${String(args.URL).replace("proxy://", "https://")}` : args.URL);
+            // tell the user we are on proxy:// still since it looks nicer than the disgusting deta url
+            this.displayWebsiteUrl = (usingProxy ? `${String(this.createdIframe.src).replace("https://detaproxy-1-s1965152.deta.app/?url=https://", "proxy://")}` : this.createdIframe.src);
+        })
     }
     setIframePosLeft (args) {
         if (!this.GetIFrameState()) return; // iframe doesnt exist, stop

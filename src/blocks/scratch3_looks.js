@@ -405,14 +405,26 @@ class Scratch3LooksBlocks {
         return this.runtime.renderer.getSkinSize(bubbleState.skinId);
     }
 
-    getBubbleWidth (args, util) {
+    getBubbleWidth (_, util) {
         const target = util.target;
-        return this._getBubbleSize(target)[0];
+        let val = 0;
+        try {
+            val = this._getBubbleSize(target)[0];
+        } catch {
+            val = 0;
+        }
+        return val;
     }
 
-    getBubbleHeight (args, util) {
+    getBubbleHeight (_, util) {
         const target = util.target;
-        return this._getBubbleSize(target)[1];
+        let val = 0;
+        try {
+            val = this._getBubbleSize(target)[1];
+        } catch {
+            val = 0;
+        }
+        return val;
     }
 
     getStretchY (args, util) { 
@@ -639,11 +651,11 @@ class Scratch3LooksBlocks {
         } else {
             costumeIndex = target.getCostumeIndexByName(Cast.toString(requestedCostume));
         }
-        if (costumeIndex < 0) return costumeValueToDefaultNone(requestedValue);
-        if (!target.sprite) return costumeValueToDefaultNone(requestedValue);
-        if (!target.sprite.costumes_) return costumeValueToDefaultNone(requestedValue);
+        if (costumeIndex < 0) return this.costumeValueToDefaultNone(requestedValue);
+        if (!target.sprite) return this.costumeValueToDefaultNone(requestedValue);
+        if (!target.sprite.costumes_) return this.costumeValueToDefaultNone(requestedValue);
         const costume = target.sprite.costumes_[costumeIndex];
-        if (!costume) return costumeValueToDefaultNone(requestedValue);
+        if (!costume) return this.costumeValueToDefaultNone(requestedValue);
         switch (requestedValue) {
             case 'width':
                 return costume.size[0];

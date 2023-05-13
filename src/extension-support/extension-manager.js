@@ -78,6 +78,8 @@ const builtinExtensions = {
 
     // jgDev: test extension used for making core blocks
     jgDev: () => require("../extensions/jg_dev"),
+    // jgDooDoo: test extension used for making test extensions
+    jgDooDoo: () => require("../extensions/jg_doodoo"),
 
     // jw: hello it is i jwklong
     // jwUnite: literal features that should of been added in the first place
