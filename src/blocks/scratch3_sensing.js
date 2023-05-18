@@ -207,7 +207,7 @@ class Scratch3SensingBlocks {
         // strip out usless data
         const sprites = util.runtime.targets.map(x => ({
             id: x.id, 
-            name: x.sprite ? x.sprite.name : "Unkown",
+            name: x.sprite ? x.sprite.name : "Unknown",
             variables: Object.values(x.variables).reduce((obj, value) => {
                 if (!value.name) return obj;
                 obj[value.name] = String(value.value);
