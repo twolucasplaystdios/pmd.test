@@ -91,14 +91,54 @@ class JgDevBlocks {
                         INPUT: { type: ArgumentType.BOOLEAN }
                     }
                 },
+                {
+                    opcode: 'ifFalse',
+                    text: 'if [INPUT] is false',
+                    branchCount: 1,
+                    blockType: BlockType.CONDITIONAL,
+                    arguments: {
+                        INPUT: { type: ArgumentType.BOOLEAN }
+                    }
+                },
+                {
+                    opcode: 'multiplyTest',
+                    text: 'multiply [VAR] by [MULT] then',
+                    branchCount: 1,
+                    blockType: BlockType.CONDITIONAL,
+                    arguments: {
+                        VAR: { type: ArgumentType.STRING, menu: "variable" },
+                        MULT: { type: ArgumentType.NUMBER, defaultValue: 4 }
+                    }
+                },
                 // {
                 //     opcode: 'whatthescallop',
                 //     text: 'bruh',
                 //     branchCount: 85,
                 //     blockType: BlockType.CONDITIONAL
                 // }
-            ]
+            ],
+            menus: {
+                variable: "getVariablesMenu",
+            }
         };
+    }
+
+    // menu
+    getVariablesMenu() {
+        // menus can only be opened in the editor so use editingTarget
+        const target = vm.editingTarget;
+        const emptyMenu = [{ text: "", value: "" }];
+        if (!target) return emptyMenu;
+        if (!target.variables) return emptyMenu;
+        const menu = Object.getOwnPropertyNames(target.variables).map(variableId => {
+            const variable = target.variables[variableId]
+            return {
+                text: variable.name,
+                value: variable.name,
+            }
+        });
+        // check if menu has 0 items because pm throws an error if theres no items
+        return (menu.length > 0) ? menu : emptyMenu;
     }
 
     // util
@@ -160,7 +200,7 @@ class JgDevBlocks {
         const sprite = target.sprite;
         if (!sprite) return;
         if (!sprite.sounds) return;
-        
+
         const { soundId } = sprite.sounds[index];
 
         const soundBank = sprite.soundBank
@@ -205,6 +245,26 @@ class JgDevBlocks {
         console.log(args, util)
         util.startBranch(1, false)
         console.log(util.target.getCurrentCostume())
+    }
+
+    ifFalse(args, util) {
+        console.log(args, util)
+        if (!args.INPUT) {
+            util.startBranch(1, false)
+        }
+    }
+
+    multiplyTest(args, util) {
+        const target = util.target;
+        Object.getOwnPropertyNames(target.variables).forEach(variableId => {
+            const variable = target.variables[variableId];
+            if (variable.name !== Cast.toString(args.VAR)) return;
+            console.log(variable)
+            if (typeof variable.value !== 'number') {
+                variable.value = 0;
+            }
+            variable.value *= Cast.toNumber(args.MULT);
+        });
     }
 
     whatthescallop(_, util) {
