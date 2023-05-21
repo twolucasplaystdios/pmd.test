@@ -14,7 +14,7 @@ class JgStorageBlocks {
          */
         this.runtime = runtime;
 
-        this.currentServer = "https://pmstorageapi.freshpenguin112.repl.co";
+        this.currentServer = "https://pmstorageapi.freshpenguin112.repl.co/";
         this.usePenguinMod = true;
         this.useGlobal = true;
         this.waitingForResponse = false;
