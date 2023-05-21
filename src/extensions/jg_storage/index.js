@@ -14,7 +14,7 @@ class JgStorageBlocks {
          */
         this.runtime = runtime;
 
-        this.currentServer = "https://pmstorageapi.jeremygamer13.repl.co/";
+        this.currentServer = "https://pmstorageapi.freshpenguin112.repl.co";
         this.usePenguinMod = true;
         this.useGlobal = true;
         this.waitingForResponse = false;
@@ -285,7 +285,7 @@ class JgStorageBlocks {
     }
 
     getCurrentServer() {
-        return `https://pmstorageapi.jeremygamer13.repl.co/`
+        return `https://pmstorageapi.freshpenguin112.repl.co/`
     }
 
     // blocks
@@ -342,7 +342,7 @@ class JgStorageBlocks {
         const serverType = Cast.toString(args.SERVER).toLowerCase();
         if (["project", "global"].includes(serverType)) {
             // this is a menu option
-            this.currentServer = "https://pmstorageapi.jeremygamer13.repl.co/";
+            this.currentServer = "https://pmstorageapi.freshpenguin112.repl.co/";
             this.usePenguinMod = true;
             this.useGlobal = serverType === "global";
         } else {
