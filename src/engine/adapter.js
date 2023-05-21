@@ -75,7 +75,7 @@ const domToBlock = function (blockDOM, blocks, isTopBlock, parent) {
             const fieldId = xmlChild.attributes.id.value;
             let fieldData = '';
             if (xmlChild.innerHTML) {
-                fieldData = xmlChild.innerHTML;
+                fieldData = xmlChild.textContent;
             } else {
                 // If the child of the field with a data property
                 // doesn't exist, set the data to an empty string. 

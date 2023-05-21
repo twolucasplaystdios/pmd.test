@@ -307,7 +307,7 @@ class colorBlocks {
                         { text: 'decimal', value: "decimal" },
                         { text: 'rgb', value: "rgb" },
                         { text: 'hsv', value: "hsv" },
-                        { text: 'hex', value: "hex" },
+                        { text: 'hex', value: "hex" }
                     ],
                     acceptReporters: true
                 }
@@ -326,14 +326,14 @@ class colorBlocks {
         const color = Cast.toNumber(args.COLOR);
         const argsColor = { color: color };
         switch (Cast.toString(args.OUTPUT).toLowerCase()) {
-            case "rgb":
-                return this.decimalToRgb(argsColor);
-            case "hsv":
-                return this.decimalToHsv(argsColor);
-            case "hex":
-                return this.decimalToHex(argsColor);
-            default:
-                return color;
+        case "rgb":
+            return this.decimalToRgb(argsColor);
+        case "hsv":
+            return this.decimalToHsv(argsColor);
+        case "hex":
+            return this.decimalToHex(argsColor);
+        default:
+            return color;
         }
     }
 
