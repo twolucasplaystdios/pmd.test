@@ -92,6 +92,7 @@ const createUnsandboxedExtensionAPI = vm => new Promise(resolve => {
 
     global.Scratch.extensions = {
         unsandboxed: true,
+        isPenguinMod: true,
         register
     };
 
