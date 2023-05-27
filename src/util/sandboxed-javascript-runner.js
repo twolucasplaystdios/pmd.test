@@ -1,9 +1,7 @@
 const uid = require('./uid');
 
 // probably good
-const generateQuadUid = () => {
-    return uid() + uid() + uid() + uid();
-}
+const generateQuadUid = () => uid() + uid() + uid() + uid();
 
 // idk i just copied this lol
 const none = "'none'";
@@ -50,7 +48,7 @@ const createFrame = () => {
     element.allow = generateAllow();
     document.body.append(element);
     return element;
-}
+};
 
 const origin = location.origin;
 
@@ -61,51 +59,48 @@ const origin = location.origin;
  * @param {Function} removeHandler 
  * @returns fuck you
  */
-const messageHandler = (event, iframe, removeHandler) => {
-    return new Promise((resolve) => {
-        // console.log(event.origin) // remove later
-        // if (event.origin !== iframe.contentDocument.location.origin) return; // this might not work first try cuz idk what event.origin is
-        // yea event origin is just location
-        // console.log(event.origin, origin)
-        // why the hell is event.origin null
-        // ok we arent checking origin because its just null for some reason
-        // if (event.origin !== origin) return;
-        // console.log(event.data.payload)
-        if (!event.data.payload) return;
+const messageHandler = (event, iframe, removeHandler) => new Promise(resolve => {
+    // console.log(event.origin) // remove later
+    // this might not work first try cuz idk what event.origin is
+    // if (event.origin !== iframe.contentDocument.location.origin) return; 
+    // yea event origin is just location
+    // console.log(event.origin, origin)
+    // why the hell is event.origin null
+    // ok we arent checking origin because its just null for some reason
+    // if (event.origin !== origin) return;
+    // console.log(event.data.payload)
+    if (!event.data.payload) return;
 
-        // console.log({ payload: event.data.payload.id, iframe: iframe.dataset.id })
-        if (event.data.payload.id !== iframe.dataset.id) return;
-        const data = event.data.payload;
+    // console.log({ payload: event.data.payload.id, iframe: iframe.dataset.id })
+    if (event.data.payload.id !== iframe.dataset.id) return;
+    const data = event.data.payload;
 
-        window.removeEventListener('message', removeHandler);
-        try {
-            const url = iframe.src;
-            // delete object url
-            URL.revokeObjectURL(url);
-        } catch {
-            // honestly idk how this could fail im just doing this incase
-            // something stupid happens and people cant use eval anymore
-            console.warn('failed to revoke url of iframe sandboxed eval');
-        }
-        iframe.remove();
+    window.removeEventListener('message', removeHandler);
+    try {
+        const url = iframe.src;
+        // delete object url
+        URL.revokeObjectURL(url);
+    } catch {
+        // honestly idk how this could fail im just doing this incase
+        // something stupid happens and people cant use eval anymore
+        console.warn('failed to revoke url of iframe sandboxed eval');
+    }
+    iframe.remove();
 
-        // send back data
-        resolve(data);
-    })
-}
+    // send back data
+    resolve(data);
+});
 
 /**
  * yeah this doesnt actually check if its a promise
  * just returns the code that lets you do that lmao
  */
-const isPromiseFunction = () => {
-    return `function isPromise(p) {
+const isPromiseFunction = () => `function isPromise(p) {
     if (typeof p !== "object") return;
     if (!p.__proto__) return;
     if (!p.__proto__.toString) return;
     return p.__proto__.toString() === "[object Promise]";
-};`
-}
+};`;
 
 const generateEvaluateSrc = (code, frame) => {
     // this puts some funny stuff in the iframe src
@@ -161,7 +156,7 @@ const generateEvaluateSrc = (code, frame) => {
             }, origin);
         }
     }
-})();`
+})();`;
 
     const html = [
         '<!DOCTYPE html>',
@@ -176,24 +171,24 @@ const generateEvaluateSrc = (code, frame) => {
         runnerCode,
         '</script>',
         '</body>',
-        '</html>',
+        '</html>'
     ].join("\n");
 
     const blob = new Blob([html], { type: 'text/html' });
     const url = URL.createObjectURL(blob);
 
     return url;
-}
+};
 
 class SandboxRunner {
     static execute(code) {
-        return new Promise((resolve) => {
+        return new Promise(resolve => {
             const frame = createFrame();
             /**
              * please vscode show me the fucking autofill
              * @param {MessageEvent} e 
              */
-            const trueHandler = (e) => {
+            const trueHandler = e => {
                 // this shit stupid but we need to remove
                 // event handler ladter
                 // also i want to die after this shit
@@ -208,7 +203,7 @@ class SandboxRunner {
             };
             window.addEventListener('message', trueHandler);
             frame.src = generateEvaluateSrc(code, frame);
-        })
+        });
     }
 }
 
