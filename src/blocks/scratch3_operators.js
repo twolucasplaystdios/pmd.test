@@ -1,5 +1,6 @@
 const Cast = require('../util/cast.js');
 const MathUtil = require('../util/math-util.js');
+const SandboxRunner = require('../util/sandboxed-javascript-runner.js');
 const { validateRegex } = require('../util/json-block-utilities');
 
 class Scratch3OperatorsBlocks {
@@ -74,15 +75,21 @@ class Scratch3OperatorsBlocks {
     }
     
     
-    // eslint-disable-next-line no-unused-vars
-    javascriptOutput (args, util, realBlockInfo) {
-        const js = Cast.toString(args.JS);
-        return eval(js);
+    javascriptOutput (args) {
+        return new Promise((resolve, reject) => {
+            const js = Cast.toString(args.JS);
+            SandboxRunner.execute(js).then(result => {
+                resolve(result.value)
+            })
+        })
     }
-    // eslint-disable-next-line no-unused-vars
-    javascriptBoolean (args, util, realBlockInfo) {
-        const js = Cast.toString(args.JS);
-        return eval(js) === true;
+    javascriptBoolean(args) {
+        return new Promise((resolve, reject) => {
+            const js = Cast.toString(args.JS);
+            SandboxRunner.execute(js).then(result => {
+                resolve(result.value === true)
+            })
+        })
     }
 
     charToCode (args) {

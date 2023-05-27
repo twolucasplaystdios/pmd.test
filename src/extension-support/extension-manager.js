@@ -67,6 +67,10 @@ const builtinExtensions = {
     jg3d: () => require("../extensions/jg_3d"),
     // jgInterfaces: easier UI
     jgInterfaces: () => require("../extensions/jg_interfaces"),
+    // jgCostumeDrawing: draw on costumes
+    // jgCostumeDrawing: () => require("../extensions/jg_costumeDrawing"),
+    // jgJavascript: this is like the 3rd time we have implemented JS blocks man
+    jgJavascript: () => require("../extensions/jg_javascript"),
 
     // jgStorage: event extension requested by Fir & silvxrcat
     jgStorage: () => require("../extensions/jg_storage"),

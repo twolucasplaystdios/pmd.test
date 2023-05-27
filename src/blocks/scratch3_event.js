@@ -1,4 +1,5 @@
 const Cast = require('../util/cast');
+const SandboxRunner = require('../util/sandboxed-javascript-runner.js');
 
 class Scratch3EventBlocks {
     constructor (runtime) {
@@ -69,10 +70,13 @@ class Scratch3EventBlocks {
         return Boolean(args.ANYTHING || false);
     }
 
-    // eslint-disable-next-line no-unused-vars
-    whenjavascript (args, util, realBlockInfo) {
-        const js = Cast.toString(args.JS);
-        return eval(js) === true;
+    whenjavascript (args) {
+        return new Promise((resolve, reject) => {
+            const js = Cast.toString(args.JS);
+            SandboxRunner.execute(js).then(result => {
+                resolve(result.value === true)
+            })
+        })
     }
 
     getHats () {
