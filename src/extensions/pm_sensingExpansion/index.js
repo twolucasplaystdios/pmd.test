@@ -53,6 +53,7 @@ ${blockSeparator}
 ${blockSeparator}
 %b6>
 %b9>
+%b11>
 ${blockSeparator}
 <block type="sensing_getoperatingsystem"/>
 <block type="sensing_getbrowser"/>
@@ -209,6 +210,12 @@ class pmSensingExpansion {
                     opcode: 'spriteName',
                     text: 'sprite name',
                     blockType: BlockType.REPORTER,
+                    disableMonitor: true
+                },
+                {
+                    opcode: 'framed',
+                    text: 'project in iframe?',
+                    blockType: BlockType.BOOLEAN,
                     disableMonitor: true
                 },
             ],
@@ -428,6 +435,11 @@ class pmSensingExpansion {
 
     spriteName(_, util) {
         return util.target.getName();
+    }
+
+    framed() {
+        if (!window.parent) return false;
+        return window.parent !== window;
     }
 }
 
