@@ -94,54 +94,74 @@ const messageHandler = (event, iframe, removeHandler) => {
     })
 }
 
+/**
+ * yeah this doesnt actually check if its a promise
+ * just returns the code that lets you do that lmao
+ */
+const isPromiseFunction = () => {
+    return `function isPromise(p) {
+    if (typeof p !== "object") return;
+    if (!p.__proto__) return;
+    if (!p.__proto__.toString) return;
+    return p.__proto__.toString() === "[object Promise]";
+};`
+}
+
 const generateEvaluateSrc = (code, frame) => {
     // this puts some funny stuff in the iframe src
     // so that it actually works
-    const runnerCode = `const parent = window.parent;
-const origin = ${JSON.stringify(origin)};
+    const runnerCode = `(async () => {
+    const parent = window.parent;
+    const origin = ${JSON.stringify(origin)};
 
-let result = null;
-let success = true;
-try {
-    result = eval(${JSON.stringify(code)});
-} catch (err) {
-    success = false;
-    result = err;
-}
+    let result = null;
+    let success = true;
+    try {
+        result = eval(${JSON.stringify(code)});
+    } catch (err) {
+        success = false;
+        result = err;
+    }
 
-// console.log(result,success);
-// console.log(origin);
+    ${isPromiseFunction()}
 
-try {
-    parent.postMessage({
-        payload: {
-            success: success,
-            value: result,
-            id: ${JSON.stringify(frame.dataset.id)}
-        },
-    }, origin);
-} catch (topLevelError) {
-    // couldnt clone likely
+    if (isPromise(result)) {
+        result = await result;
+    }
+
+    // console.log(result,success);
+    // console.log(origin);
+
     try {
         parent.postMessage({
             payload: {
                 success: success,
-                value: JSON.stringify(result),
+                value: result,
                 id: ${JSON.stringify(frame.dataset.id)}
             },
         }, origin);
-    } catch (err) {
-        // ok we cant stringify it just error lmao
-        parent.postMessage({
-            payload: {
-                success: false,
-                value: [String(topLevelError), String(err)].join("; "),
-                id: ${JSON.stringify(frame.dataset.id)}
-            },
-        }, origin);
+    } catch (topLevelError) {
+        // couldnt clone likely
+        try {
+            parent.postMessage({
+                payload: {
+                    success: success,
+                    value: JSON.stringify(result),
+                    id: ${JSON.stringify(frame.dataset.id)}
+                },
+            }, origin);
+        } catch (err) {
+            // ok we cant stringify it just error lmao
+            parent.postMessage({
+                payload: {
+                    success: false,
+                    value: [String(topLevelError), String(err)].join("; "),
+                    id: ${JSON.stringify(frame.dataset.id)}
+                },
+            }, origin);
+        }
     }
-}
-`
+})();`
 
     const html = [
         '<!DOCTYPE html>',
