@@ -25,6 +25,7 @@ class jgJavascript {
         return {
             id: 'jgJavascript',
             name: 'JavaScript',
+            // color1: '#EFC900', look like doo doo
             blocks: [
                 {
                     opcode: 'javascriptHat',

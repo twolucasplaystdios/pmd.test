@@ -40,6 +40,12 @@ const builtinExtensions = {
     // twFiles: replaces jgFiles as it works better on other devices
     twFiles: () => require('../extensions/tw_files'),
 
+    // pm: category expansions go here
+    // pmOperatorsExpansion: extra operators that were in the category & new ones that werent
+    pmOperatorsExpansion: () => require("../extensions/pm_operatorsExpansion"),
+    // pmSensingExpansion: extra sensing blocks that were in the category & new ones that werent
+    pmSensingExpansion: () => require("../extensions/pm_sensingExpansion"),
+
     // jg: jeremyes esxsitenisonsnsn
     // jgFiles: support for reading user files
     jgFiles: () => require('../extensions/jg_files'),
