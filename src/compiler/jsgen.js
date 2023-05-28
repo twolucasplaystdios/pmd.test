@@ -951,12 +951,12 @@ class JSGenerator {
             this.source += `var ${alreadySpoofing} = thread.spoofing;\n`
             this.source += `var ${alreadySpoofTarget} = thread.spoofTarget;\n`
 
-            this.source += `thread.spoofing = true;`
-            this.source += `thread.spoofTarget = target;`
+            this.source += `thread.spoofing = true;\n`
+            this.source += `thread.spoofTarget = target;\n`
 
             // descendle stackle
             this.descendStack(node.substack, new Frame(false));
-            
+
             // undo thread target & spoofing change
             this.source += `thread.target = ${originalTarget};\n`;
             this.source += `thread.spoofing = ${alreadySpoofing};\n`
