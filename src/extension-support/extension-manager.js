@@ -259,6 +259,9 @@ class ExtensionManager {
     getCoreExtensionList() {
         return coreExtensionList;
     }
+    getBuiltInExtensionsList() {
+        return builtinExtensions;
+    }
 
     getAddonBlockSwitches() {
         return AddonSwitches();
