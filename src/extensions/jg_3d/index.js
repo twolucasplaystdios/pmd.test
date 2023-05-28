@@ -87,18 +87,14 @@ class Jg3DBlocks {
 
         this.restyleExternalCanvas(canvas);
         this.appendElementAboveScratchCanvas(canvas);
+        const urlParams = new URLSearchParams(queryString);
         // we dont need to set renderer size since the render function will do that for us
 
-        /* dev: test rendering by drawing a cube and see if it appears
-
+        if (urlParams.has('3dcube')) {
         const geometry = new Three.BoxGeometry(1, 1, 1);
         const material = new Three.MeshBasicMaterial({ color: 0x00ff00 });
         const cube = new Three.Mesh(geometry, material);
-        this.scene.add(cube);
-
-        dev update: it worked W
-
-        */
+        this.scene.add(cube);}
     }
     render() {
         if (!this.renderer) return;
