@@ -29,6 +29,7 @@ class Jg3DBlocks {
             width: 0,
             height: 0
         }
+        this.urlParams = new URLSearchParams(queryString);
 
         // event recievers
         this.runtime.on('PROJECT_STOP_ALL', () => {
@@ -86,15 +87,12 @@ class Jg3DBlocks {
         this.runtime.prism_screenshot_externalCanvas = canvas;
 
         this.restyleExternalCanvas(canvas);
-        this.appendElementAboveScratchCanvas(canvas);
-        const urlParams = new URLSearchParams(queryString);
-        // we dont need to set renderer size since the render function will do that for us
-
-        if (urlParams.has('3dcube')) {
+        this.appendElementAboveScratchCanvas(canvas);        
+        if (urlParams.get('3dcube')===y) {
         const geometry = new Three.BoxGeometry(1, 1, 1);
         const material = new Three.MeshBasicMaterial({ color: 0x00ff00 });
         const cube = new Three.Mesh(geometry, material);
-        this.scene.add(cube);}
+        this.scene.add(cube)}
     }
     render() {
         if (!this.renderer) return;
