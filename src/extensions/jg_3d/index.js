@@ -2,7 +2,13 @@ const Cast = require('../../util/cast');
 const Clone = require('../../util/clone');
 const ExtensionInfo = require("./info");
 const Three = require("three")
-
+function vars() {
+    var variableslol;
+    for (const namelol of Object.keys(this)) {
+        variableslol[namelol] = this[namelol];
+    }
+    return variableslol;
+}
 /**
  * Class for 3D blocks
  * @constructor
