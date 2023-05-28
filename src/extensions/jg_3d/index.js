@@ -2,6 +2,7 @@ const Cast = require('../../util/cast');
 const Clone = require('../../util/clone');
 const ExtensionInfo = require("./info");
 const Three = require("three")
+const urlParams = new URLSearchParams(queryString);
 /**
  * Class for 3D blocks
  * @constructor
@@ -29,8 +30,7 @@ class Jg3DBlocks {
             width: 0,
             height: 0
         }
-        this.urlParams = new URLSearchParams(queryString);
-
+        
         // event recievers
         this.runtime.on('PROJECT_STOP_ALL', () => {
             // stop button clicked or project restarted, dispose of all objects
