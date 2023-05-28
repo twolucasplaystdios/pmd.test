@@ -1504,8 +1504,8 @@ class JSGenerator {
 
         // Setup the factory
         script += `(function ${this.getScriptFactoryName()}(thread) { `;
-        script += 'const __target = thread.target; ';
-        script += 'const runtime = __target.runtime; ';
+        script += 'const target = thread.target; ';
+        script += 'const runtime = target.runtime; ';
         script += 'const stage = runtime.getTargetForStage();\n';
         for (const varValue of Object.keys(this._setupVariables)) {
             const varName = this._setupVariables[varValue];
@@ -1535,10 +1535,10 @@ class JSGenerator {
         // with a different one
 
         // create new var with target so we can define target as the current one
-        script += `let target = __target;\n`;
-        script += `if (thread.spoofing) {\n`;
-        script += `target = thread.spoofTarget;\n`;
-        script += `};\n`;
+        // script += `let target = __target;\n`;
+        // script += `if (thread.spoofing) {\n`;
+        // script += `target = thread.spoofTarget;\n`;
+        // script += `};\n`;
 
         script += this.source;
 
