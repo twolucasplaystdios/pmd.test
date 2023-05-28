@@ -74,6 +74,9 @@ ${blockSeparator}
 %b14> `+/* is number prime */`
 %b11> `+/* trunc number */`
 ${blockSeparator}
+%b16> `+/* reverse text */`
+%b17> `+/* shuffle text */`
+${blockSeparator}
 `+/* join blocks */`
 <block type="operator_join">
     <value name="STRING1">
@@ -306,6 +309,30 @@ class pmOperatorsExpansion {
                         },
                     }
                 },
+                {
+                    opcode: 'reverseChars',
+                    text: 'reverse [TEXT]',
+                    blockType: BlockType.REPORTER,
+                    disableMonitor: true,
+                    arguments: {
+                        TEXT: {
+                            type: ArgumentType.STRING,
+                            defaultValue: "Hello!"
+                        },
+                    }
+                },
+                {
+                    opcode: 'shuffleChars',
+                    text: 'shuffle [TEXT]',
+                    blockType: BlockType.REPORTER,
+                    disableMonitor: true,
+                    arguments: {
+                        TEXT: {
+                            type: ArgumentType.STRING,
+                            defaultValue: "Hello!"
+                        },
+                    }
+                },
             ],
             menus: {
                 part: {
@@ -394,6 +421,18 @@ class pmOperatorsExpansion {
     isEven(args) {
         const num = Cast.toNumber(args.NUM);
         return num % 2 == 0;
+    }
+
+    reverseChars(args) {
+        const text = Cast.toString(args.TEXT);
+        const split = text.split('');
+        return split.reverse().join('');
+    }
+    shuffleChars(args) {
+        const text = Cast.toString(args.TEXT);
+        const split = text.split('');
+        const shuffled = split.sort(() => Math.random() - 0.5);
+        return shuffled.join('');
     }
 
     // join
