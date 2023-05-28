@@ -948,19 +948,29 @@ class JSGenerator {
             // we could already be spoofing tho so save that first
             const alreadySpoofing = this.localVariables.next();
             const alreadySpoofTarget = this.localVariables.next();
-            this.source += `var ${alreadySpoofing} = thread.spoofing;`
-            this.source += `var ${alreadySpoofTarget} = thread.spoofTarget;`
+            this.source += `var ${alreadySpoofing} = thread.spoofing;\n`
+            this.source += `var ${alreadySpoofTarget} = thread.spoofTarget;\n`
 
             this.source += `thread.spoofing = true;`
             this.source += `thread.spoofTarget = target;`
+
+            // descendle stackle
             this.descendStack(node.substack, new Frame(false));
+            
             // undo thread target & spoofing change
             this.source += `thread.target = ${originalTarget};\n`;
-            this.source += `thread.spoofing = ${alreadySpoofing};`
-            this.source += `thread.spoofTarget = ${alreadySpoofTarget};`
-            
+            this.source += `thread.spoofing = ${alreadySpoofing};\n`
+            this.source += `thread.spoofTarget = ${alreadySpoofTarget};\n`
+
             this.source += `}\n`;
-            this.source += `} catch (e) { console.log('as sprite function failed;', e); thread.target = ${originalTarget}; }\n`;
+            this.source += `} catch (e) {\nconsole.log('as sprite function failed;', e);\n`
+
+            // same as last undo
+            this.source += `thread.target = ${originalTarget};\n`;
+            this.source += `thread.spoofing = ${alreadySpoofing};\n`
+            this.source += `thread.spoofTarget = ${alreadySpoofTarget};\n`
+
+            this.source += `}\n`;
             break;
         case 'event.broadcast':
             this.source += `startHats("event_whenbroadcastreceived", { BROADCAST_OPTION: ${this.descendInput(node.broadcast).asString()} });\n`;
