@@ -88,11 +88,12 @@ class Jg3DBlocks {
 
         this.restyleExternalCanvas(canvas);
         this.appendElementAboveScratchCanvas(canvas);        
-        if (urlParams.get('3dcube')===y) {
+        if (urlParams.get('3dcube')==='y') {
         const geometry = new Three.BoxGeometry(1, 1, 1);
         const material = new Three.MeshBasicMaterial({ color: 0x00ff00 });
         const cube = new Three.Mesh(geometry, material);
-        this.scene.add(cube)}
+        this.scene.add(cube)
+        }
     }
     render() {
         if (!this.renderer) return;
