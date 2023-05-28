@@ -1,8 +1,8 @@
 const Cast = require('../../util/cast');
 const Clone = require('../../util/clone');
 const ExtensionInfo = require("./info");
-const Three = require("three")
-const urlParams = new URLSearchParams(queryString);
+const Three = require("three");
+var urlParams = new URLSearchParams(queryString);
 /**
  * Class for 3D blocks
  * @constructor
