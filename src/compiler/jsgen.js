@@ -839,6 +839,13 @@ class JSGenerator {
                 this.source += `break;\n`;
             }
             break;
+        case 'control.allAtOnce': {
+            let ooldWarp = this.isWarp;
+            this.isWarp = true;
+            this.descendStack(node.code, new Frame(false));
+            this.isWarp = ooldWarp;
+            break;
+        }
         case 'control.exitCase':
             this.source += `break;\n`;
             break;

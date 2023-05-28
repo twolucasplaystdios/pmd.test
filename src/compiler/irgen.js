@@ -853,14 +853,14 @@ class ScriptTreeGenerator {
             };
         case 'control_all_at_once':
             // In Scratch 3, this block behaves like "if 1 = 1"
+            // WE ARE IN PM MF NOW IT BEHAVES PROPERLY LESS GO
             return {
-                kind: 'control.if',
+                kind: 'control.allAtOnce',
                 condition: {
                     kind: 'constant',
                     value: true
                 },
-                whenTrue: this.descendSubstack(block, 'SUBSTACK'),
-                whenFalse: []
+                code: this.descendSubstack(block, 'SUBSTACK')
             };
         case 'control_create_clone_of':
             return {
