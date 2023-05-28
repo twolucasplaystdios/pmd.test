@@ -944,9 +944,21 @@ class JSGenerator {
             this.source += `if (target) {\n`;
             // set thread target (for compat blocks)
             this.source += `thread.target = target;\n`;
+            // tell thread we are spoofing (for custom blocks)
+            // we could already be spoofing tho so save that first
+            const alreadySpoofing = this.localVariables.next();
+            const alreadySpoofTarget = this.localVariables.next();
+            this.source += `var ${alreadySpoofing} = thread.spoofing;`
+            this.source += `var ${alreadySpoofTarget} = thread.spoofTarget;`
+
+            this.source += `thread.spoofing = true;`
+            this.source += `thread.spoofTarget = target;`
             this.descendStack(node.substack, new Frame(false));
-            // undo thread target change
+            // undo thread target & spoofing change
             this.source += `thread.target = ${originalTarget};\n`;
+            this.source += `thread.spoofing = ${alreadySpoofing};`
+            this.source += `thread.spoofTarget = ${alreadySpoofTarget};`
+            
             this.source += `}\n`;
             this.source += `} catch (e) { console.log('as sprite function failed;', e); thread.target = ${originalTarget}; }\n`;
             break;
@@ -1482,8 +1494,8 @@ class JSGenerator {
 
         // Setup the factory
         script += `(function ${this.getScriptFactoryName()}(thread) { `;
-        script += 'const target = thread.target; ';
-        script += 'const runtime = target.runtime; ';
+        script += 'const __target = thread.target; ';
+        script += 'const runtime = __target.runtime; ';
         script += 'const stage = runtime.getTargetForStage();\n';
         for (const varValue of Object.keys(this._setupVariables)) {
             const varName = this._setupVariables[varValue];
@@ -1507,6 +1519,16 @@ class JSGenerator {
             script += args.join(',');
         }
         script += ') {\n';
+
+        // pm: check if we are spoofing the target
+        // ex: as (Sprite) {} block needs to replace the target
+        // with a different one
+
+        // create new var with target so we can define target as the current one
+        script += `let target = __target;\n`;
+        script += `if (thread.spoofing) {\n`;
+        script += `target = thread.spoofTarget;\n`;
+        script += `};\n`;
 
         script += this.source;
 
