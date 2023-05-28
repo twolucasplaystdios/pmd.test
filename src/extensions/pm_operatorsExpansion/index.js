@@ -68,6 +68,12 @@ ${blockSeparator}
 %b6> `+/* part of ratio */`
 %b7> `+/* simplify of ratio */`
 ${blockSeparator}
+%b12> `+/* is number multiple of number */`
+%b15> `+/* is number even */`
+%b13> `+/* is number int */`
+%b14> `+/* is number prime */`
+%b11> `+/* trunc number */`
+${blockSeparator}
 `+/* join blocks */`
 <block type="operator_join">
     <value name="STRING1">
@@ -105,6 +111,11 @@ ${blockSeparator}
 %b3>
 %b4>
 %b5>
+`+/* constants */`
+${blockSeparator}
+%b8> `+/* pi */`
+%b9> `+/* euler */`
+%b10> `+/* inf */`
 ${blockSeparator}
 `
 
@@ -213,6 +224,88 @@ class pmOperatorsExpansion {
                         }
                     }
                 },
+                {
+                    opcode: 'pi',
+                    text: 'π',
+                    blockType: BlockType.REPORTER,
+                    disableMonitor: true
+                },
+                {
+                    opcode: 'euler',
+                    text: 'e',
+                    blockType: BlockType.REPORTER,
+                    disableMonitor: true
+                },
+                {
+                    opcode: 'infinity',
+                    text: '∞',
+                    blockType: BlockType.REPORTER,
+                    disableMonitor: true
+                },
+                {
+                    opcode: 'truncateNumber',
+                    text: 'truncate number [NUM]',
+                    blockType: BlockType.REPORTER,
+                    disableMonitor: true,
+                    arguments: {
+                        NUM: {
+                            type: ArgumentType.NUMBER,
+                            defaultValue: "2.5"
+                        }
+                    }
+                },
+                {
+                    opcode: 'isNumberMultipleOf',
+                    text: 'is [NUM] multiple of [MULTIPLE]?',
+                    blockType: BlockType.BOOLEAN,
+                    disableMonitor: true,
+                    arguments: {
+                        NUM: {
+                            type: ArgumentType.NUMBER,
+                            defaultValue: "20"
+                        },
+                        MULTIPLE: {
+                            type: ArgumentType.NUMBER,
+                            defaultValue: "10"
+                        },
+                    }
+                },
+                {
+                    opcode: 'isInteger',
+                    text: 'is [NUM] an integer?',
+                    blockType: BlockType.BOOLEAN,
+                    disableMonitor: true,
+                    arguments: {
+                        NUM: {
+                            type: ArgumentType.NUMBER,
+                            defaultValue: "0.5"
+                        },
+                    }
+                },
+                {
+                    opcode: 'isPrime',
+                    text: 'is [NUM] a prime number?',
+                    blockType: BlockType.BOOLEAN,
+                    disableMonitor: true,
+                    arguments: {
+                        NUM: {
+                            type: ArgumentType.NUMBER,
+                            defaultValue: "13"
+                        },
+                    }
+                },
+                {
+                    opcode: 'isEven',
+                    text: 'is [NUM] even?',
+                    blockType: BlockType.BOOLEAN,
+                    disableMonitor: true,
+                    arguments: {
+                        NUM: {
+                            type: ArgumentType.NUMBER,
+                            defaultValue: "4"
+                        },
+                    }
+                },
             ],
             menus: {
                 part: {
@@ -234,8 +327,28 @@ class pmOperatorsExpansion {
         gcd = gcd(numerator, denominator);
         return [numerator / gcd, denominator / gcd];
     }
+    checkPrime(number) {
+        number = Math.trunc(number);
+        if (number <= 1) return false;
+        for (var i = 2; i < number; i++) {
+            if (number % i === 0) {
+                return false;
+            }
+        }
+        return true;
+    }
 
     // useful
+    pi() {
+        return Math.PI;
+    }
+    euler() {
+        return Math.E;
+    }
+    infinity() {
+        return Infinity;
+    }
+
     partOfRatio(args) {
         const ratio = Cast.toString(args.RATIO);
         const part = Cast.toString(args.PART).toLowerCase();
@@ -257,6 +370,30 @@ class pmOperatorsExpansion {
         const reduced = this.reduce(first, last);
 
         return Cast.toNumber(reduced[0]) + ':' + Cast.toNumber(reduced[1]);
+    }
+
+    truncateNumber(args) {
+        const num = Cast.toNumber(args.NUM);
+        return Math.trunc(num);
+    }
+
+    isNumberMultipleOf(args) {
+        const num = Cast.toNumber(args.NUM);
+        const mult = Cast.toNumber(args.MULTIPLE);
+        
+        return (num % mult) === 0;
+    }
+    isInteger(args) {
+        const num = Cast.toNumber(args.NUM);
+        return Math.trunc(num) === num;
+    }
+    isPrime(args) {
+        const num = Cast.toNumber(args.NUM);
+        return this.checkPrime(num);
+    }
+    isEven(args) {
+        const num = Cast.toNumber(args.NUM);
+        return num % 2 == 0;
     }
 
     // join
