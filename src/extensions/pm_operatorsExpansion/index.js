@@ -12,42 +12,6 @@ ${blockSeparator}
 <block type="operator_xor" />
 <block type="operator_xnor" />
 ${blockSeparator}
-<block type="operator_join">
-    <value name="STRING1">
-        <shadow type="text">
-            <field name="TEXT">apple </field>
-        </shadow>
-    </value>
-    <value name="STRING2">
-        <shadow type="text">
-            <field name="TEXT">banana</field>
-        </shadow>
-    </value>
-</block>
-<block type="operator_join3">
-    <value name="STRING1">
-        <shadow type="text">
-            <field name="TEXT">apple </field>
-        </shadow>
-    </value>
-    <value name="STRING2">
-        <shadow type="text">
-            <field name="TEXT">banana </field>
-        </shadow>
-    </value>
-    <value name="STRING3">
-        <shadow type="text">
-            <field name="TEXT">pear</field>
-        </shadow>
-    </value>
-</block>
-%b0
-%b1
-%b2
-%b3
-%b4
-%b5
-${blockSeparator}
 <block type="operator_countAppearTimes">
     <value name="TEXT1">
         <shadow type="text">
@@ -99,6 +63,49 @@ ${blockSeparator}
         </shadow>
     </value>
 </block>
+${blockSeparator}
+`+/* new blocks */`
+%b6> `+/* part of ratio */`
+%b7> `+/* simplify of ratio */`
+${blockSeparator}
+`+/* join blocks */`
+<block type="operator_join">
+    <value name="STRING1">
+        <shadow type="text">
+            <field name="TEXT">apple </field>
+        </shadow>
+    </value>
+    <value name="STRING2">
+        <shadow type="text">
+            <field name="TEXT">banana</field>
+        </shadow>
+    </value>
+</block>
+<block type="operator_join3">
+    <value name="STRING1">
+        <shadow type="text">
+            <field name="TEXT">apple </field>
+        </shadow>
+    </value>
+    <value name="STRING2">
+        <shadow type="text">
+            <field name="TEXT">banana </field>
+        </shadow>
+    </value>
+    <value name="STRING3">
+        <shadow type="text">
+            <field name="TEXT">pear</field>
+        </shadow>
+    </value>
+</block>
+`+/* extreme join blocks */`
+%b0>
+%b1>
+%b2>
+%b3>
+%b4>
+%b5>
+${blockSeparator}
 `
 
 function generateJoin(amount) {
@@ -152,7 +159,7 @@ class pmOperatorsExpansion {
 
         let idx = 0;
         for (const block of extensionBlocks) {
-            categoryBlocks = categoryBlocks.replace('%b' + idx, block);
+            categoryBlocks = categoryBlocks.replace('%b' + idx + '>', block);
             idx++;
         }
 
@@ -178,10 +185,81 @@ class pmOperatorsExpansion {
                 generateJoin(7),
                 generateJoin(8),
                 generateJoin(9),
-            ]
+                {
+                    opcode: 'partOfRatio',
+                    text: '[PART] part of ratio [RATIO]',
+                    blockType: BlockType.REPORTER,
+                    disableMonitor: true,
+                    arguments: {
+                        PART: {
+                            type: ArgumentType.STRING,
+                            menu: "part"
+                        },
+                        RATIO: {
+                            type: ArgumentType.STRING,
+                            defaultValue: "1:2"
+                        }
+                    }
+                },
+                {
+                    opcode: 'simplifyRatio',
+                    text: 'simplify ratio [RATIO]',
+                    blockType: BlockType.REPORTER,
+                    disableMonitor: true,
+                    arguments: {
+                        RATIO: {
+                            type: ArgumentType.STRING,
+                            defaultValue: "1:2"
+                        }
+                    }
+                },
+            ],
+            menus: {
+                part: {
+                    acceptReporters: true,
+                    items: [
+                        "first",
+                        "last"
+                    ].map(item => ({ text: item, value: item }))
+                }
+            }
         };
     }
 
+    // util
+    reduce(numerator, denominator) {
+        let gcd = function gcd(a, b) {
+            return b ? gcd(b, a % b) : a;
+        };
+        gcd = gcd(numerator, denominator);
+        return [numerator / gcd, denominator / gcd];
+    }
+
+    // useful
+    partOfRatio(args) {
+        const ratio = Cast.toString(args.RATIO);
+        const part = Cast.toString(args.PART).toLowerCase();
+
+        if (!ratio.includes(':')) return '';
+        const split = ratio.split(':');
+
+        const section = split[Number(part === 'last')];
+        return Cast.toNumber(section);
+    }
+    simplifyRatio(args) {
+        const ratio = Cast.toString(args.RATIO);
+        if (!ratio.includes(':')) return '';
+        const split = ratio.split(':');
+
+        const first = Cast.toNumber(split[0]);
+        const last = Cast.toNumber(split[1]);
+
+        const reduced = this.reduce(first, last);
+
+        return Cast.toNumber(reduced[0]) + ':' + Cast.toNumber(reduced[1]);
+    }
+
+    // join
     join4(args) {
         return Cast.toString(args.STRING1)
             + Cast.toString(args.STRING2)
