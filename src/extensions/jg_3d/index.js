@@ -32,7 +32,7 @@ class Jg3DBlocks {
          */
         this.runtime = runtime;
 
-        // window._ThreeJs = Three;
+        this.three = Three;
 
         // prism has screenshots, lets tell it to use OUR canvas for them
         this.runtime.prism_screenshot_checkForExternalCanvas = true;
