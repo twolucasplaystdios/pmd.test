@@ -2,7 +2,9 @@ const Cast = require('../../util/cast');
 const Clone = require('../../util/clone');
 const ExtensionInfo = require("./info");
 const Three = require("three");
-var urlParams = new URLSearchParams(queryString);
+const { OBJLoader } = require('three/examples/jsm/loaders/OBJLoader.js');
+const loader = new OBJLoader();
+
 /**
  * Class for 3D blocks
  * @constructor
@@ -13,7 +15,6 @@ class Jg3DBlocks {
          * The runtime instantiating this block package.
          * @type {Runtime}
          */
-        this.thre = Three
         this.runtime = runtime;
 
         // prism has screenshots, lets tell it to use OUR canvas for them
@@ -21,8 +22,17 @@ class Jg3DBlocks {
         this.runtime.prism_screenshot_externalCanvas = null;
 
         // Three.js requirements
+        /**
+         * @type {Three.Scene}
+         */
         this.scene = null;
+        /**
+         * @type {Three.Camera}
+         */
         this.camera = null;
+        /**
+         * @type {Three.WebGLRenderer}
+         */
         this.renderer = null;
 
         // extras
@@ -32,23 +42,43 @@ class Jg3DBlocks {
         }
         
         // event recievers
+        // stop button clicked or project restarted, dispose of all objects
         this.runtime.on('PROJECT_STOP_ALL', () => {
-            // stop button clicked or project restarted, dispose of all objects
-            if (this.scene) {
-                this.scene.remove();
-                this.scene = null;
-            }
-            if (this.camera) {
-                this.camera.remove();
-                this.camera = null;
-            }
-            if (this.renderer) {
-                this.renderer.domElement.remove();
-                this.renderer.dispose();
-                this.renderer = null;
-                this.runtime.prism_screenshot_externalCanvas = null;
-            }
+            this.dispose();
         });
+    }
+
+    /**
+     * Dispose of the scene, camera & renderer (and any objects)
+     */
+    dispose() {
+        if (this.scene) {
+            this.scene.remove();
+            this.scene = null;
+        }
+        if (this.camera) {
+            this.camera.remove();
+            this.camera = null;
+        }
+        if (this.renderer) {
+            if (this.renderer.domElement) {
+                this.renderer.domElement.remove();
+            }
+            this.renderer.dispose();
+            this.renderer = null;
+            this.runtime.prism_screenshot_externalCanvas = null;
+        }
+    }
+    /**
+     * Displays a message for stack blocks.
+     * @param {BlockUtility} util 
+     */
+    stackWarning(util, message) {
+        if (!util) return;
+        if (!util.thread) return;
+        if (!util.thread.stackClick) return;
+        const block = util.thread.blockGlowInFrame;
+        this.runtime.visualReport(block, message);
     }
 
     /**
@@ -80,6 +110,8 @@ class Jg3DBlocks {
     }
 
     initialize() {
+        // dispose of the previous scene
+        this.dispose();
         this.scene = new Three.Scene();
         this.renderer = new Three.WebGLRenderer({ preserveDrawingBuffer: true });
         // add renderer canvas ontop of scratch canvas
@@ -88,12 +120,14 @@ class Jg3DBlocks {
 
         this.restyleExternalCanvas(canvas);
         this.appendElementAboveScratchCanvas(canvas);        
-        if (urlParams.get('3dcube')==='y') {
-        const geometry = new Three.BoxGeometry(1, 1, 1);
-        const material = new Three.MeshBasicMaterial({ color: 0x00ff00 });
-        const cube = new Three.Mesh(geometry, material);
-        this.scene.add(cube)
-        }
+        /* dev: test rendering by drawing a cube and see if it appears
+        // const geometry = new Three.BoxGeometry(1, 1, 1);
+        // const material = new Three.MeshBasicMaterial({ color: 0x00ff00 });
+        // const cube = new Three.Mesh(geometry, material);
+        // this.scene.add(cube)
+        
+        dev update: it worked W
+        */
     }
     render() {
         if (!this.renderer) return;
@@ -220,6 +254,151 @@ class Jg3DBlocks {
     isCameraOrthographic() {
         if (!this.camera) return false;
         return Cast.toBoolean(!this.camera.isPerspectiveCamera);
+    }
+
+    doesObjectExist(args) {
+        if (!this.renderer) return false;
+        if (!this.scene) return false;
+        if (!this.camera) return false;
+        const name = Cast.toString(args.NAME);
+        // !! is easier to type than if (...) { return true; } return false;
+        return !!this.scene.getObjectByName(name);
+    }
+
+    createGameObject(args, util, type) {
+        if (!this.renderer) return;
+        if (!this.scene) return;
+        if (!this.camera) return;
+        const name = Cast.toString(args.NAME);
+        if (this.scene.getObjectByName(name)) return this.stackWarning(util, 'This object already exists!');
+        const position = {
+            x: Cast.toNumber(args.X),
+            y: Cast.toNumber(args.Y),
+            z: Cast.toNumber(args.Z),
+        };
+        let object;
+        switch (type) {
+            case 'sphere': {
+                const geometry = new Three.SphereGeometry(1);
+                const material = new Three.MeshStandardMaterial({ color: 0xffffff });
+                const sphere = new Three.Mesh(geometry, material);
+                object = sphere;
+                break;
+            }
+            case 'mesh': {
+                const url = Cast.toString(args.URL);
+                // we need to do a promise here so that stack continues on load
+                return new Promise((resolve) => {
+                    loader.load(url, (object) => {
+                        // success
+                        object.name = name;
+                        object.position.set(position.x, position.y, position.z);
+                        this.scene.add(object);
+                        resolve();
+                    }, () => {}, (error) => {
+                        console.warn('Failed to load 3D mesh obj;', error);
+                        this.stackWarning(util, 'Failed to get the 3D mesh!');
+                        resolve();
+                    })
+                });
+            }
+            case 'light': {
+                const type = Cast.toString(args.LIGHTTYPE);
+                // switch type because there are different types of lights
+                let light;
+                switch (type) {
+                    default: {
+                        light = new Three.PointLight(0xffffff, 1, 100);
+                        break;
+                    }
+                }
+                object = light;
+                break;
+            }
+            default: {
+                const geometry = new Three.BoxGeometry(1, 1, 1);
+                const material = new Three.MeshStandardMaterial({ color: 0xffffff });
+                const cube = new Three.Mesh(geometry, material);
+                object = cube;
+                break;
+            }
+        }
+        object.name = name;
+        object.position.set(position.x, position.y, position.z);
+        this.scene.add(object);
+    }
+    createCubeObject(args, util) {
+        this.createGameObject(args, util, 'cube');
+    }
+    createSphereObject(args, util) {
+        this.createGameObject(args, util, 'sphere');
+    }
+    createMeshObject(args, util) {
+        this.createGameObject(args, util, 'mesh');
+    }
+    createLightObject(args, util) {
+        this.createGameObject(args, util, 'light');
+    }
+
+    setObjectPosition(args) {
+        if (!this.renderer) return;
+        if (!this.scene) return;
+        if (!this.camera) return;
+        const name = Cast.toString(args.NAME);
+        const position = {
+            x: Cast.toNumber(args.X),
+            y: Cast.toNumber(args.Y),
+            z: Cast.toNumber(args.Z),
+        };
+        const object = this.scene.getObjectByName(name);
+        if (!object) return;
+        object.position.set(position.x, position.y, position.z);
+    }
+
+    deleteObject(args) {
+        if (!this.renderer) return;
+        if (!this.scene) return;
+        if (!this.camera) return;
+        const name = Cast.toString(args.NAME);
+        const object = this.scene.getObjectByName(name);
+        if (!object) return;
+        object.clear();
+        this.scene.remove(object);
+    }
+    setObjectColor(args) {
+        if (!this.renderer) return;
+        if (!this.scene) return;
+        if (!this.camera) return;
+        const name = Cast.toString(args.NAME);
+        const color = Cast.toNumber(args.COLOR);
+        const object = this.scene.getObjectByName(name);
+        if (!object) return;
+        object.material.color.set(color);
+    }
+    setObjectShading(args) {
+        if (!this.renderer) return;
+        if (!this.scene) return;
+        if (!this.camera) return;
+        const name = Cast.toString(args.NAME);
+        const on = Cast.toString(args.ONOFF) === 'on';
+        const object = this.scene.getObjectByName(name);
+        if (!object) return;
+        const color = '#' + object.material.color.getHexString();
+        if (on) {
+            object.material = new Three.MeshStandardMaterial({ color: color });
+        } else {
+            object.material = new Three.MeshBasicMaterial({ color: color });
+        }
+    }
+    setObjectWireframe(args) {
+        if (!this.renderer) return;
+        if (!this.scene) return;
+        if (!this.camera) return;
+        const name = Cast.toString(args.NAME);
+        const on = Cast.toString(args.ONOFF) === 'on';
+        const object = this.scene.getObjectByName(name);
+        if (!object) return;
+        object.material.wireframe = on;
     }
 }
 

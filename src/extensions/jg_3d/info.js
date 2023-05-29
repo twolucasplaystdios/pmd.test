@@ -1,6 +1,13 @@
 const BlockType = require('../../extension-support/block-type');
 const ArgumentType = require('../../extension-support/argument-type');
 
+const Icons = {
+    Cube: require('./cube.png'),
+    Sphere: require('./sphere.png'),
+    Light: require('./light.png'),
+    OBJ: require('./obj.png'),
+}
+
 const blockIconURI = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEAAAABACAYAAACqaXHeAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsIAAA7CARUoSoAAAAT6SURBVHhe7ZtdqBVVFMfXnHuvXG9i9/ZhWYGVYWoggqGVFSV9ywUpohch+lARFXwRAu1BEB97kNAKheiphyAKEqKXICIyKuhFS0Qh+yKvZqLXj+sZ//+99syZU/ecMx975pzDzA/WzFpzzszstWatvfeZmSMV3WXArkvHOMSPyFJIKRiChI6PL2kKAsWDFEqRJ6SDhgGcdeoAFG4ZRCNeNpujFNauIk40AblBVZH6fpx0mrPW6wjMOmson0OeUTU/anadB9sgvMbG+fdfhYGrPp3zpIaW8PMDr9kNIk9DuP+LxsqJPDLgRsgpVUXunyfy3ZtQkpwJbt/9hsjx8CiG6yAXVHWH6wCEdT42InJ6D5QsZ8DRZm8SOXfJ2orTNrs62J+QW1QVmXxHZJj9vSPOToqMbraG8gfkNlWzkbUPWA/hVTfO/7gTBurYpfPk+pl63P2v2A0icyE87xPGykDGBFWW3ynyLeu8CHDWFbtEDp2wtpLaj6Q78vsYsJQhTGQvvwvFVSElZAjD5lTYGkPiliTZ4STkdlVxIT7A4orqXQUeeBhiIxyGLFa1M3H6gNUQprtxft9aGJzF9YLzBC1je7Zx1qAsgrC9DxurA+0yYAxyWlWRNfi58jF74i6leyzg9sLtIj//ZW1lFHJW1f/Tyh1uN9U1MkPk/F67pV9AIGZsQJJetXab1rf6gAk+OPUZ5ucc4fuUr4+hDnYb9RBkhdH+Q9s+YGA+FisRUFZUH1FnezFTWLlK7XbEmgh57E4ozUNO70HHMT+sJZgjxp8J8uCPQB4wVu/Bn2B0PGG2Jp8K8y4ey4J9aw9QH8aCE2N01mlIHgCLdx8WCIQ0etpCMf0SHK9xsM5A6gCEPGolYeqlJXDcc/Jb0EUACLMAnaT/kJp54c9x53iAmwBYzO0u9g/skBxSH8SCVz2HpwhOAxDgLcSCgch4dJ+ZxTq/We08yCUAAd6DWLCjTDp/YJ0j1b071MyTXAMQgvmDv8zqHTDlk2I8T0sxAQAex2uWRYtOrM5xnHWecjxPS2EBCPDuwoKBsPMHn+XBOnfcccal8AAEeJw74MeWF95j6g5dC0CvUAXArktLFQC7Li1VAOy6tFQBsOvSUgXArktLFQC7Li3tA8B7cf3MrM5PdFt9YzYkfKTs/4JFHo/F+ODV+YtvYACONd4XIC0j0SoD/oWE92a8BSL3PAmloNtUWVjwenznSbsS4CNy7mxuYh37FcYikYkLndOqG5ycQPueEzn6u92AAoB0bGwSbw5CnlUVycD0/Uf11LgoAVxCr/mN4rchW1TtTJrLeRli3gQcRpFM/kQtJRkDUFuNC9Fclon9STMMsm8wL0BfRCj4EOSlrbQKAg4v3YzzIt0jzs+EpKrNVDtF4NsC36gq8ulekfEYb2WEJM2A4Zp4q5qGo3shHKNSkzUAAXwva46quDK/YXFO9bbEDcAIGvqY1RUG3cmjWFcBCAiT8qYxkb/D3GhBjADMel7k/EVrKE7bnKYPaAcbN4/KqTMw0D+89yGt5GzZh/1R5xHn50JcXzD3B4zwAuQjVTGt/B7TS/7lIco0GfDFDyJP7bCGwkcoX6nqnjwDENA0UPnHsQj+ABENAPpx73GrK8ihxn+N+h2WGgNhZPF8jGBHIF9CDop/62jjMyuuS7NnQH/ecPSTPUNRpyml4S1I1PGNkIqKiqIRuQYHeAEU9sBGCQAAAABJRU5ErkJggg==";
 
 const seperator = "---";
@@ -49,7 +56,7 @@ function infoArgumentMenu(type, menu) {
     }
 }
 
-function createCommandBlock(opcode, text, args) {
+function createCommandBlock(opcode, text, args, icon) {
     const obj = {
         opcode: opcode,
         text: text ? text : opcode,
@@ -58,9 +65,12 @@ function createCommandBlock(opcode, text, args) {
     if (args) {
         obj.arguments = args;
     }
+    if (icon) {
+        obj.blockIconURI = icon;
+    }
     return obj;
 }
-function createReporterBlock(opcode, text, args) {
+function createReporterBlock(opcode, text, args, icon) {
     const obj = {
         opcode: opcode,
         text: text ? text : opcode,
@@ -70,9 +80,12 @@ function createReporterBlock(opcode, text, args) {
     if (args) {
         obj.arguments = args;
     }
+    if (icon) {
+        obj.blockIconURI = icon;
+    }
     return obj;
 }
-function createBooleanBlock(opcode, text, args) {
+function createBooleanBlock(opcode, text, args, icon) {
     const obj = {
         opcode: opcode,
         text: text ? text : opcode,
@@ -81,6 +94,9 @@ function createBooleanBlock(opcode, text, args) {
     }
     if (args) {
         obj.arguments = args;
+    }
+    if (icon) {
+        obj.blockIconURI = icon;
     }
     return obj;
 }
@@ -95,6 +111,7 @@ module.exports = {
         infoLabel("Initializing your scene"),
 
         createCommandBlock('initialize', 'create 3D scene'),
+        createCommandBlock('dispose', 'remove 3D scene'),
         seperator,
         createCommandBlock(
             'setCameraPerspective0',
@@ -180,12 +197,69 @@ module.exports = {
         seperator,
         createBooleanBlock("isCameraPerspective", "is scene camera a perspective camera?"),
         createBooleanBlock("isCameraOrthographic", "is scene camera an orthographic camera?"),
+
+        infoLabel("Objects"),
+
+        createBooleanBlock("doesObjectExist", "object named [NAME] exists?", {
+            NAME: infoArgument("Object1")
+        }),
+        seperator,
+        createCommandBlock('createCubeObject', 'create cube named [NAME] at x: [X] y: [Y] z: [Z]', {
+            NAME: infoArgument("Object1"),
+            X: infoArgument(0),
+            Y: infoArgument(0),
+            Z: infoArgument(0)
+        }, Icons.Cube),
+        createCommandBlock('createSphereObject', 'create sphere named [NAME] at x: [X] y: [Y] z: [Z]', {
+            NAME: infoArgument("Object1"),
+            X: infoArgument(0),
+            Y: infoArgument(0),
+            Z: infoArgument(0)
+        }, Icons.Sphere),
+        createCommandBlock('createMeshObject', 'create mesh named [NAME] with .obj data: [URL] at x: [X] y: [Y] z: [Z]', {
+            NAME: infoArgument("Object1"),
+            URL: infoArgument("data:text/plain;base64,"),
+            X: infoArgument(0),
+            Y: infoArgument(0),
+            Z: infoArgument(0)
+        }, Icons.OBJ),
+        createCommandBlock('createLightObject', 'create [LIGHTTYPE] light named [NAME] at x: [X] y: [Y] z: [Z]', {
+            LIGHTTYPE: infoArgumentMenu(ArgumentType.STRING, "lightType"),
+            NAME: infoArgument("Light1"),
+            X: infoArgument(0),
+            Y: infoArgument(0),
+            Z: infoArgument(0)
+        }, Icons.Light),
+        seperator,
+        createCommandBlock("setObjectPosition", "move object named [NAME] to x: [X] y: [Y] z: [Z]", {
+            NAME: infoArgument("Object1"),
+            X: infoArgument(1),
+            Y: infoArgument(1),
+            Z: infoArgument(1)
+        }),
+        createCommandBlock("deleteObject", "remove object named [NAME]", {
+            NAME: infoArgument("Object1")
+        }),
+        createCommandBlock("setObjectColor", "recolor object named [NAME] to [COLOR]", {
+            NAME: infoArgument("Object1"),
+            COLOR: infoArgument("COLOR"),
+        }),
+        createCommandBlock("setObjectShading", "turn [ONOFF] shading on object named [NAME]", {
+            ONOFF: infoArgumentMenu(ArgumentType.STRING, "onoff"),
+            NAME: infoArgument("Object1"),
+        }),
+        createCommandBlock("setObjectWireframe", "turn [ONOFF] wireframe view on object named [NAME]", {
+            ONOFF: infoArgumentMenu(ArgumentType.STRING, "onoff"),
+            NAME: infoArgument("Object1"),
+        }),
         seperator,
     ],
     menus: {
         cameraType: infoMenu(["perspective", "orthographic"]),
+        lightType: infoMenu(["point"]),
         clippingPlanes: infoMenu(["near", "far"]),
         vector3: infoMenu(["x", "y", "z"]),
-        vector2: infoMenu(["x", "y"])
+        vector2: infoMenu(["x", "y"]),
+        onoff: infoMenu(["on", "off"])
     }
 }
