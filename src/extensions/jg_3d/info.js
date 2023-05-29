@@ -171,6 +171,9 @@ module.exports = {
         createCommandBlock('setSceneBackgroundColor', "set background color to [COLOR]", {
             COLOR: infoArgument("COLOR")
         }),
+        createCommandBlock('setSceneBackgroundOpacity', "set background transparency to [OPACITY]%", {
+            OPACITY: infoArgument(100)
+        }),
 
         infoLabel("Camera controls"),
 
@@ -198,7 +201,10 @@ module.exports = {
         createReporterBlock("getCameraClipPlane", "camera [CLIPPLANE]", {
             CLIPPLANE: infoArgumentMenu(ArgumentType.STRING, "clippingPlanes")
         }),
-        createReporterBlock("getCameraPosition", "camera [VECTOR3]", {
+        createReporterBlock("getCameraPosition", "camera [VECTOR3] position", {
+            VECTOR3: infoArgumentMenu(ArgumentType.STRING, "vector3")
+        }),
+        createReporterBlock("getCameraRotation", "camera [VECTOR3] rotation", {
             VECTOR3: infoArgumentMenu(ArgumentType.STRING, "vector3")
         }),
         createReporterBlock("getCameraAspectRatio", "camera aspect ratio"),
@@ -212,6 +218,9 @@ module.exports = {
 
         createBooleanBlock("doesObjectExist", "object named [NAME] exists?", {
             NAME: infoArgument("Object1")
+        }),
+        createReporterBlock("existingObjectsArray", "existing [OBJECTLIST]", {
+            OBJECTLIST: infoArgumentMenu(ArgumentType.STRING, "objectTypeList")
         }),
         seperator,
         createCommandBlock('createCubeObject', 'create cube named [NAME] at x: [X] y: [Y] z: [Z]', {
@@ -259,6 +268,14 @@ module.exports = {
             Y: infoArgument('ANGLE'),
             Z: infoArgument('ANGLE')
         }),
+        createReporterBlock("getObjectPosition", "[VECTOR3] position of object named [NAME]", {
+            VECTOR3: infoArgumentMenu(ArgumentType.STRING, "vector3"),
+            NAME: infoArgument("Object1"),
+        }),
+        createReporterBlock("getObjectRotation", "[VECTOR3] rotation of object named [NAME]", {
+            VECTOR3: infoArgumentMenu(ArgumentType.STRING, "vector3"),
+            NAME: infoArgument("Object1"),
+        }),
         seperator,
         createCommandBlock("deleteObject", "remove object named [NAME]", {
             NAME: infoArgument("Object1")
@@ -283,6 +300,7 @@ module.exports = {
         clippingPlanes: infoMenu(["near", "far"]),
         vector3: infoMenu(["x", "y", "z"]),
         vector2: infoMenu(["x", "y"]),
-        onoff: infoMenu(["on", "off"])
+        onoff: infoMenu(["on", "off"]),
+        objectTypeList: infoMenu(["objects", "physical objects", "lights"])
     }
 }

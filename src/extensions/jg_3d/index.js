@@ -8,6 +8,17 @@ const loader = new OBJLoader();
 function toRad(deg) {
     return deg * (Math.PI / 180);
 }
+function toDeg(rad) {
+    return rad * (180 / Math.PI);
+}
+function toDegRounding(rad) {
+    const result = toDeg(rad);
+    if (!String(result).includes('.')) return result;
+    const split = String(result).split('.');
+    const endingDecimals = split[1].substring(0, 3);
+    if ((endingDecimals === '999') && (split[1].charAt(3) === '9')) return Number(split[0]) + 1;
+    return Number(split[0] + '.' + endingDecimals);
+}
 
 /**
  * Class for 3D blocks
@@ -20,6 +31,8 @@ class Jg3DBlocks {
          * @type {Runtime}
          */
         this.runtime = runtime;
+
+        // window._ThreeJs = Three;
 
         // prism has screenshots, lets tell it to use OUR canvas for them
         this.runtime.prism_screenshot_checkForExternalCanvas = true;
@@ -38,6 +51,9 @@ class Jg3DBlocks {
          * @type {Three.WebGLRenderer}
          */
         this.renderer = null;
+
+        this.existingSceneObjects = [];
+        this.existingSceneLights = [];
 
         // extras
         this.lastStageSizeWhenRendering = {
@@ -100,6 +116,9 @@ class Jg3DBlocks {
         canvas.style.position = "absolute"; // position above canvas without pushing it down
         canvas.style.width = "100%";
         canvas.style.height = "100%";
+        // we have no reason to register clicks on the three.js canvas,
+        // so make it click on the scratch canvas instead
+        canvas.style.pointerEvents = "none";
     }
     appendElementAboveScratchCanvas(element) {
         element.style.zIndex = 450;
@@ -117,7 +136,12 @@ class Jg3DBlocks {
         // dispose of the previous scene
         this.dispose();
         this.scene = new Three.Scene();
-        this.renderer = new Three.WebGLRenderer({ preserveDrawingBuffer: true });
+        this.renderer = new Three.WebGLRenderer({ preserveDrawingBuffer: true, alpha: true });
+        this.renderer.penguinMod = {
+            backgroundColor: 0x000000,
+            backgroundOpacity: 1
+        }
+        this.renderer.setClearColor(0x000000, 1);
         // add renderer canvas ontop of scratch canvas
         const canvas = this.renderer.domElement;
         this.runtime.prism_screenshot_externalCanvas = canvas;
@@ -219,8 +243,13 @@ class Jg3DBlocks {
             y: Cast.toNumber(args.Y),
             z: Cast.toNumber(args.Z),
         }
-        const euler = new Three.Euler(toRad(rotation.x), toRad(rotation.y), toRad(rotation.z));
+        // const euler = new Three.Euler(toRad(rotation.x), toRad(rotation.y), toRad(rotation.z));
+        // this.camera.setRotationFromEuler(euler);
+        const euler = new Three.Euler(0, 0, 0);
         this.camera.setRotationFromEuler(euler);
+        this.camera.rotateY(toRad(rotation.y));
+        this.camera.rotateX(toRad(rotation.x));
+        this.camera.rotateZ(toRad(rotation.z));
     }
     getCameraPosition(args) {
         if (!this.camera) return "";
@@ -229,11 +258,31 @@ class Jg3DBlocks {
         if (!["x", "y", "z"].includes(v)) return "";
         return Cast.toNumber(this.camera.position[v]);
     }
+    getCameraRotation(args) {
+        if (!this.camera) return "";
+        const v = args.VECTOR3;
+        if (!v) return "";
+        if (!["x", "y", "z"].includes(v)) return "";
+        const rotation = Cast.toNumber(this.camera.rotation[v]);
+        // rotation is in radians, convert to degrees but round it
+        // a bit so that we get 46 instead of 45.999999999999996
+        return toDegRounding(rotation);
+    }
 
     setSceneBackgroundColor(args) {
-        if (!this.scene) return;
+        if (!this.renderer) return;
         const color = Cast.toNumber(args.COLOR);
-        this.scene.background = new Three.Color(color);
+        this.renderer.penguinMod.backgroundColor = color;
+        this.renderer.setClearColor(color, this.renderer.penguinMod.backgroundOpacity);
+    }
+    setSceneBackgroundOpacity(args) {
+        if (!this.renderer) return;
+        let opacity = Cast.toNumber(args.OPACITY);
+        if (opacity > 100) opacity = 100;
+        if (opacity < 0) opacity = 0;
+        const backgroundOpac = 1 - (opacity / 100);
+        this.renderer.penguinMod.backgroundOpacity = backgroundOpac;
+        this.renderer.setClearColor(this.renderer.penguinMod.backgroundColor, backgroundOpac);
     }
 
     getCameraZoom() {
@@ -243,6 +292,7 @@ class Jg3DBlocks {
     setCameraZoom(args) {
         if (!this.camera) return;
         this.camera.zoom = Cast.toNumber(args.ZOOM) / 100;
+        this.camera.updateProjectionMatrix();
     }
 
     getCameraClipPlane(args) {
@@ -271,18 +321,14 @@ class Jg3DBlocks {
     }
 
     doesObjectExist(args) {
-        if (!this.renderer) return false;
         if (!this.scene) return false;
-        if (!this.camera) return false;
         const name = Cast.toString(args.NAME);
         // !! is easier to type than if (...) { return true; } return false;
         return !!this.scene.getObjectByName(name);
     }
 
     createGameObject(args, util, type) {
-        if (!this.renderer) return;
         if (!this.scene) return;
-        if (!this.camera) return;
         const name = Cast.toString(args.NAME);
         if (this.scene.getObjectByName(name)) return this.stackWarning(util, 'An object with this name already exists!');
         const position = {
@@ -315,6 +361,7 @@ class Jg3DBlocks {
                         const material = new Three.MeshStandardMaterial({ color: 0xffffff });
                         this.updateMaterialOfObjObject(object, material);
                         object.name = name;
+                        this.existingSceneObjects.push(name);
                         object.isPenguinMod = true;
                         object.isMeshObj = true;
                         object.position.set(position.x, position.y, position.z);
@@ -338,6 +385,7 @@ class Jg3DBlocks {
                     }
                 }
                 object = light;
+                this.existingSceneLights.push(name);
                 break;
             }
             default: {
@@ -349,6 +397,7 @@ class Jg3DBlocks {
             }
         }
         object.name = name;
+        this.existingSceneObjects.push(name);
         object.isPenguinMod = true;
         object.position.set(position.x, position.y, position.z);
         this.scene.add(object);
@@ -387,9 +436,7 @@ class Jg3DBlocks {
     }
 
     setObjectPosition(args) {
-        if (!this.renderer) return;
         if (!this.scene) return;
-        if (!this.camera) return;
         const name = Cast.toString(args.NAME);
         const position = {
             x: Cast.toNumber(args.X),
@@ -401,9 +448,7 @@ class Jg3DBlocks {
         object.position.set(position.x, position.y, position.z);
     }
     setObjectRotation(args) {
-        if (!this.renderer) return;
         if (!this.scene) return;
-        if (!this.camera) return;
         const name = Cast.toString(args.NAME);
         const rotation = {
             x: Cast.toNumber(args.X),
@@ -412,24 +457,56 @@ class Jg3DBlocks {
         };
         const object = this.scene.getObjectByName(name);
         if (!object) return;
-        const euler = new Three.Euler(toRad(rotation.x), toRad(rotation.y), toRad(rotation.z));
+        // const euler = new Three.Euler(toRad(rotation.x), toRad(rotation.y), toRad(rotation.z));
+        // object.setRotationFromEuler(euler);
+        const euler = new Three.Euler(0, 0, 0);
         object.setRotationFromEuler(euler);
+        object.rotateY(toRad(rotation.y));
+        object.rotateX(toRad(rotation.x));
+        object.rotateZ(toRad(rotation.z));
+    }
+
+    getObjectPosition(args) {
+        if (!this.scene) return "";
+        const name = Cast.toString(args.NAME);
+        const object = this.scene.getObjectByName(name);
+        if (!object) return '';
+        const v = args.VECTOR3;
+        if (!v) return "";
+        if (!["x", "y", "z"].includes(v)) return "";
+        return Cast.toNumber(object.position[v]);
+    }
+    getObjectRotation(args) {
+        if (!this.scene) return "";
+        const name = Cast.toString(args.NAME);
+        const object = this.scene.getObjectByName(name);
+        if (!object) return '';
+        const v = args.VECTOR3;
+        if (!v) return "";
+        if (!["x", "y", "z"].includes(v)) return "";
+        const rotation = Cast.toNumber(object.rotation[v]);
+        // rotation is in radians, convert to degrees but round it
+        // a bit so that we get 46 instead of 45.999999999999996
+        return toDegRounding(rotation);
     }
 
     deleteObject(args) {
-        if (!this.renderer) return;
         if (!this.scene) return;
-        if (!this.camera) return;
         const name = Cast.toString(args.NAME);
         const object = this.scene.getObjectByName(name);
         if (!object) return;
+        const isLight = object.isLight;
         object.clear();
         this.scene.remove(object);
+        const idx = this.existingSceneObjects.indexOf(name);
+        this.existingSceneObjects.splice(idx, 1);
+        if (isLight) {
+            const lidx = this.existingSceneLights.indexOf(name);
+            this.existingSceneLights.splice(lidx, 1);
+        }
     }
     setObjectColor(args) {
-        if (!this.renderer) return;
         if (!this.scene) return;
-        if (!this.camera) return;
         const name = Cast.toString(args.NAME);
         const color = Cast.toNumber(args.COLOR);
         const object = this.scene.getObjectByName(name);
@@ -448,9 +525,7 @@ class Jg3DBlocks {
         object.material.color.set(color);
     }
     setObjectShading(args) {
-        if (!this.renderer) return;
         if (!this.scene) return;
-        if (!this.camera) return;
         const name = Cast.toString(args.NAME);
         const on = Cast.toString(args.ONOFF) === 'on';
         const object = this.scene.getObjectByName(name);
@@ -478,9 +553,7 @@ class Jg3DBlocks {
         }
     }
     setObjectWireframe(args) {
-        if (!this.renderer) return;
         if (!this.scene) return;
-        if (!this.camera) return;
         const name = Cast.toString(args.NAME);
         const on = Cast.toString(args.ONOFF) === 'on';
         const object = this.scene.getObjectByName(name);
@@ -494,6 +567,26 @@ class Jg3DBlocks {
             return;
         }
         object.material.wireframe = on;
+    }
+
+    existingObjectsArray(args) {
+        const listType = Cast.toString(args.OBJECTLIST);
+        const validOptions = ["objects", "physical objects", "lights"];
+        if (!validOptions.includes(listType)) return '[]';
+        switch (listType) {
+            case 'objects':
+                return JSON.stringify(this.existingSceneObjects);
+            case 'lights':
+                return JSON.stringify(this.existingSceneLights);
+            case 'physical objects': {
+                const physical = this.existingSceneObjects.filter(objectName => {
+                    return !this.existingSceneLights.includes(objectName);
+                });
+                return JSON.stringify(physical);
+            }
+            default:
+                return '[]';
+        }
     }
 }
 
