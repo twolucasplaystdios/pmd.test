@@ -72,6 +72,8 @@ class Jg3DBlocks {
      * Dispose of the scene, camera & renderer (and any objects)
      */
     dispose() {
+        this.existingSceneObjects = [];
+        this.existingSceneLights = [];
         if (this.scene) {
             this.scene.remove();
             this.scene = null;
