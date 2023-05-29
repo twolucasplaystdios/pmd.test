@@ -612,6 +612,22 @@ class Jg3DBlocks {
                 return '[]';
         }
     }
+
+    objectTouchingObject(args) {
+        if (!this.scene) return false;
+        const name1 = Cast.toString(args.NAME1);
+        const name2 = Cast.toString(args.NAME2);
+        const object1 = this.scene.getObjectByName(name1);
+        const object2 = this.scene.getObjectByName(name2);
+        if (!object1) return false;
+        if (!object2) return false;
+        if (object1.isLight) return false; // currently lights are not supported for collisions
+        if (object2.isLight) return false; // currently lights are not supported for collisions
+        const box1 = new Three.Box3().setFromObject(object1);
+        const box2 = new Three.Box3().setFromObject(object2);
+        const collision = box1.intersectsBox(box2);
+        return collision;
+    }
 }
 
 module.exports = Jg3DBlocks;

@@ -295,6 +295,11 @@ module.exports = {
             NAME: infoArgument("Object1"),
         }),
         seperator,
+        createBooleanBlock("objectTouchingObject", "object [NAME1] touching object [NAME2]?", {
+            NAME1: infoArgument("Object1"),
+            NAME2: infoArgument("Object2"),
+        }),
+        seperator,
         createCommandBlock("deleteObject", "remove object named [NAME]", {
             NAME: infoArgument("Object1")
         }),
