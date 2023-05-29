@@ -4,6 +4,7 @@ const ArgumentType = require('../../extension-support/argument-type');
 const Icons = {
     Cube: require('./cube.png'),
     Sphere: require('./sphere.png'),
+    Plane: require('./plane.png'),
     Light: require('./light.png'),
     OBJ: require('./obj.png'),
 }
@@ -182,6 +183,15 @@ module.exports = {
                 Z: infoArgument(0)
             }
         ),
+        createCommandBlock(
+            'setCameraRotation',
+            'set camera rotation to x: [X] y: [Y] z: [Z]',
+            {
+                X: infoArgument('ANGLE'),
+                Y: infoArgument('ANGLE'),
+                Z: infoArgument('ANGLE')
+            }
+        ),
         createCommandBlock('setCameraZoom', 'set camera zoom to [ZOOM]%', {
             ZOOM: infoArgument(100)
         }),
@@ -216,6 +226,12 @@ module.exports = {
             Y: infoArgument(0),
             Z: infoArgument(0)
         }, Icons.Sphere),
+        createCommandBlock('createPlaneObject', 'create plane named [NAME] at x: [X] y: [Y] z: [Z]', {
+            NAME: infoArgument("Object1"),
+            X: infoArgument(0),
+            Y: infoArgument(0),
+            Z: infoArgument(0)
+        }, Icons.Plane),
         createCommandBlock('createMeshObject', 'create mesh named [NAME] with .obj data: [URL] at x: [X] y: [Y] z: [Z]', {
             NAME: infoArgument("Object1"),
             URL: infoArgument("data:text/plain;base64,"),
@@ -237,6 +253,13 @@ module.exports = {
             Y: infoArgument(1),
             Z: infoArgument(1)
         }),
+        createCommandBlock("setObjectRotation", "set rotation of object named [NAME] to x: [X] y: [Y] z: [Z]", {
+            NAME: infoArgument("Object1"),
+            X: infoArgument('ANGLE'),
+            Y: infoArgument('ANGLE'),
+            Z: infoArgument('ANGLE')
+        }),
+        seperator,
         createCommandBlock("deleteObject", "remove object named [NAME]", {
             NAME: infoArgument("Object1")
         }),

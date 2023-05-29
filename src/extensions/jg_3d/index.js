@@ -5,6 +5,10 @@ const Three = require("three");
 const { OBJLoader } = require('three/examples/jsm/loaders/OBJLoader.js');
 const loader = new OBJLoader();
 
+function toRad(deg) {
+    return deg * (Math.PI / 180);
+}
+
 /**
  * Class for 3D blocks
  * @constructor
@@ -208,6 +212,16 @@ class Jg3DBlocks {
         }
         this.camera.position.set(position.x, position.y, position.z);
     }
+    setCameraRotation(args) {
+        if (!this.camera) return;
+        const rotation = {
+            x: Cast.toNumber(args.X),
+            y: Cast.toNumber(args.Y),
+            z: Cast.toNumber(args.Z),
+        }
+        const euler = new Three.Euler(toRad(rotation.x), toRad(rotation.y), toRad(rotation.z));
+        this.camera.setRotationFromEuler(euler);
+    }
     getCameraPosition(args) {
         if (!this.camera) return "";
         const v = args.VECTOR3;
@@ -270,7 +284,7 @@ class Jg3DBlocks {
         if (!this.scene) return;
         if (!this.camera) return;
         const name = Cast.toString(args.NAME);
-        if (this.scene.getObjectByName(name)) return this.stackWarning(util, 'This object already exists!');
+        if (this.scene.getObjectByName(name)) return this.stackWarning(util, 'An object with this name already exists!');
         const position = {
             x: Cast.toNumber(args.X),
             y: Cast.toNumber(args.Y),
@@ -283,6 +297,13 @@ class Jg3DBlocks {
                 const material = new Three.MeshStandardMaterial({ color: 0xffffff });
                 const sphere = new Three.Mesh(geometry, material);
                 object = sphere;
+                break;
+            }
+            case 'plane': {
+                const geometry = new Three.PlaneGeometry(1, 1);
+                const material = new Three.MeshStandardMaterial({ color: 0xffffff });
+                const plane = new Three.Mesh(geometry, material);
+                object = plane;
                 break;
             }
             case 'mesh': {
@@ -338,6 +359,9 @@ class Jg3DBlocks {
     createSphereObject(args, util) {
         this.createGameObject(args, util, 'sphere');
     }
+    createPlaneObject(args, util) {
+        this.createGameObject(args, util, 'plane');
+    }
     createMeshObject(args, util) {
         this.createGameObject(args, util, 'mesh');
     }
@@ -375,6 +399,21 @@ class Jg3DBlocks {
         const object = this.scene.getObjectByName(name);
         if (!object) return;
         object.position.set(position.x, position.y, position.z);
+    }
+    setObjectRotation(args) {
+        if (!this.renderer) return;
+        if (!this.scene) return;
+        if (!this.camera) return;
+        const name = Cast.toString(args.NAME);
+        const rotation = {
+            x: Cast.toNumber(args.X),
+            y: Cast.toNumber(args.Y),
+            z: Cast.toNumber(args.Z),
+        };
+        const object = this.scene.getObjectByName(name);
+        if (!object) return;
+        const euler = new Three.Euler(toRad(rotation.x), toRad(rotation.y), toRad(rotation.z));
+        object.setRotationFromEuler(euler);
     }
 
     deleteObject(args) {
