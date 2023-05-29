@@ -291,7 +291,11 @@ class Jg3DBlocks {
                 return new Promise((resolve) => {
                     loader.load(url, (object) => {
                         // success
+                        const material = new Three.MeshStandardMaterial({ color: 0xffffff });
+                        this.updateMaterialOfObjObject(object, material);
                         object.name = name;
+                        object.isPenguinMod = true;
+                        object.isMeshObj = true;
                         object.position.set(position.x, position.y, position.z);
                         this.scene.add(object);
                         resolve();
@@ -324,6 +328,7 @@ class Jg3DBlocks {
             }
         }
         object.name = name;
+        object.isPenguinMod = true;
         object.position.set(position.x, position.y, position.z);
         this.scene.add(object);
     }
@@ -338,6 +343,23 @@ class Jg3DBlocks {
     }
     createLightObject(args, util) {
         this.createGameObject(args, util, 'light');
+    }
+
+    getMaterialOfObjObject(object) {
+        let material;
+        object.traverse((child) => {
+            if (child instanceof Three.Mesh) {
+                material = child.material;
+            }
+        });
+        return material;
+    }
+    updateMaterialOfObjObject(object, material) {
+        object.traverse((child) => {
+            if (child instanceof Three.Mesh) {
+                child.material = material;
+            }
+        });
     }
 
     setObjectPosition(args) {
@@ -373,6 +395,17 @@ class Jg3DBlocks {
         const color = Cast.toNumber(args.COLOR);
         const object = this.scene.getObjectByName(name);
         if (!object) return;
+        if (object.isLight) {
+            object.color.set(color);
+            return
+        }
+        if (object.isMeshObj) {
+            const material = this.getMaterialOfObjObject(object);
+            if (!material) return;
+            material.color.set(color);
+            this.updateMaterialOfObjObject(object, material);
+            return;
+        }
         object.material.color.set(color);
     }
     setObjectShading(args) {
@@ -383,6 +416,21 @@ class Jg3DBlocks {
         const on = Cast.toString(args.ONOFF) === 'on';
         const object = this.scene.getObjectByName(name);
         if (!object) return;
+        if (object.isLight) return;
+        if (object.isMeshObj) {
+            const material = this.getMaterialOfObjObject(object);
+            if (!material) return;
+            const color = '#' + material.color.getHexString();
+            let newMat;
+            if (on) {
+                newMat = new Three.MeshStandardMaterial({ color: color });
+            } else {
+                newMat = new Three.MeshBasicMaterial({ color: color });
+            }
+            newMat.color.set(color);
+            this.updateMaterialOfObjObject(object, newMat);
+            return;
+        }
         const color = '#' + object.material.color.getHexString();
         if (on) {
             object.material = new Three.MeshStandardMaterial({ color: color });
@@ -398,6 +446,14 @@ class Jg3DBlocks {
         const on = Cast.toString(args.ONOFF) === 'on';
         const object = this.scene.getObjectByName(name);
         if (!object) return;
+        if (object.isLight) return;
+        if (object.isMeshObj) {
+            const material = this.getMaterialOfObjObject(object);
+            if (!material) return;
+            material.wireframe = on;
+            this.updateMaterialOfObjObject(object, material);
+            return;
+        }
         object.material.wireframe = on;
     }
 }
