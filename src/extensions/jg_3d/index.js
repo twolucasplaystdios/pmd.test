@@ -465,6 +465,18 @@ class Jg3DBlocks {
         object.rotateX(toRad(rotation.x));
         object.rotateZ(toRad(rotation.z));
     }
+    setObjectSize(args) {
+        if (!this.scene) return;
+        const name = Cast.toString(args.NAME);
+        const size = {
+            x: Cast.toNumber(args.X) / 100,
+            y: Cast.toNumber(args.Y) / 100,
+            z: Cast.toNumber(args.Z) / 100,
+        };
+        const object = this.scene.getObjectByName(name);
+        if (!object) return;
+        object.scale.set(size.x, size.y, size.z);
+    }
 
     getObjectPosition(args) {
         if (!this.scene) return "";
@@ -488,6 +500,16 @@ class Jg3DBlocks {
         // rotation is in radians, convert to degrees but round it
         // a bit so that we get 46 instead of 45.999999999999996
         return toDegRounding(rotation);
+    }
+    getObjectSize(args) {
+        if (!this.scene) return "";
+        const name = Cast.toString(args.NAME);
+        const object = this.scene.getObjectByName(name);
+        if (!object) return '';
+        const v = args.VECTOR3;
+        if (!v) return "";
+        if (!["x", "y", "z"].includes(v)) return "";
+        return Cast.toNumber(object.scale[v]) * 100;
     }
 
     deleteObject(args) {
