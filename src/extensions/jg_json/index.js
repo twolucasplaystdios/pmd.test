@@ -73,6 +73,22 @@ class JgJSONBlocks {
                     }
                 },
                 {
+                    opcode: 'getTreeValueFromJSON',
+                    text: 'get path [VALUE] from [JSON]',
+                    disableMonitor: true,
+                    blockType: BlockType.REPORTER,
+                    arguments: {
+                        VALUE: {
+                            type: ArgumentType.STRING,
+                            defaultValue: 'first/second'
+                        },
+                        JSON: {
+                            type: ArgumentType.STRING,
+                            defaultValue: '{"first": {"second": 2, "third": 3}}'
+                        }
+                    }
+                },
+                {
                     opcode: 'setValueToKeyInJSON',
                     text: formatMessage({
                         id: 'jgJSON.blocks.setValueToKeyInJSON',
@@ -533,6 +549,52 @@ class JgJSONBlocks {
         const json = validateJSON(args.JSON).object;
 
         return valueToString(json[key]);
+    }
+    getTreeValueFromJSON (args) {
+        const tree = Cast.toString(args.VALUE);
+        let _json;
+        if (Cast.toString(args.JSON).startsWith('[')) {
+            _json = validateArray(args.JSON).array;
+        } else {
+            _json = validateJSON(args.JSON).object;
+        }
+        const json = _json;
+
+        if (!tree.includes('/')) {
+            // if we dont have a slash, treat it like
+            // the get value block
+            if (Array.isArray(json)) {
+                return this.json_array_get({
+                    array: Cast.toString(args.JSON),
+                    index: Cast.toNumber(args.VALUE)
+                });
+            }
+            return this.getValueFromJSON(args);
+        }
+
+        let value = '';
+        let currentObject = json;
+        const treeSplit = tree.split('/');
+        for (const key of treeSplit) {
+            value = '';
+            // check for array so we can do "object/array/3/value"
+            if (Array.isArray(currentObject)) {
+                currentObject = currentObject[Cast.toNumber(key)];
+                value = currentObject;
+                continue;
+            }
+
+            if (typeof currentObject === 'object') {
+                currentObject = currentObject[key];
+                value = currentObject;
+            } else {
+                value = currentObject;
+            }
+        }
+
+        if (typeof value === "undefined") return '';
+
+        return valueToString(value);
     }
     setValueToKeyInJSON (args) {
         const json = validateJSON(args.JSON).object;

@@ -54,6 +54,7 @@ ${blockSeparator}
 %b6>
 %b9>
 %b11>
+%b12>
 ${blockSeparator}
 <block type="sensing_getoperatingsystem"/>
 <block type="sensing_getbrowser"/>
@@ -217,6 +218,12 @@ class pmSensingExpansion {
                     text: 'project in iframe?',
                     blockType: BlockType.BOOLEAN,
                     disableMonitor: true
+                },
+                {
+                    opcode: 'currentMillisecond',
+                    text: 'current millisecond',
+                    blockType: BlockType.REPORTER,
+                    disableMonitor: false
                 },
             ],
             menus: {
@@ -440,6 +447,10 @@ class pmSensingExpansion {
     framed() {
         if (!window.parent) return false;
         return window.parent !== window;
+    }
+
+    currentMillisecond() {
+        return Date.now() % 1000;
     }
 }
 
