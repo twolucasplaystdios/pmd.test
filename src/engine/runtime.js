@@ -997,7 +997,7 @@ class Runtime extends EventEmitter {
      * @private
      */
     _makeExtensionMenuId (menuName, extensionId) {
-        return `${extensionId}_menu_${xmlEscape(menuName)}`;
+        return `${extensionId}_menu_${menuName}`;
     }
 
     /**
@@ -1440,7 +1440,7 @@ class Runtime extends EventEmitter {
 
         const mutation = blockInfo.isDynamic ? `<mutation blockInfo="${xmlEscape(JSON.stringify(blockInfo))}"/>` : '';
         const inputs = context.inputList.join('');
-        const blockXML = `<block type="${extendedOpcode}">${mutation}${inputs}</block>`;
+        const blockXML = `<block type="${xmlEscape(extendedOpcode)}">${mutation}${inputs}</block>`;
 
         return {
             info: context.blockInfo,
@@ -1490,7 +1490,7 @@ class Runtime extends EventEmitter {
         const buttonText = maybeFormatMessage(buttonInfo.text, extensionMessageContext);
         return {
             info: buttonInfo,
-            xml: `<button text="${buttonText}" callbackKey="${buttonInfo.opcode}"></button>`
+            xml: `<button text="${xmlEscape(buttonText)}" callbackKey="${xmlEscape(buttonInfo.func)}"></button>`
         };
     }
 
@@ -1527,9 +1527,6 @@ class Runtime extends EventEmitter {
      * @private
      */
     _convertPlaceholders (context, match, placeholder) {
-        // Sanitize the placeholder to ensure valid XML
-        placeholder = placeholder.replace(/[<"&]/, '_');
-
         // Determine whether the argument type is one of the known standard field types
         const argInfo = context.blockInfo.arguments[placeholder] || {};
         let argTypeInfo = ArgumentTypeMap[argInfo.type] || {};
@@ -1557,8 +1554,8 @@ class Runtime extends EventEmitter {
             };
 
             const defaultValue =
-                typeof argInfo.defaultValue === 'undefined' ? '' :
-                    xmlEscape(maybeFormatMessage(argInfo.defaultValue, this.makeMessageContextForTarget()).toString());
+                typeof argInfo.defaultValue === 'undefined' ? null :
+                    maybeFormatMessage(argInfo.defaultValue, this.makeMessageContextForTarget()).toString();
 
             if (argTypeInfo.check) {
                 // Right now the only type of 'check' we have specifies that the
@@ -1591,13 +1588,18 @@ class Runtime extends EventEmitter {
 
             // <value> is the ScratchBlocks name for a block input.
             if (valueName) {
-                context.inputList.push(`<value name="${placeholder}">`);
+                context.inputList.push(`<value name="${xmlEscape(placeholder)}">`);
             }
 
             // The <shadow> is a placeholder for a reporter and is visible when there's no reporter in this input.
             // Boolean inputs don't need to specify a shadow in the XML.
             if (shadowType) {
-                context.inputList.push(`<shadow type="${shadowType}">`);
+                context.inputList.push(`<shadow type="${xmlEscape(shadowType)}">`);
+            }
+
+            if (shadowType === 'polygon') {
+                // eslint-disable-next-line max-len
+                context.inputList.push(`<mutation expanded="false" points="${argInfo.nodes}" color="${context.blockJSON.colour}" midle="[0,0]" scale="${argInfo.defaultSize || 30}"/>`);
             }
 
             if (shadowType === 'polygon') {
@@ -1606,11 +1608,9 @@ class Runtime extends EventEmitter {
             }
 
             // A <field> displays a dynamic value: a user-editable text field, a drop-down menu, etc.
-            // Leave out the field if defaultValue or fieldName are not specified (unless it is a string & field name is specified)
-            if (fieldName) {
-                if ((defaultValue) || ((argInfo.type === "string") && (!argInfo.menu))) {
-                    context.inputList.push(`<field name="${fieldName}">${defaultValue}</field>`);
-                }
+            // Leave out the field if defaultValue or fieldName are not specified
+            if (defaultValue !== null && fieldName) {
+                context.inputList.push(`<field name="${xmlEscape(fieldName)}">${xmlEscape(defaultValue)}</field>`);
             }
 
             if (shadowType) {
@@ -1660,7 +1660,7 @@ class Runtime extends EventEmitter {
                 ? orderBlocks
                 : blocks => blocks;
 
-            const colorXML = `colour="${color1}" secondaryColour="${color2}"`;
+            const colorXML = `colour="${xmlEscape(color1)}" secondaryColour="${xmlEscape(color2)}"`;
 
             // Use a menu icon if there is one. Otherwise, use the block icon. If there's no icon,
             // the category menu will show its default colored circle.
@@ -1671,17 +1671,24 @@ class Runtime extends EventEmitter {
                 menuIconURI = categoryInfo.blockIconURI;
             }
             const menuIconXML = menuIconURI ?
-                `iconURI="${menuIconURI}"` : '';
+                `iconURI="${xmlEscape(menuIconURI)}"` : '';
 
             let statusButtonXML = '';
             if (categoryInfo.showStatusButton) {
                 statusButtonXML = 'showStatusButton="true"';
             }
 
+            let xml = `<category name="${xmlEscape(name)}"`;
+            xml += ` id="${xmlEscape(categoryInfo.id)}"`;
+            xml += ` ${statusButtonXML}`;
+            xml += ` ${colorXML}`;
+            xml += ` ${menuIconXML}>`;
+            xml += orderBlocks(paletteBlocks.map(block => block.xml)).join('');
+            xml += '</category>';
+
             return {
                 id: categoryInfo.id,
-                xml: `<category name="${name}" id="${categoryInfo.id}" ${statusButtonXML} ${colorXML} ${menuIconXML}>${
-                    orderBlocks(paletteBlocks.map(block => block.xml)).join('')}</category>`
+                xml
             };
         });
     }
