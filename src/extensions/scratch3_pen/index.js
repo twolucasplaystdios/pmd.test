@@ -861,6 +861,7 @@ class Scratch3PenBlocks {
                 {
                     opcode: 'goPenLayer',
                     blockType: BlockType.COMMAND,
+                    hideFromPalette: true,
                     text: formatMessage({
                         id: 'pen.GoPenLayer',
                         default: 'go to [OPTION] layer',
