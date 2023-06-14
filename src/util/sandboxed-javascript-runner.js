@@ -166,7 +166,7 @@ const generateEvaluateSrc = (code, frame) => {
         '</head>',
         '<body>',
         '<h1><p>epic computing in progress...</p></h1>',
-        '<img src="https://media.tenor.com/jXQiJUuqfM8AAAAd/type-emoji.gif">', // hehe haw
+        // '<img src="https://media.tenor.com/jXQiJUuqfM8AAAAd/type-emoji.gif">', // hehe haw
         '<script>',
         runnerCode,
         '</script>',
