@@ -1009,7 +1009,7 @@ class Scratch3PenBlocks {
             }
             const image = new Image();
             image.onload = () => handler(image);
-            image.onerror = () => resolve(); // ignore loading errors lmao!
+            image.onerror = () => resolve(); // ignore loading errors lol!
             image.src = Cast.toString(URI);
         });
     }
@@ -1044,7 +1044,7 @@ class Scratch3PenBlocks {
                 this.preloadedImages[Cast.toString(NAME)] = image;
                 resolve();
             }
-            image.onerror = resolve; // ignore loading errors lmao!
+            image.onerror = resolve; // ignore loading errors lol!
             image.src = Cast.toString(URI);
         })
     }

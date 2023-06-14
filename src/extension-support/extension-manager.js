@@ -61,7 +61,7 @@ const builtinExtensions = {
     jgIframe: () => require("../extensions/jg_iframe"),
     // jgExtendedAudio: ok this is my real last call for help (for legal reasons this is a joj)
     jgExtendedAudio: () => require("../extensions/jg_audio"),
-    // jgScratchAuthenticate: easy to add its one block lmao!
+    // jgScratchAuthenticate: easy to add its one block lol!
     jgScratchAuthenticate: () => require("../extensions/jg_scratchAuth"),
     // JgPermissionBlocks: someones gonna get mad at me for this one i bet
     JgPermissionBlocks: () => require("../extensions/jg_permissions"),
