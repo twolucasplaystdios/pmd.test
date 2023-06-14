@@ -1490,7 +1490,7 @@ class Runtime extends EventEmitter {
         const buttonText = maybeFormatMessage(buttonInfo.text, extensionMessageContext);
         return {
             info: buttonInfo,
-            xml: `<button text="${xmlEscape(buttonText)}" callbackKey="${xmlEscape(buttonInfo.func)}"></button>`
+            xml: `<button text="${xmlEscape(buttonText)}" callbackKey="${xmlEscape(buttonInfo.opcode ? buttonInfo.opcode : buttonInfo.func)}"></button>`
         };
     }
 
@@ -1609,8 +1609,10 @@ class Runtime extends EventEmitter {
 
             // A <field> displays a dynamic value: a user-editable text field, a drop-down menu, etc.
             // Leave out the field if defaultValue or fieldName are not specified
-            if (defaultValue !== null && fieldName) {
-                context.inputList.push(`<field name="${xmlEscape(fieldName)}">${xmlEscape(defaultValue)}</field>`);
+            if (fieldName) {
+                if ((defaultValue) || ((argInfo.type === "string") && (!argInfo.menu))) {
+                    context.inputList.push(`<field name="${fieldName}">${defaultValue}</field>`);
+                }
             }
 
             if (shadowType) {
