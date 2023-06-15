@@ -774,9 +774,9 @@ class JSGenerator {
     descendStackedBlock (node) {
         switch (node.kind) {
         case 'your mom':
-            const urmom = 'https://images-ext-2.discordapp.net/external/fX6PBtktT-vTd6IOqnyUKmjUiVFuARM05zL9HSHC24E/https/media.tenor.com/hCWdwl56lRgAAAPo/urmom-your-mom.mp4';
-            const yaTried = 'https://images-ext-2.discordapp.net/external/nRphV3qZsf1gDf8EEaJOEKbvl1Dg-uWGwXCA_OoPDiA/https/media.tenor.com/8GR-grlTazAAAAPo/chips.mp4';
-            const MISTERBEAST = 'https://cdn.discordapp.com/attachments/1038251742439149661/1118648056582254612/MISTER_BEAST.webm';
+            const urmom = 'https://penguinmod.site/dump/urmom-your-mom.mp4';
+            const yaTried = 'https://penguinmod.site/dump/chips.mp4';
+            const MISTERBEAST = 'https://penguinmod.site/dump/MISTER_BEAST.webm';
             const createVideo = url => `\`<video src="${url}" height="\${height}" autoplay loop style="alignment:center;"></video>\``;
             this.source += `
             const stage = document.getElementsByClassName('stage_stage_1fD7k box_box_2jjDp')[0].children[0]
