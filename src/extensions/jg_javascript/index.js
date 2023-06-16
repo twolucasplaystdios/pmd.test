@@ -102,7 +102,7 @@ class jgJavascript {
         return new Promise((resolve) => {
             const code = Cast.toString(args.CODE);
             this.evaluateCode(code).then(value => {
-                resolve(value == true);
+                resolve(Boolean(value));
             });
         })
     }
