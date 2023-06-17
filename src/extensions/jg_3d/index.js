@@ -3,7 +3,10 @@ const Clone = require('../../util/clone');
 const ExtensionInfo = require("./info");
 const Three = require("three");
 const { OBJLoader } = require('three/examples/jsm/loaders/OBJLoader.js');
+const { GLTFLoader } = require('three/examples/jsm/loaders/GLTFLoader.js')
+
 const loader = new OBJLoader();
+const loader2 = new GLTFLoader();
 
 function toRad(deg) {
     return deg * (Math.PI / 180);
@@ -358,10 +361,17 @@ class Jg3DBlocks {
                 const url = Cast.toString(args.URL);
                 // we need to do a promise here so that stack continues on load
                 return new Promise((resolve) => {
-                    loader.load(url, (object) => {
+                    if (url.includes('.glb')||url.includes('.gltf')) {
+                    var type = loader2;
+                    } else if (url.includes('obj')){
+                    var type = loader;
+                    }
+                    type.load(url, (object) => {
                         // success
+                        if (type === loader) {
                         const material = new Three.MeshStandardMaterial({ color: 0xffffff });
                         this.updateMaterialOfObjObject(object, material);
+                        }
                         object.name = name;
                         this.existingSceneObjects.push(name);
                         object.isPenguinMod = true;
