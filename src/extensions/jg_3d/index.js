@@ -5,8 +5,10 @@ const Three = require("three");
 const { OBJLoader } = require('three/examples/jsm/loaders/OBJLoader.js');
 const { GLTFLoader } = require('three/examples/jsm/loaders/GLTFLoader.js')
 
-const loader = new OBJLoader();
-const loader2 = new GLTFLoader();
+const MeshLoaders = {
+    OBJ: new OBJLoader(),
+    GLTF: new GLTFLoader(),
+}
 
 function toRad(deg) {
     return deg * (Math.PI / 180);
@@ -359,18 +361,29 @@ class Jg3DBlocks {
             }
             case 'mesh': {
                 const url = Cast.toString(args.URL);
+                // switch loaders based on file type
+                let fileType = 'obj';
+                switch (Cast.toString(args.FILETYPE)) {
+                    case '.glb / .gltf':
+                        fileType = 'glb';
+                        break;
+                }
                 // we need to do a promise here so that stack continues on load
                 return new Promise((resolve) => {
-                    if (url.includes('.glb')||url.includes('.gltf')) {
-                    var type = loader2;
-                    } else if (url.includes('obj')){
-                    var type = loader;
+                    let loader = MeshLoaders.OBJ;
+                    switch (fileType) {
+                        case 'glb':
+                            loader = MeshLoaders.GLTF;
+                            break;
                     }
-                    type.load(url, (object) => {
+                    loader.load(url, (object) => {
                         // success
-                        if (type === loader) {
-                        const material = new Three.MeshStandardMaterial({ color: 0xffffff });
-                        this.updateMaterialOfObjObject(object, material);
+                        if (loader === MeshLoaders.GLTF) {
+                            object = object.scene;
+                        }
+                        if (loader === MeshLoaders.OBJ) {
+                            const material = new Three.MeshStandardMaterial({ color: 0xffffff });
+                            this.updateMaterialOfObjObject(object, material);
                         }
                         object.name = name;
                         this.existingSceneObjects.push(name);
@@ -424,6 +437,9 @@ class Jg3DBlocks {
         this.createGameObject(args, util, 'plane');
     }
     createMeshObject(args, util) {
+        this.createGameObject(args, util, 'mesh');
+    }
+    createMeshObjectFileTyped(args, util) {
         this.createGameObject(args, util, 'mesh');
     }
     createLightObject(args, util) {
