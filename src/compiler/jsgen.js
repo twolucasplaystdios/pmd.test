@@ -451,6 +451,19 @@ class JSGenerator {
                     .replace(yn, this.descendInput(point.y).asNumber());
             }
             return new TypedInput(points, TYPE_UNKNOWN);
+            
+        case 'control.inlineStackOutput': {
+            // reset this.source but save it
+            const originalSource = this.source;
+            this.source = 'yield* (function*() {';
+            // descend now since descendStack modifies source
+            this.descendStack(node.code, new Frame(false));
+            this.source += '})()';
+            // save edited
+            const stackSource = this.source;
+            this.source = originalSource;
+            return new TypedInput(stackSource, TYPE_UNKNOWN);
+        }
 
         case 'keyboard.pressed':
             return new TypedInput(`runtime.ioDevices.keyboard.getKeyIsDown(${this.descendInput(node.key).asSafe()})`, TYPE_BOOLEAN);

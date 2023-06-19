@@ -289,6 +289,12 @@ class ScriptTreeGenerator {
                 value: broadcastName
             };
         }
+        
+        case 'control_inline_stack_output':
+            return {
+                kind: 'control.inlineStackOutput',
+                code: this.descendSubstack(block, 'SUBSTACK')
+            };
 
         case 'looks_backdropnumbername':
             if (block.fields.NUMBER_NAME.value === 'number') {
@@ -853,7 +859,7 @@ class ScriptTreeGenerator {
             };
         case 'control_all_at_once':
             // In Scratch 3, this block behaves like "if 1 = 1"
-            // WE ARE IN PM MF NOW IT BEHAVES PROPERLY LESS GO
+            // WE ARE IN PM NOW IT BEHAVES PROPERLY LESS GO
             return {
                 kind: 'control.allAtOnce',
                 condition: {
