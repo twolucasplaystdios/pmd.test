@@ -455,10 +455,10 @@ class JSGenerator {
         case 'control.inlineStackOutput': {
             // reset this.source but save it
             const originalSource = this.source;
-            this.source = 'yield* (function*() {';
+            this.source = '(yield* (function*() {';
             // descend now since descendStack modifies source
             this.descendStack(node.code, new Frame(false));
-            this.source += '})()';
+            this.source += '})())';
             // save edited
             const stackSource = this.source;
             this.source = originalSource;

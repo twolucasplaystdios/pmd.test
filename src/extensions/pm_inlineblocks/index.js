@@ -1,5 +1,15 @@
 const blocks = `
-<block type="control_inline_stack_output"></block>
+<block type="control_inline_stack_output">
+    <value name="SUBSTACK">
+        <block type="procedures_return">
+            <value name="return">
+            	<shadow type="text">
+            		<field name="TEXT">1</field>
+            	</shadow>
+            </value>
+        </block>
+    </value>
+</block>
 `
 
 /**
@@ -35,9 +45,9 @@ class pmInlineBlocks {
         return {
             id: 'pmInlineBlocks',
             name: 'Inline Blocks',
-            color1: '#59C059',
-            color2: '#46B946',
-            color3: '#389438',
+            color1: '#FFAB19',
+            color2: '#EC9C13',
+            color3: '#CF8B17',
             isDynamic: true,
             orderBlocks: this.orderCategoryBlocks,
             blocks: []
