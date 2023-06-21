@@ -8,6 +8,7 @@ const formatMessage = require('format-message');
 const MathUtil = require('../../util/math-util');
 const log = require('../../util/log');
 const StageLayering = require('../../engine/stage-layering');
+const ExtensionApi = require("../../util/custom-ext-api-to-core.js");
 const Scratch = new ExtensionApi(true);
 
 const vm = Scratch.vm;
