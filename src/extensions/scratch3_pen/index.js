@@ -8,6 +8,9 @@ const formatMessage = require('format-message');
 const MathUtil = require('../../util/math-util');
 const log = require('../../util/log');
 const StageLayering = require('../../engine/stage-layering');
+const Scratch = new ExtensionApi(true);
+
+const vm = Scratch.vm;
 
 /**
  * Icon svg to be displayed at the left edge of each extension block, encoded as a data URI.
@@ -102,6 +105,24 @@ class Scratch3PenBlocks {
             font: 'Arial',
             color: '#000000'
         };
+
+            vm.runtime.on('STAGE_SIZE_CHANGED', _ => {
+                if (this._penSkinId < 0 && this.runtime.renderer) {
+                    this._penSkinId = this.runtime.renderer.createPenSkin();
+                    this._penDrawableId = this.runtime.renderer.createDrawable(StageLayering.PEN_LAYER);
+                    this.runtime.renderer.updateDrawableSkinId(this._penDrawableId, this._penSkinId);
+        
+                    this.bitmapCanvas = document.createElement('canvas');
+                    this.bitmapCanvas.width = this.runtime.stageWidth;
+                    this.bitmapCanvas.height = this.runtime.stageHeight;
+                    this.bitmapSkinID = this.runtime.renderer.createBitmapSkin(this.bitmapCanvas, 1);
+                    this.bitmapDrawableID = this.runtime.renderer.createDrawable(StageLayering.PEN_LAYER);
+                    this.runtime.renderer.updateDrawableSkinId(this.bitmapDrawableID, this.bitmapSkinID);
+                    this.runtime.renderer.updateDrawableVisible(this.bitmapDrawableID, false);
+                }
+                this.bitmapCanvas.width = vm.runtime.stageWidth;
+                this.bitmapCanvas.height = vm.runtime.stageHeight;
+            });
 
         this._onTargetCreated = this._onTargetCreated.bind(this);
         this._onTargetMoved = this._onTargetMoved.bind(this);
@@ -1443,5 +1464,9 @@ class Scratch3PenBlocks {
         this._drawContextToPen(ctx);
     }
 }
+
+document.addEventListener("cameraChange", e => {
+    
+})
 
 module.exports = Scratch3PenBlocks;
