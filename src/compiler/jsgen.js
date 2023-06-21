@@ -463,7 +463,7 @@ class JSGenerator {
             // this is an extension block that wants to be compiled
             const imports = JSGenerator.getExtensionImports();
             const jsFunc = JSGenerator.getExtensionJs(extensionId)[blockId];
-            // add to source
+            // return the input
             let input = null;
             try {
                 input = jsFunc(node, this, imports);

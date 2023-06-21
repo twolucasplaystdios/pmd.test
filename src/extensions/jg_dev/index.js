@@ -187,7 +187,8 @@ class JgDevBlocks {
                     compiler.source += `return ${compiler.descendInput(node.return).asString()};`;
                 },
                 compiledOutput: (_, compiler, imports) => {
-                    return new imports.TypedInput(Cast.toString(compiler.source), imports.TYPE_STRING);
+                    const code = Cast.toString(compiler.source);
+                    return new imports.TypedInput(JSON.stringify(code), imports.TYPE_STRING);
                 }
             }
         }
