@@ -33,6 +33,10 @@ const Touch = require('../io/touch');
 const StringUtil = require('../util/string-util');
 const uid = require('../util/uid');
 
+// Used for extension's compiled blocks.
+const JSGenerator = require('../compiler/jsgen');
+const IRGenerator = require('../compiler/irgen');
+
 const defaultBlockPackages = {
     scratch3_control: require('../blocks/scratch3_control'),
     scratch3_event: require('../blocks/scratch3_event'),
@@ -983,6 +987,14 @@ class Runtime extends EventEmitter {
 
     compilerRegisterExtension (name, extensionObject) {
         this[`ext_${name}`] = extensionObject;
+    }
+    registerCompiledExtensionBlocks (extensionId, information) {
+        if (!information) return;
+        if (!information.ir) return;
+        if (!information.js) return;
+
+        IRGenerator.setExtensionIr(extensionId, information.ir);
+        JSGenerator.setExtensionJs(extensionId, information.js);
     }
 
     getMonitorState () {

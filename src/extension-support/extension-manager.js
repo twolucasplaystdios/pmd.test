@@ -45,6 +45,8 @@ const builtinExtensions = {
     pmOperatorsExpansion: () => require("../extensions/pm_operatorsExpansion"),
     // pmSensingExpansion: extra sensing blocks that were in the category & new ones that werent
     pmSensingExpansion: () => require("../extensions/pm_sensingExpansion"),
+    // pmControlsExpansion: extra controls blocks that were in the category & new ones that werent
+    pmControlsExpansion: () => require("../extensions/pm_controlsExpansion"),
 
     // pmInlineBlocks: seperates the inline function block to prevent confusled
     pmInlineBlocks: () => require("../extensions/pm_inlineblocks"),

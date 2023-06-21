@@ -390,6 +390,34 @@ class JSGenerator {
         this.debug = this.target.runtime.debug;
     }
 
+    static _extensionJSInfo = {};
+    static setExtensionJs(id, data) {
+        JSGenerator._extensionJSInfo[id] = data;
+    }
+    static hasExtensionJs(id) {
+        return Boolean(JSGenerator._extensionJSInfo[id]);
+    }
+    static getExtensionJs(id) {
+        return JSGenerator._extensionJSInfo[id];
+    }
+
+    static getExtensionImports() {
+        // used so extensions have things like the Frame class
+        return {
+            Frame: Frame,
+            TypedInput: TypedInput,
+            VariableInput: VariableInput,
+            ConstantInput: ConstantInput,
+            VariablePool: VariablePool,
+
+            TYPE_NUMBER: TYPE_NUMBER,
+            TYPE_STRING: TYPE_STRING,
+            TYPE_BOOLEAN: TYPE_BOOLEAN,
+            TYPE_UNKNOWN: TYPE_UNKNOWN,
+            TYPE_NUMBER_NAN: TYPE_NUMBER_NAN
+        }
+    }
+
     /**
      * Enter a new frame
      * @param {Frame} frame New frame.
@@ -428,6 +456,24 @@ class JSGenerator {
      * @returns {Input} Compiled input.
      */
     descendInput (node) {
+        // check if we have extension js for this kind
+        const extensionId = String(node.kind).split('.')[0];
+        const blockId = String(node.kind).replace(extensionId + '.', '');
+        if (JSGenerator.hasExtensionJs(extensionId) && JSGenerator.getExtensionJs(extensionId)[blockId]) {
+            // this is an extension block that wants to be compiled
+            const imports = JSGenerator.getExtensionImports();
+            const jsFunc = JSGenerator.getExtensionJs(extensionId)[blockId];
+            // add to source
+            let input = null;
+            try {
+                input = jsFunc(node, this, imports);
+            } catch (err) {
+                log.warn(extensionId + '_' + blockId, 'failed to compile JavaScript;', err);
+            }
+            log.log(input);
+            return input;
+        }
+
         switch (node.kind) {
         case 'args.boolean':
             return new TypedInput(`toBoolean(p${node.index})`, TYPE_BOOLEAN);
@@ -785,6 +831,22 @@ class JSGenerator {
      * @param {*} node Stacked node to compile.
      */
     descendStackedBlock (node) {
+        // check if we have extension js for this kind
+        const extensionId = String(node.kind).split('.')[0];
+        const blockId = String(node.kind).replace(extensionId + '.', '');
+        if (JSGenerator.hasExtensionJs(extensionId) && JSGenerator.getExtensionJs(extensionId)[blockId]) {
+            // this is an extension block that wants to be compiled
+            const imports = JSGenerator.getExtensionImports();
+            const jsFunc = JSGenerator.getExtensionJs(extensionId)[blockId];
+            // add to source
+            try {
+                jsFunc(node, this, imports);
+            } catch (err) {
+                log.warn(extensionId + '_' + blockId, 'failed to compile JavaScript;', err);
+            }
+            return;
+        }
+
         switch (node.kind) {
         case 'your mom':
             const urmom = 'https://penguinmod.site/dump/urmom-your-mom.mp4';
@@ -863,6 +925,14 @@ class JSGenerator {
             this.isWarp = true;
             this.descendStack(node.code, new Frame(false));
             this.isWarp = ooldWarp;
+            break;
+        }
+        case 'control.newScript': {
+            this.source += '(new Promise(resolve => { resolve(';
+            this.source += '(yield* (function*() {';
+            this.descendStack(node.substack, new Frame(false));
+            this.source += '})())';
+            this.source += '); }));';
             break;
         }
         case 'control.exitCase':
