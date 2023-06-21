@@ -107,23 +107,23 @@ class Scratch3PenBlocks {
             color: '#000000'
         };
 
-        vm.runtime.on('STAGE_SIZE_CHANGED', _ => {
-            if (this._penSkinId < 0 && this.runtime.renderer) {
-                this._penSkinId = this.runtime.renderer.createPenSkin();
-                this._penDrawableId = this.runtime.renderer.createDrawable(StageLayering.PEN_LAYER);
-                this.runtime.renderer.updateDrawableSkinId(this._penDrawableId, this._penSkinId);
-    
-                this.bitmapCanvas = document.createElement('canvas');
-                this.bitmapCanvas.width = this.runtime.stageWidth;
-                this.bitmapCanvas.height = this.runtime.stageHeight;
-                this.bitmapSkinID = this.runtime.renderer.createBitmapSkin(this.bitmapCanvas, 1);
-                this.bitmapDrawableID = this.runtime.renderer.createDrawable(StageLayering.PEN_LAYER);
-                this.runtime.renderer.updateDrawableSkinId(this.bitmapDrawableID, this.bitmapSkinID);
-                this.runtime.renderer.updateDrawableVisible(this.bitmapDrawableID, false);
-            }
-            this.bitmapCanvas.width = vm.runtime.stageWidth;
-            this.bitmapCanvas.height = vm.runtime.stageHeight;
-        });
+            vm.runtime.on('STAGE_SIZE_CHANGED', _ => {
+                if (this._penSkinId < 0 && this.runtime.renderer) {
+                    this._penSkinId = this.runtime.renderer.createPenSkin();
+                    this._penDrawableId = this.runtime.renderer.createDrawable(StageLayering.PEN_LAYER);
+                    this.runtime.renderer.updateDrawableSkinId(this._penDrawableId, this._penSkinId);
+        
+                    this.bitmapCanvas = document.createElement('canvas');
+                    this.bitmapCanvas.width = this.runtime.stageWidth;
+                    this.bitmapCanvas.height = this.runtime.stageHeight;
+                    this.bitmapSkinID = this.runtime.renderer.createBitmapSkin(this.bitmapCanvas, 1);
+                    this.bitmapDrawableID = this.runtime.renderer.createDrawable(StageLayering.PEN_LAYER);
+                    this.runtime.renderer.updateDrawableSkinId(this.bitmapDrawableID, this.bitmapSkinID);
+                    this.runtime.renderer.updateDrawableVisible(this.bitmapDrawableID, false);
+                }
+                this.bitmapCanvas.width = vm.runtime.stageWidth;
+                this.bitmapCanvas.height = vm.runtime.stageHeight;
+            });
 
         this._onTargetCreated = this._onTargetCreated.bind(this);
         this._onTargetMoved = this._onTargetMoved.bind(this);
@@ -279,28 +279,6 @@ class Scratch3PenBlocks {
      */
     _wrapColor (value) {
         return MathUtil.wrapClamp(value, 0, 100);
-    }
-
-    _updateCamera () {
-        if (this._penSkinId < 0 && this.runtime.renderer) {
-            this._penSkinId = this.runtime.renderer.createPenSkin();
-            this._penDrawableId = this.runtime.renderer.createDrawable(StageLayering.PEN_LAYER);
-            this.runtime.renderer.updateDrawableSkinId(this._penDrawableId, this._penSkinId);
-
-            this.bitmapCanvas = document.createElement('canvas');
-            this.bitmapCanvas.width = this.runtime.stageWidth;
-            this.bitmapCanvas.height = this.runtime.stageHeight;
-            this.bitmapSkinID = this.runtime.renderer.createBitmapSkin(this.bitmapCanvas, 1);
-            this.bitmapDrawableID = this.runtime.renderer.createDrawable(StageLayering.PEN_LAYER);
-            this.runtime.renderer.updateDrawableSkinId(this.bitmapDrawableID, this.bitmapSkinID);
-            this.runtime.renderer.updateDrawableVisible(this.bitmapDrawableID, false);
-        }
-        this.bitmapCanvas.width = vm.runtime.stageWidth;
-        this.bitmapCanvas.height = vm.runtime.stageHeight;
-        this.bitmapSkinID = this.runtime.renderer.createBitmapSkin(this.bitmapCanvas, 1);
-        this.bitmapDrawableID = this.runtime.renderer.createDrawable(StageLayering.PEN_LAYER);
-        this.runtime.renderer.updateDrawableSkinId(this.bitmapDrawableID, this.bitmapSkinID);
-        this.runtime.renderer.updateDrawableVisible(this.bitmapDrawableID, false);
     }
 
     /**
