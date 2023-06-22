@@ -446,12 +446,12 @@ class Scratch3VideoSensingBlocks {
                     }),
                     arguments: {
                         ATTRIBUTE: {
-                            type: ArgumentType.NUMBER,
+                            type: ArgumentType.STRING,
                             menu: 'ATTRIBUTE',
                             defaultValue: SensingAttribute.MOTION
                         },
                         SUBJECT: {
-                            type: ArgumentType.NUMBER,
+                            type: ArgumentType.STRING,
                             menu: 'SUBJECT',
                             defaultValue: SensingSubject.SPRITE
                         }
@@ -466,7 +466,7 @@ class Scratch3VideoSensingBlocks {
                     }),
                     arguments: {
                         VIDEO_STATE: {
-                            type: ArgumentType.NUMBER,
+                            type: ArgumentType.STRING,
                             menu: 'VIDEO_STATE',
                             defaultValue: VideoState.ON
                         }
