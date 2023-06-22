@@ -6,7 +6,6 @@ const Clone = require('../../util/clone');
 const Cast = require('../../util/cast');
 const formatMessage = require('format-message');
 const Video = require('../../io/video');
-const ProjectPermissionManager = require('../../util/project-permissions');
 
 const VideoMotion = require('./library');
 
@@ -110,14 +109,6 @@ class Scratch3VideoSensingBlocks {
             // Kick off looping the analysis logic.
             this._loop();
         }
-    }
-
-    
-    /**
-     * dummy function for reseting user provided permisions when a save is loaded
-     */
-    deserialize () {
-        this.cameraAllowed = null;
     }
 
     /**
@@ -574,10 +565,6 @@ class Scratch3VideoSensingBlocks {
         if (state === VideoState.OFF) {
             this.runtime.ioDevices.video.disableVideo();
         } else {
-            if (!this.cameraAllowed) {
-                this.cameraAllowed = ProjectPermissionManager.RequestPermission("camera");
-                if (!this.cameraAllowed) return;
-            };
             this.runtime.ioDevices.video.enableVideo();
             // Mirror if state is ON. Do not mirror if state is ON_FLIPPED.
             this.runtime.ioDevices.video.mirror = state === VideoState.ON;
