@@ -743,9 +743,7 @@ class Jg3DBlocks {
             reject(error);
           });
         });
-      }
-      
-      
+      }      
 }
 
 module.exports = Jg3DBlocks;
