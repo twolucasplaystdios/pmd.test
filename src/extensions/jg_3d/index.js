@@ -2,7 +2,7 @@ const Cast = require('../../util/cast');
 const Clone = require('../../util/clone');
 const ExtensionInfo = require("./info");
 const Three = require("three");
-import { Enable3d } from 'enable3d'
+import { Raycaster } from 'enable3d'
 const { OBJLoader } = require('three/examples/jsm/loaders/OBJLoader.js');
 const { GLTFLoader } = require('three/examples/jsm/loaders/GLTFLoader.js')
 
@@ -643,7 +643,7 @@ class Jg3DBlocks {
         function checkCollisions(objectName1, objectName2) {
             var object1 = this.scene.getObjectByName(objectName1);
             var object2 = this.scene.getObjectByName(objectName2);
-            var raycaster = new Enable3D.Raycaster();
+            var raycaster = new Raycaster();
             var origin = new Three.Vector3();
             raycaster.setFromCamera(origin, this.camera);
             var intersects1 = raycaster.intersectObject(object1);
