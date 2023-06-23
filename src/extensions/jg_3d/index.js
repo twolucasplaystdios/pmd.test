@@ -648,7 +648,7 @@ class Jg3DBlocks {
         }
     }
 
-    function objectTouchingObject(args) {
+    objectTouchingObject(args, util) {
         return new Promise((resolve, reject) => {
           r("https://raw.githack.com/schteppe/ammo.js-demos/master/other/ammo/ammo.js").then(Ammo => {
             let physicsWorld = null;
