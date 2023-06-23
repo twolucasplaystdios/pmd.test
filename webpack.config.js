@@ -29,19 +29,7 @@ const base = {
             options: {
                 outputPath: 'media/music/'
             }
-        },
-        {
-            test: /\.jsm$/,
-            loader: 'babel-loader',
-            include: path.resolve(__dirname, 'src'),
-            query: {
-                presets: [['@babel/preset-env']]
-            }
-        },
-        {
-        test: /\.ts$/,
-        use: 'ts-loader',
-      }]
+        }]
     },
     plugins: []
 };
