@@ -38,6 +38,7 @@
     "decode-html": "2.0.0",
     "diff-match-patch": "1.0.4",
     "enable3d": "^0.25.3",
+    "@enable3d/three-graphics": "^0.25.3"
     "format-message": "6.2.1",
     "htmlparser2": "^3.10.0",
     "immutable": "3.8.2",
