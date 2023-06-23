@@ -652,7 +652,7 @@ class Jg3DBlocks {
             const isColliding = intersects1.length > 0 && intersects2.length > 0;
             return isColliding;
       }
-        return checkCollisions(Cast.toString(args.NAME1);, Cast.toString(args.NAME2););
+        return checkCollisions(Cast.toString(args.NAME1), Cast.toString(args.NAME2););
     }
 }
 
