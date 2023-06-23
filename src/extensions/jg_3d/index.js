@@ -5,8 +5,8 @@ const Three = require("three");
 const { OBJLoader } = require('three/examples/jsm/loaders/OBJLoader.js');
 const { GLTFLoader } = require('three/examples/jsm/loaders/GLTFLoader.js');
 const { FBXLoader } = require('three/examples/jsm/loaders/FBXLoader.js');
-const r = require("require-from-url/sync");
-const Ammo = r("https://raw.githack.com/schteppe/ammo.js-demos/master/other/ammo/ammo.js")
+const r = require("require-from-web");
+
 
 const MeshLoaders = {
     OBJ: new OBJLoader(),
@@ -649,6 +649,7 @@ class Jg3DBlocks {
     }
 
     objectTouchingObject(args) {
+        r("https://raw.githack.com/schteppe/ammo.js-demos/master/other/ammo/ammo.js").then(Ammo => {
         let physicsWorld = null;
         function c(object1, object2) {
             if (!physicsWorld) {
@@ -678,7 +679,8 @@ class Jg3DBlocks {
             physicsWorld.removeRigidBody(body2);
             return result.hasHit();
         }
-        return c(Cast.toString(args.NAME1), Cast.toString(args.NAME1))
+        var o = c(Cast.toString(args.NAME1), Cast.toString(args.NAME1))})
+        return o
     }
 }
 
