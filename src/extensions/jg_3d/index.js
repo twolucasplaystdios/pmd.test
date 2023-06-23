@@ -643,14 +643,14 @@ class Jg3DBlocks {
 
     objectTouchingObject(args) {
         function checkCollisions(objectName1, objectName2) {
-            const object1 = this.scene.getObjectByName(objectName1);
-            const object2 = this.scene.getObjectByName(objectName2);
-            const raycaster = new window.Enable3D.Raycaster();
-            const origin = new Three.Vector3();
+            var object1 = this.scene.getObjectByName(objectName1);
+            var object2 = this.scene.getObjectByName(objectName2);
+            var raycaster = new window.Enable3D.Raycaster();
+            var origin = new Three.Vector3();
             raycaster.setFromCamera(origin, camera);
-            const intersects1 = raycaster.intersectObject(object1);
-            const intersects2 = raycaster.intersectObject(object2);
-            const isColliding = intersects1.length > 0 && intersects2.length > 0;
+            var intersects1 = raycaster.intersectObject(object1);
+            var intersects2 = raycaster.intersectObject(object2);
+            var isColliding = intersects1.length > 0 && intersects2.length > 0;
             return isColliding;
       }
         return checkCollisions(Cast.toString(args.NAME1), Cast.toString(args.NAME2));
