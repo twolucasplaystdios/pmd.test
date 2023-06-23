@@ -2,6 +2,7 @@ const Cast = require('../../util/cast');
 const Clone = require('../../util/clone');
 const ExtensionInfo = require("./info");
 const Three = require("three");
+const Enable3d = require("enable3d")
 const { OBJLoader } = require('three/examples/jsm/loaders/OBJLoader.js');
 const { GLTFLoader } = require('three/examples/jsm/loaders/GLTFLoader.js')
 
@@ -640,19 +641,18 @@ class Jg3DBlocks {
     }
 
     objectTouchingObject(args) {
-        if (!this.scene) return false;
-        const name1 = Cast.toString(args.NAME1);
-        const name2 = Cast.toString(args.NAME2);
-        const object1 = this.scene.getObjectByName(name1);
-        const object2 = this.scene.getObjectByName(name2);
-        if (!object1) return false;
-        if (!object2) return false;
-        if (object1.isLight) return false; // currently lights are not supported for collisions
-        if (object2.isLight) return false; // currently lights are not supported for collisions
-        const box1 = new Three.Box3().setFromObject(object1);
-        const box2 = new Three.Box3().setFromObject(object2);
-        const collision = box1.intersectsBox(box2);
-        return collision;
+        function checkCollisions(objectName1, objectName2) {
+            const object1 = this.scene.getObjectByName(objectName1);
+            const object2 = this.scene.getObjectByName(objectName2);
+            const raycaster = new Enable3D.Raycaster();
+            const origin = new Three.Vector3();
+            raycaster.setFromCamera(origin, camera);
+            const intersects1 = raycaster.intersectObject(object1);
+            const intersects2 = raycaster.intersectObject(object2);
+            const isColliding = intersects1.length > 0 && intersects2.length > 0;
+            return isColliding;
+      }
+        return checkCollisions(Cast.toString(args.NAME1);, Cast.toString(args.NAME2););
     }
 }
 
