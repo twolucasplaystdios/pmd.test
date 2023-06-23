@@ -2,7 +2,6 @@ const Cast = require('../../util/cast');
 const Clone = require('../../util/clone');
 const ExtensionInfo = require("./info");
 const Three = require("three");
-const Ammo = require("ammojs3")
 const { OBJLoader } = require('three/examples/jsm/loaders/OBJLoader.js');
 const { GLTFLoader } = require('three/examples/jsm/loaders/GLTFLoader.js')
 
@@ -640,58 +639,19 @@ class Jg3DBlocks {
     }
 
     objectTouchingObject(args) {
-        function createCollisionShapeFromGeometry(geometry) {
-            const vertices = geometry.attributes.position.array;
-            const numVertices = vertices.length / 3;
-            const shape = new Ammo.btConvexHullShape();
-            for (let i = 0; i < numVertices; i++) {
-                const vertex = new Ammo.btVector3(vertices[i * 3], vertices[i * 3 + 1], vertices[i * 3 + 2]);
-                shape.addPoint(vertex);
-            }
-            return shape;
-        }
-        
-        function checkCollision(object1, object2) {
-            const collisionConfiguration = new Ammo.btDefaultCollisionConfiguration();
-            const dispatcher = new Ammo.btCollisionDispatcher(collisionConfiguration);
-            const broadphase = new Ammo.btDbvtBroadphase();
-            const solver = new Ammo.btSequentialImpulseConstraintSolver();
-            const world = new Ammo.btDiscreteDynamicsWorld(dispatcher, broadphase, solver, collisionConfiguration);
-            world.setGravity(new Ammo.btVector3(0, 0, 0));
-            const transform1 = new Ammo.btTransform();
-            transform1.setIdentity();
-            transform1.setFromOpenGLMatrix(object1.matrixWorld.toArray());
-            const transform2 = new Ammo.btTransform();
-            transform2.setIdentity();
-            transform2.setFromOpenGLMatrix(object2.matrixWorld.toArray());
-            const shape1 = createCollisionShapeFromGeometry(object1.geometry);
-            const shape2 = createCollisionShapeFromGeometry(object2.geometry);
-            const motionState1 = new Ammo.btDefaultMotionState(transform1);
-            const body1 = new Ammo.btRigidBody(new Ammo.btRigidBodyConstructionInfo(0, motionState1, shape1));
-            const motionState2 = new Ammo.btDefaultMotionState(transform2);
-            const body2 = new Ammo.btRigidBody(new Ammo.btRigidBodyConstructionInfo(0, motionState2, shape2));
-            world.addRigidBody(body1);
-            world.addRigidBody(body2);
-            const result = new Ammo.ClosestConvexResultCallback();
-            world.contactPairTest(body1, body2, result);
-            world.removeRigidBody(body1);
-            world.removeRigidBody(body2);
-            Ammo.destroy(shape1);
-            Ammo.destroy(shape2);
-            Ammo.destroy(body1);
-            Ammo.destroy(body2);
-            Ammo.destroy(motionState1);
-            Ammo.destroy(motionState2);
-            Ammo.destroy(transform1);
-            Ammo.destroy(transform2);
-            Ammo.destroy(world);
-            Ammo.destroy(solver);
-            Ammo.destroy(broadphase);
-            Ammo.destroy(dispatcher);
-            Ammo.destroy(collisionConfiguration);
-            return result.hasHit();
-        }
-        return checkCollision(this.scene.getObjectByName(Cast.toString(args.NAME1)),this.scene.getObjectByName(Cast.toString(args.NAME2)))
+        if (!this.scene) return false;
+        const name1 = Cast.toString(args.NAME1);
+        const name2 = Cast.toString(args.NAME2);
+        const object1 = this.scene.getObjectByName(name1);
+        const object2 = this.scene.getObjectByName(name2);
+        if (!object1) return false;
+        if (!object2) return false;
+        if (object1.isLight) return false; // currently lights are not supported for collisions
+        if (object2.isLight) return false; // currently lights are not supported for collisions
+        const box1 = new Three.Box3().setFromObject(object1);
+        const box2 = new Three.Box3().setFromObject(object2);
+        const collision = box1.intersectsBox(box2);
+        return collision;
     }
 }
 
