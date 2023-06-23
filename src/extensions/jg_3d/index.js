@@ -648,99 +648,103 @@ class Jg3DBlocks {
         }
     }
 
-    objectTouchingObject(args, util) {
+    objectTouchingObject(args) {
         return new Promise((resolve, reject) => {
           r("https://raw.githack.com/schteppe/ammo.js-demos/master/other/ammo/ammo.js").then(Ammo => {
             let physicsWorld = null;
             let collisionConfiguration = null;
             let dispatcher = null;
             let broadphase = null;
-
+            let shape1 = null;
+            let shape2 = null;
+            let motionState1 = null;
+            let motionState2 = null;
+            let body1 = null;
+            let body2 = null;
+            let result = new Ammo.ClosestConvexResultCallback();
+      
             function initializeAmmoScene() {
-            if (!physicsWorld) {
+              if (!physicsWorld) {
                 collisionConfiguration = new Ammo.btDefaultCollisionConfiguration();
                 dispatcher = new Ammo.btCollisionDispatcher(collisionConfiguration);
                 broadphase = new Ammo.btDbvtBroadphase();
                 physicsWorld = new Ammo.btDiscreteDynamicsWorld(dispatcher, broadphase, null, collisionConfiguration);
+              }
             }
-            }
-
+      
             function createCollisionShapeFromGeometry(geometry) {
-            const vertices = [];
-
-            for (let i = 0; i < geometry.vertices.length; i++) {
+              const vertices = [];
+      
+              for (let i = 0; i < geometry.vertices.length; i++) {
                 const vertex = geometry.vertices[i];
                 vertices.push(new Ammo.btVector3(vertex.x, vertex.y, vertex.z));
-            }
-
-            const shape = new Ammo.btConvexHullShape();
-            for (let i = 0; i < vertices.length; i++) {
+              }
+      
+              const shape = new Ammo.btConvexHullShape();
+              for (let i = 0; i < vertices.length; i++) {
                 shape.addPoint(vertices[i]);
+              }
+      
+              return shape;
             }
-
-            return shape;
-            }
-
+      
             function checkCollision(object1, object2) {
-                if (!shape1) {
-                  shape1 = createCollisionShapeFromGeometry(object1.geometry);
-                  motionState1 = new Ammo.btDefaultMotionState();
-                  body1 = new Ammo.btRigidBody(new Ammo.btRigidBodyConstructionInfo(0, motionState1, shape1));
-                } else {
-                  shape1.setFromGeometry(object1.geometry);
-                }
-              
-                if (!shape2) {
-                  shape2 = createCollisionShapeFromGeometry(object2.geometry);
-                  motionState2 = new Ammo.btDefaultMotionState();
-                  body2 = new Ammo.btRigidBody(new Ammo.btRigidBodyConstructionInfo(0, motionState2, shape2));
-                } else {
-                  shape2.setFromGeometry(object2.geometry);
-                }
-              
-                const transform1 = new Ammo.btTransform();
-                transform1.setIdentity();
-                transform1.setFromOpenGLMatrix(object1.matrixWorld.toArray());
-              
-                const transform2 = new Ammo.btTransform();
-                transform2.setIdentity();
-                transform2.setFromOpenGLMatrix(object2.matrixWorld.toArray());
-              
-                motionState1.setWorldTransform(transform1);
-                motionState2.setWorldTransform(transform2);
-              
-                body1.setWorldTransform(transform1);
-                body2.setWorldTransform(transform2);
-              
-                physicsWorld.addRigidBody(body1);
-                physicsWorld.addRigidBody(body2);
-              
-                result.setClosestHitFraction(1);
-                physicsWorld.contactTest(body1, body2, result);
-              
-                physicsWorld.removeRigidBody(body1);
-                physicsWorld.removeRigidBody(body2);
-              
-                const collisionDetected = result.hasHit();
-              
-                transform1.release();
-                transform2.release();
-              
-                return collisionDetected;
-              }              
-              
-
-            function o() {
-            initializeAmmoScene();
-            return checkCollision(args.NAME1, args.NAME2);
+              if (!shape1) {
+                shape1 = createCollisionShapeFromGeometry(object1.geometry);
+                motionState1 = new Ammo.btDefaultMotionState();
+                body1 = new Ammo.btRigidBody(new Ammo.btRigidBodyConstructionInfo(0, motionState1, shape1));
+              } else {
+                shape1.setFromGeometry(object1.geometry);
+              }
+      
+              if (!shape2) {
+                shape2 = createCollisionShapeFromGeometry(object2.geometry);
+                motionState2 = new Ammo.btDefaultMotionState();
+                body2 = new Ammo.btRigidBody(new Ammo.btRigidBodyConstructionInfo(0, motionState2, shape2));
+              } else {
+                shape2.setFromGeometry(object2.geometry);
+              }
+      
+              const transform1 = new Ammo.btTransform();
+              transform1.setIdentity();
+              transform1.setFromOpenGLMatrix(object1.matrixWorld.toArray());
+      
+              const transform2 = new Ammo.btTransform();
+              transform2.setIdentity();
+              transform2.setFromOpenGLMatrix(object2.matrixWorld.toArray());
+      
+              motionState1.setWorldTransform(transform1);
+              motionState2.setWorldTransform(transform2);
+      
+              body1.setWorldTransform(transform1);
+              body2.setWorldTransform(transform2);
+      
+              physicsWorld.addRigidBody(body1);
+              physicsWorld.addRigidBody(body2);
+      
+              result.setClosestHitFraction(1);
+              physicsWorld.contactTest(body1, body2, result);
+      
+              physicsWorld.removeRigidBody(body1);
+              physicsWorld.removeRigidBody(body2);
+      
+              const collisionDetected = result.hasHit();
+      
+              transform1.release();
+              transform2.release();
+      
+              return collisionDetected;
             }
-
-            resolve(o());
-            }).catch(error => {
+      
+            initializeAmmoScene();
+            const collisionDetected = checkCollision(args.NAME1, args.NAME2);
+            resolve(collisionDetected);
+          }).catch(error => {
             reject(error);
           });
         });
       }
+      
       
 }
 
