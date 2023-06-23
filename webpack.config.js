@@ -18,7 +18,7 @@ const base = {
         rules: [{
             test: /\.js$/,
             loader: 'babel-loader',
-            include: *,
+            include: path.resolve(__dirname, 'src'),
             query: {
                 presets: [['@babel/preset-env']]
             }
