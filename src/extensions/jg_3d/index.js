@@ -3,11 +3,13 @@ const Clone = require('../../util/clone');
 const ExtensionInfo = require("./info");
 const Three = require("three");
 const { OBJLoader } = require('three/examples/jsm/loaders/OBJLoader.js');
-const { GLTFLoader } = require('three/examples/jsm/loaders/GLTFLoader.js')
+const { GLTFLoader } = require('three/examples/jsm/loaders/GLTFLoader.js');
+const { FBXLoader } = require('three/examples/jsm/loaders/FBXLoader.js');
 
 const MeshLoaders = {
     OBJ: new OBJLoader(),
     GLTF: new GLTFLoader(),
+    FBX: new FBXLoader(),
 }
 function toRad(deg) {
     return deg * (Math.PI / 180);
@@ -366,6 +368,9 @@ class Jg3DBlocks {
                     case '.glb / .gltf':
                         fileType = 'glb';
                         break;
+                    case '.fbx':
+                        fileType = 'fbx';
+                        break;
                 }
                 // we need to do a promise here so that stack continues on load
                 return new Promise((resolve) => {
@@ -373,6 +378,9 @@ class Jg3DBlocks {
                     switch (fileType) {
                         case 'glb':
                             loader = MeshLoaders.GLTF;
+                            break;
+                        case 'fbx':
+                            loader = MeshLoaders.FBX;
                             break;
                     }
                     loader.load(url, (object) => {

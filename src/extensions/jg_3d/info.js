@@ -336,6 +336,6 @@ module.exports = {
         vector2: infoMenu(["x", "y"]),
         onoff: infoMenu(["on", "off"]),
         objectTypeList: infoMenu(["objects", "physical objects", "lights"]),
-        meshFileTypes: infoMenu([".obj", ".glb / .gltf"])
+        meshFileTypes: infoMenu([".obj", ".glb / .gltf", ".fbx"])
     }
 }
