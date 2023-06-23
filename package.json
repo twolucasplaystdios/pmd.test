@@ -50,7 +50,9 @@
     "text-encoding": "0.7.0",
     "three": "^0.151.3",
     "tone": "^14.7.77",
-    "worker-loader": "^1.1.1"
+    "worker-loader": "^1.1.1",
+    "typescript": "latest",
+    "ts-loader": "latest"
   },
   "peerDependencies": {
     "scratch-svg-renderer": "^0.2.0-prerelease"
