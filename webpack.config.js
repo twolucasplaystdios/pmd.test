@@ -37,7 +37,11 @@ const base = {
             query: {
                 presets: [['@babel/preset-env']]
             }
-        }]
+        },
+        {
+        test: /\.ts$/,
+        use: 'ts-loader',
+      }]
     },
     plugins: []
 };
