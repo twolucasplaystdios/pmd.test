@@ -652,48 +652,84 @@ class Jg3DBlocks {
         return new Promise((resolve, reject) => {
           r("https://raw.githack.com/schteppe/ammo.js-demos/master/other/ammo/ammo.js").then(Ammo => {
             let physicsWorld = null;
-      
-            function c(object1, object2) {
-              if (!physicsWorld) {
-                const collisionConfiguration = new Ammo.btDefaultCollisionConfiguration();
-                const dispatcher = new Ammo.btCollisionDispatcher(collisionConfiguration);
-                const broadphase = new Ammo.btDbvtBroadphase();
-                const solver = new Ammo.btSequentialImpulseConstraintSolver();
-                physicsWorld = new Ammo.btDiscreteDynamicsWorld(dispatcher, broadphase, solver, collisionConfiguration);
-              }
-      
-              const transform1 = new Ammo.btTransform();
-              transform1.setIdentity();
-              transform1.setFromOpenGLMatrix(object1.matrixWorld.toArray());
-      
-              const transform2 = new Ammo.btTransform();
-              transform2.setIdentity();
-              transform2.setFromOpenGLMatrix(object2.matrixWorld.toArray());
-      
-              const shape1 = createCollisionShapeFromGeometry(object1.geometry);
-              const shape2 = createCollisionShapeFromGeometry(object2.geometry);
-      
-              const motionState1 = new Ammo.btDefaultMotionState(transform1);
-              const motionState2 = new Ammo.btDefaultMotionState(transform2);
-      
-              const body1 = new Ammo.btRigidBody(new Ammo.btRigidBodyConstructionInfo(0, motionState1, shape1));
-              const body2 = new Ammo.btRigidBody(new Ammo.btRigidBodyConstructionInfo(0, motionState2, shape2));
-      
-              physicsWorld.addRigidBody(body1);
-              physicsWorld.addRigidBody(body2);
-      
-              const result = new Ammo.ClosestConvexResultCallback();
-              physicsWorld.contactPairTest(body1, body2, result);
-      
-              physicsWorld.removeRigidBody(body1);
-              physicsWorld.removeRigidBody(body2);
-      
-              return result.hasHit();
+            let collisionConfiguration = null;
+            let dispatcher = null;
+            let broadphase = null;
+
+            function initializeAmmoScene() {
+            if (!physicsWorld) {
+                collisionConfiguration = new Ammo.btDefaultCollisionConfiguration();
+                dispatcher = new Ammo.btCollisionDispatcher(collisionConfiguration);
+                broadphase = new Ammo.btDbvtBroadphase();
+                physicsWorld = new Ammo.btDiscreteDynamicsWorld(dispatcher, broadphase, null, collisionConfiguration);
             }
-      
-            const o = c(Cast.toString(args.NAME1), Cast.toString(args.NAME2));
-            resolve(o);
-          }).catch(error => {
+            }
+
+            function createCollisionShapeFromGeometry(geometry) {
+            const vertices = [];
+
+            for (let i = 0; i < geometry.vertices.length; i++) {
+                const vertex = geometry.vertices[i];
+                vertices.push(new Ammo.btVector3(vertex.x, vertex.y, vertex.z));
+            }
+
+            const shape = new Ammo.btConvexHullShape();
+            for (let i = 0; i < vertices.length; i++) {
+                shape.addPoint(vertices[i]);
+            }
+
+            return shape;
+            }
+
+            function checkCollision(object1, object2) {
+            const transform1 = new Ammo.btTransform();
+            transform1.setIdentity();
+            transform1.setFromOpenGLMatrix(object1.matrixWorld.toArray());
+
+            const transform2 = new Ammo.btTransform();
+            transform2.setIdentity();
+            transform2.setFromOpenGLMatrix(object2.matrixWorld.toArray());
+
+            const shape1 = createCollisionShapeFromGeometry(object1.geometry);
+            const shape2 = createCollisionShapeFromGeometry(object2.geometry);
+
+            const motionState1 = new Ammo.btDefaultMotionState(transform1);
+            const motionState2 = new Ammo.btDefaultMotionState(transform2);
+
+            const body1 = new Ammo.btRigidBody(new Ammo.btRigidBodyConstructionInfo(0, motionState1, shape1));
+            const body2 = new Ammo.btRigidBody(new Ammo.btRigidBodyConstructionInfo(0, motionState2, shape2));
+
+            physicsWorld.addRigidBody(body1);
+            physicsWorld.addRigidBody(body2);
+
+            const result = new Ammo.ClosestConvexResultCallback();
+            physicsWorld.contactPairTest(body1, body2, result);
+
+            physicsWorld.removeRigidBody(body1);
+            physicsWorld.removeRigidBody(body2);
+
+            const collisionDetected = result.hasHit();
+
+            Ammo.destroy(transform1);
+            Ammo.destroy(transform2);
+            Ammo.destroy(shape1);
+            Ammo.destroy(shape2);
+            Ammo.destroy(motionState1);
+            Ammo.destroy(motionState2);
+            Ammo.destroy(body1);
+            Ammo.destroy(body2);
+            Ammo.destroy(result);
+
+            return collisionDetected;
+            }
+
+            function o() {
+            initializeAmmoScene();
+            return checkCollision(args.NAME1, args.NAME2);
+            }
+
+            resolve(o());
+            }).catch(error => {
             reject(error);
           });
         });
