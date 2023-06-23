@@ -692,6 +692,7 @@ class Jg3DBlocks {
             return result.hasHit();
         }
         return checkCollision(this.scene.getObjectByName(Cast.toString(args.NAME1)),this.scene.getObjectByName(Cast.toString(args.NAME2)))
+    }
 }
 
 module.exports = Jg3DBlocks;
