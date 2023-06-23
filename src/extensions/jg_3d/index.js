@@ -679,7 +679,7 @@ class Jg3DBlocks {
             physicsWorld.removeRigidBody(body2);
             return result.hasHit();
         }
-        var o = c(Cast.toString(args.NAME1), Cast.toString(args.NAME1))})
+        var o = c(Cast.toString(args.NAME1), Cast.toString(args.NAME1))});
         return o
     }
 }
