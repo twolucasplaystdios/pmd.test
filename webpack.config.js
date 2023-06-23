@@ -29,17 +29,9 @@ const base = {
             options: {
                 outputPath: 'media/music/'
             }
-        },
-        {
-            test: /\.tsx?$/,
-            use: 'ts-loader',
-            exclude: /node_modules/
-      }]
+        }]
     },
-    plugins: [],
-    resolve: {
-    extensions: ['.tsx', '.ts', '.js']
-  }
+    plugins: []
 };
 
 module.exports = [
