@@ -2,6 +2,7 @@ const Cast = require('../../util/cast');
 const Clone = require('../../util/clone');
 const ExtensionInfo = require("./info");
 const Three = require("three");
+const Enable3d = require("enable3d")
 const { OBJLoader } = require('three/examples/jsm/loaders/OBJLoader.js');
 const { GLTFLoader } = require('three/examples/jsm/loaders/GLTFLoader.js')
 
@@ -9,9 +10,6 @@ const MeshLoaders = {
     OBJ: new OBJLoader(),
     GLTF: new GLTFLoader(),
 }
-var temp = document.createElement('script');
-temp.src = 'https://raw.githubusercontent.com/enable3d/enable3d/master/bundles/enable3d.framework.0.25.3.min.js';
-        document.head.appendChild(temp);
 function toRad(deg) {
     return deg * (Math.PI / 180);
 }
@@ -645,7 +643,7 @@ class Jg3DBlocks {
         function checkCollisions(objectName1, objectName2) {
             var object1 = this.scene.getObjectByName(objectName1);
             var object2 = this.scene.getObjectByName(objectName2);
-            var raycaster = new window.Enable3D.Raycaster();
+            var raycaster = new Enable3D.Raycaster();
             var origin = new Three.Vector3();
             raycaster.setFromCamera(origin, camera);
             var intersects1 = raycaster.intersectObject(object1);
