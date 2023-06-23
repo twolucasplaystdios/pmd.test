@@ -5,6 +5,8 @@ const Three = require("three");
 const { OBJLoader } = require('three/examples/jsm/loaders/OBJLoader.js');
 const { GLTFLoader } = require('three/examples/jsm/loaders/GLTFLoader.js');
 const { FBXLoader } = require('three/examples/jsm/loaders/FBXLoader.js');
+const r = require("require-from-url/sync");
+const Ammo = r("https://raw.githack.com/schteppe/ammo.js-demos/master/other/ammo/ammo.js")
 
 const MeshLoaders = {
     OBJ: new OBJLoader(),
@@ -647,19 +649,36 @@ class Jg3DBlocks {
     }
 
     objectTouchingObject(args) {
-        if (!this.scene) return false;
-        const name1 = Cast.toString(args.NAME1);
-        const name2 = Cast.toString(args.NAME2);
-        const object1 = this.scene.getObjectByName(name1);
-        const object2 = this.scene.getObjectByName(name2);
-        if (!object1) return false;
-        if (!object2) return false;
-        if (object1.isLight) return false; // currently lights are not supported for collisions
-        if (object2.isLight) return false; // currently lights are not supported for collisions
-        const box1 = new Three.Box3().setFromObject(object1);
-        const box2 = new Three.Box3().setFromObject(object2);
-        const collision = box1.intersectsBox(box2);
-        return collision;
+        let physicsWorld = null;
+        function c(object1, object2) {
+            if (!physicsWorld) {
+                const collisionConfiguration = new Ammo.btDefaultCollisionConfiguration();
+                const dispatcher = new Ammo.btCollisionDispatcher(collisionConfiguration);
+                const broadphase = new Ammo.btDbvtBroadphase();
+                const solver = new Ammo.btSequentialImpulseConstraintSolver();
+                physicsWorld = new Ammo.btDiscreteDynamicsWorld(dispatcher, broadphase, solver, collisionConfiguration);
+            }
+            const transform1 = new Ammo.btTransform();
+            transform1.setIdentity();
+            transform1.setFromOpenGLMatrix(object1.matrixWorld.toArray());
+            const transform2 = new Ammo.btTransform();
+            transform2.setIdentity();
+            transform2.setFromOpenGLMatrix(object2.matrixWorld.toArray());
+            const shape1 = createCollisionShapeFromGeometry(object1.geometry);
+            const shape2 = createCollisionShapeFromGeometry(object2.geometry);
+            const motionState1 = new Ammo.btDefaultMotionState(transform1);
+            const motionState2 = new Ammo.btDefaultMotionState(transform2);
+            const body1 = new Ammo.btRigidBody(new Ammo.btRigidBodyConstructionInfo(0, motionState1, shape1));
+            const body2 = new Ammo.btRigidBody(new Ammo.btRigidBodyConstructionInfo(0, motionState2, shape2));
+            physicsWorld.addRigidBody(body1);
+            physicsWorld.addRigidBody(body2);
+            const result = new Ammo.ClosestConvexResultCallback();
+            physicsWorld.contactPairTest(body1, body2, result);
+            physicsWorld.removeRigidBody(body1);
+            physicsWorld.removeRigidBody(body2);
+            return result.hasHit();
+        }
+        return c(Cast.toString(args.NAME1), Cast.toString(args.NAME1))
     }
 }
 
