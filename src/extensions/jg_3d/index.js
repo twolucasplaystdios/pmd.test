@@ -2,7 +2,7 @@ const Cast = require('../../util/cast');
 const Clone = require('../../util/clone');
 const ExtensionInfo = require("./info");
 const Three = require("three");
-import { Raycaster } from 'enable3d'
+const Ammo = require("ammojs3")
 const { OBJLoader } = require('three/examples/jsm/loaders/OBJLoader.js');
 const { GLTFLoader } = require('three/examples/jsm/loaders/GLTFLoader.js')
 
@@ -640,19 +640,58 @@ class Jg3DBlocks {
     }
 
     objectTouchingObject(args) {
-        function checkCollisions(objectName1, objectName2) {
-            var object1 = this.scene.getObjectByName(objectName1);
-            var object2 = this.scene.getObjectByName(objectName2);
-            var raycaster = new Raycaster();
-            var origin = new Three.Vector3();
-            raycaster.setFromCamera(origin, this.camera);
-            var intersects1 = raycaster.intersectObject(object1);
-            var intersects2 = raycaster.intersectObject(object2);
-            var isColliding = intersects1.length > 0 && intersects2.length > 0;
-            return isColliding;
-      }
-        return checkCollisions(Cast.toString(args.NAME1), Cast.toString(args.NAME2));
-    }
+        function createCollisionShapeFromGeometry(geometry) {
+            const vertices = geometry.attributes.position.array;
+            const numVertices = vertices.length / 3;
+            const shape = new Ammo.btConvexHullShape();
+            for (let i = 0; i < numVertices; i++) {
+                const vertex = new Ammo.btVector3(vertices[i * 3], vertices[i * 3 + 1], vertices[i * 3 + 2]);
+                shape.addPoint(vertex);
+            }
+            return shape;
+        }
+        
+        function checkCollision(object1, object2) {
+            const collisionConfiguration = new Ammo.btDefaultCollisionConfiguration();
+            const dispatcher = new Ammo.btCollisionDispatcher(collisionConfiguration);
+            const broadphase = new Ammo.btDbvtBroadphase();
+            const solver = new Ammo.btSequentialImpulseConstraintSolver();
+            const world = new Ammo.btDiscreteDynamicsWorld(dispatcher, broadphase, solver, collisionConfiguration);
+            world.setGravity(new Ammo.btVector3(0, 0, 0));
+            const transform1 = new Ammo.btTransform();
+            transform1.setIdentity();
+            transform1.setFromOpenGLMatrix(object1.matrixWorld.toArray());
+            const transform2 = new Ammo.btTransform();
+            transform2.setIdentity();
+            transform2.setFromOpenGLMatrix(object2.matrixWorld.toArray());
+            const shape1 = createCollisionShapeFromGeometry(object1.geometry);
+            const shape2 = createCollisionShapeFromGeometry(object2.geometry);
+            const motionState1 = new Ammo.btDefaultMotionState(transform1);
+            const body1 = new Ammo.btRigidBody(new Ammo.btRigidBodyConstructionInfo(0, motionState1, shape1));
+            const motionState2 = new Ammo.btDefaultMotionState(transform2);
+            const body2 = new Ammo.btRigidBody(new Ammo.btRigidBodyConstructionInfo(0, motionState2, shape2));
+            world.addRigidBody(body1);
+            world.addRigidBody(body2);
+            const result = new Ammo.ClosestConvexResultCallback();
+            world.contactPairTest(body1, body2, result);
+            world.removeRigidBody(body1);
+            world.removeRigidBody(body2);
+            Ammo.destroy(shape1);
+            Ammo.destroy(shape2);
+            Ammo.destroy(body1);
+            Ammo.destroy(body2);
+            Ammo.destroy(motionState1);
+            Ammo.destroy(motionState2);
+            Ammo.destroy(transform1);
+            Ammo.destroy(transform2);
+            Ammo.destroy(world);
+            Ammo.destroy(solver);
+            Ammo.destroy(broadphase);
+            Ammo.destroy(dispatcher);
+            Ammo.destroy(collisionConfiguration);
+            return result.hasHit();
+        }
+        return checkCollision(this.scene.getObjectByName(Cast.toString(args.NAME1)),this.scene.getObjectByName(Cast.toString(args.NAME2)))
 }
 
 module.exports = Jg3DBlocks;
