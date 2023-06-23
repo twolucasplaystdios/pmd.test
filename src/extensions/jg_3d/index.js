@@ -723,8 +723,11 @@ class Jg3DBlocks {
               
                 const collisionDetected = result.hasHit();
               
+                transform1.release();
+                transform2.release();
+              
                 return collisionDetected;
-              }
+              }              
               
 
             function o() {
