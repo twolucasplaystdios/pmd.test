@@ -661,7 +661,6 @@ class Jg3DBlocks {
             let motionState2 = null;
             let body1 = null;
             let body2 = null;
-            let result = new Ammo.ClosestConvexResultCallback();
       
             function initializeAmmoScene() {
               collisionConfiguration = new Ammo.btDefaultCollisionConfiguration();
@@ -687,6 +686,8 @@ class Jg3DBlocks {
             }
       
             function checkCollision(object1, object2) {
+              const result = new Ammo.ClosestConvexResultCallback(); // Reset result for each collision check
+      
               if (!shape1) {
                 shape1 = createCollisionShapeFromGeometry(object1.geometry);
                 motionState1 = new Ammo.btDefaultMotionState();
@@ -746,6 +747,7 @@ class Jg3DBlocks {
           });
         });
       }
+      
       
 }
 
