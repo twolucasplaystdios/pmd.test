@@ -664,12 +664,10 @@ class Jg3DBlocks {
             let result = new Ammo.ClosestConvexResultCallback();
       
             function initializeAmmoScene() {
-              if (!physicsWorld) {
-                collisionConfiguration = new Ammo.btDefaultCollisionConfiguration();
-                dispatcher = new Ammo.btCollisionDispatcher(collisionConfiguration);
-                broadphase = new Ammo.btDbvtBroadphase();
-                physicsWorld = new Ammo.btDiscreteDynamicsWorld(dispatcher, broadphase, null, collisionConfiguration);
-              }
+              collisionConfiguration = new Ammo.btDefaultCollisionConfiguration();
+              dispatcher = new Ammo.btCollisionDispatcher(collisionConfiguration);
+              broadphase = new Ammo.btDbvtBroadphase();
+              physicsWorld = new Ammo.btDiscreteDynamicsWorld(dispatcher, broadphase, null, collisionConfiguration);
             }
       
             function createCollisionShapeFromGeometry(geometry) {
@@ -736,14 +734,19 @@ class Jg3DBlocks {
               return collisionDetected;
             }
       
-            initializeAmmoScene();
-            const collisionDetected = checkCollision(args.NAME1, args.NAME2);
-            resolve(collisionDetected);
+            Ammo().then(() => {
+              initializeAmmoScene();
+              const collisionDetected = checkCollision(args.NAME1, args.NAME2);
+              resolve(collisionDetected);
+            }).catch(error => {
+              reject(error);
+            });
           }).catch(error => {
             reject(error);
           });
         });
-      }      
+      }
+      
 }
 
 module.exports = Jg3DBlocks;
