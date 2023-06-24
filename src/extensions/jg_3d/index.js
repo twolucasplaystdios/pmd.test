@@ -652,6 +652,21 @@ class Jg3DBlocks {
         return new Promise((resolve, reject) => {
           r("https://raw.githack.com/schteppe/ammo.js-demos/master/other/ammo/ammo.js")
             .then(Ammo => {
+                function createCollisionShapeFromGeometry(geometry) {
+                    const vertices = [];
+                  
+                    for (let i = 0; i < geometry.vertices.length; i++) {
+                      const vertex = geometry.vertices[i];
+                      vertices.push(new Ammo.btVector3(vertex.x, vertex.y, vertex.z));
+                    }
+                  
+                    const shape = new Ammo.btConvexHullShape();
+                    for (let i = 0; i < vertices.length; i++) {
+                      shape.addPoint(vertices[i]);
+                    }
+                  
+                    return shape;
+                  }
               const collisionConfiguration = new Ammo.btDefaultCollisionConfiguration();
               const dispatcher = new Ammo.btCollisionDispatcher(collisionConfiguration);
               const broadphase = new Ammo.btDbvtBroadphase();
@@ -693,22 +708,6 @@ class Jg3DBlocks {
               reject(error);
             });
         });
-      }
-      
-      function createCollisionShapeFromGeometry(geometry) {
-        const vertices = [];
-      
-        for (let i = 0; i < geometry.vertices.length; i++) {
-          const vertex = geometry.vertices[i];
-          vertices.push(new Ammo.btVector3(vertex.x, vertex.y, vertex.z));
-        }
-      
-        const shape = new Ammo.btConvexHullShape();
-        for (let i = 0; i < vertices.length; i++) {
-          shape.addPoint(vertices[i]);
-        }
-      
-        return shape;
       }
       
       
