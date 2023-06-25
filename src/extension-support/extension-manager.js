@@ -142,10 +142,13 @@ const builtinExtensions = {
 
     // DT: ...
     // DTcameracontrols: ...
-    DTcameracontrols: () => require('../extensions/dt_cameracontrols')
+    DTcameracontrols: () => require('../extensions/dt_cameracontrols'),
 
     // griffpatch: ...
     // griffpatch: () => require('../extensions/griffpatch_box2d')
+
+    // iyg: erm a crep, erm a werdohhhh
+    iygPerlinNoise: () => require('../extensions/iyg_perlinNoise'),
 };
 
 const coreExtensionList = Object.getOwnPropertyNames(builtinExtensions);
