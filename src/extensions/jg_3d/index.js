@@ -5,7 +5,7 @@ const Three = require("three");
 const { OBJLoader } = require('three/examples/jsm/loaders/OBJLoader.js');
 const { GLTFLoader } = require('three/examples/jsm/loaders/GLTFLoader.js');
 const { FBXLoader } = require('three/examples/jsm/loaders/FBXLoader.js');
-const r = require("require-from-web");
+const CANNON = require('cannon');
 
 
 const MeshLoaders = {
@@ -649,65 +649,49 @@ class Jg3DBlocks {
     }
 
     objectTouchingObject(args) {
-        return new Promise((resolve, reject) => {
-          r("https://raw.githack.com/schteppe/ammo.js-demos/master/other/ammo/ammo.js")
-            .then(Ammo => {
-                function createCollisionShapeFromGeometry(geometry) {
-                    const vertices = [];
-                  
-                    for (let i = 0; i < geometry.vertices.length; i++) {
-                      const vertex = geometry.vertices[i];
-                      vertices.push(new Ammo.btVector3(vertex.x, vertex.y, vertex.z));
-                    }
-                  
-                    const shape = new Ammo.btConvexHullShape();
-                    for (let i = 0; i < vertices.length; i++) {
-                      shape.addPoint(vertices[i]);
-                    }
-                  
-                    return shape;
-                  }
-              const collisionConfiguration = new Ammo.btDefaultCollisionConfiguration();
-              const dispatcher = new Ammo.btCollisionDispatcher(collisionConfiguration);
-              const broadphase = new Ammo.btDbvtBroadphase();
-              const physicsWorld = new Ammo.btDiscreteDynamicsWorld(dispatcher, broadphase, null, collisionConfiguration);
-      
-              const shape1 = createCollisionShapeFromGeometry(args.NAME1.geometry);
-              const shape2 = createCollisionShapeFromGeometry(args.NAME2.geometry);
-      
-              const motionState1 = new Ammo.btDefaultMotionState();
-              const motionState2 = new Ammo.btDefaultMotionState();
-      
-              const body1 = new Ammo.btRigidBody(new Ammo.btRigidBodyConstructionInfo(0, motionState1, shape1));
-              const body2 = new Ammo.btRigidBody(new Ammo.btRigidBodyConstructionInfo(0, motionState2, shape2));
-      
-              physicsWorld.addRigidBody(body1);
-              physicsWorld.addRigidBody(body2);
-      
-              const result = new Ammo.ClosestConvexResultCallback();
-              physicsWorld.contactPairTest(body1, body2, result);
-      
-              physicsWorld.removeRigidBody(body1);
-              physicsWorld.removeRigidBody(body2);
-      
-              const collisionDetected = result.hasHit();
-      
-              Ammo.destroy(shape1);
-              Ammo.destroy(shape2);
-              Ammo.destroy(motionState1);
-              Ammo.destroy(motionState2);
-              Ammo.destroy(body1);
-              Ammo.destroy(body2);
-              Ammo.destroy(result);
-              Ammo.destroy(dispatcher);
-              Ammo.destroy(physicsWorld);
-      
-              resolve(collisionDetected);
-            })
-            .catch(error => {
-              reject(error);
+        function createShapeFromObject(object) {
+            const geometry = object.geometry.clone();
+            geometry.computeBoundingBox();
+            geometry.computeBoundingSphere();
+            geometry.computeFaceNormals();
+            geometry.computeVertexNormals();
+          
+            const vertices = geometry.vertices.map((vertex) => {
+              const worldVertex = vertex.clone().applyMatrix4(object.matrixWorld);
+              return new CANNON.Vec3(worldVertex.x, worldVertex.y, worldVertex.z);
             });
-        });
+          
+            const indices = geometry.faces.map((face) => {
+              return [face.a, face.b, face.c];
+            });
+          
+            return new CANNON.Trimesh(vertices, indices);
+          }
+          
+          function checkCollisionByName(objectName1, objectName2) {
+            // Get references to the objects by name
+            const object1 = this.scene.getObjectByName(objectName1);
+            const object2 = this.scene.getObjectByName(objectName2);
+          
+            // Create shapes for collision detection
+            const shape1 = createShapeFromObject(object1);
+            const shape2 = createShapeFromObject(object2);
+          
+            // Create a CANNON.Ray object
+            const raycaster = new CANNON.Ray();
+            raycaster.from = new CANNON.Vec3(object1.position.x, object1.position.y, object1.position.z);
+            raycaster.to = new CANNON.Vec3(object2.position.x, object2.position.y, object2.position.z);
+          
+            // Perform the raycasting
+            const result = new CANNON.RaycastResult();
+            this.world.raycastClosest(raycaster, result);
+          
+            // Check if a collision occurred
+            return result.hasHit && (result.body === shape2 || result.body === shape1);
+          }
+          
+          return checkCollisionByName(Cast.toString(args.NAME1), Cast.toString(args.NAME2));
+          
       }
       
       
