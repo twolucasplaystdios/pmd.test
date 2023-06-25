@@ -1,7 +1,6 @@
 const formatMessage = require('format-message');
 const BlockType = require('../../extension-support/block-type');
 const ArgumentType = require('../../extension-support/argument-type');
-const Cast = require('../../util/cast');
 /**
  * Class for perlin noise extension.
  * @constructor
@@ -118,12 +117,12 @@ class iygPerlin {
     }
 
     GetNoise(args, util) {
-        if (!this.noise) {
+        if (!this.noise || isNaN(args.X) || isNaN(args.Y)) {
             return 0;
         }
-        let x = Cast.toNumber(args.X);
-        let y = Cast.toNumber(args.Y);
-        return Cast.toNumber(this.noise[x][y]);
+        let x = args.X;
+        let y = args.Y;
+        return this.noise[x][y];
     }
 }
 
