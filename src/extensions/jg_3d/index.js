@@ -649,48 +649,48 @@ class Jg3DBlocks {
     }
 
     objectTouchingObject(args) {
-        function createShapeFromObject(object) {
-            const geometry = object.geometry.clone();
-            geometry.computeBoundingBox();
-            geometry.computeBoundingSphere();
-            geometry.computeFaceNormals();
-            geometry.computeVertexNormals();
-          
-            const vertices = geometry.vertices.map((vertex) => {
-              const worldVertex = vertex.clone().applyMatrix4(object.matrixWorld);
-              return new CANNON.Vec3(worldVertex.x, worldVertex.y, worldVertex.z);
-            });
-          
-            const indices = geometry.faces.map((face) => {
-              return [face.a, face.b, face.c];
-            });
-          
-            return new CANNON.Trimesh(vertices, indices);
-          }
-          
-          function checkCollisionByName(objectName1, objectName2) {
-            // Get references to the objects by name
+        function c(objectName1, objectName2) {
+
             const object1 = this.scene.getObjectByName(objectName1);
             const object2 = this.scene.getObjectByName(objectName2);
           
-            // Create shapes for collision detection
-            const shape1 = createShapeFromObject(object1);
-            const shape2 = createShapeFromObject(object2);
+            const mesh1 = object1.children[0];
+            const mesh2 = object2.children[0];
           
-            // Create a CANNON.Ray object
-            const raycaster = new CANNON.Ray();
-            raycaster.from = new CANNON.Vec3(object1.position.x, object1.position.y, object1.position.z);
-            raycaster.to = new CANNON.Vec3(object2.position.x, object2.position.y, object2.position.z);
+            const shape1 = new CANNON.Trimesh.create(mesh1.geometry.attributes.position.array, mesh1.geometry.index.array);
+            const shape2 = new CANNON.Trimesh.create(mesh2.geometry.attributes.position.array, mesh2.geometry.index.array);
           
-            // Perform the raycasting
+            const body1 = new CANNON.Body({ mass: 0 });
+            const body2 = new CANNON.Body({ mass: 0 });
+            body1.addShape(shape1);
+            body2.addShape(shape2);
+            body1.position.copy(object1.position);
+            body2.position.copy(object2.position);
+          
             const result = new CANNON.RaycastResult();
-            this.world.raycastClosest(raycaster, result);
+            const raycastOptions = {
+              collisionFilterMask: 0xffffffff,
+              skipBackfaces: true,
+              mode: CANNON.RaycastMode.ALL
+            };
           
-            // Check if a collision occurred
-            return result.hasHit && (result.body === shape2 || result.body === shape1);
+            const hasCollision = body1.shapes.some(shape1 => {
+              const from = body1.position.clone();
+              const to = body2.position.clone();
+          
+              const hasHit = this.world.raycastAny(from, to, raycastOptions, result, shape1);
+          
+              if (hasHit) {
+          
+                return true;
+              }
+          
+              return false;
+            });
+          
+            return hasCollision;
           }
-          
-          return checkCollisionByName(Cast.toString(args.NAME1), Cast.toString(args.NAME2));
+        return c(Cast.toString(args.NAME1), Cast.toString(args.NAME2));
           
       }
       
