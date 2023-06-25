@@ -51,7 +51,7 @@ const createFrame = () => {
     return element;
 };
 
-const origin = location.origin;
+const origin = window.origin;
 
 /**
  * vscode give me autofill
