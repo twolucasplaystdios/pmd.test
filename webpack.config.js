@@ -21,7 +21,10 @@ const base = {
             include: path.resolve(__dirname, 'src'),
             query: {
                 presets: [['@babel/preset-env']]
-            }
+            },
+            options: {
+                presets: [['@babel/preset-env']],
+                plugins: ['@babel/plugin-proposal-export-namespace-from']}
         },
         {
             test: /\.mp3$/,
