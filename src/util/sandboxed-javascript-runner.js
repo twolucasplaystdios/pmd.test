@@ -123,7 +123,7 @@ const generateEvaluateSrc = (code, frame) => {
     }
 
     const parent = window.parent;
-    const origin = ${JSON.stringify(origin)};
+    const origin = '*';
     // console.log(result,success);
     console.log(origin);
 
