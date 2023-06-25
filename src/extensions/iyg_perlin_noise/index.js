@@ -117,8 +117,8 @@ class iygPerlin {
     }
 
     GetNoise(args, util) {
-        let x = args.X;
-        let y = args.Y;
+        let x = Number(args.X);
+        let y = Number(args.Y);
         return this.noise[x][y];
     }
 }
