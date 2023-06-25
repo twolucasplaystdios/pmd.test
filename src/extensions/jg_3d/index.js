@@ -652,8 +652,8 @@ class Jg3DBlocks {
         const r = new Three.Raycaster();
         const o = new Three.Vector2(0,0); 
         r.setFromCamera(o, this.camera); 
-        const d = r.intersectObject(Cast.toString(args.NAME1));
-        const e = r.intersectObject(Cast.toString(args.NAME2));
+        const d = r.intersectObject(this.scene.getObjectByName(Cast.toString(args.NAME1)));
+        const e = r.intersectObject(this.scene.getObjectByName(Cast.toString(args.NAME2)));
         return d.length > 0 && e.length > 0
       }  
 }
