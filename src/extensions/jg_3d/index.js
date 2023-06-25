@@ -649,15 +649,12 @@ class Jg3DBlocks {
     }
 
     objectTouchingObject(args) {
-        function c(a, b) {
-            const r = new Three.Raycaster();
-            const o = new Three.Vector2(0,0); 
-            r.setFromCamera(o, this.camera); 
-            const d = r.intersectObject(a);
-            const e = r.intersectObject(b);
-            return d.length > 0 && e.length > 0
-        }
-        return c(Cast.toString(args.NAME1), Cast.toString(args.NAME2))
+        const r = new Three.Raycaster();
+        const o = new Three.Vector2(0,0); 
+        r.setFromCamera(o, this.camera); 
+        const d = r.intersectObject(Cast.toString(args.NAME1));
+        const e = r.intersectObject(Cast.toString(args.NAME2));
+        return d.length > 0 && e.length > 0
       }  
 }
 
