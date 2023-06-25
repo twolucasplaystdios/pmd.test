@@ -125,7 +125,7 @@ const generateEvaluateSrc = (code, frame) => {
     const parent = window.parent;
     const origin = ${JSON.stringify(origin)};
     // console.log(result,success);
-    // console.log(origin);
+    console.log(origin);
 
     try {
         parent.postMessage({
