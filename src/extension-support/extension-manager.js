@@ -148,7 +148,8 @@ const builtinExtensions = {
     // griffpatch: () => require('../extensions/griffpatch_box2d')
 
     // iyg: erm a crep, erm a werdohhhh
-    iygPerlinNoise: () => require('../extensions/iyg_perlin_noise'),
+    // iygPerlin: 
+    iygPerlin: () => require('../extensions/iyg_perlin_noise'),
 };
 
 const coreExtensionList = Object.getOwnPropertyNames(builtinExtensions);
