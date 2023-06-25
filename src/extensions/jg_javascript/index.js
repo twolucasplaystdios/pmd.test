@@ -16,6 +16,7 @@ class jgJavascript {
          * @type {runtime}
          */
         this.runtime = runtime;
+        this.util;
     }
 
     /**
@@ -80,6 +81,20 @@ class jgJavascript {
 
     // util
     evaluateCode(code) {
+        // used for packager
+        if (this.runtime.extensionRuntimeOptions.javascriptUnsandboxed === true) {
+            return new Promise((resolve) => {
+                let result;
+                try {
+                    // eslint-disable-next-line no-eval
+                    result = eval(code);
+                } catch (err) {
+                    result = err;
+                }
+                resolve(result);
+            });
+        }
+        // we are not packaged
         return new Promise((resolve) => {
             SandboxRunner.execute(code).then(result => {
                 // result is { value: any, success: boolean }
@@ -90,15 +105,18 @@ class jgJavascript {
     }
 
     // blocks
-    javascriptStack(args) {
+    javascriptStack(args, util) {
+        this.util = util;
         const code = Cast.toString(args.CODE);
         return this.evaluateCode(code);
     }
-    javascriptString(args) {
+    javascriptString(args, util) {
+        this.util = util;
         const code = Cast.toString(args.CODE);
         return this.evaluateCode(code);
     }
-    javascriptBool(args) {
+    javascriptBool(args, util) {
+        this.util = util;
         return new Promise((resolve) => {
             const code = Cast.toString(args.CODE);
             this.evaluateCode(code).then(value => {
