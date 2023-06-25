@@ -393,6 +393,10 @@ class Runtime extends EventEmitter {
             limit: 10
         };
 
+        this.extensionRuntimeOptions = {
+            javascriptUnsandboxed: false
+        };
+
         const newCloudDataManager = cloudDataManager(this.cloudOptions);
 
         /**
