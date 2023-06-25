@@ -110,14 +110,17 @@ class iygPerlin {
           })();
         
           lcg.setSeed(seed);
-          this.perlin = new Array(size);
+          this.noise = new Array(size);
           for (let i = 0; i < size; i++) {
-            this.perlin[i] = lcg.rand();
+            this.noise[i] = lcg.rand();
           }
 
     }
 
     GetNoise(args, util) {
+        if (!this.noise) {
+            return 0;
+        }
         let x = Cast.toNumber(args.X);
         let y = Cast.toNumber(args.Y);
         return Cast.toNumber(this.noise[x][y]);
