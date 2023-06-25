@@ -32,16 +32,13 @@ const base = {
         },
         {
             test: /\.tsx?$/,
-            use: 'ts-loader',
-            exclude: /node_modules/
-          }
+            use: 'ts-loader'
+        }
         ]
-      },
-      resolve: {
-        extensions: ['.tsx', '.ts', '.js']
-      }]
     },
-    plugins: []
+    resolve: {
+        extensions: ['.tsx', '.ts', '.js']
+    }
 };
 
 module.exports = [
