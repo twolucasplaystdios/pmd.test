@@ -5,7 +5,7 @@ const Three = require("three");
 const { OBJLoader } = require('three/examples/jsm/loaders/OBJLoader.js');
 const { GLTFLoader } = require('three/examples/jsm/loaders/GLTFLoader.js');
 const { FBXLoader } = require('three/examples/jsm/loaders/FBXLoader.js');
-const CANNON = require('cannon');
+const Enable3d = require("enable3d");
 
 
 const MeshLoaders = {
@@ -649,53 +649,16 @@ class Jg3DBlocks {
     }
 
     objectTouchingObject(args) {
-        function c(objectName1, objectName2) {
-
-            const object1 = this.scene.getObjectByName(objectName1);
-            const object2 = this.scene.getObjectByName(objectName2);
-          
-            const mesh1 = object1.children[0];
-            const mesh2 = object2.children[0];
-          
-            const shape1 = new CANNON.Trimesh.create(mesh1.geometry.attributes.position.array, mesh1.geometry.index.array);
-            const shape2 = new CANNON.Trimesh.create(mesh2.geometry.attributes.position.array, mesh2.geometry.index.array);
-          
-            const body1 = new CANNON.Body({ mass: 0 });
-            const body2 = new CANNON.Body({ mass: 0 });
-            body1.addShape(shape1);
-            body2.addShape(shape2);
-            body1.position.copy(object1.position);
-            body2.position.copy(object2.position);
-          
-            const result = new CANNON.RaycastResult();
-            const raycastOptions = {
-              collisionFilterMask: 0xffffffff,
-              skipBackfaces: true,
-              mode: CANNON.RaycastMode.ALL
-            };
-          
-            const hasCollision = body1.shapes.some(shape1 => {
-              const from = body1.position.clone();
-              const to = body2.position.clone();
-          
-              const hasHit = this.world.raycastAny(from, to, raycastOptions, result, shape1);
-          
-              if (hasHit) {
-          
-                return true;
-              }
-          
-              return false;
-            });
-          
-            return hasCollision;
-          }
-        return c(Cast.toString(args.NAME1), Cast.toString(args.NAME2));
-          
-      }
-      
-      
-      
+        function c(a, b) {
+            const r = new Enable3D.Raycaster();
+            const o = new Three.Vector3(); 
+            r.setFromCamera(o, this.camera); 
+            const d = r.intersectObject(a);
+            const e = r.intersectObject(b);
+            return d.length > 0 && e.length > 0
+        }
+        return c(Cast.toString(args.NAME1), Cast.toString(args.NAME2))
+      }     
 }
 
 module.exports = Jg3DBlocks;
