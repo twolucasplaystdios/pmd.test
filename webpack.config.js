@@ -18,13 +18,10 @@ const base = {
         rules: [{
             test: /\.js$/,
             loader: 'babel-loader',
-            include: [path.resolve(__dirname, 'src'), path.resolve(__dirname, 'node-modules')],
+            include: path.resolve(__dirname, 'src'),
             query: {
                 presets: [['@babel/preset-env']]
-            },
-            options: {
-                presets: [['@babel/preset-env']],
-                plugins: ['@babel/plugin-proposal-export-namespace-from']}
+            }
         },
         {
             test: /\.mp3$/,
@@ -32,16 +29,9 @@ const base = {
             options: {
                 outputPath: 'media/music/'
             }
-        },
-        {
-            test: /\.tsx?$/,
-            use: 'ts-loader'
-        }
-        ]
+        }]
     },
-    resolve: {
-        extensions: ['.tsx', '.ts', '.js']
-    }
+    plugins: []
 };
 
 module.exports = [
