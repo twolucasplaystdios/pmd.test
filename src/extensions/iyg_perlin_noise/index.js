@@ -79,7 +79,7 @@ class iygPerlin {
         const mt = new Array(N);
         let mti = N + 1;
 
-        function seedGenerator() {
+        function seedGenerator(seed) {
             mt[0] = seed >>> 0;
             for (let i = 1; i < N; i++) {
             const s = mt[i - 1] ^ (mt[i - 1] >>> 30);
@@ -117,7 +117,7 @@ class iygPerlin {
             return (y >>> 0) / 0xffffffff;
         }
 
-        seedGenerator();
+        seedGenerator(seed);
 
         return extractNumber();
     }
