@@ -1,6 +1,7 @@
 const formatMessage = require('format-message');
 const BlockType = require('../../extension-support/block-type');
 const ArgumentType = require('../../extension-support/argument-type');
+const Cast = require('../../util/cast');
 /**
  * Class for perlin noise extension.
  * @constructor
@@ -65,7 +66,8 @@ class iygPerlin {
         };
     }
 
-    dumbSeedRandom(seed) {
+    dumbSeedRandom(s) {
+        seed = s;
         const N = 624;
         const M = 397;
         const R = 31;
@@ -121,7 +123,7 @@ class iygPerlin {
     }
 
     GetNoise(args, util) {
-        let seed = args.SEED;
+        let seed = Cast.toNumber(args.SEED);
         let perlin_octaves = ((args.OCTAVE === Infinity) ? 4 : args.OCTAVE);
         let x = args.X;
         let y = args.Y;
