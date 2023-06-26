@@ -66,17 +66,8 @@ class iygPerlin {
     }
 
     dumbSeedRandom() {
-        let m_w = seed;
-        let m_z = 987654321;
-        let mask = 0xffffffff;
-        m_z = (36969 * (m_z & 65535) + (m_z >> 16)) & mask;
-        m_w = (18000 * (m_w & 65535) + (m_w >> 16)) & mask;
-        let result = ((m_z << 16) + m_w) & mask;
-        result /= 4294967296;
-        this.seed = result;
-        return result + 0.5;
-        
-        
+        this.seed = (this.seed * 9301 + 49297) % 233280;
+        return this.seed / 233280;
     }
 
     GetNoise(args, util) {
