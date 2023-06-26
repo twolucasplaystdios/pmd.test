@@ -74,7 +74,7 @@ class iygPerlin {
 
     GetNoise(args, util) {
         let seed = args.SEED;
-        let perlin_octaves = args.OCTAVE;
+        let perlin_octaves = ((args.OCTAVE === Infinity) ? 4 : args.OCTAVE);
         let x = args.X;
         let y = args.Y;
         let z = args.Z;
@@ -88,12 +88,12 @@ class iygPerlin {
         const PERLIN_ZWRAP = 1 << PERLIN_ZWRAPB;
 
         if (this.perlin == null || seed != this.seed) {
+            this.seed = seed;
             this.perlin = new Array(PERLIN_SIZE + 1);
             for (let i = 0; i < PERLIN_SIZE + 1; i++) {
                 seed = this.dumbSeedRandom(seed);
                 this.perlin[i] = seed
             }
-            this.seed = seed;
         }
 
         
