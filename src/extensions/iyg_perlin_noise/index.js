@@ -163,7 +163,7 @@ class iygPerlin {
             zf--;
         }
         }
-        return r;
+        return r % 1.0;
 
     }
 }
