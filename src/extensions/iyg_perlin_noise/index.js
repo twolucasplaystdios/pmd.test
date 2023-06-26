@@ -66,7 +66,7 @@ class iygPerlin {
     }
 
     dumbSeedRandom() {
-        let m_w = seed;
+        let m_w = this.seed;
         let m_z = 987654321;
         let mask = 0xffffffff;
         m_z = (36969 * (m_z & 65535) + (m_z >> 16)) & mask;
@@ -74,7 +74,7 @@ class iygPerlin {
         let result = ((m_z << 16) + m_w) & mask;
         result /= 4294967296;
         this.seed = result;
-        return result + 0.5;
+        return (result + 0.5) % 1.0;
         
         
     }
