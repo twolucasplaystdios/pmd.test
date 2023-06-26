@@ -34,7 +34,7 @@ class iygPerlin {
                     blockType: BlockType.COMMAND,
                     text: formatMessage({
                         id: 'iygPerlin.GenerateNoise',
-                        default: 'Generate noise with seed [SEED], octave [OCTAVE], and size [SIZE]',
+                        default: 'Generate noise with seed [SEED], octave [OCTAVE], width [width], height [height]',
                         description: 'Generate noise with a specified seed and size.'
                     }),
                     arguments: {
@@ -122,6 +122,7 @@ class iygPerlin {
         }
         let x = args.X;
         let y = args.Y;
+        console.log(this.noise, x, y);
         return this.noise[x][y];
     }
 }
