@@ -65,10 +65,7 @@ class iygPerlin {
     }
 
     dumbSeedRandom(seed) {
-        let x = (171 * seed) % 30269
-        let y = (172 * seed) % 30307
-        let z = (170 * seed) % 30323
-        return (x/30269.0 + y/30307.0 + z/30323.0) % 1.0
+        return (seed * 9301 + 49297) % 233280 / 233280;;
     }
 
     GetNoise(args, util) {
