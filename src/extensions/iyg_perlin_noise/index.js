@@ -65,8 +65,9 @@ class iygPerlin {
         };
     }
 
-    dumbSeedRandom(seed) {
-        return(seed=1e4*Math.sin(seed))-Math.floor(seed)
+    dumbSeedRandom() {
+        this.seed = (this.seed * 9301 + 49297) % 233280;
+        return this.seed / 233280;
     }
 
     GetNoise(args, util) {
