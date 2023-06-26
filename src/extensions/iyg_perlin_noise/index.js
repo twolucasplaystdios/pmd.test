@@ -65,9 +65,8 @@ class iygPerlin {
         };
     }
 
-    dumbSeedRandom() {
-        this.seed = (this.seed * 9301 + 49297) % 233280;
-        return this.seed / 233280;
+    dumbSeedRandom(seed) {
+        return (1103515245 * seed + 12345) % Math.pow(2, 31) - 1 / (Math.pow(2, 31) - 1);
     }
 
     GetNoise(args, util) {
@@ -89,9 +88,9 @@ class iygPerlin {
             this.perlin = new Array(PERLIN_SIZE + 1);
             this.seed = seed;
             for (let i = 0; i < PERLIN_SIZE + 1; i++) {
-                this.perlin[i] = this.dumbSeedRandom();
+                seed = this.dumbSeedRandom(seed);
+                this.perlin[i] = seed;
             }
-            this.seed = seed;
         }
 
         
