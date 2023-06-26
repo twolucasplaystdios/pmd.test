@@ -67,7 +67,7 @@ class iygPerlin {
     }
 
     dumbSeedRandom(s) {
-        seed = s;
+        let seed = s;
         const N = 624;
         const M = 397;
         const R = 31;
