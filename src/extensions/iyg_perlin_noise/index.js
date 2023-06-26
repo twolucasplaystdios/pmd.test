@@ -139,6 +139,7 @@ class iygPerlin {
             this.perlin = new Array(PERLIN_SIZE + 1);
             this.seed = seed;
             for (let i = 0; i < PERLIN_SIZE + 1; i++) {
+                console.log(seed)
                 seed = this.dumbSeedRandom(seed);
                 this.perlin[i] = seed;
             }
