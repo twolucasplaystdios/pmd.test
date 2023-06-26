@@ -66,7 +66,6 @@ class iygPerlin {
     }
 
     dumbSeedRandom() {
-        console.log(this.seed);
         let m_w = this.seed;
         let m_z = 987654321;
         let mask = 0xffffffff;
