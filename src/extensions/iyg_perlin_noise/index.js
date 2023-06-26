@@ -65,9 +65,9 @@ class iygPerlin {
     }
 
     dumbSeedRandom(seed) {
-        x = (171 * seed) % 30269
-        y = (172 * seed) % 30307
-        z = (170 * seed) % 30323
+        let x = (171 * seed) % 30269
+        let y = (172 * seed) % 30307
+        let z = (170 * seed) % 30323
         return (x/30269.0 + y/30307.0 + z/30323.0) % 1.0
     }
 
@@ -86,10 +86,12 @@ class iygPerlin {
         const PERLIN_ZWRAPB = 8;
         const PERLIN_ZWRAP = 1 << PERLIN_ZWRAPB;
 
-        let perlin = new Array(PERLIN_SIZE + 1);
-        for (let i = 0; i < PERLIN_SIZE + 1; i++) {
-            seed = this.dumbSeedRandom(seed);
-            perlin[i] = seed
+        if (this.perlin == null) {
+            this.perlin = new Array(PERLIN_SIZE + 1);
+            for (let i = 0; i < PERLIN_SIZE + 1; i++) {
+                seed = this.dumbSeedRandom(seed);
+                this.perlin[i] = seed
+            }
         }
     
         if (x < 0) {
