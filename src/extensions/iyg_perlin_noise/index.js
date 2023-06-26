@@ -65,11 +65,14 @@ class iygPerlin {
         };
     }
 
-    dumbSeedRandom(seed) {
-        let x = (171 * seed) % 30269
-        let y = (172 * seed) % 30307
-        let z = (170 * seed) % 30323
-        return (x/30269.0 + y/30307.0 + z/30323.0) % 1.0
+    dumbSeedRandom(max, min) {
+        max = max || 1;
+        min = min || 0;
+    
+        this.seed = (this.seed * 9301 + 49297) % 233280;
+        var rnd = this.seed / 233280;
+    
+        return min + rnd * (max - min);
     }
 
     GetNoise(args, util) {
@@ -88,11 +91,9 @@ class iygPerlin {
         const PERLIN_ZWRAP = 1 << PERLIN_ZWRAPB;
 
         if (this.perlin == null || seed != this.seed) {
-            this.seed = seed;
             this.perlin = new Array(PERLIN_SIZE + 1);
             for (let i = 0; i < PERLIN_SIZE + 1; i++) {
-                seed = this.dumbSeedRandom(seed);
-                this.perlin[i] = seed
+                this.perlin[i] = this.dumbSeedRandom();
             }
         }
 
