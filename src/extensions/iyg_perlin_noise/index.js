@@ -65,59 +65,9 @@ class iygPerlin {
         };
     }
 
-    dumbSeedRandom(seed) {
-        const N = 624;
-        const M = 397;
-        const R = 31;
-
-        const MATRIX_A = 0x9908b0df;
-        const UPPER_MASK = 0x80000000;
-        const LOWER_MASK = 0x7fffffff;
-
-        const mt = new Array(N);
-        let mti = N + 1;
-
-        function seedGenerator(seed) {
-            mt[0] = seed >>> 0;
-            for (let i = 1; i < N; i++) {
-            const s = mt[i - 1] ^ (mt[i - 1] >>> 30);
-            mt[i] = ((((s & 0xffff0000) >>> 16) * 1812433253) << 16) + ((s & 0x0000ffff) * 1812433253) + i;
-            mt[i] >>>= 0;
-            }
-        }
-
-        function generateNumbers() {
-            for (let i = 0; i < N; i++) {
-            const y = (mt[i] & UPPER_MASK) | (mt[(i + 1) % N] & LOWER_MASK);
-            mt[i] = mt[(i + M) % N] ^ (y >>> 1);
-            if (y % 2 !== 0) {
-                mt[i] ^= MATRIX_A;
-            }
-            }
-        }
-
-        function twist() {
-            if (mti >= N) {
-            generateNumbers();
-            mti = 0;
-            }
-        }
-
-        function extractNumber() {
-            twist();
-
-            let y = mt[mti++];
-            y ^= y >>> 11;
-            y ^= (y << 7) & 0x9d2c5680;
-            y ^= (y << 15) & 0xefc60000;
-            y ^= y >>> 18;
-
-            return (y >>> 0) / 0xffffffff;
-        }
-
-        seedGenerator(seed);
-
-        return extractNumber();
+    dumbSeedRandom() {
+        this.seed = (this.seed * 9301 + 49297) % 233280;
+        return this.seed / 233280;
     }
 
     GetNoise(args, util) {
@@ -139,9 +89,9 @@ class iygPerlin {
             this.perlin = new Array(PERLIN_SIZE + 1);
             this.seed = seed;
             for (let i = 0; i < PERLIN_SIZE + 1; i++) {
-                seed = this.dumbSeedRandom(seed);
-                this.perlin[i] = seed;
+                this.perlin[i] = this.dumbSeedRandom();
             }
+            this.seed = seed;
         }
 
         
