@@ -149,6 +149,9 @@ class Fr3DBlocks {
     
         this.world.addRigidBody(rigidBody);
     
+        object.userData.physicsEnabled = true;
+        object.userData.rigidBody = rigidBody;
+    
         object.onBeforeRender = () => {
             const transform = new Ammo.btTransform();
             rigidBody.getMotionState().getWorldTransform(transform);
@@ -157,41 +160,53 @@ class Fr3DBlocks {
         };
     }
     
+    rmp(name) {
+        if (!this.world) {
+            console.error("Physics world has not been initialized.");
+            return;
+        }
     
-    rmp (name) {
-        Ammo().then(() => {
         const object = this._3d.scene.getObjectByName(name);
-        if (object) {
+        if (object && object.userData.physicsEnabled) {
             this.world.removeRigidBody(object.userData.rigidBody);
+            object.userData.physicsEnabled = false;
+            object.userData.rigidBody = null;
             object.onBeforeRender = null;
-        }})
+        }
     }
-    setupworld () {
+    
+    setupworld() {
         Ammo().then(() => {
-        const collisionConfiguration = Ammo().btDefaultCollisionConfiguration;
-        const dispatcher = new Ammo().btCollisionDispatcher(collisionConfiguration);
-        const overlappingPairCache = new Ammo().btDbvtBroadphase();
-        const solver = new Ammo().btSequentialImpulseConstraintSolver();
-        this.world = new Ammo().btDiscreteDynamicsWorld(
-            dispatcher,
-            overlappingPairCache,
-            solver,
-            collisionConfiguration
-        );
-        this.world.setGravity(new Ammo().btVector3(0, -9.8, 0))})
+            const collisionConfiguration = new Ammo.btDefaultCollisionConfiguration();
+            const dispatcher = new Ammo.btCollisionDispatcher(collisionConfiguration);
+            const overlappingPairCache = new Ammo.btDbvtBroadphase();
+            const solver = new Ammo.btSequentialImpulseConstraintSolver();
+            this.world = new Ammo.btDiscreteDynamicsWorld(
+                dispatcher,
+                overlappingPairCache,
+                solver,
+                collisionConfiguration
+            );
+            this.world.setGravity(new Ammo.btVector3(0, -9.8, 0));
+        });
     }
-    setup () {
+    
+    setup() {
         this.setupworld();
     }
-    enablep (args) {
-        this.addp(Cast.toString(args.NAME1));
+    
+    enablep(args) {
+        this.addp(args.NAME1.toString());
     }
-    disablep (args) {
-        this.rmp(Cast.toString(args.NAME1));
+    
+    disablep(args) {
+        this.rmp(args.NAME1.toString());
     }
-    step () {
+    
+    step() {
         this.animate();
     }
+    
 }
 
 module.exports = Fr3DBlocks;
