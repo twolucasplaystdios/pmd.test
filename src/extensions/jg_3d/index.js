@@ -141,6 +141,17 @@ class Jg3DBlocks {
         }
         return stage !== this.lastStageSizeWhenRendering;
     }
+    touching(t, e) {
+        if (!!this.scene.getObjectByName(t).position&&this.scene.getObjectByName(e).position){
+        const n = new Three.Raycaster,
+        s = new Three.Raycaster;
+        n.set(this.scene.getObjectByName(t).position, new Three.Vector3(0, 0, -1)),
+        s.set(this.scene.getObjectByName(e).position, new Three.Vector3(0, 0, -1));
+        const c = n.intersectObject(e, !0),
+        i = s.intersectObject(t, !0);
+        return c.length > 0 || i.length > 0
+        } else {return false}
+    }
 
     initialize() {
         // dispose of the previous scene
@@ -649,20 +660,8 @@ class Jg3DBlocks {
     }
 
     objectTouchingObject(args) {
-        const r = new Three.Raycaster();
-        const o = new Three.Vector2(0, 0);
-        r.setFromCamera(o, this.camera);
-        if (!this.scene.getObjectByName(Cast.toString(args.NAME1)) || !this.scene.getObjectByName(Cast.toString(args.NAME2))) {
-            return false;
-        }
-        const d = r.intersectObject(this.scene.getObjectByName(Cast.toString(args.NAME1)));
-        const e = r.intersectObject(this.scene.getObjectByName(Cast.toString(args.NAME1)));
-        if (d.length === 0 || e.length === 0) {
-            return false;
-        } else {
-            return true;
-        }
-      }
+        return this.touching(Cast.toString(args.NAME1), Cast.toString(args.NAME2))
+    }
 }
 
 module.exports = Jg3DBlocks;
