@@ -3,11 +3,8 @@ const BlockType = require('../../extension-support/block-type');
 const ArgumentType = require('../../extension-support/argument-type');
 const Cast = require('../../util/cast');
 const Ammo = require('ammojs3');
-<<<<<<< HEAD
 if(!vm.runtime.ext_jg3d()){vm.extensionManager.loadExtensionURL('jg3d')}
 const _3d = vm.runtime.ext_jg3d();
-=======
->>>>>>> ea5f2542d1b7d6cb402f63e4594fe98b680c9014
 const Three = _3d.three;
 
 
