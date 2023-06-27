@@ -71,66 +71,92 @@ class Fr3DBlocks {
             ]
         };
     }
-    animate () {
-        Ammo().then(() => {
-        requestAnimationFrame(() => {
-            this.world.stepSimulation(1 / 60, 10)
-        })})
-    }
-    addp(objectName) {
-        Ammo().then(() => {
-            if (this._3d.scene) {
-                const object = this._3d.scene.getObjectByName(objectName);
-                if (object) {
-                    const geometry = object.geometry;
-                    const vertices = [];
-                    geometry.vertices.forEach((vertex) => {
-                        const position = new Ammo.btVector3(
-                            vertex.x,
-                            vertex.y,
-                            vertex.z
-                        );
-                        vertices.push(position);
-                    });
+    animate() {
+        if (!this.world) {
+            console.error("Physics world has not been initialized.");
+            return;
+        }
     
-                    const hullShape = new Ammo.btConvexHullShape();
-                    vertices.forEach((vertex) => {
-                        hullShape.addPoint(vertex);
-                    });
+        const deltaTime = 1 / 60;
     
-                    const mass = 1;
-                    const startTransform = new Ammo.btTransform();
-                    startTransform.setIdentity();
-                    const localInertia = new Ammo.btVector3(0, 0, 0);
-                    hullShape.calculateLocalInertia(mass, localInertia);
-                    startTransform.setOrigin(
-                        new Ammo.btVector3(
-                            object.position.x,
-                            object.position.y,
-                            object.position.z
-                        )
-                    );
-                    const motionState = new Ammo.btDefaultMotionState(startTransform);
-                    const rbInfo = new Ammo.btRigidBodyConstructionInfo(
-                        mass,
-                        motionState,
-                        hullShape,
-                        localInertia
-                    );
-                    const rigidBody = new Ammo.btRigidBody(rbInfo);
+        this.world.stepSimulation(deltaTime, 1);
     
-                    this.world.addRigidBody(rigidBody);
+        const numObjects = this._3d.scene.children.length;
+        for (let i = 0; i < numObjects; i++) {
+            const object = this._3d.scene.children[i];
     
-                    object.onBeforeRender = () => {
-                        const transform = new Ammo.btTransform();
-                        rigidBody.getMotionState().getWorldTransform(transform);
-                        const origin = transform.getOrigin();
-                        object.position.set(origin.x(), origin.y(), origin.z());
-                    };
-                }
+            if (object.userData.physicsEnabled) {
+                const rigidBody = object.userData.rigidBody;
+                const motionState = rigidBody.getMotionState();
+                const transform = new Ammo.btTransform();
+                motionState.getWorldTransform(transform);
+                const origin = transform.getOrigin();
+                object.position.set(origin.x(), origin.y(), origin.z());
+                object.quaternion.set(
+                    transform.getRotation().x(),
+                    transform.getRotation().y(),
+                    transform.getRotation().z(),
+                    transform.getRotation().w()
+                );
             }
-        });
+        }
     }
+    
+    addp(objectName) {
+        if (!this.world) {
+            console.error("Physics world has not been initialized.");
+            return;
+        }
+    
+        const object = this._3d.scene.getObjectByName(objectName);
+        if (!object) {
+            console.error(`Object "${objectName}" not found in the scene.`);
+            return;
+        }
+    
+        const geometry = object.geometry;
+        const vertices = [];
+        geometry.vertices.forEach((vertex) => {
+            const position = new Ammo.btVector3(vertex.x, vertex.y, vertex.z);
+            vertices.push(position);
+        });
+    
+        const hullShape = new Ammo.btConvexHullShape();
+        vertices.forEach((vertex) => {
+            hullShape.addPoint(vertex);
+        });
+    
+        const mass = 1;
+        const startTransform = new Ammo.btTransform();
+        startTransform.setIdentity();
+        const localInertia = new Ammo.btVector3(0, 0, 0);
+        hullShape.calculateLocalInertia(mass, localInertia);
+        startTransform.setOrigin(
+            new Ammo.btVector3(
+                object.position.x,
+                object.position.y,
+                object.position.z
+            )
+        );
+        const motionState = new Ammo.btDefaultMotionState(startTransform);
+        const rbInfo = new Ammo.btRigidBodyConstructionInfo(
+            mass,
+            motionState,
+            hullShape,
+            localInertia
+        );
+        const rigidBody = new Ammo.btRigidBody(rbInfo);
+    
+        this.world.addRigidBody(rigidBody);
+    
+        object.onBeforeRender = () => {
+            const transform = new Ammo.btTransform();
+            rigidBody.getMotionState().getWorldTransform(transform);
+            const origin = transform.getOrigin();
+            object.position.set(origin.x(), origin.y(), origin.z());
+        };
+    }
+    
     
     rmp (name) {
         Ammo().then(() => {
