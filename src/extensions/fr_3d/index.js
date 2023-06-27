@@ -76,9 +76,9 @@ class Fr3DBlocks {
         requestAnimationFrame(function(){this.world.stepSimulation(1 / 60, 10)});
     }
     addp(objectName){
-        if(!!this._3d.scene){
+        if(this._3d.scene){
         var object = this._3d.scene.getObjectByName(objectName);
-        if (!!object) {
+        if (object) {
 
             var collisionShape = new this.Ammo.btBoxShape(new this.Ammo.btVector3(object.scale.x / 2, object.scale.y / 2, object.scale.z / 2));
 
