@@ -3,6 +3,7 @@ const BlockType = require('../../extension-support/block-type');
 const ArgumentType = require('../../extension-support/argument-type');
 const Cast = require('../../util/cast');
 const Ammoconst = require('ammojs3');
+const Icon = require('./icon.png');
 
 
 
@@ -42,6 +43,7 @@ class Fr3DBlocks {
             name: '3d Physics',
             color1: '#D066FE',
             color2: '#8000BC',
+            blockIconURI: Icon,
             blocks: [
                 {
                     opcode: 'setup',

@@ -68,6 +68,15 @@ class JgDevBlocks {
                     }
                 },
                 {
+                    opcode: 'logArgs2',
+                    text: 'variable input [INPUT] list input [INPUT2]',
+                    blockType: BlockType.REPORTER,
+                    arguments: {
+                        INPUT: { type: ArgumentType.VARIABLE },
+                        INPUT2: { type: ArgumentType.LIST }
+                    }
+                },
+                {
                     opcode: 'setEffectName',
                     text: 'set [EFFECT] to [VALUE]',
                     blockType: BlockType.COMMAND,
@@ -298,6 +307,10 @@ class JgDevBlocks {
     }
 
     logArgs1(args) {
+        console.log(args)
+        return JSON.stringify(args)
+    }
+    logArgs2(args) {
         console.log(args)
         return JSON.stringify(args)
     }

@@ -79,9 +79,15 @@ const builtinExtensions = {
     // jgInterfaces: easier UI
     jgInterfaces: () => require("../extensions/jg_interfaces"),
     // jgCostumeDrawing: draw on costumes
+    // hiding so fir doesnt touch
     // jgCostumeDrawing: () => require("../extensions/jg_costumeDrawing"),
     // jgJavascript: this is like the 3rd time we have implemented JS blocks man
     jgJavascript: () => require("../extensions/jg_javascript"),
+    // jgPathfinding: EZ pathfinding for beginners :D hopefully
+    jgPathfinding: () => require("../extensions/jg_pathfinding"),
+    // jgAnimation: animate idk
+    // hiding so fir doesnt touch
+    // jgAnimation: () => require("../extensions/jg_animation"),
 
     // jgStorage: event extension requested by Fir & silvxrcat
     jgStorage: () => require("../extensions/jg_storage"),
