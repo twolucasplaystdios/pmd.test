@@ -21,7 +21,16 @@ class Fr3DBlocks {
         this._3d = function(){return null}
         this.Three = function(){return null}
         this.Ammo = Ammovar;
-        if(!vm.runtime.ext_jg3d){vm.extensionManager.loadExtensionURL('jg3d').then(()=>{this._3d = vm.runtime.ext_jg3d;this.Three = this._3d.three;})}else{this._3d = vm.runtime.ext_jg3d;this.Three = this._3d.three}
+        if (!vm.runtime.ext_jg3d) {
+            vm.extensionManager.loadExtensionURL('jg3d')
+                .then(() => {
+                    this._3d = vm.runtime.ext_jg3d;
+                    this.Three = this._3d.three;
+                })
+        } else {
+            this._3d = vm.runtime.ext_jg3d;
+            this.Three = this._3d.three
+        }
     }
     /**
      * @returns {object} metadata for this extension and its blocks.
