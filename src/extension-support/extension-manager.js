@@ -150,6 +150,9 @@ const builtinExtensions = {
     // iyg: erm a crep, erm a werdohhhh
     // iygPerlin: 
     iygPerlin: () => require('../extensions/iyg_perlin_noise'),
+    // fr: waw 3d physics!!
+    //fr3d:
+    fr3d: () => require('../extensions/fr_3d'),
 };
 
 const coreExtensionList = Object.getOwnPropertyNames(builtinExtensions);
