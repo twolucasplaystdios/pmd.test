@@ -115,6 +115,7 @@ class Fr3DBlocks {
         }
     }
     setupworld () {
+        alert(typeof this.Ammo.btDefaultCollisionConfiguration)
         const collisionConfiguration = this.Ammo.btDefaultCollisionConfiguration;
         const dispatcher = new this.Ammo.btCollisionDispatcher(collisionConfiguration);
         const overlappingPairCache = new this.Ammo.btDbvtBroadphase();
