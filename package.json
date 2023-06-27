@@ -50,7 +50,7 @@
     "three": "0.153.0",
     "tone": "^14.7.77",
     "worker-loader": "^1.1.1",
-    "ammo.js": "latest"
+    "ammojs3": "latest"
   },
   "peerDependencies": {
     "scratch-svg-renderer": "^0.2.0-prerelease"
