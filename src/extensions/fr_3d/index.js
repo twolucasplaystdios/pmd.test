@@ -20,7 +20,7 @@ class Fr3DBlocks {
         this.world = function(){return null}
         this._3d = function(){return null}
         this.Three = function(){return null}
-        if(!vm.runtime.ext_jg3d){vm.extensionManager.loadExtensionURL('jg3d');this._3d = vm.runtime.ext_jg3d;this.Three = _3d.three;}
+        if(!vm.runtime.ext_jg3d){vm.extensionManager.loadExtensionURL('jg3d');this._3d = vm.runtime.ext_jg3d;this.Three = this._3d.three;}
         this.animate = function(){
             requestAnimationFrame(animate);
             physicsWorld.stepSimulation(1 / 60, 10)
