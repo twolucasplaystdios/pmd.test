@@ -3,7 +3,7 @@ const BlockType = require('../../extension-support/block-type');
 const ArgumentType = require('../../extension-support/argument-type');
 const Cast = require('../../util/cast');
 const Ammo = require('ammojs3');
-const _3d = vm.runtime.ext_jg3d;
+const _3d = runtime.ext_jg3d;
 const Three = _3d.three;
 
 
