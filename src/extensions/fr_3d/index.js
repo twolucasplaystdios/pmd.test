@@ -113,16 +113,16 @@ class Fr3DBlocks {
         this.world.setGravity(new this.Ammo.btVector3(0, -9.8, 0));
     }
     setup(){
-        setupworld();
+        this.setupworld();
     }
     enablep(args) {
-        addp(Cast.toString(args.NAME1));
+        this.addp(Cast.toString(args.NAME1));
     }
     disablep(args) {
-        rmp(Cast.toString(args.NAME1));
+        this.rmp(Cast.toString(args.NAME1));
     }
     step() {
-        animate();
+        this.animate();
     }
 }
 
