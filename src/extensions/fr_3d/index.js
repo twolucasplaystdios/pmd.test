@@ -2,7 +2,7 @@ const formatMessage = require('format-message');
 const BlockType = require('../../extension-support/block-type');
 const ArgumentType = require('../../extension-support/argument-type');
 const Cast = require('../../util/cast');
-const Ammovar = require('ammojs3');
+const Ammoconst = require('ammojs3');
 
 
 
@@ -17,10 +17,10 @@ class Fr3DBlocks {
          * @type {Runtime}
          */
         this.runtime = runtime;
-        this.world = function(){return null}
-        this._3d = function(){return null}
-        this.Three = function(){return null}
-        this.Ammo = Ammovar;
+        this.world = {}
+        this._3d = {}
+        this.Three = {}
+        this.Ammo = Ammoconst;
         if (!vm.runtime.ext_jg3d) {
             vm.extensionManager.loadExtensionURL('jg3d')
                 .then(() => {
@@ -72,51 +72,51 @@ class Fr3DBlocks {
             ]
         };
     }
-    animate() {
+    animate () {
         requestAnimationFrame(() => {
             this.world.stepSimulation(1 / 60, 10)
         });
     }
-    addp(objectName){
-        if(this._3d.scene){
-        var object = this._3d.scene.getObjectByName(objectName);
-        if (object) {
+    addp (objectName) {
+        if (this._3d.scene) {
+            const object = this._3d.scene.getObjectByName(objectName);
+            if (object) {
 
-            var collisionShape = new this.Ammo.btBoxShape(new this.Ammo.btVector3(object.scale.x / 2, object.scale.y / 2, object.scale.z / 2));
+            const collisionShape = new this.Ammo.btBoxShape(new this.Ammo.btVector3(object.scale.x / 2, object.scale.y / 2, object.scale.z / 2));
 
-            var mass = 1; 
-            var startTransform = new this.Ammo.btTransform();
+            const mass = 1; 
+            const startTransform = new this.Ammo.btTransform();
             startTransform.setIdentity();
-            var localInertia = new this.Ammo.btVector3(0, 0, 0);
+            const localInertia = new this.Ammo.btVector3(0, 0, 0);
             collisionShape.calculateLocalInertia(mass, localInertia);
             startTransform.setOrigin(new this.Ammo.btVector3(object.position.x, object.position.y, object.position.z));
-            var motionState = new this.Ammo.btDefaultMotionState(startTransform);
-            var rbInfo = new this.Ammo.btRigidBodyConstructionInfo(mass, motionState, collisionShape, localInertia);
-            var rigidBody = new this.Ammo.btRigidBody(rbInfo);
+            const motionState = new this.Ammo.btDefaultMotionState(startTransform);
+            const rbInfo = new this.Ammo.btRigidBodyConstructionInfo(mass, motionState, collisionShape, localInertia);
+            const rigidBody = new this.Ammo.btRigidBody(rbInfo);
 
             this.world.addRigidBody(rigidBody);
 
             object.onBeforeRender = () => {
-                var transform = new this.Ammo.btTransform();
-                rigidBody.getMotionState().getWorldTransform(transform);
-                var origin = transform.getOrigin();
-                object.position.set(origin.x(), origin.y(), origin.z());
+                    const transform = new this.Ammo.btTransform();
+                    rigidBody.getMotionState().getWorldTransform(transform);
+                    const origin = transform.getOrigin();
+                    object.position.set(origin.x(), origin.y(), origin.z());
                 };
             }
         }
     }
     rmp (name) {
-        var object = this._3d.scene.getObjectByName(name);
+        const object = this._3d.scene.getObjectByName(name);
         if (object) {
             this.world.removeRigidBody(object.userData.rigidBody);
             object.onBeforeRender = null;
         }
     }
     setupworld () {
-        var collisionConfiguration = this.Ammo.btDefaultCollisionConfiguration;
-        var dispatcher = new this.Ammo.btCollisionDispatcher(collisionConfiguration);
-        var overlappingPairCache = new this.Ammo.btDbvtBroadphase();
-        var solver = new this.Ammo.btSequentialImpulseConstraintSolver();
+        const collisionConfiguration = this.Ammo.btDefaultCollisionConfiguration;
+        const dispatcher = new this.Ammo.btCollisionDispatcher(collisionConfiguration);
+        const overlappingPairCache = new this.Ammo.btDbvtBroadphase();
+        const solver = new this.Ammo.btSequentialImpulseConstraintSolver();
         this.world = new this.Ammo.btDiscreteDynamicsWorld(
             dispatcher,
             overlappingPairCache,
