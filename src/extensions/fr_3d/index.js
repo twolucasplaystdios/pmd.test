@@ -53,7 +53,7 @@ class Fr3DBlocks {
             }
         }
         this.disablePhysicsForObjectByName = function(objectName){
-            var object = _3d.scene.getObjectByName(objectName);
+            var object = this._3d.scene.getObjectByName(objectName);
             if (!!object) {
                 this.world.removeRigidBody(object.userData.rigidBody);
                 object.onBeforeRender = null;
