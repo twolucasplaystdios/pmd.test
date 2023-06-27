@@ -72,42 +72,68 @@ class Fr3DBlocks {
         };
     }
     animate () {
-        Ammo().then(function(){
+        Ammo().then(() => {
         requestAnimationFrame(() => {
             this.world.stepSimulation(1 / 60, 10)
         })})
     }
-    addp (objectName) {
-        Ammo().then(function(){
-        if (this._3d.scene) {
-            const object = this._3d.scene.getObjectByName(objectName);
-            if (object) {
-
-            const collisionShape = new Ammo().btBoxShape(new Ammo().btVector3(object.scale.x / 2, object.scale.y / 2, object.scale.z / 2));
-
-            const mass = 1; 
-            const startTransform = new Ammo().btTransform();
-            startTransform.setIdentity();
-            const localInertia = new Ammo().btVector3(0, 0, 0);
-            collisionShape.calculateLocalInertia(mass, localInertia);
-            startTransform.setOrigin(new Ammo().btVector3(object.position.x, object.position.y, object.position.z));
-            const motionState = new Ammo().btDefaultMotionState(startTransform);
-            const rbInfo = new Ammo().btRigidBodyConstructionInfo(mass, motionState, collisionShape, localInertia);
-            const rigidBody = new Ammo().btRigidBody(rbInfo);
-
-            this.world.addRigidBody(rigidBody);
-
-            object.onBeforeRender = () => {
-                    const transform = new Ammo().btTransform();
-                    rigidBody.getMotionState().getWorldTransform(transform);
-                    const origin = transform.getOrigin();
-                    object.position.set(origin.x(), origin.y(), origin.z());
-                };
+    addp(objectName) {
+        Ammo().then(() => {
+            if (this._3d.scene) {
+                const object = this._3d.scene.getObjectByName(objectName);
+                if (object) {
+                    const geometry = object.geometry;
+                    const vertices = [];
+                    geometry.vertices.forEach((vertex) => {
+                        const position = new Ammo.btVector3(
+                            vertex.x,
+                            vertex.y,
+                            vertex.z
+                        );
+                        vertices.push(position);
+                    });
+    
+                    const hullShape = new Ammo.btConvexHullShape();
+                    vertices.forEach((vertex) => {
+                        hullShape.addPoint(vertex);
+                    });
+    
+                    const mass = 1;
+                    const startTransform = new Ammo.btTransform();
+                    startTransform.setIdentity();
+                    const localInertia = new Ammo.btVector3(0, 0, 0);
+                    hullShape.calculateLocalInertia(mass, localInertia);
+                    startTransform.setOrigin(
+                        new Ammo.btVector3(
+                            object.position.x,
+                            object.position.y,
+                            object.position.z
+                        )
+                    );
+                    const motionState = new Ammo.btDefaultMotionState(startTransform);
+                    const rbInfo = new Ammo.btRigidBodyConstructionInfo(
+                        mass,
+                        motionState,
+                        hullShape,
+                        localInertia
+                    );
+                    const rigidBody = new Ammo.btRigidBody(rbInfo);
+    
+                    this.world.addRigidBody(rigidBody);
+    
+                    object.onBeforeRender = () => {
+                        const transform = new Ammo.btTransform();
+                        rigidBody.getMotionState().getWorldTransform(transform);
+                        const origin = transform.getOrigin();
+                        object.position.set(origin.x(), origin.y(), origin.z());
+                    };
+                }
             }
-        }})
+        });
     }
+    
     rmp (name) {
-        Ammo().then(function(){
+        Ammo().then(() => {
         const object = this._3d.scene.getObjectByName(name);
         if (object) {
             this.world.removeRigidBody(object.userData.rigidBody);
@@ -115,7 +141,7 @@ class Fr3DBlocks {
         }})
     }
     setupworld () {
-        Ammo().then(function(){
+        Ammo().then(() => {
         const collisionConfiguration = Ammo().btDefaultCollisionConfiguration;
         const dispatcher = new Ammo().btCollisionDispatcher(collisionConfiguration);
         const overlappingPairCache = new Ammo().btDbvtBroadphase();
