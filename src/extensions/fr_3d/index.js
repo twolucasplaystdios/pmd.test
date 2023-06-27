@@ -114,7 +114,12 @@ class Fr3DBlocks {
             return;
         }
     
-        const geometry = object.geometry;
+        const geometry = object.isMesh ? object.geometry : null;
+        if (!geometry) {
+            console.error(`Object "${objectName}" is not a mesh.`);
+            return;
+        }
+    
         const vertices = [];
         geometry.vertices.forEach((vertex) => {
             const position = new Ammo.btVector3(vertex.x, vertex.y, vertex.z);
@@ -123,7 +128,7 @@ class Fr3DBlocks {
     
         const hullShape = new Ammo.btConvexHullShape();
         vertices.forEach((vertex) => {
-            hullShape.addPoint(vertex);
+            hullShape.addPoint(vertex, true);
         });
     
         const mass = 1;
@@ -167,7 +172,12 @@ class Fr3DBlocks {
         }
     
         const object = this._3d.scene.getObjectByName(name);
-        if (object && object.userData.physicsEnabled) {
+        if (!object) {
+            console.error(`Object "${name}" not found in the scene.`);
+            return;
+        }
+    
+        if (object.userData.physicsEnabled) {
             this.world.removeRigidBody(object.userData.rigidBody);
             object.userData.physicsEnabled = false;
             object.userData.rigidBody = null;
@@ -176,23 +186,33 @@ class Fr3DBlocks {
     }
     
     setupworld() {
-        Ammo().then(() => {
-            const collisionConfiguration = new Ammo.btDefaultCollisionConfiguration();
-            const dispatcher = new Ammo.btCollisionDispatcher(collisionConfiguration);
-            const overlappingPairCache = new Ammo.btDbvtBroadphase();
-            const solver = new Ammo.btSequentialImpulseConstraintSolver();
-            this.world = new Ammo.btDiscreteDynamicsWorld(
-                dispatcher,
-                overlappingPairCache,
-                solver,
-                collisionConfiguration
-            );
-            this.world.setGravity(new Ammo.btVector3(0, -9.8, 0));
+        if (this.world) {
+            console.error("Physics world has already been initialized.");
+            return Promise.resolve();
+        }
+    
+        return new Promise((resolve) => {
+            Ammo().then(() => {
+                const collisionConfiguration = new Ammo.btDefaultCollisionConfiguration();
+                const dispatcher = new Ammo.btCollisionDispatcher(collisionConfiguration);
+                const overlappingPairCache = new Ammo.btDbvtBroadphase();
+                const solver = new Ammo.btSequentialImpulseConstraintSolver();
+                this.world = new Ammo.btDiscreteDynamicsWorld(
+                    dispatcher,
+                    overlappingPairCache,
+                    solver,
+                    collisionConfiguration
+                );
+                this.world.setGravity(new Ammo.btVector3(0, -9.8, 0));
+                resolve();
+            });
         });
     }
     
     setup() {
-        this.setupworld();
+        this.setupworld().then(() => {
+            // Rest of the setup logic
+        });
     }
     
     enablep(args) {
@@ -206,6 +226,7 @@ class Fr3DBlocks {
     step() {
         this.animate();
     }
+    
     
 }
 
