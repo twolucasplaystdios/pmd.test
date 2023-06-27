@@ -21,10 +21,9 @@ class Fr3DBlocks {
         this._3d = function(){return null}
         this.Three = function(){return null}
         this.Ammo = Ammovar;
-        if(!vm.runtime.ext_jg3d){vm.extensionManager.loadExtensionURL('jg3d');this._3d = vm.runtime.ext_jg3d;this.Three = this._3d.three;}
+        if(!vm.runtime.ext_jg3d){vm.extensionManager.loadExtensionURL('jg3d').then(()=>{this._3d = vm.runtime.ext_jg3d;this.Three = this._3d.three;})}else{this._3d = vm.runtime.ext_jg3d;this.Three = this._3d.three}
         this.animate = function(){
-            requestAnimationFrame();
-            this.world.stepSimulation(1 / 60, 10)
+            requestAnimationFrame(function(){this.world.stepSimulation(1 / 60, 10)});
         }
         this.enablePhysicsForObjectByName = function(objectName) {
             var object = this._3d.scene.getObjectByName(objectName);
@@ -102,7 +101,7 @@ class Fr3DBlocks {
         };
     }
     setup() {
-        var collisionConfiguration = new this.Ammo.btDefaultCollisionConfiguration();
+        var collisionConfiguration = this.Ammo.btDefaultCollisionConfiguration();
         var dispatcher = new this.Ammo.btCollisionDispatcher(collisionConfiguration);
         var overlappingPairCache = new this.Ammo.btDbvtBroadphase();
         var solver = new this.Ammo.btSequentialImpulseConstraintSolver();
