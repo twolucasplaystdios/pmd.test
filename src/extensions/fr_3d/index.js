@@ -73,7 +73,9 @@ class Fr3DBlocks {
         };
     }
     animate() {
-        requestAnimationFrame(function(){this.world.stepSimulation(1 / 60, 10)});
+        requestAnimationFrame(() => {
+            this.world.stepSimulation(1 / 60, 10)
+        });
     }
     addp(objectName){
         if(this._3d.scene){
@@ -94,44 +96,45 @@ class Fr3DBlocks {
 
             this.world.addRigidBody(rigidBody);
 
-            object.onBeforeRender = function () {
-            var transform = new this.Ammo.btTransform();
-            rigidBody.getMotionState().getWorldTransform(transform);
-            var origin = transform.getOrigin();
-            object.position.set(origin.x(), origin.y(), origin.z());
-            };
-        }}
+            object.onBeforeRender = () => {
+                var transform = new this.Ammo.btTransform();
+                rigidBody.getMotionState().getWorldTransform(transform);
+                var origin = transform.getOrigin();
+                object.position.set(origin.x(), origin.y(), origin.z());
+                };
+            }
+        }
     }
-    rmp(name){
+    rmp (name) {
         var object = this._3d.scene.getObjectByName(name);
         if (object) {
             this.world.removeRigidBody(object.userData.rigidBody);
             object.onBeforeRender = null;
         }
     }
-    setupworld() {
+    setupworld () {
         var collisionConfiguration = this.Ammo.btDefaultCollisionConfiguration;
         var dispatcher = new this.Ammo.btCollisionDispatcher(collisionConfiguration);
         var overlappingPairCache = new this.Ammo.btDbvtBroadphase();
         var solver = new this.Ammo.btSequentialImpulseConstraintSolver();
         this.world = new this.Ammo.btDiscreteDynamicsWorld(
-        dispatcher,
-        overlappingPairCache,
-        solver,
-        collisionConfiguration
+            dispatcher,
+            overlappingPairCache,
+            solver,
+            collisionConfiguration
         );
         this.world.setGravity(new this.Ammo.btVector3(0, -9.8, 0));
     }
-    setup(){
+    setup () {
         this.setupworld();
     }
-    enablep(args) {
+    enablep (args) {
         this.addp(Cast.toString(args.NAME1));
     }
-    disablep(args) {
+    disablep (args) {
         this.rmp(Cast.toString(args.NAME1));
     }
-    step() {
+    step () {
         this.animate();
     }
 }
