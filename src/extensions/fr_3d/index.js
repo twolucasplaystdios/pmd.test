@@ -3,9 +3,7 @@ const BlockType = require('../../extension-support/block-type');
 const ArgumentType = require('../../extension-support/argument-type');
 const Cast = require('../../util/cast');
 const Ammo = require('ammojs3');
-if(!vm.runtime.ext_jg3d()){vm.extensionManager.loadExtensionURL('jg3d')}
-const _3d = vm.runtime.ext_jg3d();
-const Three = _3d.three;
+
 
 
 /**
@@ -20,12 +18,15 @@ class Fr3DBlocks {
          */
         this.runtime = runtime;
         this.world = function(){return null}
+        this._3d = function(){return null}
+        this.Three = function(){return null}
+        if(!vm.runtime.ext_jg3d()){vm.extensionManager.loadExtensionURL('jg3d');this._3d = vm.runtime.ext_jg3d;this.Three = _3d.three;}
         this.animate = function(){
             requestAnimationFrame(animate);
             physicsWorld.stepSimulation(1 / 60, 10)
         }
         this.enablePhysicsForObjectByName = function(objectName) {
-            var object = _3d.scene.getObjectByName(objectName);
+            var object = this._3d.scene.getObjectByName(objectName);
 
             if (!!object) {
 
@@ -41,7 +42,7 @@ class Fr3DBlocks {
                 var rbInfo = new Ammo.btRigidBodyConstructionInfo(mass, motionState, collisionShape, localInertia);
                 var rigidBody = new Ammo.btRigidBody(rbInfo);
 
-                physicsWorld.addRigidBody(rigidBody);
+                this.world.addRigidBody(rigidBody);
 
                 object.onBeforeRender = function () {
                 var transform = new Ammo.btTransform();
@@ -51,12 +52,19 @@ class Fr3DBlocks {
                 };
             }
         }
-        this.disablePhysicsForObjectByName = function(){return null};
+        this.disablePhysicsForObjectByName = function(objectName){
+            var object = _3d.scene.getObjectByName(objectName);
+            if (!!object) {
+                this.world.removeRigidBody(object.userData.rigidBody);
+                object.onBeforeRender = null;
+            }
+        };
     }
     /**
      * @returns {object} metadata for this extension and its blocks.
      */
     getInfo() {
+        
         return {
             id: 'fr3d',
             name: '3d Physics',
@@ -117,4 +125,4 @@ class Fr3DBlocks {
     step() {this.animate();}
 }
 
-module.exports = jwProto;
+module.exports = Fr3DBlocks;
