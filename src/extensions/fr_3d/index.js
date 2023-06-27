@@ -66,7 +66,8 @@ class Fr3DBlocks {
     animate() {
         requestAnimationFrame(function(){this.world.stepSimulation(1 / 60, 10)});
     }
-    addp(){
+    addp(objectName){
+        if(!!this._3d.scene){
         var object = this._3d.scene.getObjectByName(objectName);
         if (!!object) {
 
@@ -90,7 +91,7 @@ class Fr3DBlocks {
             var origin = transform.getOrigin();
             object.position.set(origin.x(), origin.y(), origin.z());
             };
-        }
+        }}
     }
     rmp(name){
         var object = this._3d.scene.getObjectByName(name);
@@ -100,7 +101,7 @@ class Fr3DBlocks {
         }
     }
     setupworld() {
-        var collisionConfiguration = this.Ammo.btDefaultCollisionConfiguration();
+        var collisionConfiguration = this.Ammo.btDefaultCollisionConfiguration;
         var dispatcher = new this.Ammo.btCollisionDispatcher(collisionConfiguration);
         var overlappingPairCache = new this.Ammo.btDbvtBroadphase();
         var solver = new this.Ammo.btSequentialImpulseConstraintSolver();
