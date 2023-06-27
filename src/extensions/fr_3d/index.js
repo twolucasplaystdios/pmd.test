@@ -2,7 +2,7 @@ const formatMessage = require('format-message');
 const BlockType = require('../../extension-support/block-type');
 const ArgumentType = require('../../extension-support/argument-type');
 const Cast = require('../../util/cast');
-const Ammo = require('three/examples/jsm/libs/Ammo.wasm');
+const Ammo = require('./ammo.wasm');
 const Icon = require('./icon.png');
 
 
