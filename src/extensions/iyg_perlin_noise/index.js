@@ -70,7 +70,7 @@ class iygPerlin {
     dumbSeedRandom() {
         this.generator.init_seed(this.seed);
         let result = this.generator.random_incl();
-        this.seed = result;
+        this.seed = this.seed+1;
         return result;
     }
 
