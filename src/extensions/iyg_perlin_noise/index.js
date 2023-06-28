@@ -78,9 +78,9 @@ class iygPerlin {
     GetNoise(args, util) {
         let seed = args.SEED;
         let perlin_octaves = ((args.OCTAVE === Infinity) ? 4 : args.OCTAVE);
-        let x = args.X * 2;
-        let y = args.Y * 2;
-        let z = args.Z * 2;
+        let x = args.X;
+        let y = args.Y;
+        let z = args.Z;
 
         let perlin_amp_falloff = 0.5;
         const scaled_cosine = i => 0.5 * (1.0 - Math.cos(i * Math.PI));
