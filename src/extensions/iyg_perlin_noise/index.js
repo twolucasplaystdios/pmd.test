@@ -70,8 +70,8 @@ class iygPerlin {
     dumbSeedRandom() {
         this.generator.init_seed(this.seed);
         let r = this.generator.random();
-        console.table({seed: this.seed, r: r})
-        this.seed = this.seed + 1;
+        this.seed = r;
+        console.table({seed: this.seed, r: r});
         return r;
     }
 
