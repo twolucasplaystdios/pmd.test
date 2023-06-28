@@ -70,7 +70,7 @@ class iygPerlin {
     dumbSeedRandom() {
         this.generator.init_seed(this.seed);
         let result = this.generator.random_incl();
-        this.seed = this.seed+1;
+        this.seed = (1664525*this.seed + 1013904223) % 4294967296;
         return result;
     }
 
