@@ -1,6 +1,7 @@
 const formatMessage = require('format-message');
 const BlockType = require('../../extension-support/block-type');
 const ArgumentType = require('../../extension-support/argument-type');
+const SeedRandom = require('seedrandom');
 /**
  * Class for perlin noise extension.
  * @constructor
@@ -66,8 +67,7 @@ class iygPerlin {
     }
 
     dumbSeedRandom() {
-        this.seed = (this.seed * 9301 + 49297) % 233280;
-        return this.seed / 233280;
+        return SeedRandom(this.seed)();
     }
 
     GetNoise(args, util) {
