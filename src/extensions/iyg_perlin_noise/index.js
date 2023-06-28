@@ -1,7 +1,6 @@
 const formatMessage = require('format-message');
 const BlockType = require('../../extension-support/block-type');
 const ArgumentType = require('../../extension-support/argument-type');
-const MersenneTwister = require('mersenne-twister');
 /**
  * Class for perlin noise extension.
  * @constructor
@@ -19,7 +18,6 @@ class iygPerlin {
         this.runtime = runtime;
         this.noise;
         this.seed = 123;
-        this.generator = new MersenneTwister(this.seed);
     }
 
     /**
@@ -68,10 +66,8 @@ class iygPerlin {
     }
 
     dumbSeedRandom() {
-        this.generator.init_seed(this.seed);
-        let r = this.generator.random();
-        this.seed = r
-        return r;
+        this.seed = (this.seed * 9301 + 49297) % 233280;
+        return this.seed / 233280;
     }
 
     GetNoise(args, util) {
