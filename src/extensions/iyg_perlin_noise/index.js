@@ -37,7 +37,7 @@ class iygPerlin {
                     blockType: BlockType.REPORTER,
                     text: formatMessage({
                         id: 'iygPerlin.GetNoise',
-                        default: 'Get noise with seed [SEED] and octave [OCTAVE] at x [X], y [Y], and z [Z]',
+                        default: 'Get noise with the seed [SEED], an octave of [OCTAVE], and a level of detail of [LOD] at x [X], y [Y], and z [Z]',
                         description: 'Get seeded noise at a specified x and y and z.'
                     }),
                     arguments: {
@@ -46,6 +46,10 @@ class iygPerlin {
                             defaultValue: 123
                         },
                         OCTAVE: {
+                            type: ArgumentType.NUMBER,
+                            defaultValue: 4
+                        },
+                        LOD: {
                             type: ArgumentType.NUMBER,
                             defaultValue: 4
                         },
