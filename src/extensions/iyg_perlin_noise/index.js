@@ -69,7 +69,7 @@ class iygPerlin {
     dumbSeedRandom() {
         // save starting time
         let result = SeedRandom(this.seed)()
-        this.seed = result;
+        this.seed = result + 1;
         return result;
     }
 
