@@ -67,7 +67,10 @@ class iygPerlin {
     }
 
     dumbSeedRandom() {
-        return SeedRandom(this.seed)();
+        // save starting time
+        let result = SeedRandom(this.seed)()
+        this.seed = result + 1;
+        return result;
     }
 
     GetNoise(args, util) {
