@@ -68,11 +68,12 @@ class iygPerlin {
     }
 
     dumbSeedRandom() {
-        this.generator.init_seed(this.seed);
+        /*this.generator.init_seed(this.seed);
         let r = this.generator.random();
         console.table({seed: this.seed, r: r})
         this.seed = this.seed + 1;
-        return r;
+        return r;*/
+        return Math.random();
     }
 
     GetNoise(args, util) {
