@@ -666,7 +666,7 @@ class Jg3DBlocks {
     MoveCameraBy(args) {
         if (!this.camera) return;
         const amount = args.AMOUNT;
-        // "borrowed" from stack overflow
+        // comment so it updates bc github was having problems
         var direction = new THREE.Vector3();
         camera.getWorldDirection(direction);
         camera.position.add(direction.multiplyScalar(amount));
