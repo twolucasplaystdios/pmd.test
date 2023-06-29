@@ -668,8 +668,8 @@ class Jg3DBlocks {
         const amount = args.AMOUNT;
         // comment so it updates bc github was having problems
         var direction = new Three.Vector3();
-        camera.getWorldDirection(direction);
-        camera.position.add(direction.multiplyScalar(amount));
+        this.camera.getWorldDirection(direction);
+        this.camera.position.add(direction.multiplyScalar(amount));
     }
         
 }
