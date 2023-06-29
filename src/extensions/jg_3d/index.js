@@ -671,6 +671,13 @@ class Jg3DBlocks {
         this.camera.getWorldDirection(direction);
         this.camera.position.add(direction.multiplyScalar(amount));
     }
+
+    changeCameraPosition(args) {
+        if (!this.camera) return;
+        this.camera.position.x += Cast.toNumber(args.X);
+        this.camera.position.y +=  Cast.toNumber(args.Y);
+        this.camera.position.z +=  Cast.toNumber(args.Z);
+    }
         
 }
 

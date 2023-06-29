@@ -187,8 +187,26 @@ module.exports = {
         infoLabel("Camera controls"),
 
         createCommandBlock(
+            'MoveCameraBy',
+            'move camera by [AMOUNT]',
+            {
+                AMOUNT: infoArgument(10)
+            },
+            Icons.Camera
+        ),
+        createCommandBlock(
             'setCameraPosition',
             'set camera position to x: [X] y: [Y] z: [Z]',
+            {
+                X: infoArgument(0),
+                Y: infoArgument(0),
+                Z: infoArgument(0)
+            },
+            Icons.Camera
+        ),
+        createCommandBlock(
+            'changeCameraPosition',
+            'change camera position by x: [X] y: [Y] z: [Z]',
             {
                 X: infoArgument(0),
                 Y: infoArgument(0),
@@ -224,14 +242,6 @@ module.exports = {
         seperator,
         createBooleanBlock("isCameraPerspective", "is scene camera a perspective camera?", null, Icons.Camera),
         createBooleanBlock("isCameraOrthographic", "is scene camera an orthographic camera?", null, Icons.Camera),
-        createCommandBlock(
-            'MoveCameraBy',
-            'move camera by [AMOUNT]',
-            {
-                AMOUNT: infoArgument(10)
-            },
-            Icons.Camera
-        ),
 
         infoLabel("Objects"),
 
