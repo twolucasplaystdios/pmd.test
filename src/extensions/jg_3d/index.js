@@ -662,6 +662,15 @@ class Jg3DBlocks {
     objectTouchingObject(args) {
         return this.touching(Cast.toString(args.NAME1), Cast.toString(args.NAME2))
     }
+
+    MoveCameraBy(args) {
+        if (!this.camera) return;
+        const amount = args.AMOUNT;
+        var direction = new THREE.Vector3();
+        camera.getWorldDirection(direction);
+        camera.position.add(direction.multiplyScalar(amount));
+    }
+        
 }
 
 module.exports = Jg3DBlocks;
