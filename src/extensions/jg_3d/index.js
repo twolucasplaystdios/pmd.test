@@ -5,8 +5,6 @@ const Three = require("three");
 const { OBJLoader } = require('three/examples/jsm/loaders/OBJLoader.js');
 const { GLTFLoader } = require('three/examples/jsm/loaders/GLTFLoader.js');
 const { FBXLoader } = require('three/examples/jsm/loaders/FBXLoader.js');
-const CANNON = require('cannon');
-
 
 const MeshLoaders = {
     OBJ: new OBJLoader(),
@@ -141,17 +139,41 @@ class Jg3DBlocks {
         }
         return stage !== this.lastStageSizeWhenRendering;
     }
-    touching(t, e) {
-        if (!!this.scene.getObjectByName(t).position&&this.scene.getObjectByName(e).position){
-        const n = new Three.Raycaster,
-        s = new Three.Raycaster;
-        n.set(this.scene.getObjectByName(t).position, new Three.Vector3(0, 0, -1)),
-        s.set(this.scene.getObjectByName(e).position, new Three.Vector3(0, 0, -1));
-        const c = n.intersectObject(e, !0),
-        i = s.intersectObject(t, !0);
-        return c.length > 0 || i.length > 0
-        } else {return false}
+    touching(name1, name2) {
+        if (!this.scene) return false;
+        const object1 = this.scene.getObjectByName(name1);
+        const object2 = this.scene.getObjectByName(name2);
+        
+        if (!object1) return false;
+        if (!object2) return false;
+        
+        if (object1.isLight) return false; // currently lights are not supported for collisions
+        if (object2.isLight) return false; // currently lights are not supported for collisions
+        
+        const raycaster1 = new Three.Raycaster();
+        const raycaster2 = new Three.Raycaster();
+        const intersection = new Three.Vector3();
+        
+        // Get the world matrices of the objects
+        const matrix1 = object1.matrixWorld;
+        const matrix2 = object2.matrixWorld;
+        
+        // Set the raycaster positions and directions based on the object positions and orientations
+        raycaster1.set(object1.position, object1.getWorldDirection(new Three.Vector3()));
+        raycaster2.set(object2.position, object2.getWorldDirection(new Three.Vector3()));
+        
+        // Raycast against the meshes of the objects
+        const intersects1 = raycaster1.intersectObject(object1, true);
+        const intersects2 = raycaster2.intersectObject(object2, true);
+        
+        // Check if there are any intersections
+        if (intersects1.length > 0 && intersects2.length > 0) {
+            return true
+        } else {
+            return false
+        }
     }
+
 
     initialize() {
         // dispose of the previous scene
