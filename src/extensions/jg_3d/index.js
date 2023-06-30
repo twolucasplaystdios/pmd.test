@@ -155,8 +155,8 @@ class Jg3DBlocks {
         if (object1.isLight) return false; // currently lights are not supported for collisions
         if (object2.isLight) return false; // currently lights are not supported for collisions
 
-        const geometry1 = object1.geometry.isBufferGeometry ? object1.geometry : new Three.BufferGeometry().setFromObject(object1);
-        const geometry2 = object2.geometry.isBufferGeometry ? object2.geometry : new Three.BufferGeometry().setFromObject(object2);
+        const geometry1 = object1.geometry.isBufferGeometry() ? object1.geometry : new Three.BufferGeometry().setFromObject(object1);
+        const geometry2 = object2.geometry.isBufferGeometry() ? object2.geometry : new Three.BufferGeometry().setFromObject(object2);
 
         const bvh1 = new MeshBVH();
         bvh1.fromGeometry(geometry1);
