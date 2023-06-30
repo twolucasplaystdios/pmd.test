@@ -2,6 +2,7 @@ const Cast = require('../../util/cast');
 const Clone = require('../../util/clone');
 const ExtensionInfo = require("./info");
 const Three = require("three");
+require("three-mesh-bvh") // yes this is correct its not meant to be in a var
 const { OBJLoader } = require('three/examples/jsm/loaders/OBJLoader.js');
 const { GLTFLoader } = require('three/examples/jsm/loaders/GLTFLoader.js');
 const { FBXLoader } = require('three/examples/jsm/loaders/FBXLoader.js');
@@ -150,23 +151,17 @@ class Jg3DBlocks {
         
         if (object1.isLight) return false; // currently lights are not supported for collisions
         if (object2.isLight) return false; // currently lights are not supported for collisions
-        
-        const raycaster1 = new Three.Raycaster();
-        const raycaster2 = new Three.Raycaster();
-        
-        const direction1 = new Three.Vector3();
-        const direction2 = new Three.Vector3();
-        
-        // Set the raycaster positions based on the object positions
-        raycaster1.set(object1.position, direction1.subVectors(object2.position, object1.position).normalize());
-        raycaster2.set(object2.position, direction2.subVectors(object1.position, object2.position).normalize());
-        
-        // Raycast against the meshes of the objects
-        const intersects1 = raycaster1.intersectObject(object1, true);
-        const intersects2 = raycaster2.intersectObject(object2, true);
-        
-        // Check if there are any intersections
-        return intersects1.length > 0 && intersects2.length > 0;
+
+        const bvh1 = new Three.MeshBVH();
+        bvh1.fromGeometry(object1.geometry);
+
+        const bvh2 = new Three.MeshBVH();
+        bvh2.fromGeometry(object2.geometry);
+
+        const collision = bvh1.intersectsMesh(bvh2);
+
+        return collision;
+
     }
 
 
