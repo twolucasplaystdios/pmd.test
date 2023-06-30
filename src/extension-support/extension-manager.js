@@ -671,17 +671,6 @@ class ExtensionManager {
         return menuItems;
     }
 
-    _normalize(thing, to) {
-        switch (to) {
-        case 'string': return String(thing);
-        case 'bigint':
-        case 'number': return Number(thing);
-        case 'boolean': return String(thing) === 'true';
-        case 'function': return new Function(thing);
-        default: return String(thing);
-        }
-    }
-
     /**
      * Apply defaults for optional block fields.
      * @param {string} serviceName - the name of the service hosting this extension block
@@ -765,23 +754,7 @@ class ExtensionManager {
             })();
 
             blockInfo.func = (args, util) => {
-                const normal = {
-                    'angle': "number",
-                    'Boolean': "boolean",
-                    'color': "number",
-                    'number': "number",
-                    'string': "string",
-                    'matrix': "string",
-                    'note': "number",
-                    'image': "string",
-                    'polygon': "object"
-                };
                 const realBlockInfo = getBlockInfo(args);
-                Object.keys(realBlockInfo.arguments).forEach(arg => {
-                    const expected = normal[realBlockInfo.arguments[arg].type];
-                    if (arg.startsWith('substack')) return;
-                    if (!(typeof args[arg] === expected)) args[arg] = this._normalize(args[arg], expected);
-                });
                 // TODO: filter args using the keys of realBlockInfo.arguments? maybe only if sandboxed?
                 return callBlockFunc(args, util, realBlockInfo);
             };
