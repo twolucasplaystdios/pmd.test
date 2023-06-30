@@ -2,7 +2,7 @@ const Cast = require('../../util/cast');
 const Clone = require('../../util/clone');
 const ExtensionInfo = require("./info");
 const Three = require("three");
-require("three-mesh-bvh") // yes this is correct its not meant to be in a var
+const threeutils = require("three-mesh-bvh")
 const { OBJLoader } = require('three/examples/jsm/loaders/OBJLoader.js');
 const { GLTFLoader } = require('three/examples/jsm/loaders/GLTFLoader.js');
 const { FBXLoader } = require('three/examples/jsm/loaders/FBXLoader.js');
@@ -152,10 +152,10 @@ class Jg3DBlocks {
         if (object1.isLight) return false; // currently lights are not supported for collisions
         if (object2.isLight) return false; // currently lights are not supported for collisions
 
-        const bvh1 = new Three.MeshBVH();
+        const bvh1 = new threeutils.MeshBVH();
         bvh1.fromGeometry(object1.geometry);
 
-        const bvh2 = new Three.MeshBVH();
+        const bvh2 = new threeutils.MeshBVH();
         bvh2.fromGeometry(object2.geometry);
 
         const collision = bvh1.intersectsMesh(bvh2);
