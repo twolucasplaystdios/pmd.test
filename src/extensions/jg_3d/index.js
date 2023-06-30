@@ -145,29 +145,30 @@ class Jg3DBlocks {
     }
     touching(name1, name2) {
         if (!this.scene) return false;
-        
+    
         const object1 = this.scene.getObjectByName(name1);
         const object2 = this.scene.getObjectByName(name2);
-        
+    
         if (!object1) return false;
         if (!object2) return false;
-        
+    
         if (object1.isLight) return false; // currently lights are not supported for collisions
         if (object2.isLight) return false; // currently lights are not supported for collisions
-
-        const geometry1 = new Three.BufferGeometry().setFromObject(object1);
-        const geometry2 = new Three.BufferGeometry().setFromObject(object2);
-
+    
+        const geometry1 = new Three.BufferGeometry().setFromPoints(object1.geometry.vertices);
+        const geometry2 = new Three.BufferGeometry().setFromPoints(object2.geometry.vertices);
+    
         const bvh1 = new MeshBVH();
         bvh1.fromGeometry(geometry1);
-
+    
         const bvh2 = new MeshBVH();
         bvh2.fromGeometry(geometry2);
-
+    
         const collision = bvh1.intersectsMesh(bvh2);
-
+    
         return collision;
     }
+    
 
 
 
