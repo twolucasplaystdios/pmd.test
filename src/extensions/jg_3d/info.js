@@ -224,6 +224,16 @@ module.exports = {
             },
             Icons.Camera
         ),
+        createCommandBlock(
+            'changeCameraRotation',
+            'change camera rotation by x: [X] y: [Y] z: [Z]',
+            {
+                X: infoArgument('ANGLE'),
+                Y: infoArgument('ANGLE'),
+                Z: infoArgument('ANGLE')
+            },
+            Icons.Camera
+        ),
         createCommandBlock('setCameraZoom', 'set camera zoom to [ZOOM]%', {
             ZOOM: infoArgument(100)
         }, Icons.Camera),

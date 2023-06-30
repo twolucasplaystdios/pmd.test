@@ -678,6 +678,13 @@ class Jg3DBlocks {
         this.camera.position.y +=  Cast.toNumber(args.Y);
         this.camera.position.z +=  Cast.toNumber(args.Z);
     }
+
+    changeCameraDirection(args) {
+        if (!this.camera) return;
+        this.camera.rotation.x += Cast.toNumber(args.X);
+        this.camera.rotation.y += Cast.toNumber(args.Y);
+        this.camera.rotation.z += Cast.toNumber(args.Z);
+    }
         
 }
 
