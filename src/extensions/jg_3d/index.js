@@ -68,6 +68,8 @@ class Jg3DBlocks {
             width: 0,
             height: 0
         }
+
+        this.savedMeshes = {};
         
         // event recievers
         // stop button clicked or project restarted, dispose of all objects
@@ -396,15 +398,9 @@ class Jg3DBlocks {
                             loader = MeshLoaders.FBX;
                             break;
                     }
-                    loader.load(url, (object) => {
-                        // success
-                        if (loader === MeshLoaders.GLTF) {
-                            object = object.scene;
-                        }
-                        if (loader === MeshLoaders.OBJ) {
-                            const material = new Three.MeshStandardMaterial({ color: 0xffffff });
-                            this.updateMaterialOfObjObject(object, material);
-                        }
+                    if (url in this.savedMeshes) {
+                        const mesh = this.savedMeshes[url];
+                        object = mesh.clone();
                         object.name = name;
                         this.existingSceneObjects.push(name);
                         object.isPenguinMod = true;
@@ -412,11 +408,32 @@ class Jg3DBlocks {
                         object.position.set(position.x, position.y, position.z);
                         this.scene.add(object);
                         resolve();
-                    }, () => {}, (error) => {
-                        console.warn('Failed to load 3D mesh obj;', error);
-                        this.stackWarning(util, 'Failed to get the 3D mesh!');
-                        resolve();
-                    })
+                        return;
+                    }
+                    else {
+                        loader.load(url, (object) => {
+                            // success
+                            if (loader === MeshLoaders.GLTF) {
+                                object = object.scene;
+                            }
+                            if (loader === MeshLoaders.OBJ) {
+                                const material = new Three.MeshStandardMaterial({ color: 0xffffff });
+                                this.updateMaterialOfObjObject(object, material);
+                                this.savedMeshes[url] = object;
+                            }
+                            object.name = name;
+                            this.existingSceneObjects.push(name);
+                            object.isPenguinMod = true;
+                            object.isMeshObj = true;
+                            object.position.set(position.x, position.y, position.z);
+                            this.scene.add(object);
+                            resolve();
+                        }, () => {}, (error) => {
+                            console.warn('Failed to load 3D mesh obj;', error);
+                            this.stackWarning(util, 'Failed to get the 3D mesh!');
+                            resolve();
+                        })
+                    }
                 });
             }
             case 'light': {
