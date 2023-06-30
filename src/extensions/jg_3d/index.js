@@ -2,7 +2,7 @@ const Cast = require('../../util/cast');
 const Clone = require('../../util/clone');
 const ExtensionInfo = require("./info");
 const Three = require("three");
-const threeutils = require("three-mesh-bvh")
+import MeshBVH from 'three-mesh-bvh';
 const { OBJLoader } = require('three/examples/jsm/loaders/OBJLoader.js');
 const { GLTFLoader } = require('three/examples/jsm/loaders/GLTFLoader.js');
 const { FBXLoader } = require('three/examples/jsm/loaders/FBXLoader.js');
@@ -152,13 +152,13 @@ class Jg3DBlocks {
         if (object1.isLight) return false; // currently lights are not supported for collisions
         if (object2.isLight) return false; // currently lights are not supported for collisions
 
-        const geometry1 = object1.geometry.isBufferGeometry ? object1.geometry : new Three.BufferGeometry().fromGeometry(object1.geometry);
-        const geometry2 = object2.geometry.isBufferGeometry ? object2.geometry : new Three.BufferGeometry().fromGeometry(object2.geometry);
+        const geometry1 = object1.geometry.isBufferGeometry ? object1.geometry : new Three.BufferGeometry().setFromObject(object1);
+        const geometry2 = object2.geometry.isBufferGeometry ? object2.geometry : new Three.BufferGeometry().setFromObject(object2);
 
-        const bvh1 = new threeutils.MeshBVH();
+        const bvh1 = new MeshBVH();
         bvh1.fromGeometry(geometry1);
 
-        const bvh2 = new threeutils.MeshBVH();
+        const bvh2 = new MeshBVH();
         bvh2.fromGeometry(geometry2);
 
         const collision = bvh1.intersectsMesh(bvh2);
