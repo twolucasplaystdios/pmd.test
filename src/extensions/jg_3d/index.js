@@ -493,7 +493,9 @@ class Jg3DBlocks {
         this.createGameObject(args, util, 'plane');
     }
     createMeshObject(args, util) {
+        let startTime = Date.now();
         this.createGameObject(args, util, 'mesh');
+        console.log('took', Date.now() - startTime, 'ms to create mesh object');
     }
     createMeshObjectFileTyped(args, util) {
         this.createGameObject(args, util, 'mesh');
