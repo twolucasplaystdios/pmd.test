@@ -85,6 +85,8 @@ class pmSensingExpansion {
          */
         this.runtime = runtime;
         this.canVibrate = true;
+        this.lastUpdate = Date.now();
+        setInterval(this._dtTick, 0);
     }
 
     orderCategoryBlocks(extensionBlocks) {
@@ -222,6 +224,12 @@ class pmSensingExpansion {
                 {
                     opcode: 'currentMillisecond',
                     text: 'current millisecond',
+                    blockType: BlockType.REPORTER,
+                    disableMonitor: false
+                },
+                {
+                    opcode: 'deltaTime',
+                    text: 'delta time',
                     blockType: BlockType.REPORTER,
                     disableMonitor: false
                 },
@@ -451,6 +459,13 @@ class pmSensingExpansion {
 
     currentMillisecond() {
         return Date.now() % 1000;
+    }
+
+    deltaTime() {
+        let now = Date.now();
+        dt = now - lastUpdate;
+        this.lastUpdate = now;
+        return dt;
     }
 }
 
