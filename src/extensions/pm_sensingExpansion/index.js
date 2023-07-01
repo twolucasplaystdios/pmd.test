@@ -87,6 +87,7 @@ class pmSensingExpansion {
         this.runtime = runtime;
         this.canVibrate = true;
         this.lastUpdate = Date.now();
+        this.dt = 1;
         setInterval(this._dtTick, 0);
     }
 
@@ -463,11 +464,15 @@ class pmSensingExpansion {
     }
 
     deltaTime() {
-        let now = Date.now();
-        let dt = now - this.lastUpdate;
-        this.lastUpdate = now;
-        return dt;
+        return this.dt;
     }
+
+    _dtTick() {
+        let now = Date.now();
+        this.dt = now - this.lastUpdate;
+        this.lastUpdate = now;
+    }
+
 }
 
 module.exports = pmSensingExpansion;
