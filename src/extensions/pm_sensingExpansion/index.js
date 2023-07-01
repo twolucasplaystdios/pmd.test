@@ -55,6 +55,7 @@ ${blockSeparator}
 %b9>
 %b11>
 %b12>
+%b13>
 ${blockSeparator}
 <block type="sensing_getoperatingsystem"/>
 <block type="sensing_getbrowser"/>
