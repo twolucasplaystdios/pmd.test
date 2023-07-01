@@ -464,7 +464,7 @@ class pmSensingExpansion {
 
     deltaTime() {
         let now = Date.now();
-        dt = now - lastUpdate;
+        dt = now - this.lastUpdate;
         this.lastUpdate = now;
         return dt;
     }
