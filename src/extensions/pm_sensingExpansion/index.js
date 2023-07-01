@@ -87,8 +87,6 @@ class pmSensingExpansion {
         this.runtime = runtime;
         this.canVibrate = true;
         this.lastUpdate = Date.now();
-        this.dt = 1;
-        setInterval(this._dtTick, 0);
     }
 
     orderCategoryBlocks(extensionBlocks) {
@@ -464,13 +462,10 @@ class pmSensingExpansion {
     }
 
     deltaTime() {
-        return this.dt;
-    }
-
-    _dtTick() {
         let now = Date.now();
-        this.dt = now - this.lastUpdate;
+        let dt = now - this.lastUpdate;
         this.lastUpdate = now;
+        return dt;
     }
 
 }
