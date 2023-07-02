@@ -132,7 +132,7 @@ const ArgumentTypeMap = (() => {
             fieldName: 'SOUND_MENU'
         }
     };
-    // VARIABLE and LIST are actually fields
+    // VARIABLE, LIST and BROADCAST are actually fields
     // they'll be handled similarly to IMAGE
     map[ArgumentType.VARIABLE] = {
         fieldType: "field_variable",
@@ -142,6 +142,11 @@ const ArgumentTypeMap = (() => {
         fieldType: "field_variable",
         fieldName: "LIST",
         variableType: 'list'
+    };
+    map[ArgumentType.BROADCAST] = {
+        fieldType: "field_variable",
+        fieldName: "BROADCAST",
+        variableType: 'broadcast_msg'
     };
     return map;
 })();
@@ -1553,10 +1558,12 @@ class Runtime extends EventEmitter {
     _constructVariableDropdown(argInfo, placeholder) {
         // console.log(argInfo, placeholder);
         const isList = argInfo.type === 'list';
+        const isBroadcast = argInfo.type === 'broadcast';
         return {
             type: 'field_variable',
             name: placeholder,
-            variableTypes: isList ? ['list'] : ['']
+            variableTypes: isList ? ['list'] : (isBroadcast ? ['broadcast_msg'] : ['']),
+            variable: isBroadcast ? 'message1' : undefined
         };
     }
 

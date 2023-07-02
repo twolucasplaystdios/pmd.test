@@ -312,6 +312,12 @@ class ScriptTreeGenerator {
                 value: broadcastName
             };
         }
+
+        case 'pmEventsExpansion_broadcastFunction':
+        return {
+            kind: 'pmEventsExpansion.broadcastFunction',
+            broadcast: this.descendInputOfBlock(block, 'BROADCAST')
+        };
         
         case 'control_inline_stack_output':
             return {

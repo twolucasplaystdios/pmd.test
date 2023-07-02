@@ -37,6 +37,7 @@ class Mouse {
             null, target);
         this.runtime.startHats('event_whenstageclicked',
             null, target);
+        this.runtime.startHats('pmEventsExpansion_whenSpriteClicked', { SPRITE: target.id });
     }
 
     /**

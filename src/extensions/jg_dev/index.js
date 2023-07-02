@@ -77,6 +77,14 @@ class JgDevBlocks {
                     }
                 },
                 {
+                    opcode: 'logArgs3',
+                    text: 'broadcast input [INPUT]',
+                    blockType: BlockType.REPORTER,
+                    arguments: {
+                        INPUT: { type: ArgumentType.BROADCAST }
+                    }
+                },
+                {
                     opcode: 'setEffectName',
                     text: 'set [EFFECT] to [VALUE]',
                     blockType: BlockType.COMMAND,
@@ -144,6 +152,12 @@ class JgDevBlocks {
                     text: 'compiled code',
                     blockType: BlockType.REPORTER,
                     disableMonitor: true
+                },
+                {
+                    opcode: 'branchNewThread',
+                    text: 'new thread',
+                    branchCount: 1,
+                    blockType: BlockType.CONDITIONAL
                 },
                 // {
                 //     opcode: 'whatthescallop',
@@ -260,6 +274,18 @@ class JgDevBlocks {
 
     // blocks
 
+    branchNewThread(_, util) {
+        const currentBlockId = util.thread.peekStack();
+        const branchBlock = util.thread.target.blocks.getBranch(
+            currentBlockId,
+            0
+        );
+
+        if (branchBlock) {
+            util.sequencer.runtime._pushThread(branchBlock, util.target, {});
+        }
+    }
+
     stopSound(args, util) {
         const target = util.target;
         const sprite = target.sprite;
@@ -311,6 +337,10 @@ class JgDevBlocks {
         return JSON.stringify(args)
     }
     logArgs2(args) {
+        console.log(args)
+        return JSON.stringify(args)
+    }
+    logArgs3(args) {
         console.log(args)
         return JSON.stringify(args)
     }

@@ -47,6 +47,8 @@ const builtinExtensions = {
     pmSensingExpansion: () => require("../extensions/pm_sensingExpansion"),
     // pmControlsExpansion: extra controls blocks that were in the category & new ones that werent
     pmControlsExpansion: () => require("../extensions/pm_controlsExpansion"),
+    // pmEventsExpansion: extra controls blocks that were in the category & new ones that werent
+    pmEventsExpansion: () => require("../extensions/pm_eventsExpansion"),
 
     // pmInlineBlocks: seperates the inline function block to prevent confusled
     pmInlineBlocks: () => require("../extensions/pm_inlineblocks"),
@@ -671,6 +673,17 @@ class ExtensionManager {
         return menuItems;
     }
 
+    _normalize(thing, to) {
+        switch (to) {
+            case 'string': return String(thing);
+            case 'bigint':
+            case 'number': return Number(thing);
+            case 'boolean': return String(thing) === 'true';
+            case 'function': return new Function(thing);
+            default: return String(thing);
+        }
+    }
+
     /**
      * Apply defaults for optional block fields.
      * @param {string} serviceName - the name of the service hosting this extension block
@@ -754,7 +767,27 @@ class ExtensionManager {
             })();
 
             blockInfo.func = (args, util) => {
+                const normal = {
+                    'angle': "number",
+                    'Boolean': "boolean",
+                    'color': "number",
+                    'number': "number",
+                    'string': "string",
+                    'matrix': "string",
+                    'note': "number",
+                    'image': "string",
+                    'polygon': "object",
+                    // normalization exceptions
+                    'list': "exception",
+                    'broadcast': "exception"
+                };
                 const realBlockInfo = getBlockInfo(args);
+                Object.keys(realBlockInfo.arguments).forEach(arg => {
+                    const expected = normal[realBlockInfo.arguments[arg].type];
+                    if (expected === 'exception') return;
+                    if (arg.startsWith('substack')) return;
+                    if (!(typeof args[arg] === expected)) args[arg] = this._normalize(args[arg], expected);
+                });
                 // TODO: filter args using the keys of realBlockInfo.arguments? maybe only if sandboxed?
                 return callBlockFunc(args, util, realBlockInfo);
             };

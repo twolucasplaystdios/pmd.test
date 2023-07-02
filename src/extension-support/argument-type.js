@@ -61,7 +61,7 @@ const ArgumentType = {
     /**
      * pm: Variable menu
      * @deprecated Not functioning as intended
-     * @todo Fix menu resetting on update & args returning variable value instead of object
+     * @todo Fix args returning variable value instead of object
      */
     VARIABLE: 'variable',
 
@@ -70,7 +70,14 @@ const ArgumentType = {
      * @deprecated Not functioning as intended
      * @todo Fix menu resetting on update & args returning "[object Object]" instead of object
      */
-    LIST: 'list'
+    LIST: 'list',
+
+    /**
+     * pm: Broadcast menu
+     * @deprecated Not functioning as intended
+     * @todo Fix menu resetting on update
+     */
+    BROADCAST: 'broadcast'
 };
 
 module.exports = ArgumentType;
