@@ -32,7 +32,7 @@ class Scratch3EventBlocks {
             // we need to remember that the project is starting
             // otherwise the stop block will run when flag is clicked
             this.isStarting = true;
-        })
+        });
         this.runtime.on('PROJECT_STOP_ALL', () => {
             // if green flag is clicked, dont bother starting the hat
             if (this.isStarting) {
@@ -45,10 +45,10 @@ class Scratch3EventBlocks {
                 this.runtime.startHats('event_whenstopclicked');
             })
             this.isStarting = false;
-        })
+        });
         this.runtime.on('RUNTIME_STEP_START', () => {
             this.runtime.startHats('event_always');
-        })
+        });
     }
 
     /**
