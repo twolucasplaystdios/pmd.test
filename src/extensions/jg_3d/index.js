@@ -723,6 +723,7 @@ class Jg3DBlocks {
     }
 
     rayCollision(args) {
+        console.log("even once")
         const ray = new Three.Raycaster();
         const origin = {
             x: Cast.toNumber(args.ORIGINX),
