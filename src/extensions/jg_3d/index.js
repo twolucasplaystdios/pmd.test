@@ -721,7 +721,25 @@ class Jg3DBlocks {
         this.camera.rotation.y += Cast.toNumber(args.Y);
         this.camera.rotation.z += Cast.toNumber(args.Z);
     }
-        
+
+    RayCollision(args) {
+        const ray = new Three.Raycaster();
+        const origin = {
+            x: Cast.toNumber(args.ORIGINX),
+            y: Cast.toNumber(args.ORIGINY),
+            z: Cast.toNumber(args.ORIGINZ),
+        };
+        const direction = {
+            x: Cast.toNumber(args.DIRECTIONX),
+            y: Cast.toNumber(args.DIRECTIONY),
+            z: Cast.toNumber(args.DIRECTIONZ),
+        };
+        ray.set(new Three.Vector3(origin.x, origin.y, origin.z), new Three.Vector3(direction.x, direction.y, direction.z));
+        const intersects = ray.intersectObjects(this.scene.children);
+        if (intersects.length === 0) return "";
+        const first = intersects[0];
+        return first.object.name;
+    }
 }
 
 module.exports = Jg3DBlocks;

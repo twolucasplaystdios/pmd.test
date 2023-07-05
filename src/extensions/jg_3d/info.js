@@ -355,6 +355,15 @@ module.exports = {
             NAME: infoArgument("Object1"),
         }),
         seperator,
+        createReporterBlock("rayCollision", "return first object that ray that collides with ray that starts at x [x] y [y] z [z] with direction x [dx] y [dy] z [dz]", {
+            x: infoArgument(0),
+            y: infoArgument(0),
+            z: infoArgument(0),
+            dx: infoArgument(0),
+            dy: infoArgument(0),
+            dz: infoArgument(0),
+        }),
+        seperator,
     ],
     menus: {
         cameraType: infoMenu(["perspective", "orthographic"]),
