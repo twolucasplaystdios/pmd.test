@@ -738,6 +738,7 @@ class Jg3DBlocks {
         const intersects = ray.intersectObjects(this.scene.children, false);
         if (intersects.length === 0) return "";
         const first = intersects[0];
+        console.log(intersects);
         return first.object.name;
     }
 }
