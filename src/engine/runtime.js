@@ -33,10 +33,6 @@ const Touch = require('../io/touch');
 const StringUtil = require('../util/string-util');
 const uid = require('../util/uid');
 
-// Used for extension's compiled blocks.
-const JSGenerator = require('../compiler/jsgen');
-const IRGenerator = require('../compiler/irgen');
-
 const defaultBlockPackages = {
     scratch3_control: require('../blocks/scratch3_control'),
     scratch3_event: require('../blocks/scratch3_event'),
@@ -1012,6 +1008,11 @@ class Runtime extends EventEmitter {
         if (!information) return;
         if (!information.ir) return;
         if (!information.js) return;
+
+        // Used for extension's compiled blocks.
+        // Importing the generators here avoids circular dependency issues
+        const JSGenerator = require('../compiler/jsgen');
+        const IRGenerator = require('../compiler/irgen');
 
         IRGenerator.setExtensionIr(extensionId, information.ir);
         JSGenerator.setExtensionJs(extensionId, information.js);
