@@ -722,6 +722,7 @@ class Jg3DBlocks {
         this.camera.rotation.z += Cast.toNumber(args.Z);
     }
 
+    /* isnt working, will fix like tommorow
     rayCollision(args) {
         const ray = new Three.Raycaster();
         const origin = {
@@ -740,7 +741,7 @@ class Jg3DBlocks {
         const first = intersects[0];
         console.log(intersects);
         return first.object.name;
-    }
+    }*/
 }
 
 module.exports = Jg3DBlocks;
