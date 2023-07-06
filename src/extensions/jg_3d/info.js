@@ -355,7 +355,7 @@ module.exports = {
             NAME: infoArgument("Object1"),
         }),
         seperator,
-        createReporterBlock("rayCollision", "return first object that ray that collides with ray that starts at x [x] y [y] z [z] with direction x [dx] y [dy] z [dz]", {
+        createReporterBlock("rayCollision", "return first object that ray that collides with ray that starts at x [X] y [Y] z [Z] with direction x [DX] y [DY] z [DZ]", {
             X: infoArgument(0),
             Y: infoArgument(0),
             Z: infoArgument(0),
