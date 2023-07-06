@@ -725,6 +725,7 @@ class Jg3DBlocks {
     rayCollision(args) {
         console.log("even once")
         const ray = new Three.Raycaster();
+        console.log("hmm")
         const origin = {
             x: Cast.toNumber(args.ORIGINX),
             y: Cast.toNumber(args.ORIGINY),
@@ -735,8 +736,11 @@ class Jg3DBlocks {
             y: Cast.toNumber(args.DIRECTIONY),
             z: Cast.toNumber(args.DIRECTIONZ),
         };
+        console.log("2")
         ray.set(new Three.Vector3(origin.x, origin.y, origin.z), new Three.Vector3(direction.x, direction.y, direction.z));
+        console.log("3")
         const intersects = ray.intersectObjects(this.scene.children, false);
+        console.log("4")
         if (intersects.length === 0) return "";
         const first = intersects[0];
         console.log(intersects);
