@@ -4,6 +4,7 @@ const ExtensionInfo = require("./info");
 const Three = require("three");
 const threeutils = require("three-mesh-bvh")
 const MeshBVH = threeutils.MeshBVH
+const { ConvexGeometry } = require('three/examples/jsm/geometries/ConvexGeometry');
 const { OBJLoader } = require('three/examples/jsm/loaders/OBJLoader.js');
 const { GLTFLoader } = require('three/examples/jsm/loaders/GLTFLoader.js');
 const { FBXLoader } = require('three/examples/jsm/loaders/FBXLoader.js');
@@ -145,35 +146,35 @@ class Jg3DBlocks {
     }
     touching(name1, name2) {
         if (!this.scene) return false;
-    
+
         const object1 = this.scene.getObjectByName(name1);
         const object2 = this.scene.getObjectByName(name2);
-    
-        if (!object1) return false;
-        if (!object2) return false;
-    
-        if (object1.isLight) return false; // currently lights are not supported for collisions
-        if (object2.isLight) return false; // currently lights are not supported for collisions
-    
-        const hull1 = new Three.ConvexGeometry().setFromObject(object1);
-        const hull2 = new Three.ConvexGeometry().setFromObject(object2);
-    
+
+        if (!object1 || !object2) return false;
+
+        if (object1.isLight || object2.isLight) return false;
+
+        const hull1 = new ConvexGeometry().setFromBufferGeometry(object1.geometry);
+        const hull2 = new ConvexGeometry().setFromBufferGeometry(object2.geometry);
+
+        hull1.computeVertexNormals();
+        hull1.computeBoundingBox();
+        hull1.translate(object1.position.negate());
+
+        hull2.computeVertexNormals();
+        hull2.computeBoundingBox();
+        hull2.translate(object2.position.negate());
+
         const bvh1 = new MeshBVH();
         bvh1.fromGeometry(hull1);
-    
+
         const bvh2 = new MeshBVH();
         bvh2.fromGeometry(hull2);
-    
-        const collision = bvh1.intersectsMesh(bvh2);
-    
+
+        const collision = bvh1.intersectsGeometry(hull2);
+
         return collision;
     }
-    
-    
-
-
-
-
     initialize() {
         // dispose of the previous scene
         this.dispose();
