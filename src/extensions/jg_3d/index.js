@@ -153,12 +153,12 @@ class Jg3DBlocks {
         if (!object1 || !object2) return false;
 
         if (object1.isLight || object2.isLight) return false;
-        
+
         const geometry1 = new Three.BufferGeometry().copy(object1.geometry);
         const geometry2 = new Three.BufferGeometry().copy(object2.geometry);
 
-        const hull1 = new Three.ConvexGeometry(geometry1.vertices);
-        const hull2 = new Three.ConvexGeometry(geometry2.vertices);
+        const hull1 = new Three.ConvexGeometry().setFromPoints(geometry1.attributes.position.array);
+        const hull2 = new Three.ConvexGeometry().setFromPoints(geometry2.attributes.position.array);
 
         hull1.computeVertexNormals();
         hull1.computeBoundingBox();
@@ -168,13 +168,13 @@ class Jg3DBlocks {
         hull2.computeBoundingBox();
         hull2.translate(object2.position.negate());
 
-        const bvh1 = new THREE.MeshBVH();
+        const bvh1 = new Three.MeshBVH();
         bvh1.fromGeometry(hull1);
 
-        const bvh2 = new THREE.MeshBVH();
+        const bvh2 = new Three.MeshBVH();
         bvh2.fromGeometry(hull2);
 
-        const collision = bvh1.intersectsGeometry(hull2);
+        const collision = bvh1.intersectsGeometry(bvh2);
 
         return collision;
     }
