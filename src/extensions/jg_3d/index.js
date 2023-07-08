@@ -168,10 +168,10 @@ class Jg3DBlocks {
         hull2.computeBoundingBox();
         hull2.translate(object2.position.negate());
 
-        const bvh1 = new Three.MeshBVH();
+        const bvh1 = new MeshBVH();
         bvh1.fromGeometry(hull1);
 
-        const bvh2 = new Three.MeshBVH();
+        const bvh2 = new MeshBVH();
         bvh2.fromGeometry(hull2);
 
         const collision = bvh1.intersectsGeometry(bvh2);
