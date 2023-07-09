@@ -769,11 +769,11 @@ class Jg3DBlocks {
             y: Cast.toNumber(args.DY),
             z: Cast.toNumber(args.DZ),
         };
-        ray.set(new Three.Vector3(origin.x, origin.y, origin.z), new Three.Vector3(direction.x, direction.y, direction.z));
-        const intersects = ray.intersectObjects(this.scene.children, false);
-        if (intersects.length === 0) return "";
+        ray.set((new Three.Vector3(origin.x, origin.y, origin.z)), (new Three.Vector3(direction.x, direction.y, direction.z)));
+        const intersects = ray.intersectObjects(this.scene.children, true);
+        //if (intersects.length === 0) return "";
         const first = intersects[0];
-        console.log(intersects);
+        console.warn(intersects);
         return first.object.name;
     }
 }
