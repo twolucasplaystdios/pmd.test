@@ -144,6 +144,19 @@ class Jg3DBlocks {
         }
         return stage !== this.lastStageSizeWhenRendering;
     }
+    performRaycast(raycaster, object) {
+        const origin = new Three.Vector3();
+        object.getWorldPosition(origin);
+        
+        const direction = new Three.Vector3();
+        object.getWorldDirection(direction);
+        
+        raycaster.set(origin, direction);
+        
+        const intersects = raycaster.intersectObject(object, true);
+        
+        return intersects.length > 0;
+      }
     touching(name1, name2) {
         if (!this.scene) return false;
 
@@ -154,49 +167,15 @@ class Jg3DBlocks {
         
         if (object1.isLight || object2.isLight) return false;
         
-        const hull1 = new MeshBVH();
-        const hull2 = new MeshBVH();
+        const raycaster1 = new Three.Raycaster();
+        const raycaster2 = new Three.Raycaster();
         
-        let geometry1;
-        if (object1.isMesh || object1.isPoints || object1.isLine) {
-          geometry1 = object1.geometry.isBufferGeometry ? object1.geometry : new Three.BufferGeometry().copy(object1.geometry);
-        } else if (object1.isGroup) {
-          const groupGeometry = new Three.BufferGeometry();
-          object1.children.forEach(child => {
-            if (child.isMesh) {
-              const childGeometry = child.geometry.isBufferGeometry ? child.geometry : new Three.BufferGeometry().copy(child.geometry);
-              childGeometry.applyMatrix4(child.matrixWorld);
-              groupGeometry.merge(childGeometry);
-            }
-          });
-          geometry1 = groupGeometry;
-        }
+        const intersection1 = this.performRaycast(raycaster1, object1);
+        const intersection2 = this.performRaycast(raycaster2, object2);
         
-        let geometry2;
-        if (object2.isMesh || object2.isPoints || object2.isLine) {
-          geometry2 = object2.geometry.isBufferGeometry ? object2.geometry : new Three.BufferGeometry().copy(object2.geometry);
-        } else if (object2.isGroup) {
-          const groupGeometry = new Three.BufferGeometry();
-          object2.children.forEach(child => {
-            if (child.isMesh) {
-              const childGeometry = child.geometry.isBufferGeometry ? child.geometry : new Three.BufferGeometry().copy(child.geometry);
-              childGeometry.applyMatrix4(child.matrixWorld);
-              groupGeometry.merge(childGeometry);
-            }
-          });
-          geometry2 = groupGeometry;
-        }
-        
-        geometry1.computeVertexNormals();
-        geometry2.computeVertexNormals();
-        
-        hull1.fromGeometry(geometry1);
-        hull2.fromGeometry(geometry2);
-        
-        const collision = hull1.intersectsGeometry(hull2);
+        const collision = intersection1 && intersection2;
         
         return collision;
-        
     }
 
     initialize() {
