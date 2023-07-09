@@ -145,18 +145,16 @@ class Jg3DBlocks {
         return stage !== this.lastStageSizeWhenRendering;
     }
     performRaycast(raycaster, object) {
-        const origin = new Three.Vector3();
-        object.getWorldPosition(origin);
-        
-        const direction = new Three.Vector3();
-        object.getWorldDirection(direction);
-        
-        raycaster.set(origin, direction);
-        
-        const intersects = raycaster.intersectObject(object, true);
-        
-        return intersects.length > 0;
+        const geometry = object.geometry;
+      
+        geometry.computeBoundingBox();
+        geometry.boundingBox.applyMatrix4(object.matrixWorld);
+      
+        const intersection = raycaster.intersectObject(object, true);
+      
+        return intersection.length > 0;
       }
+      
     touching(name1, name2) {
         if (!this.scene) return false;
 
