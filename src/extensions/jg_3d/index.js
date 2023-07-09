@@ -154,17 +154,17 @@ class Jg3DBlocks {
         
         if (object1.isLight || object2.isLight) return false;
         
-        const hull1 = new MeshBVH();
-        const hull2 = new MeshBVH();
+        const hull1 = new Three.MeshBVH();
+        const hull2 = new Three.MeshBVH();
         
         let geometry1;
         if (object1.isMesh || object1.isPoints || object1.isLine) {
-          geometry1 = object1.geometry;
+          geometry1 = object1.geometry.isBufferGeometry ? object1.geometry : new Three.BufferGeometry().copy(object1.geometry);
         } else if (object1.isGroup) {
           const groupGeometry = new Three.BufferGeometry();
           object1.children.forEach(child => {
             if (child.isMesh) {
-              const childGeometry = new Three.BufferGeometry().copy(child.geometry);
+              const childGeometry = child.geometry.isBufferGeometry ? child.geometry : new Three.BufferGeometry().copy(child.geometry);
               childGeometry.applyMatrix4(child.matrixWorld);
               groupGeometry.merge(childGeometry);
             }
@@ -174,12 +174,12 @@ class Jg3DBlocks {
         
         let geometry2;
         if (object2.isMesh || object2.isPoints || object2.isLine) {
-          geometry2 = object2.geometry;
+          geometry2 = object2.geometry.isBufferGeometry ? object2.geometry : new Three.BufferGeometry().copy(object2.geometry);
         } else if (object2.isGroup) {
           const groupGeometry = new Three.BufferGeometry();
           object2.children.forEach(child => {
             if (child.isMesh) {
-              const childGeometry = new Three.BufferGeometry().copy(child.geometry);
+              const childGeometry = child.geometry.isBufferGeometry ? child.geometry : new Three.BufferGeometry().copy(child.geometry);
               childGeometry.applyMatrix4(child.matrixWorld);
               groupGeometry.merge(childGeometry);
             }
@@ -196,6 +196,7 @@ class Jg3DBlocks {
         const collision = hull1.intersectsGeometry(hull2);
         
         return collision;
+        
     }
 
     initialize() {
