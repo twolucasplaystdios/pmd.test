@@ -355,8 +355,7 @@ module.exports = {
             NAME: infoArgument("Object1"),
         }),
         seperator,
-        // isnt working, will fix tommorow
-        createReporterBlock("rayCollision", "NOT WORKING DONT USE return first object that ray that collides with ray that starts at x [X] y [Y] z [Z] with direction x [DX] y [DY] z [DZ]", {
+        createReporterBlock("rayCollision", "create raycast that starts at x [X] y [Y] z [Z] with direction x [DX] y [DY] z [DZ] and return the name of the first object it collides with", {
             X: infoArgument(0),
             Y: infoArgument(0),
             Z: infoArgument(0),
@@ -365,6 +364,14 @@ module.exports = {
             DZ: infoArgument(0),
         }),
         seperator, 
+        createReporterBlock("rayCollisionArray", "create raycast that starts at x [X] y [Y] z [Z] with direction x [DX] y [DY] z [DZ] and return the full array of object it collides with", {
+            X: infoArgument(0),
+            Y: infoArgument(0),
+            Z: infoArgument(0),
+            DX: infoArgument(0),
+            DY: infoArgument(0),
+            DZ: infoArgument(0),
+        })
     ],
     menus: {
         cameraType: infoMenu(["perspective", "orthographic"]),
