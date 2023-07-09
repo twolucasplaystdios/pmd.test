@@ -154,15 +154,13 @@ class Jg3DBlocks {
 
         if (object1.isLight || object2.isLight) return false;
 
-        const hull1 = new Three.BufferGeometry();
-        const hull2 = new Three.BufferGeometry();
+        const hull1 = object1.geometry;
+        const hull2 = object2.geometry;
 
-        hull1.setFromPoints(object1.geometry.attributes.position.array);
         hull1.computeVertexNormals();
         hull1.computeBoundingBox();
         hull1.translate(object1.position.negate());
 
-        hull2.setFromPoints(object2.geometry.attributes.position.array);
         hull2.computeVertexNormals();
         hull2.computeBoundingBox();
         hull2.translate(object2.position.negate());
