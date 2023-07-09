@@ -149,30 +149,52 @@ class Jg3DBlocks {
 
         const object1 = this.scene.getObjectByName(name1);
         const object2 = this.scene.getObjectByName(name2);
-
+        
         if (!object1 || !object2) return false;
-
+        
         if (object1.isLight || object2.isLight) return false;
-
-        const hull1 = object1.geometry;
-        const hull2 = object2.geometry;
-
-        hull1.computeVertexNormals();
-        hull1.computeBoundingBox();
-        hull1.translate(object1.position.negate());
-
-        hull2.computeVertexNormals();
-        hull2.computeBoundingBox();
-        hull2.translate(object2.position.negate());
-
-        const bvh1 = new MeshBVH();
-        bvh1.fromGeometry(hull1);
-
-        const bvh2 = new MeshBVH();
-        bvh2.fromGeometry(hull2);
-
-        const collision = bvh1.intersectsGeometry(bvh2);
-
+        
+        const hull1 = new MeshBVH();
+        const hull2 = new MeshBVH();
+        
+        let geometry1;
+        if (object1.isMesh || object1.isPoints || object1.isLine) {
+          geometry1 = object1.geometry;
+        } else if (object1.isGroup) {
+          const groupGeometry = new Three.BufferGeometry();
+          object1.children.forEach(child => {
+            if (child.isMesh) {
+              const childGeometry = new Three.BufferGeometry().copy(child.geometry);
+              childGeometry.applyMatrix4(child.matrixWorld);
+              groupGeometry.merge(childGeometry);
+            }
+          });
+          geometry1 = groupGeometry;
+        }
+        
+        let geometry2;
+        if (object2.isMesh || object2.isPoints || object2.isLine) {
+          geometry2 = object2.geometry;
+        } else if (object2.isGroup) {
+          const groupGeometry = new Three.BufferGeometry();
+          object2.children.forEach(child => {
+            if (child.isMesh) {
+              const childGeometry = new Three.BufferGeometry().copy(child.geometry);
+              childGeometry.applyMatrix4(child.matrixWorld);
+              groupGeometry.merge(childGeometry);
+            }
+          });
+          geometry2 = groupGeometry;
+        }
+        
+        geometry1.computeVertexNormals();
+        geometry2.computeVertexNormals();
+        
+        hull1.fromGeometry(geometry1);
+        hull2.fromGeometry(geometry2);
+        
+        const collision = hull1.intersectsGeometry(hull2);
+        
         return collision;
     }
 
