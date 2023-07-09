@@ -143,10 +143,41 @@ class Jg3DBlocks {
         }
         return stage !== this.lastStageSizeWhenRendering;
     }
+    mergeVertices(geometry) {
+        const vertices = geometry.attributes.position.array;
+        const vertexMap = {};
+        const mergedVertices = [];
+        const newIndices = [];
+        let newIndex = 0;
+
+        for (let i = 0; i < vertices.length; i += 3) {
+            const x = vertices[i];
+            const y = vertices[i + 1];
+            const z = vertices[i + 2];
+            const key = `${x},${y},${z}`;
+
+            if (vertexMap[key] === undefined) {
+            vertexMap[key] = newIndex;
+            mergedVertices.push(x, y, z);
+            newIndices.push(newIndex);
+            newIndex++;
+            } else {
+            newIndices.push(vertexMap[key]);
+            }
+        }
+
+        geometry.setAttribute('position', new Three.Float32BufferAttribute(mergedVertices, 3));
+        geometry.setIndex(new Three.Uint32BufferAttribute(newIndices, 1));
+
+        return geometry;
+    }
+      
     performRaycast(raycaster, object) {
         const geometry = object.geometry;
 
-        const boundingGeometry = BufferGeometryUtils.mergeVertices(geometry);
+        const mergedGeometry = this.mergeVertices(geometry);
+
+        const boundingGeometry = new Three.BufferGeometry().copy(mergedGeometry);
         boundingGeometry.computeBoundingBox();
         boundingGeometry.boundingBox.applyMatrix4(object.matrixWorld);
 
@@ -154,6 +185,7 @@ class Jg3DBlocks {
 
         return intersection.length > 0;
     }
+      
 
     touching(name1, name2) {
         if (!this.scene) return false;
