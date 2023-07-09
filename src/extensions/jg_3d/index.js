@@ -156,12 +156,12 @@ class Jg3DBlocks {
 
         const hull1 = new Three.BufferGeometry()
         const hull2 = new Three.BufferGeometry()
-        hull1.setFromPoints(object1.position.array);
+        hull1.fromGeometry(object1.geometry);
         hull1.computeVertexNormals();
         hull1.computeBoundingBox();
         hull1.translate(object1.position.negate());
 
-        hull2.setFromPoints(object2.position.array);
+        hull2.fromGeometry(object2.geometry);
         hull2.computeVertexNormals();
         hull2.computeBoundingBox();
         hull2.translate(object2.position.negate());
