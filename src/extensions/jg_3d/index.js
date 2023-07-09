@@ -154,11 +154,8 @@ class Jg3DBlocks {
 
         if (object1.isLight || object2.isLight) return false;
 
-        const geometry1 = new Three.BufferGeometry().copy(object1.geometry);
-        const geometry2 = new Three.BufferGeometry().copy(object2.geometry);
-
-        const hull1 = new Three.ConvexGeometry().setFromPoints(geometry1.attributes.position.array);
-        const hull2 = new Three.ConvexGeometry().setFromPoints(geometry2.attributes.position.array);
+        const hull1 = new Three.ConvexGeometry().setFromPoints(object1.attributes.position.array);
+        const hull2 = new Three.ConvexGeometry().setFromPoints(object2.attributes.position.array);
 
         hull1.computeVertexNormals();
         hull1.computeBoundingBox();
