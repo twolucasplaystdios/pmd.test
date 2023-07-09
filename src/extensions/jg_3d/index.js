@@ -2,8 +2,7 @@ const Cast = require('../../util/cast');
 const Clone = require('../../util/clone');
 const ExtensionInfo = require("./info");
 const Three = require("three");
-const threeutils = require("three-mesh-bvh")
-const MeshBVH = threeutils.MeshBVH
+const BufferGeometryUtils = require('three/examples/jsm/utils/BufferGeometryUtils');
 const { ConvexGeometry } = require('three/examples/jsm/geometries/ConvexGeometry');
 const { OBJLoader } = require('three/examples/jsm/loaders/OBJLoader.js');
 const { GLTFLoader } = require('three/examples/jsm/loaders/GLTFLoader.js');
@@ -146,15 +145,16 @@ class Jg3DBlocks {
     }
     performRaycast(raycaster, object) {
         const geometry = object.geometry;
-      
-        geometry.computeBoundingBox();
-        geometry.boundingBox.applyMatrix4(object.matrixWorld);
-      
+
+        const boundingGeometry = BufferGeometryUtils.mergeVertices(geometry);
+        boundingGeometry.computeBoundingBox();
+        boundingGeometry.boundingBox.applyMatrix4(object.matrixWorld);
+
         const intersection = raycaster.intersectObject(object, true);
-      
+
         return intersection.length > 0;
-      }
-      
+    }
+
     touching(name1, name2) {
         if (!this.scene) return false;
 
