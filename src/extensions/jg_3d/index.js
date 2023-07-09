@@ -154,8 +154,8 @@ class Jg3DBlocks {
         
         if (object1.isLight || object2.isLight) return false;
         
-        const hull1 = new Three.MeshBVH();
-        const hull2 = new Three.MeshBVH();
+        const hull1 = new MeshBVH();
+        const hull2 = new MeshBVH();
         
         let geometry1;
         if (object1.isMesh || object1.isPoints || object1.isLine) {
