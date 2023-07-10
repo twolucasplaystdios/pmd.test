@@ -65,10 +65,10 @@ class iygPerlin {
                     }
                 },
                 {
-                    opcode: 'GetSimplexNoise',
+                    opcode: 'getSimplexNoise',
                     blockType: BlockType.REPORTER,
                     text: formatMessage({
-                        id: 'iygPerlin.GetSimplexNoise',
+                        id: 'iygPerlin.getSimplexNoise',
                         default: 'Get simplex noise with seed [SEED] at x [X], y [Y], and z [Z]',
                         description: 'Get simplex noise with a specified seed at a specified x and y and z.'
                     }),
