@@ -2,6 +2,7 @@ const formatMessage = require('format-message');
 const BlockType = require('../../extension-support/block-type');
 const ArgumentType = require('../../extension-support/argument-type');
 const MersenneTwister = require('mersenne-twister');
+const { createNoise3D } = require('simplex-noise');
 /**
  * Class for perlin noise extension.
  * @constructor
@@ -11,7 +12,7 @@ const MersenneTwister = require('mersenne-twister');
 
 class iygPerlin {
     constructor(runtime) {
-        console.log("perlin noise extension loading oh ma gah");
+        console.log("nosie ext");
         /**
          * The runtime instantiating this block package.
          * @type {Runtime}
@@ -48,6 +49,33 @@ class iygPerlin {
                         OCTAVE: {
                             type: ArgumentType.NUMBER,
                             defaultValue: 4
+                        },
+                        X: {
+                            type: ArgumentType.NUMBER,
+                            defaultValue: 0
+                        },
+                        Y: {
+                            type: ArgumentType.NUMBER,
+                            defaultValue: 0
+                        },
+                        Z: {
+                            type: ArgumentType.NUMBER,
+                            defaultValue: 0
+                        }
+                    }
+                },
+                {
+                    opcode: 'GetSimplexNoise',
+                    blockType: BlockType.REPORTER,
+                    text: formatMessage({
+                        id: 'iygPerlin.GetSimplexNoise',
+                        default: 'Get simplex noise with seed [SEED] at x [X], y [Y], and z [Z]',
+                        description: 'Get simplex noise with a specified seed at a specified x and y and z.'
+                    }),
+                    arguments: {
+                        SEED: {
+                            type: ArgumentType.NUMBER,
+                            defaultValue: 123
                         },
                         X: {
                             type: ArgumentType.NUMBER,
@@ -166,7 +194,16 @@ class iygPerlin {
         }
         }
         return r % 1.0;
+    }
 
+    getSimplexNoise(args) {
+        const seed = args.SEED;
+        const x = args.X;
+        const y = args.Y;
+        const z = args.Z;
+        this.generator.init_seed(seed);
+        const noise = createNoise3D(this.generator.random_incl.bind(this.generator));
+        return noise(x, y, z);
     }
 }
 
