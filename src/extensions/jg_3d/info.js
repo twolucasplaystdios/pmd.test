@@ -75,7 +75,7 @@ function createCommandBlock(opcode, text, args, icon, hidden) {
     }
     return obj;
 }
-function createReporterBlock(disablemonitor, opcode, text, args, icon) {
+function createReporterBlock(opcode, text, args, icon, disablemonitor) {
     if (!disablemonitor){var disableMonitor = false}
     const obj = {
         opcode: opcode,
@@ -356,29 +356,29 @@ module.exports = {
             NAME: infoArgument("Object1"),
         }),
         seperator,
-        createReporterBlock(true, "rayCollision", "create raycast that starts at x [X] y [Y] z [Z] with direction x [DX] y [DY] z [DZ] and return the name of the first object it collides with", {
+        createReporterBlock("rayCollision", "create raycast that starts at x [X] y [Y] z [Z] with direction x [DX] y [DY] z [DZ] and return the name of the first object it collides with", {
             X: infoArgument(0),
             Y: infoArgument(0),
             Z: infoArgument(0),
             DX: infoArgument(0),
             DY: infoArgument(0),
             DZ: infoArgument(0),
-        }),
+        }, null, true),
         seperator, 
-        createReporterBlock(true, "rayCollisionArray", "create raycast that starts at x [X] y [Y] z [Z] with direction x [DX] y [DY] z [DZ] and return the full array of object it collides with", {
+        createReporterBlock("rayCollisionArray", "create raycast that starts at x [X] y [Y] z [Z] with direction x [DX] y [DY] z [DZ] and return the full array of object it collides with", {
             X: infoArgument(0),
             Y: infoArgument(0),
             Z: infoArgument(0),
             DX: infoArgument(0),
             DY: infoArgument(0),
             DZ: infoArgument(0),
-        }),
+        }, null, true),
         seperator, 
-        createReporterBlock(true, "rayCollisionCamera", "create raycast that starts from the camera's middle and return the name of the first object it collides with", {
-        }),
+        createReporterBlock("rayCollisionCamera", "create raycast that starts from the camera's middle and return the name of the first object it collides with", {
+        }, null, true),
         seperator, 
-        createReporterBlock(true, "rayCollisionCameraArray", "create raycast that starts from the camera's middle and return the full array of object it collides with", {
-        })
+        createReporterBlock("rayCollisionCameraArray", "create raycast that starts from the camera's middle and return the full array of object it collides with", {
+        }, null, true)
     ],
     menus: {
         cameraType: infoMenu(["perspective", "orthographic"]),
