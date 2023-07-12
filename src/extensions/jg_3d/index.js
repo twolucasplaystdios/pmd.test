@@ -775,6 +775,15 @@ class Jg3DBlocks {
         console.log(JSON.stringify(intersects));
         return first.object.name;
     }
+    rayCollisionCamera(args) {
+        const ray = new Three.Raycaster();
+        ray.setFromCamera(new THREE.Vector2(), this.camera);
+        const intersects = ray.intersectObjects(this.scene.children, true);
+        if (intersects.length === 0) return "";
+        const first = intersects[0];
+        console.log(JSON.stringify(intersects));
+        return first.object.name;
+    }
     rayCollisionArray(args) {
         const ray = new Three.Raycaster();
         const origin = {
@@ -790,6 +799,15 @@ class Jg3DBlocks {
         ray.set(new Three.Vector3(origin.x, origin.y, origin.z), new Three.Vector3(direction.x, direction.y, direction.z));
         const intersects = ray.intersectObjects(this.scene.children, true);
         if (intersects.length === 0) return JSON.stringify([]);
+        const first = intersects[0];
+        console.log(JSON.stringify(intersects));
+        return JSON.stringify(intersects);
+    }
+    rayCollisionCameraArray(args) {
+        const ray = new Three.Raycaster();
+        ray.setFromCamera(new THREE.Vector2(), this.camera);
+        const intersects = ray.intersectObjects(this.scene.children, true);
+        if (intersects.length === 0) return "";
         const first = intersects[0];
         console.log(JSON.stringify(intersects));
         return JSON.stringify(intersects);

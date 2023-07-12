@@ -371,7 +371,15 @@ module.exports = {
             DX: infoArgument(0),
             DY: infoArgument(0),
             DZ: infoArgument(0),
+        }),
+        seperator, 
+        createReporterBlock("rayCollisionCamera", "create raycast that starts from the camera's middle and return the name of the first object it collides with", {
+        }),
+        seperator, 
+        createReporterBlock("rayCollisionCameraArray", "create raycast that starts from the camera's middle and return the full array of object it collides with", {
         })
+    ],
+    ],
     ],
     menus: {
         cameraType: infoMenu(["perspective", "orthographic"]),
