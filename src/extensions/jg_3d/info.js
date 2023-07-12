@@ -76,6 +76,7 @@ function createCommandBlock(opcode, text, args, icon, hidden) {
     return obj;
 }
 function createReporterBlock(disablemonitor, opcode, text, args, icon) {
+    if (!disablemonitor){var disableMonitor = false}
     const obj = {
         opcode: opcode,
         text: text ? text : opcode,
