@@ -360,6 +360,15 @@ class Jg3DBlocks {
         this.renderer.penguinMod.backgroundOpacity = backgroundOpac;
         this.renderer.setClearColor(this.renderer.penguinMod.backgroundColor, backgroundOpac);
     }
+    show3d() {
+        this.renderer.domElement.style.display = ""
+    }
+    hide3d() {
+        this.renderer.domElement.style.display = "none"
+    }
+    is3dVisible() {
+        return this.renderer.domElement.style.display === ""||this.renderer.domElement.style.display==="absolute"
+    }
 
     getCameraZoom() {
         if (!this.camera) return "";
