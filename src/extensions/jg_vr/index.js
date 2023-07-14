@@ -2,6 +2,8 @@ const BlockType = require('../../extension-support/block-type');
 const ArgumentType = require('../../extension-support/argument-type');
 const Cast = require('../../util/cast');
 
+const SESSION_TYPE = "immersive-vr";
+
 /**
  * Class of 2025
  * @constructor
@@ -64,7 +66,7 @@ class jgVr {
     }
     async _createImmersive() {
         if (!('xr' in navigator)) return false;
-        const session = await navigator.xr.requestSession("immersive-ar");
+        const session = await navigator.xr.requestSession(SESSION_TYPE);
         this.session = session;
         this.open = true;
 
@@ -83,7 +85,7 @@ class jgVr {
 
     isSupported() {
         if (!('xr' in navigator)) return false;
-        return navigator.xr.isSessionSupported("immersive-vr");
+        return navigator.xr.isSessionSupported(SESSION_TYPE);
     }
     isOpened() {
         return this.open;
