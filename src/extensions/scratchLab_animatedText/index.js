@@ -437,13 +437,13 @@ class Scratch3TextBlocks {
 
     getWidth (args, util) {
         const textSkin = this._getTextSkin(util.target);
-
+        if (typeof textSkin.width !== 'number') return 0;
         return textSkin.width;
     }
 
     getHeight (args, util) {
         const textSkin = this._getTextSkin(util.target);
-
+        if (typeof textSkin.height !== 'number') return 0;
         return textSkin.height;
     }
 
