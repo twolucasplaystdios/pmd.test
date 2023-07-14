@@ -64,14 +64,14 @@ class jgVr {
     }
     async _createImmersive() {
         if (!('xr' in navigator)) return false;
-        const session = await navigator.xr.requestSession("immersive-vr");
+        const session = await navigator.xr.requestSession("immersive-ar");
         this.session = session;
         this.open = true;
 
         session.addEventListener("end", () => {
             this.open = false;
         });
-        
+
         const gl = this._getContext();
         if (!gl) return session;
 
