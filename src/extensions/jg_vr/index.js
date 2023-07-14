@@ -13,6 +13,8 @@ class jgVr {
          * @type {runtime}
          */
         this.runtime = runtime;
+        this.open = false;
+        this.session = null;
     }
 
     /**
@@ -29,13 +31,70 @@ class jgVr {
                     text: 'is vr supported?',
                     blockType: BlockType.BOOLEAN,
                     disableMonitor: true
-                }
+                },
+                {
+                    opcode: 'createSession',
+                    text: 'create vr session',
+                    blockType: BlockType.COMMAND
+                },
+                {
+                    opcode: 'closeSession',
+                    text: 'close vr session',
+                    blockType: BlockType.COMMAND
+                },
+                {
+                    opcode: 'isOpened',
+                    text: 'is vr open?',
+                    blockType: BlockType.BOOLEAN,
+                    disableMonitor: true
+                },
             ]
         };
     }
 
+    _getCanvas() {
+        if (!this.runtime) return;
+        if (!this.runtime.renderer) return;
+        return this.runtime.renderer.canvas;
+    }
+    async _createImmersive() {
+        if (!('xr' in navigator)) return false;
+        const session = await navigator.xr.requestSession("immersive-vr");
+        this.session = session;
+        this.open = true;
+
+        session.addEventListener("end", () => {
+            this.open = false;
+        });
+
+        const canvas = this._getCanvas();
+        if (!canvas) return session;
+
+        const gl = canvas.getContext("webgl", { xrCompatible: true });
+
+        session.updateRenderState({
+            baseLayer: new XRWebGLLayer(session, gl)
+        });
+        return session;
+    }
+
     isSupported() {
-        return ('xr' in navigator);
+        if (!('xr' in navigator)) return false;
+        return navigator.xr.isSessionSupported("immersive-vr");
+    }
+    isOpened() {
+        return this.open;
+    }
+
+    createSession() {
+        if (this.open) return;
+        this.open = true;
+        return this._createImmersive();
+    }
+    closeSession() {
+        if (!this.session) return;
+        this.open = false;
+        return this.session.end();
     }
 }
 
