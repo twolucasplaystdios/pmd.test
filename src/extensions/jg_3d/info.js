@@ -184,6 +184,9 @@ module.exports = {
         createCommandBlock('setSceneBackgroundOpacity', "set background transparency to [OPACITY]%", {
             OPACITY: infoArgument(100)
         }),
+        createCommandBlock("show3d", "show the 3d scene", {}),
+        createCommandBlock("hide3d", "hide the 3d scene", {}),
+        createBooleanBlock("is3dVisible", "is the 3d scene visible?", {}),
 
         infoLabel("Camera controls"),
 
