@@ -70,6 +70,7 @@ class jgVr {
     }
 
     _disposeImmersive() {
+        this.session = null;
         const gl = this._getContext();
         if (!gl) return;
         // bind frame buffer to canvas
