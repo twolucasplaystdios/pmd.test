@@ -2,7 +2,7 @@ const BlockType = require('../../extension-support/block-type');
 const ArgumentType = require('../../extension-support/argument-type');
 const Cast = require('../../util/cast');
 
-const SESSION_TYPE = "immersive-ar";
+const SESSION_TYPE = "immersive-vr";
 
 /**
  * Class of 2025
@@ -64,22 +64,52 @@ class jgVr {
         if (!this.runtime.renderer) return;
         return this.runtime.renderer.gl;
     }
+    _getRenderer() {
+        if (!this.runtime) return;
+        return this.runtime.renderer;
+    }
+
+    _disposeImmersive() {
+        const gl = this._getContext();
+        if (!gl) return;
+        // bind frame buffer to canvas
+        gl.bindFramebuffer(gl.FRAMEBUFFER, null);
+        // reset renderer info
+        const renderer = this._getRenderer();
+        if (!renderer) return;
+        renderer.xrEnabled = false;
+        renderer.xrLayer = null;
+    }
     async _createImmersive() {
         if (!('xr' in navigator)) return false;
+        const gl = this._getContext();
+        if (!gl) return;
+        const renderer = this._getRenderer();
+        if (!renderer) return;
+
+        await gl.makeXRCompatible();
         const session = await navigator.xr.requestSession(SESSION_TYPE);
         this.session = session;
         this.open = true;
 
+        renderer.xrEnabled = true;
+
+        // we need to make sure stuff is back to normal once the vr session is done
+        // but this isnt always triggered by the close session block
+        // the user can also close it themselves, so we need to handle that
+        // this is also triggered by the close session block btw so we dont need
+        // to repeat
         session.addEventListener("end", () => {
             this.open = false;
+            this._disposeImmersive();
         });
 
-        const gl = this._getContext();
-        if (!gl) return session;
-
+        // set render state to use a new layer for the vr session
+        // renderer will handle this
         session.updateRenderState({
             baseLayer: new XRWebGLLayer(session, gl)
         });
+        renderer.xrLayer = session.renderState.baseLayer;
         return session;
     }
 
@@ -93,12 +123,12 @@ class jgVr {
 
     createSession() {
         if (this.open) return;
-        this.open = true;
+        if (this.session) return;
         return this._createImmersive();
     }
     closeSession() {
-        if (!this.session) return;
         this.open = false;
+        if (!this.session) return;
         return this.session.end();
     }
 }
