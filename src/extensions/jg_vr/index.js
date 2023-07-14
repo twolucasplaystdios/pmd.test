@@ -2,7 +2,7 @@ const BlockType = require('../../extension-support/block-type');
 const ArgumentType = require('../../extension-support/argument-type');
 const Cast = require('../../util/cast');
 
-const SESSION_TYPE = "immersive-vr";
+const SESSION_TYPE = "immersive-ar";
 
 /**
  * Class of 2025
