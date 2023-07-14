@@ -367,7 +367,7 @@ class Jg3DBlocks {
         this.renderer.domElement.style.display = "none"
     }
     is3dVisible() {
-        return this.renderer.domElement.style.display === ""
+        return this.renderer.domElement.style.display === ""||this.renderer.domElement.style.display==="absolute"
     }
 
     getCameraZoom() {
