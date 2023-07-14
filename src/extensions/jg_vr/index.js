@@ -57,6 +57,11 @@ class jgVr {
         if (!this.runtime.renderer) return;
         return this.runtime.renderer.canvas;
     }
+    _getContext() {
+        if (!this.runtime) return;
+        if (!this.runtime.renderer) return;
+        return this.runtime.renderer.gl;
+    }
     async _createImmersive() {
         if (!('xr' in navigator)) return false;
         const session = await navigator.xr.requestSession("immersive-vr");
@@ -66,11 +71,9 @@ class jgVr {
         session.addEventListener("end", () => {
             this.open = false;
         });
-
-        const canvas = this._getCanvas();
-        if (!canvas) return session;
-
-        const gl = canvas.getContext("webgl", { xrCompatible: true });
+        
+        const gl = this._getContext();
+        if (!gl) return session;
 
         session.updateRenderState({
             baseLayer: new XRWebGLLayer(session, gl)
