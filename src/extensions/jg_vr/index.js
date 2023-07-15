@@ -43,10 +43,8 @@ class jgVr {
         this.open = false;
         this.session = null;
 
-        /**
-         * User's device containing info about the controllers and headset.
-         */
-        this.device = null;
+        this.view = null;
+        this.localSpace = null;
     }
 
     /**
@@ -257,7 +255,23 @@ class jgVr {
         const drawFrame = (_, frame) => {
             // breaks the loop once the session has ended
             if (!this.open) return;
-            this.device = frame.device;
+            // get view info
+            const viewerPose = frame.getViewerPose(this.localSpace);
+            const transform = viewerPose.transform;
+            // set view info
+            this.view = {
+                position: [
+                    transform.position.x,
+                    transform.position.y,
+                    transform.position.z
+                ],
+                quaternion: [
+                    transform.orientation.w,
+                    transform.orientation.x,
+                    transform.orientation.y,
+                    transform.orientation.z
+                ]
+            }
             // force renderer to draw a new frame
             // otherwise we would only actually draw outside of this loop
             // which just ends up showing nothing
@@ -268,6 +282,13 @@ class jgVr {
             session.requestAnimationFrame(drawFrame);
         }
         session.requestAnimationFrame(drawFrame);
+
+        // reference space
+        session.requestReferenceSpace("local").then(space => {
+            this.localSpace = space;
+            // TODO: add "when position reset" hat?
+            //     done with space.addEventListener("reset")
+        });
 
         return session;
     }
@@ -296,22 +317,22 @@ class jgVr {
     headsetPosition(args) {
         if (!this.open) return;
         if (!this.session) return;
-        if (!this.device) return;
+        if (!this.view) return;
         const vector3 = Cast.toString(args.VECTOR3).toLowerCase().trim();
         if (!this._isVector3Menu(vector3)) return;
         const axisArray = ['x', 'y', 'z'];
         const idx = axisArray.indexOf(vector3);
-        return this.device.position[idx];
+        return this.view.position[idx];
     }
     headsetRotation(args) {
         if (!this.open) return 0;
         if (!this.session) return 0;
-        if (!this.device) return 0;
+        if (!this.view) return 0;
         const vector3 = Cast.toString(args.VECTOR3).toLowerCase().trim();
         if (!this._isVector3Menu(vector3)) return 0;
         const axisArray = ['x', 'y', 'z'];
         const idx = axisArray.indexOf(vector3);
-        const quaternion = this.device.quaternion;
+        const quaternion = this.view.quaternion;
         const euler = quaternionToEuler(quaternion);
         return toDeg(euler[idx]);
     }
