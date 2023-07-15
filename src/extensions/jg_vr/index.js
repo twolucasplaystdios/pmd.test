@@ -107,11 +107,14 @@ class jgVr {
 
         // set render state to use a new layer for the vr session
         // renderer will handle this
+        const layer = new XRWebGLLayer(session, gl);
         session.updateRenderState({
-            baseLayer: new XRWebGLLayer(session, gl)
+            baseLayer: layer
         });
+        renderer.xrLayer = layer;
+        // for debugging & other extensions, never used by the renderer
         renderer._xrSession = session;
-        renderer.xrLayer = session.renderState.baseLayer;
+
         return session;
     }
 
