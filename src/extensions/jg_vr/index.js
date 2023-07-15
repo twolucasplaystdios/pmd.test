@@ -110,6 +110,7 @@ class jgVr {
         session.updateRenderState({
             baseLayer: new XRWebGLLayer(session, gl)
         });
+        renderer._xrSession = session;
         renderer.xrLayer = session.renderState.baseLayer;
         return session;
     }
