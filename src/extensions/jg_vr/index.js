@@ -267,8 +267,8 @@ class jgVr {
                 ],
                 quaternion: [
                     transform.orientation.w,
-                    transform.orientation.x,
                     transform.orientation.y,
+                    transform.orientation.x,
                     transform.orientation.z
                 ]
             }
