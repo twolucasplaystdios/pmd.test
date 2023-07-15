@@ -27,6 +27,7 @@ class jgVr {
             id: 'jgVr',
             name: 'Virtual Reality',
             color1: '#3888cf',
+            color2: '#2f72ad',
             blocks: [
                 {
                     opcode: 'isSupported',
@@ -50,10 +51,92 @@ class jgVr {
                     blockType: BlockType.BOOLEAN,
                     disableMonitor: true
                 },
-            ]
+                '---',
+                {
+                    opcode: 'headsetPosition',
+                    text: 'headset position [VECTOR3]',
+                    blockType: BlockType.REPORTER,
+                    disableMonitor: true,
+                    arguments: {
+                        VECTOR3: {
+                            type: ArgumentType.STRING,
+                            menu: 'vector3'
+                        }
+                    }
+                },
+                {
+                    opcode: 'headsetRotation',
+                    text: 'headset rotation [VECTOR3]',
+                    blockType: BlockType.REPORTER,
+                    disableMonitor: true,
+                    arguments: {
+                        VECTOR3: {
+                            type: ArgumentType.STRING,
+                            menu: 'vector3'
+                        }
+                    }
+                },
+                '---',
+                {
+                    opcode: 'controllerPosition',
+                    text: 'controller #[COUNT] position [VECTOR3]',
+                    blockType: BlockType.REPORTER,
+                    disableMonitor: true,
+                    arguments: {
+                        COUNT: {
+                            type: ArgumentType.NUMBER,
+                            menu: 'count'
+                        },
+                        VECTOR3: {
+                            type: ArgumentType.STRING,
+                            menu: 'vector3'
+                        }
+                    }
+                },
+                {
+                    opcode: 'controllerRotation',
+                    text: 'controller #[COUNT] rotation [VECTOR3]',
+                    blockType: BlockType.REPORTER,
+                    disableMonitor: true,
+                    arguments: {
+                        COUNT: {
+                            type: ArgumentType.NUMBER,
+                            menu: 'count'
+                        },
+                        VECTOR3: {
+                            type: ArgumentType.STRING,
+                            menu: 'vector3'
+                        }
+                    }
+                },
+            ],
+            menus: {
+                vector3: {
+                    acceptReporters: true,
+                    items: [
+                        "x",
+                        "y",
+                        "z",
+                    ].map(item => ({ text: item, value: item }))
+                },
+                count: {
+                    acceptReporters: true,
+                    items: [
+                        "1",
+                        "2",
+                    ].map(item => ({ text: item, value: item }))
+                },
+            }
         };
     }
 
+    // menus
+    _isVector3Menu(option) {
+        const normalized = Cast.toString(option).toLowerCase().trim();
+        return ['x', 'y', 'z'].includes(normalized);
+    }
+
+    // util
     _getCanvas() {
         if (!this.runtime) return;
         if (!this.runtime.renderer) return;
@@ -107,7 +190,11 @@ class jgVr {
 
         // set render state to use a new layer for the vr session
         // renderer will handle this
-        const layer = new XRWebGLLayer(session, gl);
+        const layer = new XRWebGLLayer(session, gl, {
+            alpha: true,
+            stencil: true,
+            antialias: false,
+        });
         session.updateRenderState({
             baseLayer: layer
         });
@@ -115,9 +202,19 @@ class jgVr {
         // for debugging & other extensions, never used by the renderer
         renderer._xrSession = session;
 
+        // setup render loop
+        const drawFrame = () => {
+            if (!this.open) return;
+            renderer.dirty = true;
+            renderer.draw();
+            session.requestAnimationFrame(drawFrame);
+        }
+        session.requestAnimationFrame(drawFrame);
+
         return session;
     }
 
+    // blocks
     isSupported() {
         if (!('xr' in navigator)) return false;
         return navigator.xr.isSessionSupported(SESSION_TYPE);
@@ -136,6 +233,8 @@ class jgVr {
         if (!this.session) return;
         return this.session.end();
     }
+
+    // inputs
 }
 
 module.exports = jgVr;
