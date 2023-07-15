@@ -4,6 +4,31 @@ const Cast = require('../../util/cast');
 
 const SESSION_TYPE = "immersive-vr";
 
+// WebXR unfortunately does not give us Euler angles easily
+// so lets do it ourselves
+// thanks to twoerner94 for quaternion-to-euler on npm
+function quaternionToEuler(quat) {
+    const q0 = quat[0];
+    const q1 = quat[1];
+    const q2 = quat[2];
+    const q3 = quat[3];
+
+    const Rx = Math.atan2(2 * (q0 * q1 + q2 * q3), 1 - (2 * (q1 * q1 + q2 * q2)));
+    const Ry = Math.asin(2 * (q0 * q2 - q3 * q1));
+    const Rz = Math.atan2(2 * (q0 * q3 + q1 * q2), 1 - (2 * (q2 * q2 + q3 * q3)));
+
+    const euler = [Rx, Ry, Rz];
+
+    return euler;
+};
+
+function toRad(deg) {
+    return deg * (Math.PI / 180);
+}
+function toDeg(rad) {
+    return rad * (180 / Math.PI);
+}
+
 /**
  * Class of 2025
  * @constructor
@@ -17,6 +42,11 @@ class jgVr {
         this.runtime = runtime;
         this.open = false;
         this.session = null;
+
+        /**
+         * User's device containing info about the controllers and headset.
+         */
+        this.device = null;
     }
 
     /**
@@ -29,6 +59,7 @@ class jgVr {
             color1: '#3888cf',
             color2: '#2f72ad',
             blocks: [
+                // CORE
                 {
                     opcode: 'isSupported',
                     text: 'is vr supported?',
@@ -51,7 +82,7 @@ class jgVr {
                     blockType: BlockType.BOOLEAN,
                     disableMonitor: true
                 },
-                '---',
+                '---', // HEADSET POSITION
                 {
                     opcode: 'headsetPosition',
                     text: 'headset position [VECTOR3]',
@@ -76,7 +107,7 @@ class jgVr {
                         }
                     }
                 },
-                '---',
+                '---', // CONTROLLER INPUT
                 {
                     opcode: 'controllerPosition',
                     text: 'controller #[COUNT] position [VECTOR3]',
@@ -109,6 +140,19 @@ class jgVr {
                         }
                     }
                 },
+                '---', // HELPER BLOCKS
+                {
+                    opcode: 'placement169',
+                    text: '[SIDE] x placement',
+                    blockType: BlockType.REPORTER,
+                    disableMonitor: true,
+                    arguments: {
+                        SIDE: {
+                            type: ArgumentType.STRING,
+                            menu: 'side'
+                        }
+                    }
+                },
             ],
             menus: {
                 vector3: {
@@ -124,6 +168,13 @@ class jgVr {
                     items: [
                         "1",
                         "2",
+                    ].map(item => ({ text: item, value: item }))
+                },
+                side: {
+                    acceptReporters: false,
+                    items: [
+                        "left",
+                        "right",
                     ].map(item => ({ text: item, value: item }))
                 },
             }
@@ -203,10 +254,17 @@ class jgVr {
         renderer._xrSession = session;
 
         // setup render loop
-        const drawFrame = () => {
+        const drawFrame = (_, frame) => {
+            // breaks the loop once the session has ended
             if (!this.open) return;
+            this.device = frame.device;
+            // force renderer to draw a new frame
+            // otherwise we would only actually draw outside of this loop
+            // which just ends up showing nothing
+            // since rendering only happens in session.requestAnimationFrame
             renderer.dirty = true;
             renderer.draw();
+            // loop again
             session.requestAnimationFrame(drawFrame);
         }
         session.requestAnimationFrame(drawFrame);
@@ -235,6 +293,46 @@ class jgVr {
     }
 
     // inputs
+    headsetPosition(args) {
+        if (!this.open) return;
+        if (!this.session) return;
+        if (!this.device) return;
+        const vector3 = Cast.toString(args.VECTOR3).toLowerCase().trim();
+        if (!this._isVector3Menu(vector3)) return;
+        const axisArray = ['x', 'y', 'z'];
+        const idx = axisArray.indexOf(vector3);
+        return this.device.position[idx];
+    }
+    headsetRotation(args) {
+        if (!this.open) return 0;
+        if (!this.session) return 0;
+        if (!this.device) return 0;
+        const vector3 = Cast.toString(args.VECTOR3).toLowerCase().trim();
+        if (!this._isVector3Menu(vector3)) return 0;
+        const axisArray = ['x', 'y', 'z'];
+        const idx = axisArray.indexOf(vector3);
+        const quaternion = this.device.quaternion;
+        const euler = quaternionToEuler(quaternion);
+        return toDeg(euler[idx]);
+    }
+
+    // helper
+    placement169(args) {
+        const side = Cast.toString(args.SIDE).toLowerCase().trim();
+
+        const width = this.runtime.stageWidth;
+        const multX = width / 640;
+
+        // this was found with experimentation
+        // please tell me if stuff needs to be added for certain cases
+        const valueR = ((640 / 4) - 40) * multX;
+        const valueL = 0 - valueR;
+
+        if (side === 'right') {
+            return valueR;
+        }
+        return valueL;
+    }
 }
 
 module.exports = jgVr;
