@@ -1,5 +1,6 @@
 const ScratchCommon = require('./tw-extension-api-common');
 const AsyncLimiter = require('../util/async-limiter');
+const createTranslate = require('./tw-l10n');
 
 /**
  * Parse a URL object or return null.
@@ -98,6 +99,8 @@ const setupUnsandboxedExtensionAPI = vm => new Promise(resolve => {
         }
         location.href = url;
     };
+
+    Scratch.translate = createTranslate(vm);
 
     global.Scratch = Scratch;
     global.ScratchExtensions = require('./tw-scratchx-compatibility-layer');
