@@ -76,8 +76,10 @@ const builtinExtensions = {
     jgClones: () => require("../extensions/jg_clones"),
     // jgTween: epic animation
     jgTween: () => require("../extensions/jg_tween"),
-    // jg3d: holy sh
+    // jg3d: damn daniel
     jg3d: () => require("../extensions/jg_3d"),
+    // jg3dVr: epic
+    jg3dVr: () => require("../extensions/jg_3dVr"),
     // jgVr: excuse to use vr headset lol!
     jgVr: () => require("../extensions/jg_vr"),
     // jgInterfaces: easier UI
