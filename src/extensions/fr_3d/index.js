@@ -37,7 +37,7 @@ class Fr3DBlocks {
     getInfo() {
         return {
             id: 'fr3d',
-            name: '3d Physics',
+            name: '3D Physics',
             color1: '#D066FE',
             color2: '#8000BC',
             blockIconURI: Icon,
