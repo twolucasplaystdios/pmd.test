@@ -86,6 +86,23 @@ class Jg3DVrBlocks {
                     blockType: BlockType.BOOLEAN,
                     disableMonitor: true
                 },
+                '---',
+                {
+                    opcode: 'attachObject',
+                    text: 'attach camera to object named [OBJECT]',
+                    blockType: BlockType.COMMAND,
+                    arguments: {
+                        OBJECT: {
+                            type: ArgumentType.STRING,
+                            defaultValue: "Object1"
+                        }
+                    }
+                },
+                {
+                    opcode: 'detachObject',
+                    text: 'detach camera from object',
+                    blockType: BlockType.COMMAND
+                },
             ]
         };
     }
@@ -196,6 +213,23 @@ class Jg3DVrBlocks {
         this.open = false;
         if (!this.session) return;
         return this.session.end();
+    }
+
+    // extra
+    attachObject(args) {
+        const three = this._3d;
+        if (!three.scene) return;
+        if (!three.camera) return;
+        const name = Cast.toString(args.NAME);
+        const object = three.scene.getObjectByName(name);
+        if (!object) return;
+        object.add(three.camera);
+    }
+    detachObject() {
+        const three = this._3d;
+        if (!three.scene) return;
+        if (!three.camera) return;
+        three.scene.add(three.camera);
     }
 }
 
