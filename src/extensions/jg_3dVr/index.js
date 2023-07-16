@@ -28,6 +28,14 @@ function toRad(deg) {
 function toDeg(rad) {
     return rad * (180 / Math.PI);
 }
+function toDegRounding(rad) {
+    const result = toDeg(rad);
+    if (!String(result).includes('.')) return result;
+    const split = String(result).split('.');
+    const endingDecimals = split[1].substring(0, 3);
+    if ((endingDecimals === '999') && (split[1].charAt(3) === '9')) return Number(split[0]) + 1;
+    return Number(split[0] + '.' + endingDecimals);
+}
 
 /**
  * Class for 3D VR blokckes
@@ -103,7 +111,57 @@ class Jg3DVrBlocks {
                     text: 'detach camera from object',
                     blockType: BlockType.COMMAND
                 },
-            ]
+                '---',
+                {
+                    opcode: 'getControllerPosition',
+                    text: 'controller #[INDEX] position [VECTOR3]',
+                    blockType: BlockType.REPORTER,
+                    disableMonitor: true,
+                    arguments: {
+                        INDEX: {
+                            type: ArgumentType.NUMBER,
+                            menu: 'count'
+                        },
+                        VECTOR3: {
+                            type: ArgumentType.STRING,
+                            menu: 'vector3'
+                        }
+                    }
+                },
+                {
+                    opcode: 'getControllerRotation',
+                    text: 'controller #[INDEX] rotation [VECTOR3]',
+                    blockType: BlockType.REPORTER,
+                    disableMonitor: true,
+                    arguments: {
+                        INDEX: {
+                            type: ArgumentType.NUMBER,
+                            menu: 'count'
+                        },
+                        VECTOR3: {
+                            type: ArgumentType.STRING,
+                            menu: 'vector3'
+                        }
+                    }
+                },
+            ],
+            menus: {
+                vector3: {
+                    acceptReporters: true,
+                    items: [
+                        "x",
+                        "y",
+                        "z",
+                    ].map(item => ({ text: item, value: item }))
+                },
+                count: {
+                    acceptReporters: true,
+                    items: [
+                        "1",
+                        "2",
+                    ].map(item => ({ text: item, value: item }))
+                }
+            }
         };
     }
 
@@ -230,6 +288,37 @@ class Jg3DVrBlocks {
         if (!three.scene) return;
         if (!three.camera) return;
         three.scene.add(three.camera);
+    }
+
+    // inputs
+    getControllerPosition(args) {
+        const three = this._3d;
+        if (!three.scene) return "";
+        const index = Cast.toNumber(args.INDEX) - 1;
+        const renderer = this._getRenderer();
+        if (!renderer) return "";
+        const controller = renderer.xr.getController(index);
+        if (!controller) return "";
+        const v = args.VECTOR3;
+        if (!v) return "";
+        if (!["x", "y", "z"].includes(v)) return "";
+        return Cast.toNumber(controller.position[v]);
+    }
+    getControllerRotation(args) {
+        const three = this._3d;
+        if (!three.scene) return "";
+        const index = Cast.toNumber(args.INDEX) - 1;
+        const renderer = this._getRenderer();
+        if (!renderer) return "";
+        const controller = renderer.xr.getController(index);
+        if (!controller) return "";
+        const v = args.VECTOR3;
+        if (!v) return "";
+        if (!["x", "y", "z"].includes(v)) return "";
+        const rotation = Cast.toNumber(controller.rotation[v]);
+        // rotation is in radians, convert to degrees but round it
+        // a bit so that we get 46 instead of 45.999999999999996
+        return toDegRounding(rotation);
     }
 }
 
