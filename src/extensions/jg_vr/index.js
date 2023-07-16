@@ -45,6 +45,12 @@ class jgVr {
 
         this.view = null;
         this.localSpace = null;
+
+        /**
+         * If true, VR sessions will begin split
+         * If false, VR sessions will begin with no split
+         */
+        this.splitState = false;
     }
 
     /**
@@ -79,6 +85,29 @@ class jgVr {
                     text: 'is vr open?',
                     blockType: BlockType.BOOLEAN,
                     disableMonitor: true
+                },
+                '---', // SCREEN SPLITTING SETTINGS
+                {
+                    opcode: 'enableDisableSplitting',
+                    text: 'turn auto-splitting [ONOFF]',
+                    blockType: BlockType.COMMAND,
+                    arguments: {
+                        ONOFF: {
+                            type: ArgumentType.STRING,
+                            menu: 'onoff'
+                        }
+                    }
+                },
+                {
+                    opcode: 'splittingOffset',
+                    text: 'set auto-split offset to [PX] pixels',
+                    blockType: BlockType.COMMAND,
+                    arguments: {
+                        PX: {
+                            type: ArgumentType.NUMBER,
+                            defaultValue: 40
+                        }
+                    }
                 },
                 '---', // HEADSET POSITION
                 {
@@ -175,6 +204,13 @@ class jgVr {
                         "right",
                     ].map(item => ({ text: item, value: item }))
                 },
+                onoff: {
+                    acceptReporters: false,
+                    items: [
+                        "on",
+                        "off",
+                    ].map(item => ({ text: item, value: item }))
+                },
             }
         };
     }
@@ -183,6 +219,10 @@ class jgVr {
     _isVector3Menu(option) {
         const normalized = Cast.toString(option).toLowerCase().trim();
         return ['x', 'y', 'z'].includes(normalized);
+    }
+    _onOffBoolean(onoff) {
+        const normalized = Cast.toString(onoff).toLowerCase().trim();
+        return normalized === 'on';
     }
 
     // util
@@ -211,6 +251,7 @@ class jgVr {
         const renderer = this._getRenderer();
         if (!renderer) return;
         renderer.xrEnabled = false;
+        renderer.xrSplitting = false;
         renderer.xrLayer = null;
     }
     async _createImmersive() {
@@ -226,6 +267,7 @@ class jgVr {
         this.open = true;
 
         renderer.xrEnabled = true;
+        renderer.xrSplitting = this.splitState;
 
         // we need to make sure stuff is back to normal once the vr session is done
         // but this isnt always triggered by the close session block
@@ -311,6 +353,28 @@ class jgVr {
         this.open = false;
         if (!this.session) return;
         return this.session.end();
+    }
+
+    // splitting blocks
+    enableDisableSplitting(args) {
+        const renderer = this._getRenderer();
+        if (!renderer) return;
+
+        const boolean = this._onOffBoolean(args.ONOFF);
+        this.splitState = boolean;
+        // setting xrSplitting outside of XR mode WILL work
+        // so prevent this by just checking if we ARE in XR rendering mode
+        if (!renderer.xrEnabled) return;
+        renderer.xrSplitting = this.splitState;
+    }
+    splittingOffset(args) {
+        const renderer = this._getRenderer();
+        if (!renderer) return;
+
+        // pixels should be negative
+        // otherwise we push away from the center
+        const pixels = Cast.toNumber(args.PX);
+        renderer.xrSplitOffset = 0 - pixels;
     }
 
     // inputs
