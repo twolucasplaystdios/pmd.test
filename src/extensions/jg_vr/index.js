@@ -379,14 +379,14 @@ class jgVr {
 
     // inputs
     headsetPosition(args) {
-        if (!this.open) return;
-        if (!this.session) return;
-        if (!this.view) return;
+        if (!this.open) return 0;
+        if (!this.session) return 0;
+        if (!this.view) return 0;
         const vector3 = Cast.toString(args.VECTOR3).toLowerCase().trim();
-        if (!this._isVector3Menu(vector3)) return;
+        if (!this._isVector3Menu(vector3)) return 0;
         const axisArray = ['x', 'y', 'z'];
         const idx = axisArray.indexOf(vector3);
-        return this.view.position[idx];
+        return this.view.position[idx] * 100;
     }
     headsetRotation(args) {
         if (!this.open) return 0;
