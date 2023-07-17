@@ -23,6 +23,7 @@ class AudioSource {
     constructor(audioContext, audioGroup, source, data) {
         if (source == null) source = "";
         if (data == null) data = {};
+        
         this.src = source;
         this.volume = data.volume != null ? data.volume : 1;
         this.speed = data.speed != null ? data.speed : 1;
