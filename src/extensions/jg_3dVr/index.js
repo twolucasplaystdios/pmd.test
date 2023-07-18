@@ -46,6 +46,7 @@ class Jg3DVrBlocks {
          * The runtime instantiating this block package.
          */
         this.runtime = runtime;
+        this.open = false;
         this._3d = {}
         this.three = {}
         if (!this.runtime.ext_jg3d) {

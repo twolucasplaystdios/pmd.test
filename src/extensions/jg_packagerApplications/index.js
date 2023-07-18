@@ -174,6 +174,7 @@ class JgPackagerApplicationsBlocks {
                 {
                     opcode: "closeWindow",
                     blockType: BlockType.COMMAND,
+                    isTerminal: true,
                     text: "close window"
                 },
             ]
