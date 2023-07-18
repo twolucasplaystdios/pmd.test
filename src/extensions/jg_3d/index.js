@@ -480,6 +480,7 @@ class Jg3DBlocks {
                             }
                             if (loader === MeshLoaders.OBJ) {
                                 const material = new Three.MeshStandardMaterial({ color: 0xffffff });
+                                material.wireframe = false;
                                 this.updateMaterialOfObjObject(object, material);
                                 this.savedMeshes[url] = object;
                             }
