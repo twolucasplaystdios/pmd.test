@@ -76,6 +76,8 @@ const builtinExtensions = {
     jgClones: () => require("../extensions/jg_clones"),
     // jgTween: epic animation
     jgTween: () => require("../extensions/jg_tween"),
+    // jgPackagerApplications: uuhhhhhhh packager
+    jgPackagerApplications: () => require("../extensions/jg_packagerApplications"),
     // jg3d: damn daniel
     jg3d: () => require("../extensions/jg_3d"),
     // jg3dVr: epic
