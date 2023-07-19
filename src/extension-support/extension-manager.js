@@ -7,8 +7,8 @@ const SecurityManager = require('./tw-security-manager');
 
 const AddonSwitches = require('./extension-addon-switchers');
 
-if (global && !global.location) global.location = {href: 'http://localhost'};
-if (!location.search) location.search = '';
+// if (global && !global.location) global.location = {href: 'http://localhost'};
+// if (!location.search) location.search = '';
 const urlParams = new URLSearchParams(location.search);
 
 const IsLocal = String(location.href).startsWith(`http://localhost:`);

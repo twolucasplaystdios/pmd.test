@@ -1,5 +1,5 @@
-if (global && !global.location) global.location = {href: 'http://localhost'};
-if (!location.search) location.search = '';
+// if (global && !global.location) global.location = {href: 'http://localhost'};
+// if (!location.search) location.search = '';
 
 const VirtualMachine = require('./virtual-machine');
 // if (typeof window !== 'undefined') {

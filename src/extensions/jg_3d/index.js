@@ -605,6 +605,17 @@ class Jg3DBlocks {
         if (!object) return;
         object.scale.set(size.x, size.y, size.z);
     }
+    moveObjectUnits(args) {
+        if (!this.scene) return;
+        const name = Cast.toString(args.NAME);
+        const object = this.scene.getObjectByName(name);
+        if (!object) return;
+
+        const amount = Cast.toNumber(args.AMOUNT);
+        const direction = new Three.Vector3();
+        object.getWorldDirection(direction);
+        object.position.add(direction.multiplyScalar(amount));
+    }
 
     getObjectPosition(args) {
         if (!this.scene) return "";
@@ -745,9 +756,9 @@ class Jg3DBlocks {
 
     MoveCameraBy(args) {
         if (!this.camera) return;
-        const amount = args.AMOUNT;
+        const amount = Cast.toNumber(args.AMOUNT);
         // comment so it updates bc github was having problems
-        var direction = new Three.Vector3();
+        const direction = new Three.Vector3();
         this.camera.getWorldDirection(direction);
         this.camera.position.add(direction.multiplyScalar(amount));
     }

@@ -307,6 +307,10 @@ module.exports = {
             Z: infoArgument(0)
         }, Icons.Light),
         seperator,
+        createCommandBlock('moveObjectUnits', 'move object named [NAME] by [AMOUNT]', {
+            NAME: infoArgument("Object1"),
+            AMOUNT: infoArgument(10)
+        }),
         createCommandBlock("setObjectPosition", "move object named [NAME] to x: [X] y: [Y] z: [Z]", {
             NAME: infoArgument("Object1"),
             X: infoArgument(1),
