@@ -160,7 +160,7 @@ class Jg3DVrBlocks {
                 '---',
                 {
                     opcode: 'getControllerStick',
-                    text: 'axis [XY] of controller #[INDEX]',
+                    text: 'joystick axis [XY] of controller #[INDEX]',
                     blockType: BlockType.REPORTER,
                     disableMonitor: true,
                     arguments: {
