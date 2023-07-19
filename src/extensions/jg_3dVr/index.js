@@ -145,6 +145,83 @@ class Jg3DVrBlocks {
                         }
                     }
                 },
+                {
+                    opcode: 'getControllerSide',
+                    text: 'side of controller #[INDEX]',
+                    blockType: BlockType.REPORTER,
+                    disableMonitor: true,
+                    arguments: {
+                        INDEX: {
+                            type: ArgumentType.NUMBER,
+                            menu: 'count'
+                        }
+                    }
+                },
+                '---',
+                {
+                    opcode: 'getControllerStick',
+                    text: 'axis [XY] of controller #[INDEX]',
+                    blockType: BlockType.REPORTER,
+                    disableMonitor: true,
+                    arguments: {
+                        XY: {
+                            type: ArgumentType.STRING,
+                            menu: 'vector2'
+                        },
+                        INDEX: {
+                            type: ArgumentType.NUMBER,
+                            menu: 'count'
+                        }
+                    }
+                },
+                {
+                    opcode: 'getControllerTrig',
+                    text: 'analog value of [TRIGGER] trigger on controller #[INDEX]',
+                    blockType: BlockType.REPORTER,
+                    disableMonitor: true,
+                    arguments: {
+                        TRIGGER: {
+                            type: ArgumentType.STRING,
+                            menu: 'trig'
+                        },
+                        INDEX: {
+                            type: ArgumentType.NUMBER,
+                            menu: 'count'
+                        }
+                    }
+                },
+                {
+                    opcode: 'getControllerButton',
+                    text: 'button [BUTTON] on controller #[INDEX] pressed?',
+                    blockType: BlockType.BOOLEAN,
+                    disableMonitor: true,
+                    arguments: {
+                        BUTTON: {
+                            type: ArgumentType.STRING,
+                            menu: 'butt'
+                        },
+                        INDEX: {
+                            type: ArgumentType.NUMBER,
+                            menu: 'count'
+                        }
+                    }
+                },
+                {
+                    opcode: 'getControllerTouching',
+                    text: '[BUTTON] on controller #[INDEX] touched?',
+                    blockType: BlockType.BOOLEAN,
+                    disableMonitor: true,
+                    arguments: {
+                        BUTTON: {
+                            type: ArgumentType.STRING,
+                            menu: 'buttAll'
+                        },
+                        INDEX: {
+                            type: ArgumentType.NUMBER,
+                            menu: 'count'
+                        }
+                    }
+                },
             ],
             menus: {
                 vector3: {
@@ -155,13 +232,49 @@ class Jg3DVrBlocks {
                         "z",
                     ].map(item => ({ text: item, value: item }))
                 },
+                vector2: {
+                    acceptReporters: true,
+                    items: [
+                        "x",
+                        "y",
+                    ].map(item => ({ text: item, value: item }))
+                },
+                butt: {
+                    acceptReporters: true,
+                    items: [
+                        "a",
+                        "b",
+                        "x",
+                        "y",
+                        "joystick",
+                    ].map(item => ({ text: item, value: item }))
+                },
+                trig: {
+                    acceptReporters: true,
+                    items: [
+                        "back",
+                        "side",
+                    ].map(item => ({ text: item, value: item }))
+                },
+                buttAll: {
+                    acceptReporters: true,
+                    items: [
+                        "a button",
+                        "b button",
+                        "x button",
+                        "y button",
+                        "joystick",
+                        "back trigger",
+                        "side trigger",
+                    ].map(item => ({ text: item, value: item }))
+                },
                 count: {
                     acceptReporters: true,
                     items: [
                         "1",
                         "2",
                     ].map(item => ({ text: item, value: item }))
-                }
+                },
             }
         };
     }
@@ -170,6 +283,23 @@ class Jg3DVrBlocks {
     _getRenderer() {
         if (!this._3d) return;
         return this._3d.renderer;
+    }
+    _getGamepad(indexFrom1) {
+        const index = Cast.toNumber(indexFrom1) - 1;
+
+        const three = this._3d;
+        if (!three.scene) return;
+        const renderer = this._getRenderer();
+        if (!renderer) return;
+        const session = renderer.xr.getSession();
+        if (!session) return;
+
+        const sources = session.inputSources;
+        const controller = sources[index];
+        if (!controller) return;
+
+        const gamepad = controller.gamepad;
+        return gamepad;
     }
 
     _disposeImmersive() {
@@ -214,23 +344,6 @@ class Jg3DVrBlocks {
             if (!threed.camera) return;
             if (!threed.scene) return;
 
-            // get view info
-            const viewerPose = frame.getViewerPose(this.localSpace);
-            const transform = viewerPose.transform;
-            // set view info
-            this.view = {
-                position: [
-                    transform.position.x,
-                    transform.position.y,
-                    transform.position.z
-                ],
-                quaternion: [
-                    transform.orientation.w,
-                    transform.orientation.y,
-                    transform.orientation.x,
-                    transform.orientation.z
-                ]
-            }
             // force renderer to draw a new frame
             // otherwise we would only actually draw outside of this loop
             // which just ends up showing nothing
@@ -320,6 +433,85 @@ class Jg3DVrBlocks {
         // rotation is in radians, convert to degrees but round it
         // a bit so that we get 46 instead of 45.999999999999996
         return toDegRounding(rotation);
+    }
+
+    // inputs but like actual
+    getControllerSide(args) {
+        const three = this._3d;
+        if (!three.scene) return "";
+        const renderer = this._getRenderer();
+        if (!renderer) return "";
+        const session = renderer.xr.getSession();
+        if (!session) return "";
+
+        const sources = session.inputSources;
+        const index = Cast.toNumber(args.INDEX) - 1;
+        const controller = sources[index];
+        if (!controller) return "";
+
+        return controller.handedness;
+    }
+    getControllerStick(args) {
+        const gamepad = this._getGamepad(args.INDEX);
+        if (!gamepad) return 0;
+        // index gained by testing
+        if (Cast.toString(args.XY) === "y") {
+            return gamepad.axes[3];
+        } else {
+            return gamepad.axes[2];
+        }
+    }
+    getControllerTrig(args) {
+        const gamepad = this._getGamepad(args.INDEX);
+        if (!gamepad) return 0;
+        // index gained by testing
+        if (Cast.toString(args.TRIGGER) === "side") {
+            return gamepad.buttons[1].value;
+        } else {
+            return gamepad.buttons[0].value;
+        }
+    }
+    getControllerButton(args) {
+        const gamepad = this._getGamepad(args.INDEX);
+        if (!gamepad) return 0;
+        const button = Cast.toString(args.BUTTON);
+        switch (button) {
+            // index gained by testing
+            case 'a':
+                return gamepad.buttons[4].pressed;
+            case 'b':
+                return gamepad.buttons[5].pressed;
+            case 'x':
+                return gamepad.buttons[4].pressed;
+            case 'y':
+                return gamepad.buttons[5].pressed;
+            case 'joystick':
+                return gamepad.buttons[3].pressed;
+        }
+        return false;
+    }
+    getControllerTouching(args) {
+        const gamepad = this._getGamepad(args.INDEX);
+        if (!gamepad) return 0;
+        const button = Cast.toString(args.BUTTON);
+        switch (button) {
+            // index gained by testing
+            case 'a button':
+                return gamepad.buttons[4].touched;
+            case 'b button':
+                return gamepad.buttons[5].touched;
+            case 'x button':
+                return gamepad.buttons[4].touched;
+            case 'y button':
+                return gamepad.buttons[5].touched;
+            case 'joystick':
+                return gamepad.buttons[3].touched;
+            case 'back trigger':
+                return gamepad.buttons[0].touched;
+            case 'side trigger':
+                return gamepad.buttons[1].touched;
+        }
+        return false;
     }
 }
 
