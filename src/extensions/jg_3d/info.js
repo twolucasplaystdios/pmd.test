@@ -371,7 +371,6 @@ module.exports = {
             DY: infoArgument(0),
             DZ: infoArgument(0),
         }, null, true),
-        seperator, 
         createReporterBlock("rayCollisionArray", "create raycast that starts at x [X] y [Y] z [Z] with direction x [DX] y [DY] z [DZ] and return the full array of object it collides with", {
             X: infoArgument(0),
             Y: infoArgument(0),
@@ -380,10 +379,8 @@ module.exports = {
             DY: infoArgument(0),
             DZ: infoArgument(0),
         }, null, true),
-        seperator, 
         createReporterBlock("rayCollisionCamera", "create raycast that starts from the camera's middle and return the name of the first object it collides with", {
         }, null, true),
-        seperator, 
         createReporterBlock("rayCollisionCameraArray", "create raycast that starts from the camera's middle and return the full array of object it collides with", {
         }, null, true)
     ],
