@@ -3,6 +3,7 @@ const BlockType = require('../../extension-support/block-type');
 const ArgumentType = require('../../extension-support/argument-type');
 const Cast = require('../../util/cast');
 const Icon = require('./icon.png');
+const IconController = require('./controller.png');
 
 const SESSION_TYPE = "immersive-vr";
 
@@ -117,6 +118,7 @@ class Jg3DVrBlocks {
                     opcode: 'getControllerPosition',
                     text: 'controller #[INDEX] position [VECTOR3]',
                     blockType: BlockType.REPORTER,
+                    blockIconURI: IconController,
                     disableMonitor: true,
                     arguments: {
                         INDEX: {
@@ -133,6 +135,7 @@ class Jg3DVrBlocks {
                     opcode: 'getControllerRotation',
                     text: 'controller #[INDEX] rotation [VECTOR3]',
                     blockType: BlockType.REPORTER,
+                    blockIconURI: IconController,
                     disableMonitor: true,
                     arguments: {
                         INDEX: {
@@ -149,6 +152,7 @@ class Jg3DVrBlocks {
                     opcode: 'getControllerSide',
                     text: 'side of controller #[INDEX]',
                     blockType: BlockType.REPORTER,
+                    blockIconURI: IconController,
                     disableMonitor: true,
                     arguments: {
                         INDEX: {
@@ -162,6 +166,7 @@ class Jg3DVrBlocks {
                     opcode: 'getControllerStick',
                     text: 'joystick axis [XY] of controller #[INDEX]',
                     blockType: BlockType.REPORTER,
+                    blockIconURI: IconController,
                     disableMonitor: true,
                     arguments: {
                         XY: {
@@ -178,6 +183,7 @@ class Jg3DVrBlocks {
                     opcode: 'getControllerTrig',
                     text: 'analog value of [TRIGGER] trigger on controller #[INDEX]',
                     blockType: BlockType.REPORTER,
+                    blockIconURI: IconController,
                     disableMonitor: true,
                     arguments: {
                         TRIGGER: {
@@ -194,6 +200,7 @@ class Jg3DVrBlocks {
                     opcode: 'getControllerButton',
                     text: 'button [BUTTON] on controller #[INDEX] pressed?',
                     blockType: BlockType.BOOLEAN,
+                    blockIconURI: IconController,
                     disableMonitor: true,
                     arguments: {
                         BUTTON: {
@@ -210,6 +217,7 @@ class Jg3DVrBlocks {
                     opcode: 'getControllerTouching',
                     text: '[BUTTON] on controller #[INDEX] touched?',
                     blockType: BlockType.BOOLEAN,
+                    blockIconURI: IconController,
                     disableMonitor: true,
                     arguments: {
                         BUTTON: {
