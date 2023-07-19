@@ -337,6 +337,7 @@ class Scratch3TextBlocks {
         return Promise.resolve();
     }
     clearText (args, util) {
+        if (!this.runtime.renderer) return;
         const target = util.target;
 
         const textState = this._getTextState(target);

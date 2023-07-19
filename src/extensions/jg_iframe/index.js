@@ -411,6 +411,13 @@ class JgIframeBlocks {
 
     // utilities
     GetCurrentCanvas () {
+        if (!this.runtime.renderer) 
+            return {
+                parentElement: {
+                    // dummy function
+                    prepend() {}
+                }
+            };
         return this.runtime.renderer.canvas;
     }
     SetNewIFrame () {

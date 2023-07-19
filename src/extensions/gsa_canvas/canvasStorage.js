@@ -50,7 +50,9 @@ class canvasStorage {
         element.width = width;
         element.height = height;
 
-        const skin = this.runtime.renderer.createBitmapSkin(element, 1);
+        const skin = !this.runtime.renderer 
+            ? null
+            : this.runtime.renderer.createBitmapSkin(element, 1);
 
         const data = {
             name: name,

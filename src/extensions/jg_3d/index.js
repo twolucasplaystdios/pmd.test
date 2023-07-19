@@ -122,6 +122,13 @@ class Jg3DBlocks {
 
     // utilities
     getScratchCanvas() {
+        if (!this.runtime.renderer) 
+            return {
+                parentElement: {
+                    // dummy function
+                    prepend() {}
+                }
+            };
         return this.runtime.renderer.canvas;
     }
     restyleExternalCanvas(canvas) {
