@@ -363,7 +363,7 @@ module.exports = {
             NAME: infoArgument("Object1"),
         }),
         seperator,
-        createReporterBlock("rayCollision", "create raycast that starts at x [X] y [Y] z [Z] with direction x [DX] y [DY] z [DZ] and return the name of the first object it collides with", {
+        createReporterBlock("rayCollision", "first object in raycast from x: [X] y: [Y] z: [Z] with direction x: [DX] y: [DY] z: [DZ]", {
             X: infoArgument(0),
             Y: infoArgument(0),
             Z: infoArgument(0),
@@ -371,7 +371,7 @@ module.exports = {
             DY: infoArgument(0),
             DZ: infoArgument(0),
         }, null, true),
-        createReporterBlock("rayCollisionArray", "create raycast that starts at x [X] y [Y] z [Z] with direction x [DX] y [DY] z [DZ] and return the full array of object it collides with", {
+        createReporterBlock("rayCollisionArray", "raycast result from x: [X] y: [Y] z: [Z] with direction x: [DX] y: [DY] z: [DZ]", {
             X: infoArgument(0),
             Y: infoArgument(0),
             Z: infoArgument(0),
@@ -379,9 +379,9 @@ module.exports = {
             DY: infoArgument(0),
             DZ: infoArgument(0),
         }, null, true),
-        createReporterBlock("rayCollisionCamera", "create raycast that starts from the camera's middle and return the name of the first object it collides with", {
+        createReporterBlock("rayCollisionCamera", "first object from raycast in camera center", {
         }, null, true),
-        createReporterBlock("rayCollisionCameraArray", "create raycast that starts from the camera's middle and return the full array of object it collides with", {
+        createReporterBlock("rayCollisionCameraArray", "raycast result starting from the camera center", {
         }, null, true)
     ],
     menus: {
