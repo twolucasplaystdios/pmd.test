@@ -49,6 +49,7 @@ class UI {
      */
     Realign() {
         this._div.style = `position: absolute;left: 0px;width: 100%;height: 100%;top: 0px;z-index: 1000;`
+        if (!this.runtime.renderer) return;
         this.runtime.renderer.canvas.parentElement.prepend(this._div);
     }
     /**

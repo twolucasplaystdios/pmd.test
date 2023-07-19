@@ -1,9 +1,8 @@
 const BlockType = require('../../extension-support/block-type');
 const ArgumentType = require('../../extension-support/argument-type');
-const Color = require('../../util/color');
 
 const HelperTool = require('./helper');
-const Helper = new HelperTool.Helper
+const Helper = new HelperTool.Helper();
 
 /**
  * Class for AudioGroups & AudioSources

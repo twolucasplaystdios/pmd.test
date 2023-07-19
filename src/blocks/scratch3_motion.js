@@ -68,6 +68,7 @@ class Scratch3MotionBlocks {
     }
 
     moveToStageSide(args, util) {
+        if (!this.runtime.renderer) return;
         const side = Cast.toString(args.ALIGNMENT);
         const stageWidth = this.runtime.stageWidth / 2;
         const stageHeight = this.runtime.stageHeight / 2;
