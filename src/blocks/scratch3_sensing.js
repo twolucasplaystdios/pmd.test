@@ -156,7 +156,6 @@ class Scratch3SensingBlocks {
         return 'Unknown';
     }
     getUrl () {
-        if (!location) return '';
         if (!('href' in location)) return '';
         return location.href;
     }
@@ -172,8 +171,9 @@ class Scratch3SensingBlocks {
         if (!navigator) return '';
         if (('clipboard' in navigator) && ('readText' in navigator.clipboard)) {
             return navigator.clipboard.readText();
-        } 
-        return '';
+        } else {
+            return '';
+        }
     }
 
     getDragMode (_, util) {
@@ -190,12 +190,12 @@ class Scratch3SensingBlocks {
         const delta = util.ioQuery('mouseWheel', 'getScrollDelta');
         const option = args.SCROLL_OPTION;
         switch (option) {
-        case "up":
-            return delta < 0;
-        case "down":
-            return delta > 0;
-        default:
-            return false;
+            case "up":
+                return delta < 0;
+            case "down":
+                return delta > 0;
+            default:
+                return false;
         }
     }
 
@@ -254,8 +254,7 @@ class Scratch3SensingBlocks {
 
         // jg: why dont you literally just do what "is text" did but the opposite
         // except also account for numbers that end with . (that aint a number)
-        if (Cast.toString(args.TEXT1).trim()
-            .endsWith(".")) {
+        if (Cast.toString(args.TEXT1).trim().endsWith(".")) {
             return false;
         }
         return !this.thing_is_text(args);
@@ -386,7 +385,7 @@ class Scratch3SensingBlocks {
     }
     
     objectTouchingObject (args, util) {
-        const object1 = (args.FULLTOUCHINGOBJECTMENU) === "_myself_" ? util.target.getName() : args.FULLTOUCHINGOBJECTMENU;
+        const object1 = (args.FULLTOUCHINGOBJECTMENU  ) === "_myself_" ? util.target.getName() : args.FULLTOUCHINGOBJECTMENU;
         const object2 = args.SPRITETOUCHINGOBJECTMENU;
         if (object2 === "_myself_") {
             return util.target.isTouchingObject(object1);

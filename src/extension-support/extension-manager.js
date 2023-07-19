@@ -7,11 +7,9 @@ const SecurityManager = require('./tw-security-manager');
 
 const AddonSwitches = require('./extension-addon-switchers');
 
-// if (global && !global.location) global.location = {href: 'http://localhost'};
-// if (!location.search) location.search = '';
 const urlParams = new URLSearchParams(location.search);
 
-const IsLocal = String(location.href).startsWith(`http://localhost:`);
+const IsLocal = String(window.location.href).startsWith(`http://localhost:`);
 const IsLiveTests = urlParams.has('livetests');
 
 // These extensions are currently built into the VM repository but should not be loaded at startup.

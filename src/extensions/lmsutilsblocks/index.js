@@ -1326,8 +1326,7 @@ class LMSUtils {
     }
 
     projectURL() {
-        if (!location) return '';
-        return location.href;
+        return window.location.href;
     }
 
     greenFlag(args, util) {
