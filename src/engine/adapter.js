@@ -178,12 +178,10 @@ const adapter = function (e) {
     if (typeof e !== 'object') return;
     if (typeof e.xml !== 'object') return;
 
-    /*
     const parser = new DOMParser();
     const doc = parser.parseFromString(e.xml.outerHTML, "application/xml");
-    */
 
-    return domToBlocks(e.xml.childNodes);
+    return domToBlocks(doc.childNodes);
 };
 
 module.exports = adapter;

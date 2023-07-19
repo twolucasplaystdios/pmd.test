@@ -66,12 +66,11 @@ test('Allow both extensions', async t => {
 });
 
 test('canFetch', async t => {
-    global.location = {
-        href: 'https://example.com/',
-        options: ''
-    };
     const vm = new VirtualMachine();
     setupUnsandboxedExtensionAPI(vm);
+    global.location = {
+        href: 'https://example.com/'
+    };
 
     // data: and blob: are always allowed, shouldn't call security manager
     vm.securityManager.canFetch = () => t.fail('security manager should be ignored for these protocols');
@@ -123,12 +122,11 @@ test('canFetch', async t => {
 });
 
 test('canOpenWindow', async t => {
-    global.location = {
-        href: 'https://example.com/',
-        options: ''
-    };
     const vm = new VirtualMachine();
     setupUnsandboxedExtensionAPI(vm);
+    global.location = {
+        href: 'https://example.com/'
+    };
 
     // javascript: should never be allowed, shouldn't call security manager
     vm.securityManager.canOpenWindow = () => t.fail('should not call security manager for javascript:');
@@ -182,12 +180,11 @@ test('canOpenWindow', async t => {
 });
 
 test('canRedirect', async t => {
-    global.location = {
-        href: 'https://example.com/',
-        options: ''
-    };
     const vm = new VirtualMachine();
     setupUnsandboxedExtensionAPI(vm);
+    global.location = {
+        href: 'https://example.com/'
+    };
 
     // javascript: should never be allowed, shouldn't call security manager
     vm.securityManager.canRedirect = () => t.fail('should not call security manager for javascript:');

@@ -54,11 +54,10 @@ global.window = {
 };
 
 tap.beforeEach(async () => {
-    global.location = {
-        href: 'https://example.com/',
-        options: ''
-    };
     scriptCallbacks.clear();
+    global.location = {
+        href: 'https://example.com/'
+    };
 });
 
 const {test} = tap;
