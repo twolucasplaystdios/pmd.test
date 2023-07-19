@@ -429,7 +429,13 @@ class Jg3DVrBlocks {
         const v = args.VECTOR3;
         if (!v) return "";
         if (!["x", "y", "z"].includes(v)) return "";
-        const rotation = Cast.toNumber(controller.rotation[v]);
+
+        // rotation is funky
+        // lets make it match the 3D extensions handling of rotation
+        // YXZ tells it to rotate Y first, then X, then Z
+        const euler = new three.three.Euler(0, 0, 0);
+        euler.setFromQuaternion(controller.quaternion, 'YXZ');
+        const rotation = Cast.toNumber(euler[v]);
         // rotation is in radians, convert to degrees but round it
         // a bit so that we get 46 instead of 45.999999999999996
         return toDegRounding(rotation);
