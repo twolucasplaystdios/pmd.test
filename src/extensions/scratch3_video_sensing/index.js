@@ -510,7 +510,6 @@ class Scratch3VideoSensingBlocks {
      * @returns {MotionState} the motion state for the given target
      */
     _analyzeLocalMotion (target) {
-        if (!this.runtime.renderer) return;
         const drawable = this.runtime.renderer._allDrawables[target.drawableID];
         const state = this._getMotionState(target);
         this.detect.getLocalMotion(drawable, state);

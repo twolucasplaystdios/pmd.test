@@ -179,22 +179,20 @@ class Scratch3PenBlocks {
      * @private
      */
     _getPenLayerID () {
-        if (this.runtime.renderer) {
-            if (this._penSkinId < 0) {
-                this._penSkinId = this.runtime.renderer.createPenSkin();
-                this._penDrawableId = this.runtime.renderer.createDrawable(StageLayering.PEN_LAYER);
-                this.runtime.renderer.updateDrawableSkinId(this._penDrawableId, this._penSkinId);
+        if (this._penSkinId < 0 && this.runtime.renderer) {
+            this._penSkinId = this.runtime.renderer.createPenSkin();
+            this._penDrawableId = this.runtime.renderer.createDrawable(StageLayering.PEN_LAYER);
+            this.runtime.renderer.updateDrawableSkinId(this._penDrawableId, this._penSkinId);
 
-                this.bitmapCanvas = document.createElement('canvas');
-                this.bitmapCanvas.width = this.runtime.stageWidth;
-                this.bitmapCanvas.height = this.runtime.stageHeight;
-                this.bitmapSkinID = this.runtime.renderer.createBitmapSkin(this.bitmapCanvas, 1);
-                this.bitmapDrawableID = this.runtime.renderer.createDrawable(StageLayering.PEN_LAYER);
-                this.runtime.renderer.updateDrawableSkinId(this.bitmapDrawableID, this.bitmapSkinID);
-                this.runtime.renderer.updateDrawableVisible(this.bitmapDrawableID, false);
-            }
-            this._penRes = this.runtime.renderer._allSkins[this._penSkinId].renderQuality;
+            this.bitmapCanvas = document.createElement('canvas');
+            this.bitmapCanvas.width = this.runtime.stageWidth;
+            this.bitmapCanvas.height = this.runtime.stageHeight;
+            this.bitmapSkinID = this.runtime.renderer.createBitmapSkin(this.bitmapCanvas, 1);
+            this.bitmapDrawableID = this.runtime.renderer.createDrawable(StageLayering.PEN_LAYER);
+            this.runtime.renderer.updateDrawableSkinId(this.bitmapDrawableID, this.bitmapSkinID);
+            this.runtime.renderer.updateDrawableVisible(this.bitmapDrawableID, false);
         }
+        this._penRes = this.runtime.renderer._allSkins[this._penSkinId].renderQuality;
         return this._penSkinId;
     }
 
@@ -1075,7 +1073,6 @@ class Scratch3PenBlocks {
     }
 
     _drawContextToPen (ctx) {
-        if (!this.runtime.renderer) return;
         const penSkinId = this._getPenLayerID();
         const width = this.bitmapCanvas.width;
         const height = this.bitmapCanvas.height;
@@ -1090,7 +1087,6 @@ class Scratch3PenBlocks {
     }
 
     _getBitmapCanvas () {
-        if (!this.runtime.renderer) return;
         const penSkinId = this._getPenLayerID();
         const penSkin = this.runtime.renderer._allSkins[penSkinId];
         const width = penSkin._size[0];
