@@ -32,7 +32,7 @@ class Color {
      */
     static decimalToHex (decimal) {
         const rgb = this.decimalToRgb(decimal);
-        const alphaOrNone = rgb.a !== 255 
+        const alphaOrNone = typeof rgb.a === 'number' && rgb.a !== 255 
             ? rgb.a.toString(16)
             : '';
         const r = levelText(rgb.r.toString(16), 2, '0');
@@ -59,7 +59,7 @@ class Color {
             g = (decimal >> 8) & 0xFF;
             b = decimal & 0xFF;
         }
-        return {r: r, g: g, b: b, a: 255 - a};
+        return {r: r, g: g, b: b, a: a};
     }
 
     /**
