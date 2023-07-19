@@ -120,6 +120,7 @@ class CustomExtensionApi {
         return window.open(url, '_blank', features);
     }
     async redirect (url) {
+        if (!window) return;
         if (this.limited) {
             if (!await global.Scratch.canRedirect(url)) {
                 throw new Error(`Permission to redirect to ${url} rejected.`);

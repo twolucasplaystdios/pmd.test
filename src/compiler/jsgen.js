@@ -1677,7 +1677,6 @@ class JSGenerator {
         }
 
         script += '}; })';
-        console.log(script);
         return script;
     }
 

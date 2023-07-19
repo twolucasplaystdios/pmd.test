@@ -51,8 +51,6 @@ const createFrame = () => {
     return element;
 };
 
-const origin = window.origin;
-
 /**
  * vscode give me autofill
  * @param {MessageEvent} event 
@@ -97,11 +95,11 @@ const messageHandler = (event, iframe, removeHandler) => new Promise(resolve => 
  * @param {string} code the code
  * @returns the code that can be placed into the eval in the iframe src
  */
-const prepareCodeForEval = (code) => {
+const prepareCodeForEval = code => {
     const escaped = JSON.stringify(code);
     // when the html encounters a closing script tag, itll end the script
     // so just put a backslash before it and it should be fine
-    const scriptEscaped = escaped.replace('<\/script>', '<\\/script>');
+    const scriptEscaped = escaped.replace('</script>', '<\\/script>');
     return scriptEscaped;
 }
 

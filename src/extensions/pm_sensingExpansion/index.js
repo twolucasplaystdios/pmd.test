@@ -410,12 +410,12 @@ class pmSensingExpansion {
     }
 
     urlOptions(args) {
-        if (!('location' in window)) return ''; // idk how this would fail but funny
+        if (!location) return '';
         const option = Cast.toString(args.OPTIONS).toLowerCase();
         return this.urlOptionFromObject(option, location);
     }
     urlOptionsOf(args) {
-        if (!('location' in window)) return ''; // idk how this would fail but funny
+        if (!window) return '';
         const option = Cast.toString(args.OPTIONS).toLowerCase();
         const url = Cast.toString(args.URL);
         if (!this.validateUrl(url)) return '';
@@ -430,6 +430,7 @@ class pmSensingExpansion {
     }
 
     setUrlEnd(args) {
+        if (!location) return '';
         if (!('history' in window)) return;
         const path = Cast.toString(args.PATH);
         const target = location.origin.endsWith('/') ? location.origin + path : location.origin + '/' + path;
