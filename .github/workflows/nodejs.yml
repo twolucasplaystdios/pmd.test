@@ -15,6 +15,10 @@ jobs:
           token: ${{ secrets.t }}
           event-type: update
           repository: PenguinMod/penguinmod.github.io
+      - name: Install Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 16.x
       - name: test
         run: npm run test
       - name: Repository Dispatch2
