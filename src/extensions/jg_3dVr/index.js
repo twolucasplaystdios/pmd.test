@@ -392,7 +392,7 @@ class Jg3DVrBlocks {
         const three = this._3d;
         if (!three.scene) return;
         if (!three.camera) return;
-        const name = Cast.toString(args.NAME);
+        const name = Cast.toString(args.OBJECT);
         const object = three.scene.getObjectByName(name);
         if (!object) return;
         object.add(three.camera);
