@@ -1247,9 +1247,6 @@ class Blocks {
      * @return {string} XML string representing a mutation.
      */
     mutationToXML (mutation) {
-        if (mutation.type === 'text') {
-            return mutation.content;
-        }
         let mutationString = `<${mutation.tagName}`;
         for (const prop in mutation) {
             if (prop === 'children' || prop === 'tagName') continue;

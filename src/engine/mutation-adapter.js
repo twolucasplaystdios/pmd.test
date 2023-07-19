@@ -1,35 +1,39 @@
-const html = require('htmlparser2');
-const decodeHtml = require('decode-html');
-
 /**
  * Convert a part of a mutation DOM to a mutation VM object, recursively.
  * @param {object} dom DOM object for mutation tag.
  * @return {object} Object representing useful parts of this mutation.
  */
 const mutatorTagToObject = function (dom) {
-    const obj = Object.create(null);
-    obj.tagName = dom.name;
+    const parseChildren = (obj, dom) => {
+        for (let i = 0; i < dom.children.length; i++) {
+            obj.children.push(
+                mutatorTagToObject(dom.children[i])
+            );
+        }
+        return obj.children[0];
+    };
+    let obj = Object.create(null);
+    obj.tagName = dom.tagName;
     obj.children = [];
-    if (dom.type === 'text') {
-        obj.type = 'text';
-        obj.content = dom.content;
+    if (!dom.tagName) {
+        console.warn('invalid dom; skiping to reading children');
+        obj = parseChildren(obj, dom);
         return obj;
     }
-    for (const prop in dom.attribs) {
-        if (prop === 'xmlns') continue;
-        obj[prop] = decodeHtml(dom.attribs[prop]);
+    for (let idx = 0; idx < dom.attributes.length; idx++) {
+        const attrib = dom.attributes[idx];
+        const attribName = attrib.name;
+        if (attribName === 'xmlns') continue;
+        obj[attribName] = attrib.value;
         // Note: the capitalization of block info in the following lines is important.
         // The lowercase is read in from xml which normalizes case. The VM uses camel case everywhere else.
-        if (prop === 'blockinfo') {
+        if (attribName === 'blockinfo') {
             obj.blockInfo = JSON.parse(obj.blockinfo);
             delete obj.blockinfo;
         }
     }
-    for (let i = 0; i < dom.children.length; i++) {
-        obj.children.push(
-            mutatorTagToObject(dom.children[i])
-        );
-    }
+
+    parseChildren(obj, dom);
     return obj;
 };
 
@@ -45,8 +49,14 @@ const mutationAdpater = function (mutation) {
     if (typeof mutation === 'object') {
         mutationParsed = mutation;
     } else {
-        mutationParsed = html.parseDOM(mutation)[0];
+        const parser = new DOMParser();
+        const doc = parser.parseFromString(mutation, "application/xml");
+        mutationParsed = doc;
+        if (mutationParsed.nodeName === '#document') {
+            mutationParsed = mutationParsed.children[0];
+        }
     }
+    
     return mutatorTagToObject(mutationParsed);
 };
 
