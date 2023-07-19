@@ -1,4 +1,5 @@
 const mutationAdapter = require('./mutation-adapter');
+const html = require('htmlparser2');
 const uid = require('../util/uid');
 
 /**
@@ -11,27 +12,22 @@ const uid = require('../util/uid');
  * @return {undefined}
  */
 const domToBlock = function (blockDOM, blocks, isTopBlock, parent) {
-    if (!blockDOM.attributes.id) {
-        blockDOM.attributes.id = {};
-        blockDOM.attributes.id.value = uid();
+    if (!blockDOM.attribs.id) {
+        blockDOM.attribs.id = uid();
     }
-
-    // make sure errors arnt thrown when there is no postion
-    blockDOM.attributes.x ??= {};
-    blockDOM.attributes.y ??= {};
 
     // Block skeleton.
     const block = {
-        id: blockDOM.attributes.id.value, // Block ID
-        opcode: blockDOM.attributes.type.value, // For execution, "event_whengreenflag".
+        id: blockDOM.attribs.id, // Block ID
+        opcode: blockDOM.attribs.type, // For execution, "event_whengreenflag".
         inputs: {}, // Inputs to this block and the blocks they point to.
         fields: {}, // Fields on this block and their values.
         next: null, // Next block in the stack, if one exists.
         topLevel: isTopBlock, // If this block starts a stack.
         parent: parent, // Parent block ID, if available.
-        shadow: blockDOM.tagName === 'shadow', // If this represents a shadow/slot.
-        x: blockDOM.attributes.x.value, // X position of script, if top-level.
-        y: blockDOM.attributes.y.value // Y position of script, if top-level.
+        shadow: blockDOM.name === 'shadow', // If this represents a shadow/slot.
+        x: blockDOM.attribs.x, // X position of script, if top-level.
+        y: blockDOM.attribs.y // Y position of script, if top-level.
     };
 
     // Add the block to the representation tree.
@@ -45,11 +41,11 @@ const domToBlock = function (blockDOM, blocks, isTopBlock, parent) {
         let childShadowNode = null;
         for (let j = 0; j < xmlChild.children.length; j++) {
             const grandChildNode = xmlChild.children[j];
-            if (!grandChildNode.tagName) {
+            if (!grandChildNode.name) {
                 // Non-XML tag node.
                 continue;
             }
-            const grandChildNodeName = grandChildNode.tagName;
+            const grandChildNodeName = grandChildNode.name.toLowerCase();
             if (grandChildNodeName === 'block') {
                 childBlockNode = grandChildNode;
             } else if (grandChildNodeName === 'shadow') {
@@ -64,21 +60,19 @@ const domToBlock = function (blockDOM, blocks, isTopBlock, parent) {
 
         // Not all Blockly-type blocks are handled here,
         // as we won't be using all of them for Scratch.
-        switch (xmlChild.tagName) {
+        switch (xmlChild.name.toLowerCase()) {
         case 'field':
         {
             // Add the field to this block.
-            const fieldName = xmlChild.attributes.name.value;
-            // make sure the id exists and is valid nomatter what
-            xmlChild.attributes.id ??= { value: uid() };
+            const fieldName = xmlChild.attribs.name;
             // Add id in case it is a variable field
-            const fieldId = xmlChild.attributes.id.value;
+            const fieldId = xmlChild.attribs.id;
             let fieldData = '';
-            if (xmlChild.innerHTML) {
-                fieldData = xmlChild.textContent;
+            if (xmlChild.children.length > 0 && xmlChild.children[0].data) {
+                fieldData = xmlChild.children[0].data;
             } else {
                 // If the child of the field with a data property
-                // doesn't exist, set the data to an empty string. 
+                // doesn't exist, set the data to an empty string.
                 fieldData = '';
             }
             block.fields[fieldName] = {
@@ -86,8 +80,7 @@ const domToBlock = function (blockDOM, blocks, isTopBlock, parent) {
                 id: fieldId,
                 value: fieldData
             };
-            xmlChild.attributes.variabletype ??= {};
-            const fieldVarType = xmlChild.attributes.variabletype.value;
+            const fieldVarType = xmlChild.attribs.variabletype;
             if (typeof fieldVarType === 'string') {
                 block.fields[fieldName].variableType = fieldVarType;
             }
@@ -95,7 +88,7 @@ const domToBlock = function (blockDOM, blocks, isTopBlock, parent) {
         }
         case 'comment':
         {
-            block.comment = xmlChild.attributes.id.value;
+            block.comment = xmlChild.attribs.id;
             break;
         }
         case 'value':
@@ -108,24 +101,24 @@ const domToBlock = function (blockDOM, blocks, isTopBlock, parent) {
                 domToBlock(childShadowNode, blocks, false, block.id);
             }
             // Link this block's input to the child block.
-            const inputName = xmlChild.attributes.name.value;
+            const inputName = xmlChild.attribs.name;
             block.inputs[inputName] = {
                 name: inputName,
-                block: childBlockNode.attributes.id.value,
-                shadow: childShadowNode ? childShadowNode.attributes.id.value : null
+                block: childBlockNode.attribs.id,
+                shadow: childShadowNode ? childShadowNode.attribs.id : null
             };
             break;
         }
         case 'next':
         {
-            if (!childBlockNode || !childBlockNode.attributes) {
+            if (!childBlockNode || !childBlockNode.attribs) {
                 // Invalid child block.
                 continue;
             }
             // Recursively generate block structure for next block.
             domToBlock(childBlockNode, blocks, false, block.id);
             // Link next block to this block.
-            block.next = childBlockNode.attributes.id.value;
+            block.next = childBlockNode.attribs.id;
             break;
         }
         case 'mutation':
@@ -149,11 +142,10 @@ const domToBlocks = function (blocksDOM) {
     const blocks = {};
     for (let i = 0; i < blocksDOM.length; i++) {
         const block = blocksDOM[i];
-
-        if (!block.tagName || !block.attributes) {
+        if (!block.name || !block.attribs) {
             continue;
         }
-        const tagName = block.tagName;
+        const tagName = block.name.toLowerCase();
         if (tagName === 'block' || tagName === 'shadow') {
             domToBlock(block, blocks, true, null);
         }
@@ -178,12 +170,7 @@ const adapter = function (e) {
     if (typeof e !== 'object') return;
     if (typeof e.xml !== 'object') return;
 
-    /*
-    const parser = new DOMParser();
-    const doc = parser.parseFromString(e.xml.outerHTML, "application/xml");
-    */
-
-    return domToBlocks(e.xml.childNodes);
+    return domToBlocks(html.parseDOM(e.xml.outerHTML, {decodeEntities: true}));
 };
 
 module.exports = adapter;
