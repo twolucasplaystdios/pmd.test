@@ -4,6 +4,10 @@ const VM = require('../../src/virtual-machine');
 
 test('isBuiltinExtension', t => {
     const fakeRuntime = {};
+    global.location = {
+        href: 'https://example.com/',
+        options: ''
+    };
     const manager = new ExtensionManager(fakeRuntime);
     t.equal(manager.isBuiltinExtension('pen'), true);
     t.equal(manager.isBuiltinExtension('lksdfjlskdf'), false);
@@ -12,6 +16,10 @@ test('isBuiltinExtension', t => {
 
 test('_isValidExtensionURL', t => {
     const fakeRuntime = {};
+    global.location = {
+        href: 'https://example.com/',
+        options: ''
+    };
     const manager = new ExtensionManager(fakeRuntime);
     t.equal(manager._isValidExtensionURL('fetch'), false);
     t.equal(manager._isValidExtensionURL(''), false);

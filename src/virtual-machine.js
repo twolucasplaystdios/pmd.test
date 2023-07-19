@@ -1,3 +1,9 @@
+// patch for tests, makes sure that these properties always exist
+(() => {
+    if (typeof global.location !== 'object') global.location = {href: 'http://localhost:'};
+    if (typeof global.location !== 'object' && !location.search) global.location.search = '';
+})();
+
 let _TextEncoder;
 if (typeof TextEncoder === 'undefined') {
     _TextEncoder = require('text-encoding').TextEncoder;
@@ -944,8 +950,8 @@ class VirtualMachine extends EventEmitter {
             if (soundObject.fromPenguinModLibrary === true) {
                 return new Promise((resolve, reject) => {
                     fetch(`${PM_LIBRARY_API}files/${soundObject.libraryId}`)
-                        .then((r) => r.arrayBuffer())
-                        .then((arrayBuffer) => {
+                        .then(r => r.arrayBuffer())
+                        .then(arrayBuffer => {
                             const storage = this.runtime.storage;
                             const asset = new storage.Asset(
                                 storage.AssetType.Sound,
@@ -955,16 +961,17 @@ class VirtualMachine extends EventEmitter {
                                 true
                             );
                             const newSoundObject = {
-                                md5: asset.assetId + '.' + asset.dataFormat,
+                                md5: `${asset.assetId}.${asset.dataFormat}`,
                                 asset: asset,
                                 name: soundObject.name
-                            }
+                            };
                             loadSound(newSoundObject, this.runtime, target.sprite.soundBank).then(soundAsset => {
                                 target.addSound(newSoundObject);
                                 this.emitTargetsUpdate();
                                 resolve(soundAsset, newSoundObject);
-                            })
-                        }).catch(reject);
+                            });
+                        })
+                        .catch(reject);
                 });
             }
             return loadSound(soundObject, this.runtime, target.sprite.soundBank).then(() => {

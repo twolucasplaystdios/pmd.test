@@ -7,8 +7,6 @@ const SecurityManager = require('./tw-security-manager');
 
 const AddonSwitches = require('./extension-addon-switchers');
 
-// if (global && !global.location) global.location = {href: 'http://localhost'};
-// if (!location.search) location.search = '';
 const urlParams = new URLSearchParams(location.search);
 
 const IsLocal = String(location.href).startsWith(`http://localhost:`);
@@ -167,8 +165,8 @@ const builtinExtensions = {
     // iygPerlin: 
     iygPerlin: () => require('../extensions/iyg_perlin_noise'),
     // fr: waw 3d physics!!
-    //fr3d:
-    fr3d: () => require('../extensions/fr_3d'),
+    // fr3d:
+    fr3d: () => require('../extensions/fr_3d')
 };
 
 const coreExtensionList = Object.getOwnPropertyNames(builtinExtensions);
@@ -683,12 +681,12 @@ class ExtensionManager {
 
     _normalize(thing, to) {
         switch (to) {
-            case 'string': return String(thing);
-            case 'bigint':
-            case 'number': return Number(thing);
-            case 'boolean': return String(thing) === 'true';
-            case 'function': return new Function(thing);
-            default: return String(thing);
+        case 'string': return String(thing);
+        case 'bigint':
+        case 'number': return Number(thing);
+        case 'boolean': return String(thing) === 'true';
+        case 'function': return new Function(thing);
+        default: return String(thing);
         }
     }
 
