@@ -185,28 +185,6 @@ class Jg3DBlocks {
 
         return intersection.length > 0;
     }
-      
-
-    touching(name1, name2) {
-        if (!this.scene) return false;
-
-        const object1 = this.scene.getObjectByName(name1);
-        const object2 = this.scene.getObjectByName(name2);
-        
-        if (!object1 || !object2) return false;
-        
-        if (object1.isLight || object2.isLight) return false;
-        
-        const raycaster1 = new Three.Raycaster();
-        const raycaster2 = new Three.Raycaster();
-        
-        const intersection1 = this.performRaycast(raycaster1, object1);
-        const intersection2 = this.performRaycast(raycaster2, object2);
-        
-        const collision = intersection1 && intersection2;
-        
-        return collision;
-    }
 
     initialize() {
         // dispose of the previous scene
@@ -751,7 +729,19 @@ class Jg3DBlocks {
     }
 
     objectTouchingObject(args) {
-        return this.touching(Cast.toString(args.NAME1), Cast.toString(args.NAME2))
+        if (!this.scene) return false;
+        const name1 = Cast.toString(args.NAME1);
+        const name2 = Cast.toString(args.NAME2);
+        const object1 = this.scene.getObjectByName(name1);
+        const object2 = this.scene.getObjectByName(name2);
+        if (!object1) return false;
+        if (!object2) return false;
+        if (object1.isLight) return false; // currently lights are not supported for collisions
+        if (object2.isLight) return false; // currently lights are not supported for collisions
+        const box1 = new Three.Box3().setFromObject(object1);
+        const box2 = new Three.Box3().setFromObject(object2);
+        const collision = box1.intersectsBox(box2);
+        return collision;
     }
 
     MoveCameraBy(args) {
@@ -778,6 +768,7 @@ class Jg3DBlocks {
     }
 
     rayCollision(args) {
+        if (!this.scene) return '';
         const ray = new Three.Raycaster();
         const origin = {
             x: Cast.toNumber(args.X),
@@ -791,21 +782,22 @@ class Jg3DBlocks {
         };
         ray.set(new Three.Vector3(origin.x, origin.y, origin.z), new Three.Vector3(direction.x, direction.y, direction.z));
         const intersects = ray.intersectObjects(this.scene.children, true);
-        if (intersects.length === 0) return "";
+        if (intersects.length === 0) return '';
         const first = intersects[0];
-        console.log(JSON.stringify(intersects));
         return first.object.name;
     }
-    rayCollisionCamera(args) {
+    rayCollisionCamera() {
+        if (!this.scene) return '';
+        if (!this.camera) return '';
         const ray = new Three.Raycaster();
         ray.setFromCamera(new Three.Vector2(), this.camera);
         const intersects = ray.intersectObjects(this.scene.children, true);
-        if (intersects.length === 0) return "";
+        if (intersects.length === 0) return '';
         const first = intersects[0];
-        console.log(JSON.stringify(intersects));
         return first.object.name;
     }
     rayCollisionArray(args) {
+        if (!this.scene) return '[]';
         const ray = new Three.Raycaster();
         const origin = {
             x: Cast.toNumber(args.X),
@@ -819,18 +811,16 @@ class Jg3DBlocks {
         };
         ray.set(new Three.Vector3(origin.x, origin.y, origin.z), new Three.Vector3(direction.x, direction.y, direction.z));
         const intersects = ray.intersectObjects(this.scene.children, true);
-        if (intersects.length === 0) return JSON.stringify([]);
-        const first = intersects[0];
-        console.log(JSON.stringify(intersects));
+        if (intersects.length === 0) return '[]';
         return JSON.stringify(intersects);
     }
-    rayCollisionCameraArray(args) {
+    rayCollisionCameraArray() {
+        if (!this.scene) return '[]';
+        if (!this.camera) return '[]';
         const ray = new Three.Raycaster();
         ray.setFromCamera(new Three.Vector2(), this.camera);
         const intersects = ray.intersectObjects(this.scene.children, true);
-        if (intersects.length === 0) return "";
-        const first = intersects[0];
-        console.log(JSON.stringify(intersects));
+        if (intersects.length === 0) return '[]';
         return JSON.stringify(intersects);
     }
 }
