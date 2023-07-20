@@ -88,8 +88,9 @@ class Fr3DBlocks {
     }
 
     enablePhysicsForObject(object) {
+        if (!this._3d.scene) return;
         var object = this._3d.scene.getObjectByName(object)
-        if (!object || !this.scene) return;
+        if (!object || !this._3d.scene) return;
 
         const shape = this.createShapeFromGeometry(object.geometry);
 
@@ -113,7 +114,7 @@ class Fr3DBlocks {
         delete object.userData.physicsBody;
     }
     step() {
-        this.scene.traverse((object) => {
+        this._3d.scene.traverse((object) => {
             if (object.userData.physicsBody) {
             object.position.copy(object.userData.physicsBody.position);
             object.quaternion.copy(object.userData.physicsBody.quaternion);
