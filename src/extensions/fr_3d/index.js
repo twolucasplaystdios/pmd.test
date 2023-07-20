@@ -5,31 +5,33 @@ const Cast = require('../../util/cast');
 const CANNON = require('cannon-es');
 const Icon = require('./icon.png');
 
-
-
 /**
- * Class for 3d Physics blocks
+ * Class for 3D Physics blocks
  */
 class Fr3DBlocks {
     constructor(runtime) {
-        /**
-         * The runtime instantiating this block package.
-         */
         this.runtime = runtime;
-        this.world = {}
-        this._3d = {}
-        this.Three = {}
+        this.world = {};
+        this._3d = {};
+        this.Three = {};
+
+        // Initialize CANNON.js world
+        this.physicsWorld = null;
+
+        // Array to store the mappings between Three.js objects and CANNON.js bodies
+        this.objectToBodyMap = [];
+
         if (!vm.runtime.ext_jg3d) {
-            vm.extensionManager.loadExtensionURL('jg3d')
-                .then(() => {
-                    this._3d = vm.runtime.ext_jg3d;
-                    this.Three = this._3d.three;
-                })
+            vm.extensionManager.loadExtensionURL('jg3d').then(() => {
+                this._3d = vm.runtime.ext_jg3d;
+                this.Three = this._3d.three;
+            });
         } else {
             this._3d = vm.runtime.ext_jg3d;
-            this.Three = this._3d.three
+            this.Three = this._3d.three;
         }
     }
+
     /**
      * metadata for this extension and its blocks.
      * @returns {object}
@@ -52,34 +54,35 @@ class Fr3DBlocks {
                     text: 'enable physics for [NAME1]',
                     blockType: BlockType.COMMAND,
                     arguments: {
-                        NAME1: { type: ArgumentType.STRING, defaultValue: "Cube1" }
-                    }
+                        NAME1: { type: ArgumentType.STRING, defaultValue: 'Cube1' },
+                    },
                 },
                 {
                     opcode: 'rmp',
                     text: 'disable physics for [NAME1]',
                     blockType: BlockType.COMMAND,
                     arguments: {
-                        NAME1: { type: ArgumentType.STRING, defaultValue: "Plane1" }
-                    }
-                }
-            ]
+                        NAME1: { type: ArgumentType.STRING, defaultValue: 'Plane1' },
+                    },
+                },
+            ],
         };
     }
+
     createShapeFromGeometry(geometry) {
         if (geometry instanceof this.Three.BufferGeometry) {
             const vertices = geometry.attributes.position.array;
             const indices = [];
 
             for (let i = 0; i < vertices.length / 3; i++) {
-            indices.push(i);
+                indices.push(i);
             }
 
             return new CANNON.Trimesh(vertices, indices);
         } else if (geometry instanceof this.Three.Geometry) {
             return new CANNON.ConvexPolyhedron(
-            geometry.vertices.map((v) => new CANNON.Vec3(v.x, v.y, v.z)),
-            geometry.faces.map((f) => [f.a, f.b, f.c]),
+                geometry.vertices.map((v) => new CANNON.Vec3(v.x, v.y, v.z)),
+                geometry.faces.map((f) => [f.a, f.b, f.c])
             );
         } else {
             console.warn('Unsupported geometry type for collision shape creation:', geometry.type);
@@ -87,10 +90,10 @@ class Fr3DBlocks {
         }
     }
 
-    enablePhysicsForObject(object) {
+    enablePhysicsForObject(objectName) {
         if (!this._3d.scene) return;
-        var object = this._3d.scene.getObjectByName(object)
-        if (!object || !this._3d.scene) return;
+        const object = this._3d.scene.getObjectByName(objectName);
+        if (!object) return;
 
         const shape = this.createShapeFromGeometry(object.geometry);
 
@@ -101,32 +104,63 @@ class Fr3DBlocks {
 
         const body = new CANNON.Body({
             mass: 1,
+            shape: shape,
         });
 
-        body.addShape(shape);
+        const position = new CANNON.Vec3(object.position.x, object.position.y, object.position.z);
+        const quaternion = new CANNON.Quaternion();
+        quaternion.setFromEuler(object.rotation.x, object.rotation.y, object.rotation.z, 'XYZ');
+
+        body.position.copy(position);
+        body.quaternion.copy(quaternion);
 
         object.userData.physicsBody = body;
+        this.objectToBodyMap.push({ object, body });
+
+        if (!this.physicsWorld) {
+            // Use the Three.js scene as the physics world
+            this.physicsWorld = new CANNON.World();
+            this.physicsWorld.gravity.set(0, -9.81, 0);
+            this.physicsWorld.broadphase = new CANNON.NaiveBroadphase();
         }
-    disablePhysicsForObject(object) {
-        var object = this._3d.scene.getObjectByName(object)
+
+        this.physicsWorld.addBody(body);
+    }
+
+    disablePhysicsForObject(objectName) {
+        if (!this._3d.scene) return;
+        const object = this._3d.scene.getObjectByName(objectName);
         if (!object || !object.userData || !object.userData.physicsBody) return;
 
+        const index = this.objectToBodyMap.findIndex((mapping) => mapping.object === object);
+        if (index !== -1) {
+            this.objectToBodyMap.splice(index, 1);
+        }
+
+        this.physicsWorld.removeBody(object.userData.physicsBody);
         delete object.userData.physicsBody;
     }
+
     step() {
-        this._3d.scene.traverse((object) => {
-            if (object.userData.physicsBody) {
-            object.position.copy(object.userData.physicsBody.position);
-            object.quaternion.copy(object.userData.physicsBody.quaternion);
-            }
+        if (!this.physicsWorld) return;
+
+        // Step the physics simulation forward
+        this.physicsWorld.step(1.0 / 60.0);
+
+        // Update Three.js objects based on CANNON.js bodies
+        this.objectToBodyMap.forEach((mapping) => {
+            const { object, body } = mapping;
+            object.position.copy(body.position);
+            object.quaternion.copy(body.quaternion);
         });
     }
+
     addp(args) {
-        this.enablePhysicsForObject(Cast.toString(args.NAME1))
+        this.enablePhysicsForObject(Cast.toString(args.NAME1));
     }
-    
+
     rmp(args) {
-        this.disablePhysicsForObject(Cast.toString(args.NAME1))
+        this.disablePhysicsForObject(Cast.toString(args.NAME1));
     }
 }
 
