@@ -2,7 +2,7 @@ const formatMessage = require('format-message');
 const BlockType = require('../../extension-support/block-type');
 const ArgumentType = require('../../extension-support/argument-type');
 const Cast = require('../../util/cast');
-/*const Ammo = require('./ammo.wasm');*/
+const CANNON = require('cannon-es');
 const Icon = require('./icon.png');
 
 
@@ -53,7 +53,7 @@ class Fr3DBlocks {
                     blockType: BlockType.COMMAND,
                 },
                 {
-                    opcode: 'enablep',
+                    opcode: 'addp',
                     text: 'enable physics for [NAME1]',
                     blockType: BlockType.COMMAND,
                     arguments: {
@@ -61,7 +61,7 @@ class Fr3DBlocks {
                     }
                 },
                 {
-                    opcode: 'disablep',
+                    opcode: 'rmp',
                     text: 'disable physics for [NAME1]',
                     blockType: BlockType.COMMAND,
                     arguments: {
@@ -71,163 +71,67 @@ class Fr3DBlocks {
             ]
         };
     }
-    animate() {
-        if (!this.world) {
-            console.error("Physics world has not been initialized.");
-            return;
-        }
-    
-        const deltaTime = 1 / 60;
-    
-        this.world.stepSimulation(deltaTime, 1);
-    
-        const numObjects = this._3d.scene.children.length;
-        for (let i = 0; i < numObjects; i++) {
-            const object = this._3d.scene.children[i];
-    
-            if (object.userData.physicsEnabled) {
-                const rigidBody = object.userData.rigidBody;
-                const motionState = rigidBody.getMotionState();
-                const transform = new Ammo.btTransform();
-                motionState.getWorldTransform(transform);
-                const origin = transform.getOrigin();
-                object.position.set(origin.x(), origin.y(), origin.z());
-                object.quaternion.set(
-                    transform.getRotation().x(),
-                    transform.getRotation().y(),
-                    transform.getRotation().z(),
-                    transform.getRotation().w()
-                );
+    createShapeFromGeometry(geometry) {
+        if (geometry instanceof this.Three.BufferGeometry) {
+            const vertices = geometry.attributes.position.array;
+            const indices = [];
+
+            for (let i = 0; i < vertices.length / 3; i++) {
+            indices.push(i);
             }
+
+            return new CANNON.Trimesh(vertices, indices);
+        } else if (geometry instanceof this.Three.Geometry) {
+            return new CANNON.ConvexPolyhedron(
+            geometry.vertices.map((v) => new CANNON.Vec3(v.x, v.y, v.z)),
+            geometry.faces.map((f) => [f.a, f.b, f.c]),
+            );
+        } else {
+            console.warn('Unsupported geometry type for collision shape creation:', geometry.type);
+            return null;
         }
     }
-    
-    addp(objectName) {
-        if (!this.world) {
-            console.error("Physics world has not been initialized.");
+
+    enablePhysicsForObject(object) {
+        var object = this._3d.scene.getObjectByName(object)
+        if (!object || !this.scene) return;
+
+        const shape = this.createShapeFromGeometry(object.geometry);
+
+        if (!shape) {
+            console.warn('Failed to create a valid shape for the object:', object.name);
             return;
         }
-    
-        const object = this._3d.scene.getObjectByName(objectName);
-        if (!object) {
-            console.error(`Object "${objectName}" not found in the scene.`);
-            return;
-        }
-    
-        const geometry = object.isMesh ? object.geometry : null;
-        if (!geometry) {
-            console.error(`Object "${objectName}" is not a mesh.`);
-            return;
-        }
-    
-        const vertices = [];
-        geometry.vertices.forEach((vertex) => {
-            const position = new Ammo.btVector3(vertex.x, vertex.y, vertex.z);
-            vertices.push(position);
+
+        const body = new CANNON.Body({
+            mass: 1,
         });
-    
-        const hullShape = new Ammo.btConvexHullShape();
-        vertices.forEach((vertex) => {
-            hullShape.addPoint(vertex, true);
-        });
-    
-        const mass = 1;
-        const startTransform = new Ammo.btTransform();
-        startTransform.setIdentity();
-        const localInertia = new Ammo.btVector3(0, 0, 0);
-        hullShape.calculateLocalInertia(mass, localInertia);
-        startTransform.setOrigin(
-            new Ammo.btVector3(
-                object.position.x,
-                object.position.y,
-                object.position.z
-            )
-        );
-        const motionState = new Ammo.btDefaultMotionState(startTransform);
-        const rbInfo = new Ammo.btRigidBodyConstructionInfo(
-            mass,
-            motionState,
-            hullShape,
-            localInertia
-        );
-        const rigidBody = new Ammo.btRigidBody(rbInfo);
-    
-        this.world.addRigidBody(rigidBody);
-    
-        object.userData.physicsEnabled = true;
-        object.userData.rigidBody = rigidBody;
-    
-        object.onBeforeRender = () => {
-            const transform = new Ammo.btTransform();
-            rigidBody.getMotionState().getWorldTransform(transform);
-            const origin = transform.getOrigin();
-            object.position.set(origin.x(), origin.y(), origin.z());
-        };
-    }
-    
-    rmp(name) {
-        if (!this.world) {
-            console.error("Physics world has not been initialized.");
-            return;
+
+        body.addShape(shape);
+
+        object.userData.physicsBody = body;
         }
-    
-        const object = this._3d.scene.getObjectByName(name);
-        if (!object) {
-            console.error(`Object "${name}" not found in the scene.`);
-            return;
-        }
-    
-        if (object.userData.physicsEnabled) {
-            this.world.removeRigidBody(object.userData.rigidBody);
-            object.userData.physicsEnabled = false;
-            object.userData.rigidBody = null;
-            object.onBeforeRender = null;
-        }
+    disablePhysicsForObject(object) {
+        var object = this._3d.scene.getObjectByName(object)
+        if (!object || !object.userData || !object.userData.physicsBody) return;
+
+        delete object.userData.physicsBody;
     }
-    
-    setupworld() {
-        if (this.world) {
-            console.error("Physics world has already been initialized.");
-            return Promise.resolve();
-        }
-    
-        return new Promise((resolve) => {
-            Ammo().then(() => {
-                const collisionConfiguration = new Ammo.btDefaultCollisionConfiguration();
-                const dispatcher = new Ammo.btCollisionDispatcher(collisionConfiguration);
-                const overlappingPairCache = new Ammo.btDbvtBroadphase();
-                const solver = new Ammo.btSequentialImpulseConstraintSolver();
-                this.world = new Ammo.btDiscreteDynamicsWorld(
-                    dispatcher,
-                    overlappingPairCache,
-                    solver,
-                    collisionConfiguration
-                );
-                this.world.setGravity(new Ammo.btVector3(0, -9.8, 0));
-                resolve();
-            });
-        });
-    }
-    
-    setup() {
-        this.setupworld().then(() => {
-            // Rest of the setup logic
-        });
-    }
-    
-    enablep(args) {
-        this.addp(args.NAME1.toString());
-    }
-    
-    disablep(args) {
-        this.rmp(args.NAME1.toString());
-    }
-    
     step() {
-        this.animate();
+        this.scene.traverse((object) => {
+            if (object.userData.physicsBody) {
+            object.position.copy(object.userData.physicsBody.position);
+            object.quaternion.copy(object.userData.physicsBody.quaternion);
+            }
+        });
+    }
+    addp() {
+        this.enablePhysicsForObject(Cast.toString(args.NAME1))
     }
     
-    
+    rmp() {
+        this.disablePhysicsForObject(Cast.toString(args.NAME1))
+    }
 }
 
 module.exports = Fr3DBlocks;
