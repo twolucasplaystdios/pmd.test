@@ -43,11 +43,6 @@ class Fr3DBlocks {
             blockIconURI: Icon,
             blocks: [
                 {
-                    opcode: 'setup',
-                    text: 'setup simulation',
-                    blockType: BlockType.COMMAND
-                },
-                {
                     opcode: 'step',
                     text: 'step simulation',
                     blockType: BlockType.COMMAND,
