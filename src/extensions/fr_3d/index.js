@@ -120,11 +120,11 @@ class Fr3DBlocks {
             }
         });
     }
-    addp() {
+    addp(args) {
         this.enablePhysicsForObject(Cast.toString(args.NAME1))
     }
     
-    rmp() {
+    rmp(args) {
         this.disablePhysicsForObject(Cast.toString(args.NAME1))
     }
 }
