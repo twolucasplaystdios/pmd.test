@@ -70,7 +70,7 @@ class Jg3DBlocks {
         }
 
         this.savedMeshes = {};
-        
+
         // event recievers
         // stop button clicked or project restarted, dispose of all objects
         this.runtime.on('PROJECT_STOP_ALL', () => {
@@ -157,12 +157,12 @@ class Jg3DBlocks {
             const key = `${x},${y},${z}`;
 
             if (vertexMap[key] === undefined) {
-            vertexMap[key] = newIndex;
-            mergedVertices.push(x, y, z);
-            newIndices.push(newIndex);
-            newIndex++;
+                vertexMap[key] = newIndex;
+                mergedVertices.push(x, y, z);
+                newIndices.push(newIndex);
+                newIndex++;
             } else {
-            newIndices.push(vertexMap[key]);
+                newIndices.push(vertexMap[key]);
             }
         }
 
@@ -171,7 +171,7 @@ class Jg3DBlocks {
 
         return geometry;
     }
-      
+
     performRaycast(raycaster, object) {
         const geometry = object.geometry;
 
@@ -201,7 +201,7 @@ class Jg3DBlocks {
         this.runtime.prism_screenshot_externalCanvas = canvas;
 
         this.restyleExternalCanvas(canvas);
-        this.appendElementAboveScratchCanvas(canvas);        
+        this.appendElementAboveScratchCanvas(canvas);
         /* dev: test rendering by drawing a cube and see if it appears
         // const geometry = new Three.BoxGeometry(1, 1, 1);
         // const material = new Three.MeshBasicMaterial({ color: 0x00ff00 });
@@ -345,7 +345,7 @@ class Jg3DBlocks {
         this.renderer.domElement.style.display = "none"
     }
     is3dVisible() {
-        return this.renderer.domElement.style.display === ""||this.renderer.domElement.style.display==="absolute"
+        return this.renderer.domElement.style.display === "" || this.renderer.domElement.style.display === "absolute"
     }
 
     getCameraZoom() {
@@ -469,7 +469,7 @@ class Jg3DBlocks {
                             object.position.set(position.x, position.y, position.z);
                             this.scene.add(object);
                             resolve();
-                        }, () => {}, (error) => {
+                        }, () => { }, (error) => {
                             console.warn('Failed to load 3D mesh obj;', error);
                             this.stackWarning(util, 'Failed to get the 3D mesh!');
                             resolve();
@@ -744,6 +744,29 @@ class Jg3DBlocks {
         return collision;
     }
 
+    pointTowardsObject(args) {
+        if (!this.scene) return false;
+        const name1 = Cast.toString(args.NAME1);
+        const name2 = Cast.toString(args.NAME2);
+        const object1 = this.scene.getObjectByName(name1);
+        const object2 = this.scene.getObjectByName(name2);
+        if (!object1) return false;
+        if (!object2) return false;
+        object1.lookAt(object2.position);
+    }
+    pointTowardsXYZ(args) {
+        if (!this.scene) return false;
+        const name = Cast.toString(args.NAME);
+        const object = this.scene.getObjectByName(name);
+        if (!object) return false;
+        const position = {
+            x: Cast.toNumber(args.X),
+            y: Cast.toNumber(args.Y),
+            z: Cast.toNumber(args.Z)
+        };
+        object.lookAt(position.x, position.y, position.z);
+    }
+
     MoveCameraBy(args) {
         if (!this.camera) return;
         const amount = Cast.toNumber(args.AMOUNT);
@@ -756,8 +779,8 @@ class Jg3DBlocks {
     changeCameraPosition(args) {
         if (!this.camera) return;
         this.camera.position.x += Cast.toNumber(args.X);
-        this.camera.position.y +=  Cast.toNumber(args.Y);
-        this.camera.position.z +=  Cast.toNumber(args.Z);
+        this.camera.position.y += Cast.toNumber(args.Y);
+        this.camera.position.z += Cast.toNumber(args.Z);
     }
 
     changeCameraRotation(args) {

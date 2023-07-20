@@ -79,12 +79,13 @@ function createCommandBlock(opcode, text, args, icon, hidden) {
     return obj;
 }
 function createReporterBlock(opcode, text, args, icon, disablemonitor) {
-    if (!disablemonitor){var disableMonitor = false}
     const obj = {
         opcode: opcode,
         text: text ? text : opcode,
-        blockType: BlockType.REPORTER,
-        disableMonitor: disablemonitor
+        blockType: BlockType.REPORTER
+    }
+    if (typeof disablemonitor === 'boolean') {
+        obj.disableMonitor = disablemonitor;
     }
     if (args) {
         obj.arguments = args;
@@ -331,6 +332,16 @@ module.exports = {
             X: infoArgument(100),
             Y: infoArgument(100),
             Z: infoArgument(100)
+        }),
+        createCommandBlock('pointTowardsObject', 'point object named [NAME1] towards object named [NAME2]', {
+            NAME1: infoArgument("Object1"),
+            NAME2: infoArgument("Object2"),
+        }),
+        createCommandBlock('pointTowardsXYZ', 'point object named [NAME] towards x: [X] y: [Y] z: [Z]', {
+            NAME: infoArgument("Object1"),
+            X: infoArgument(31),
+            Y: infoArgument(26),
+            Z: infoArgument(47),
         }),
         createReporterBlock("getObjectPosition", "[VECTOR3] position of object named [NAME]", {
             VECTOR3: infoArgumentMenu(ArgumentType.STRING, "vector3"),
