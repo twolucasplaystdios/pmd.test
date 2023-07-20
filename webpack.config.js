@@ -24,15 +24,6 @@ const base = {
             }
         },
         {
-            test: /@react-three\/cannon/,
-            use: {
-              loader: 'babel-loader',
-              options: {
-                presets: ['@babel/preset-env'],
-              },
-            },
-          }
-        {
             test: /\.mp3$/,
             loader: 'file-loader',
             options: {
