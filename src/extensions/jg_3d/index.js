@@ -790,6 +790,15 @@ class Jg3DBlocks {
         this.camera.rotation.z += Cast.toNumber(args.Z);
     }
 
+    raycastResultToReadable(result) {
+        const newResult = Clone.simple(result);
+        for (const result of newResult) {
+            // for each collision
+            result.object = result.object.object.name;
+        }
+        return newResult;
+    }
+
     rayCollision(args) {
         if (!this.scene) return '';
         const ray = new Three.Raycaster();
@@ -835,7 +844,8 @@ class Jg3DBlocks {
         ray.set(new Three.Vector3(origin.x, origin.y, origin.z), new Three.Vector3(direction.x, direction.y, direction.z));
         const intersects = ray.intersectObjects(this.scene.children, true);
         if (intersects.length === 0) return '[]';
-        return JSON.stringify(intersects);
+        const result = this.raycastResultToReadable(intersects);
+        return JSON.stringify(result);
     }
     rayCollisionCameraArray() {
         if (!this.scene) return '[]';
@@ -844,7 +854,8 @@ class Jg3DBlocks {
         ray.setFromCamera(new Three.Vector2(), this.camera);
         const intersects = ray.intersectObjects(this.scene.children, true);
         if (intersects.length === 0) return '[]';
-        return JSON.stringify(intersects);
+        const result = this.raycastResultToReadable(intersects);
+        return JSON.stringify(result);
     }
 }
 
