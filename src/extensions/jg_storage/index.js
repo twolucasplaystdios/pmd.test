@@ -285,7 +285,7 @@ class JgStorageBlocks {
     }
 
     getCurrentServer() {
-        return `https://pmstorageapi.freshpenguin111.repl.co`
+        return `https://pmstorageapi.freshpenguin111.repl.co/`
     }
 
     // blocks
