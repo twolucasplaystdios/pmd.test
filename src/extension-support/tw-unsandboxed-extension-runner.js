@@ -99,6 +99,16 @@ const setupUnsandboxedExtensionAPI = vm => new Promise(resolve => {
         }
         location.href = url;
     };
+    
+    Scratch.canRecordAudio = async () => vm.securityManager.canRecordAudio();
+
+    Scratch.canRecordVideo = async () => vm.securityManager.canRecordVideo();
+
+    Scratch.canReadClipboard = async () => vm.securityManager.canReadClipboard();
+
+    Scratch.canNotify = async () => vm.securityManager.canNotify();
+
+    Scratch.canGeolocate = async () => vm.securityManager.canGeolocate();
 
     Scratch.translate = createTranslate(vm);
 
