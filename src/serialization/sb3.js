@@ -706,8 +706,10 @@ const serialize = function (runtime, targetId, {allowOptimization = true} = {}) 
             if (typeof url === 'string') {
                 urlsToSave[extension] = url;
             }
-            if (typeof runtime[`ext_${extension}`].serialize === 'function') {
-                obj.extensionData[extension] = runtime[`ext_${extension}`].serialize();
+            if (`ext_${extension}` in runtime) {
+                if (typeof runtime[`ext_${extension}`].serialize === 'function') {
+                    obj.extensionData[extension] = runtime[`ext_${extension}`].serialize();
+                }
             }
         }
         // Only save this object if any URLs would actually be saved.
