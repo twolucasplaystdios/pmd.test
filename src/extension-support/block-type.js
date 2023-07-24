@@ -16,7 +16,7 @@ const BlockType = {
     /**
      * A text label (not an actual block) for adding comments or labling blocks 
      */
-    LABEL: 'Label',
+    LABEL: 'label',
 
 
     /**
