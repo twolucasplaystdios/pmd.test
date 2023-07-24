@@ -991,6 +991,18 @@ class JSGenerator {
             this.source += `}\n`;
             break;
         }
+        case 'control.repeatForSeconds': {
+            const duration = this.localVariables.next();
+            this.source += `thread.timer = timer();\n`;
+            this.source += `var ${duration} = Math.max(0, 1000 * ${this.descendInput(node.times).asNumber()});\n`;
+            this.requestRedraw();
+            this.source += `while (thread.timer.timeElapsed() < ${duration}) {\n`;
+            this.descendStack(node.do, new Frame(true));
+            this.yieldLoop();
+            this.source += `}\n`;
+            this.source += 'thread.timer = null;\n';
+            break;
+        }
         case 'control.stopAll':
             this.source += 'runtime.stopAll();\n';
             this.retire();
@@ -1016,6 +1028,10 @@ class JSGenerator {
             this.yieldStuckOrNotWarp();
             this.source += '}\n';
             this.source += 'thread.timer = null;\n';
+            break;
+        }
+        case 'control.waitTick': {
+            this.yieldNotWarp();
             break;
         }
         case 'control.waitUntil': {

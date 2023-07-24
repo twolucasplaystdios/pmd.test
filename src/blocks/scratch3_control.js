@@ -30,6 +30,7 @@ class Scratch3ControlBlocks {
             control_for_each: this.forEach,
             control_forever: this.forever,
             control_wait: this.wait,
+            control_repeatForSeconds: this.repeatForSeconds,
             control_waittick: this.waitTick,
             control_waitsecondsoruntil: this.waitOrUntil,
             control_wait_until: this.waitUntil,
@@ -152,6 +153,20 @@ class Scratch3ControlBlocks {
             this.runtime.requestRedraw();
             util.yield();
         } else if (!util.stackTimerFinished()) {
+            util.yield();
+        }
+    }
+    
+    repeatForSeconds (args, util) {
+        if (util.stackTimerNeedsInit()) {
+            const duration = Math.max(0, 1000 * Cast.toNumber(args.TIMES));
+
+            util.startStackTimer(duration);
+            this.runtime.requestRedraw();
+            util.startBranch(1, true);
+            util.yield();
+        } else if (!util.stackTimerFinished()) {
+            util.startBranch(1, true);
             util.yield();
         }
     }

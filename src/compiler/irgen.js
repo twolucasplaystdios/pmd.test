@@ -909,6 +909,10 @@ class ScriptTreeGenerator {
             return {
                 kind: 'control.exitCase'
             };
+        case 'control_exitLoop':
+            return {
+                kind: 'control.exitCase'
+            };
         case 'control_all_at_once':
             // In Scratch 3, this block behaves like "if 1 = 1"
             // WE ARE IN PM NOW IT BEHAVES PROPERLY LESS GO
@@ -969,6 +973,13 @@ class ScriptTreeGenerator {
                 times: this.descendInputOfBlock(block, 'TIMES'),
                 do: this.descendSubstack(block, 'SUBSTACK')
             };
+        case 'control_repeatForSeconds':
+            this.analyzeLoop();
+            return {
+                kind: 'control.repeatForSeconds',
+                times: this.descendInputOfBlock(block, 'TIMES'),
+                do: this.descendSubstack(block, 'SUBSTACK')
+            };
         case 'control_repeat_until': {
             this.analyzeLoop();
             // Dirty hack: automatically enable warp timer for this block if it uses timer
@@ -1014,6 +1025,11 @@ class ScriptTreeGenerator {
             return {
                 kind: 'control.wait',
                 seconds: this.descendInputOfBlock(block, 'DURATION')
+            };
+        case 'control_waittick':
+            this.script.yields = true;
+            return {
+                kind: 'control.waitTick'
             };
         case 'control_wait_until':
             this.script.yields = true;
