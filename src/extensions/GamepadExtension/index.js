@@ -71,7 +71,7 @@ const Scratch = new ExtensionApi(true);
     return axisValue;
   };
 
-class GamepadExtension {
+  class GamepadExtension {
     getInfo() {
       return {
         id: 'Gamepad',
@@ -403,15 +403,6 @@ class GamepadExtension {
     }
 
     buttonDown ({b, i}) {
-      if (i === 'any') {
-        for (const gamepad1 of getGamepads(i)) {
-          for (const gamepad of getGamepads(i)) {
-            if (isButtonPressed(gamepad, b)) {
-              return true;
-            }
-          }
-        }
-      }
       for (const gamepad of getGamepads(i)) {
         if (isButtonPressed(gamepad, b)) {
           return true;
@@ -490,4 +481,4 @@ class GamepadExtension {
     }
   }
 
-module.exports = GamepadExtension;
+  module.exports = GamepadExtension;
