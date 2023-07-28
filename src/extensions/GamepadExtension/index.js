@@ -1,9 +1,6 @@
 // Some parts of this scripts are based on or designed to be compatible-ish with:
 // https://arpruss.github.io/gamepad.js (MIT Licensed)
 
-(function(Scratch) {
-  'use strict';
-
   const AXIS_DEADZONE = 0.1;
   const BUTTON_DEADZONE = 0.05;
 
@@ -71,7 +68,7 @@
     return axisValue;
   };
 
-  class GamepadExtension {
+class GamepadExtension {
     getInfo() {
       return {
         id: 'Gamepad',
@@ -481,5 +478,4 @@
     }
   }
 
-  Scratch.extensions.register(new GamepadExtension());
-})(Scratch);
+module.exports = GamepadExtension;
