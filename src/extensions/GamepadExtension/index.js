@@ -1,6 +1,9 @@
 // Some parts of this scripts are based on or designed to be compatible-ish with:
 // https://arpruss.github.io/gamepad.js (MIT Licensed)
 
+const ExtensionApi = require("../../util/custom-ext-api-to-core.js");
+const Scratch = new ExtensionApi(true);
+
   const AXIS_DEADZONE = 0.1;
   const BUTTON_DEADZONE = 0.05;
 
