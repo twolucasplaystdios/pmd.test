@@ -404,12 +404,13 @@ class GamepadExtension {
 
     buttonDown ({b, i}) {
       if (i === 'any') {
-        for (const gamepad of navigator.getGamepads()) {
-          if (isButtonPressed(gamepad, b)) {
-            return true;
+        for (const gamepad1 of getGamepads(i)) {
+          for (const gamepad of getGamepads(i)) {
+            if (isButtonPressed(gamepad, b)) {
+              return true;
+            }
           }
         }
-        return false;
       }
       for (const gamepad of getGamepads(i)) {
         if (isButtonPressed(gamepad, b)) {
