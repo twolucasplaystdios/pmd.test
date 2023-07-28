@@ -59,6 +59,9 @@ class Color {
         if (hex.startsWith('#')) {
             hex = hex.substring(1);
         }
+        if (hex.length === 8) {
+            hex = hex.slice(0, 6)
+        }
         const parsed = parseInt(hex, 16);
         if (isNaN(parsed)) {
             return null;
