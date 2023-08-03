@@ -368,6 +368,39 @@ const getExtensionIdForOpcode = function (opcode) {
 };
 
 /**
+ * @param {Set<string>|string[]} extensionIDs Project extension IDs
+ * @param {Runtime} runtime
+ * @returns {Record<string, string>|null} extension ID -> URL map, or null if no custom extensions.
+ */
+const getExtensionURLsToSave = (extensionIDs, runtime) => {
+    // Extension manager only exists when runtime is wrapped by VirtualMachine
+    if (!runtime.extensionManager) {
+        return null;
+    }
+
+    // We'll save the extensions in the format:
+    // {
+    //   "extensionid": "https://...",
+    //   "otherid": "https://..."
+    // }
+    // Which lets the VM know which URLs correspond to which IDs, which is useful when the project
+    // is being loaded. For example, if the extension is eventually converted to a builtin extension
+    // or if it is already loaded, then it doesn't need to fetch the script again.
+    const extensionURLs = runtime.extensionManager.getExtensionURLs();
+    const toSave = {};
+    for (const extension of extensionIDs) {
+        const url = extensionURLs[extension];
+        if (typeof url === 'string') {
+            toSave[extension] = url;
+        }
+    }
+    if (Object.keys(toSave).length === 0) {
+        return null;
+    }
+    return toSave;
+};
+
+/**
  * Serialize the given blocks object (representing all the blocks for the target
  * currently being serialized.)
  * @param {object} blocks The blocks to be serialized
@@ -677,7 +710,13 @@ const serialize = function (runtime, targetId, {allowOptimization = true} = {}) 
     const serializedTargets = flattenedOriginalTargets.map(t => serializeTarget(t, extensions));
 
     if (targetId) {
-        return serializedTargets[0];
+        const target = serializedTargets[0];
+        const extensionURLs = getExtensionURLsToSave(extensions, runtime);
+        target.extensions = Array.from(extensions);
+        if (extensionURLs) {
+            obj.extensionURLs = extensionURLs;
+        }
+        return target;
     }
 
     obj.targets = serializedTargets;
@@ -686,36 +725,9 @@ const serialize = function (runtime, targetId, {allowOptimization = true} = {}) 
 
     // Assemble extension list
     obj.extensions = Array.from(extensions);
-
-    // Save list of URLs to load the current extensions
-    // Extension manager only exists when runtime is wrapped by VirtualMachine
-    if (runtime.extensionManager) {
-        // We'll save the extensions in the format:
-        // {
-        //   "extension_id": "https://...",
-        //   "other_id": "https://..."
-        // }
-        // Which lets the VM know which URLs correspond to which IDs, which is useful when the project
-        // is being loaded. For example, if the extension is eventually converted to a builtin extension
-        // or if it is already loaded, then it doesn't need to fetch the script again.
-        const extensionURLs = runtime.extensionManager.getExtensionURLs();
-        const urlsToSave = {};
-        obj.extensionData = {};
-        for (const extension of extensions) {
-            const url = extensionURLs[extension];
-            if (typeof url === 'string') {
-                urlsToSave[extension] = url;
-            }
-            if (`ext_${extension}` in runtime) {
-                if (typeof runtime[`ext_${extension}`].serialize === 'function') {
-                    obj.extensionData[extension] = runtime[`ext_${extension}`].serialize();
-                }
-            }
-        }
-        // Only save this object if any URLs would actually be saved.
-        if (Object.keys(urlsToSave).length !== 0) {
-            obj.extensionURLs = urlsToSave;
-        }
+    const extensionURLs = getExtensionURLsToSave(extensions, runtime);
+    if (extensionURLs) {
+        obj.extensionURLs = extensionURLs;
     }
 
     // Assemble metadata
