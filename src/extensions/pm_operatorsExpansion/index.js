@@ -74,6 +74,7 @@ ${blockSeparator}
 %b15> `+/* is number even */`
 %b13> `+/* is number int */`
 %b14> `+/* is number prime */`
+%b19> `+/* is number between numbers */`
 %b11> `+/* trunc number */`
 ${blockSeparator}
 %b16> `+/* reverse text */`
@@ -351,6 +352,26 @@ class pmOperatorsExpansion {
                         },
                     }
                 },
+                {
+                    opcode: 'betweenNumbers',
+                    text: 'is [NUM] between [MIN] and [MAX]?',
+                    blockType: BlockType.BOOLEAN,
+                    disableMonitor: true,
+                    arguments: {
+                        NUM: {
+                            type: ArgumentType.NUMBER,
+                            defaultValue: 5
+                        },
+                        MIN: {
+                            type: ArgumentType.NUMBER,
+                            defaultValue: 0
+                        },
+                        MAX: {
+                            type: ArgumentType.NUMBER,
+                            defaultValue: 10
+                        },
+                    }
+                },
             ],
             menus: {
                 part: {
@@ -425,7 +446,7 @@ class pmOperatorsExpansion {
     isNumberMultipleOf(args) {
         const num = Cast.toNumber(args.NUM);
         const mult = Cast.toNumber(args.MULTIPLE);
-        
+
         return (num % mult) === 0;
     }
     isInteger(args) {
@@ -442,8 +463,20 @@ class pmOperatorsExpansion {
     }
 
     exactlyEqual(args) {
-        // everyone requested this but watch literally no one use it
+        // everyone requested this but watch literally no one use it :trollface:
         return args.ONE === args.TWO;
+    }
+    betweenNumbers(args) {
+        const number = Cast.toNumber(args.NUM);
+        let min = Cast.toNumber(args.MIN);
+        let max = Cast.toNumber(args.MAX);
+        // check that max isnt less than min
+        if (max < min) {
+            let switchover = max;
+            max = min;
+            min = switchover;
+        }
+        return (number <= max) && (number >= min);
     }
 
     reverseChars(args) {
