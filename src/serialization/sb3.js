@@ -723,6 +723,16 @@ const serialize = function (runtime, targetId, {allowOptimization = true} = {}) 
 
     obj.monitors = serializeMonitors(runtime.getMonitorState(), runtime);
 
+    // add extension datas
+    obj.extensionData = {};
+    for (const extension of extensions) {
+        if (`ext_${extension}` in runtime) {
+            if (typeof runtime[`ext_${extension}`].serialize === 'function') {
+                obj.extensionData[extension] = runtime[`ext_${extension}`].serialize();
+            }
+        }
+    }
+
     // Assemble extension list
     obj.extensions = Array.from(extensions);
     const extensionURLs = getExtensionURLsToSave(extensions, runtime);
