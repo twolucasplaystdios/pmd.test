@@ -1471,9 +1471,9 @@ class Runtime extends EventEmitter {
             ++outLineNum;
         }
 
-        const mutation = blockInfo.isDynamic ? `<mutation blockInfo="${xmlEscape(JSON.stringify(blockInfo))}"/>` : '';
+        const mutation = blockInfo.isDynamic ? `<mutation blockInfo="${xmlEscape.escapeAttribute(JSON.stringify(blockInfo))}"/>` : '';
         const inputs = context.inputList.join('');
-        const blockXML = `<block type="${xmlEscape(extendedOpcode)}">${mutation}${inputs}</block>`;
+        const blockXML = `<block type="${xmlEscape.escapeAttribute(extendedOpcode)}">${mutation}${inputs}</block>`;
 
         return {
             info: context.blockInfo,
@@ -1504,9 +1504,10 @@ class Runtime extends EventEmitter {
      * @private
      */
     _convertLabelForScratchBlocks (blockInfo) {
+        const text = xmlEscape.escapeAttribute(blockInfo.text)
         return {
             info: blockInfo,
-            xml: `<label text="${blockInfo.text}"></label>`
+            xml: `<label text="${text}"></label>`
         };
     }
 
@@ -1523,7 +1524,7 @@ class Runtime extends EventEmitter {
         const buttonText = maybeFormatMessage(buttonInfo.text, extensionMessageContext);
         return {
             info: buttonInfo,
-            xml: `<button text="${xmlEscape(buttonText)}" callbackKey="${xmlEscape(buttonInfo.opcode ? buttonInfo.opcode : buttonInfo.func)}"></button>`
+            xml: `<button text="${xmlEscape.escapeAttribute(buttonText)}" callbackKey="${xmlEscape.escapeAttribute(buttonInfo.opcode ? buttonInfo.opcode : buttonInfo.func)}"></button>`
         };
     }
 
@@ -1607,8 +1608,8 @@ class Runtime extends EventEmitter {
             };
 
             const defaultValue =
-                typeof argInfo.defaultValue === 'undefined' ? null :
-                    maybeFormatMessage(argInfo.defaultValue, this.makeMessageContextForTarget()).toString();
+                xmlEscape.escapeAttribute(typeof argInfo.defaultValue === 'undefined' ? null :
+                    maybeFormatMessage(argInfo.defaultValue, this.makeMessageContextForTarget()).toString());
 
             if (argTypeInfo.check) {
                 // Right now the only type of 'check' we have specifies that the
@@ -1641,13 +1642,13 @@ class Runtime extends EventEmitter {
 
             // <value> is the ScratchBlocks name for a block input.
             if (valueName) {
-                context.inputList.push(`<value name="${xmlEscape(placeholder)}">`);
+                context.inputList.push(`<value name="${xmlEscape.escapeAttribute(placeholder)}">`);
             }
 
             // The <shadow> is a placeholder for a reporter and is visible when there's no reporter in this input.
             // Boolean inputs don't need to specify a shadow in the XML.
             if (shadowType) {
-                context.inputList.push(`<shadow type="${xmlEscape(shadowType)}">`);
+                context.inputList.push(`<shadow type="${xmlEscape.escapeAttribute(shadowType)}">`);
             }
 
             if (shadowType === 'polygon') {
