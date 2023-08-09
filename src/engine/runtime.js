@@ -1063,13 +1063,14 @@ class Runtime extends EventEmitter {
 
         if (extensionInfo.color1) {
             categoryInfo.color1 = extensionInfo.color1;
-            categoryInfo.color2 = extensionInfo.color2;
-            categoryInfo.color3 = extensionInfo.color3;
+            categoryInfo.color2 = extensionInfo.color2 ?? Color.mixRgb(Color.RGB_BLACK, Color.hexToRgb(extensionInfo.color1), 0.1);
+            categoryInfo.color3 = extensionInfo.color3 ?? Color.mixRgb(Color.RGB_BLACK, Color.hexToRgb(extensionInfo.color1), 0.2);
         } else {
             categoryInfo.color1 = defaultExtensionColors[0];
             categoryInfo.color2 = defaultExtensionColors[1];
             categoryInfo.color3 = defaultExtensionColors[2];
         }
+        
         if (extensionInfo.isDynamic) {
             categoryInfo.isDynamic = extensionInfo.isDynamic;
             categoryInfo.orderBlocks = extensionInfo.orderBlocks;
