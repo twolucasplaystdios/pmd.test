@@ -50,7 +50,12 @@ const BlockType = {
     /**
      * General reporter with numeric or string value
      */
-    REPORTER: 'reporter'
+    REPORTER: 'reporter',
+
+    /**
+     * Arbitrary scratch-blocks XML.
+     */
+    XML: 'xml'
 };
 
 module.exports = BlockType;
