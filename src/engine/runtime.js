@@ -19,6 +19,7 @@ const Variable = require('./variable');
 const xmlEscape = require('../util/xml-escape');
 const ScratchLinkWebSocket = require('../util/scratch-link-websocket');
 const { validateJSON } = require('../util/json-block-utilities');
+const Color = require('../util/color')
 
 // Virtual I/O devices.
 const Clock = require('../io/clock');
