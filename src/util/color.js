@@ -32,7 +32,7 @@ class Color {
         if (decimal < 0) {
             decimal += 0xFFFFFF + 1;
         }
-        let hex = Number(decimal).toString(16);
+        let hex = Math.round(Number(decimal)).toString(16);
         hex = `#${'000000'.substr(0, 6 - hex.length)}${hex}`;
         return hex;
     }
