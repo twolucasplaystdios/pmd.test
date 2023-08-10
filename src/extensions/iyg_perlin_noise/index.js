@@ -181,9 +181,8 @@ class iygPerlin {
     }
 
     GenerateRandomNoise(args, util) {
-        args.X = 0;
-        args.Y = 0;
-        args.Z = 0;
+        let seed = args.SEED;
+        let size = args.SIZE;
 
         if (this.noise == null || seed != this.seed) {
             this.noise = new Array(size);
