@@ -38,8 +38,8 @@ class iygPerlin {
                     blockType: BlockType.REPORTER,
                     text: formatMessage({
                         id: 'iygPerlin.GetNoise',
-                        default: 'Get noise with seed [SEED] and octave [OCTAVE] at x [X], y [Y], and z [Z]',
-                        description: 'Get seeded noise at a specified x and y and z.'
+                        default: 'Get perlin noise with seed [SEED] and octave [OCTAVE] at x [X], y [Y], and z [Z]',
+                        description: 'Get seeded perlin noise at a specified x and y and z.'
                     }),
                     arguments: {
                         SEED: {
@@ -65,8 +65,36 @@ class iygPerlin {
                     }
                 },
                 {
+                    opcode: 'GetRandomNoise',
+                    blockType: BlockType.REPORTER,
+                    text: formatMessage({
+                        id: 'iygPerlin.GetRandomNoise',
+                        default: 'Get noise with seed [SEED] at x [X], y [Y], and z [Z]',
+                        description: 'Get seeded noise with a specified seed at a specified x and y and z.'
+                    }),
+                    arguments: {
+                        SEED: {
+                            type: ArgumentType.NUMBER,
+                            defaultValue: 123
+                        },
+                        X: {
+                            type: ArgumentType.NUMBER,
+                            defaultValue: 0
+                        },
+                        Y: {
+                            type: ArgumentType.NUMBER,
+                            defaultValue: 0
+                        },
+                        Z: {
+                            type: ArgumentType.NUMBER,
+                            defaultValue: 0
+                        }
+                    }
+                },
+                {
                     opcode: 'getSimplexNoise',
                     blockType: BlockType.REPORTER,
+                    hideFromPalette: true,
                     text: formatMessage({
                         id: 'iygPerlin.getSimplexNoise',
                         default: 'Get simplex noise with seed [SEED] at x [X], y [Y], and z [Z]',
@@ -100,6 +128,38 @@ class iygPerlin {
         let result = this.generator.random_incl();
         this.seed = (1664525*this.seed + 1013904223) % 4294967296;
         return result;
+    }
+
+    GetRandomNoise(args, util) {
+        let seed = args.SEED;
+        let x = args.X + .5;
+        let y = args.Y + .5;
+        let z = args.Z + .5;
+
+        if (this.noise == null || seed != this.seed) {
+            this.noise = new Array(4095);
+            this.seed = seed;
+            for (let i = 0; i < 4095; i++) {
+                this.noise[i] = new Array(4095);
+                for (let j = 0; j < 4095; j++) {
+                    this.noise[i][j] = new Array(4095);
+                    for (let k = 0; k < 4095; k++) {
+                        this.noise[i][j][k] = this.dumbSeedRandom();
+                    }
+                }
+            }
+            this.seed = seed;
+        }
+        
+        x = x < 0 ? -x : x;
+        y = y < 0 ? -y : y;
+        z = z < 0 ? -z : z;
+
+        x = x % 4095;
+        y = y % 4095;
+        z = z % 4095;
+
+        return this.noise[Math.floor(x)][Math.floor(y)][Math.floor(z)];
     }
 
     GetNoise(args, util) {
