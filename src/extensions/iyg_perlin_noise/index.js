@@ -97,6 +97,44 @@ class iygPerlin {
                     }
                 },
                 {
+                    opcode: 'GeneratePerlinNoise',
+                    blockType: BlockType.COMMAND,
+                    text: formatMessage({
+                        id: 'iygPerlin.GeneratePerlinNoise',
+                        default: 'Pre-generate perlin noise with seed [SEED] and octave [OCTAVE]',
+                        description: 'Pre-generate seeded perlin noise.'
+                    }),
+                    arguments: {
+                        SEED: {
+                            type: ArgumentType.NUMBER,
+                            defaultValue: 123
+                        },
+                        OCTAVE: {
+                            type: ArgumentType.NUMBER,
+                            defaultValue: 4
+                        }
+                    }
+                },
+                {
+                    opcode: 'GenerateRandomNoise',
+                    blockType: BlockType.COMMAND,
+                    text: formatMessage({
+                        id: 'iygPerlin.GenerateRandomNoise',
+                        default: 'Pre-generate noise with seed [SEED] and size [SIZE]',
+                        description: 'Pre-generate seeded noise.'
+                    }),
+                    arguments: {
+                        SEED: {
+                            type: ArgumentType.NUMBER,
+                            defaultValue: 123
+                        },
+                        SIZE: {
+                            type: ArgumentType.NUMBER,
+                            defaultValue: 50
+                        }
+                    }
+                },
+                {
                     opcode: 'getSimplexNoise',
                     blockType: BlockType.REPORTER,
                     hideFromPalette: true,
@@ -133,6 +171,49 @@ class iygPerlin {
         let result = this.generator.random_incl();
         this.seed = (1664525*this.seed + 1013904223) % 4294967296;
         return result;
+    }
+
+    GeneratePerlinNoise(args, util) {
+        args.X = 0;
+        args.Y = 0;
+        args.Z = 0;
+        this.GetNoise(args, util);
+    }
+
+    GenerateRandomNoise(args, util) {
+        args.X = 0;
+        args.Y = 0;
+        args.Z = 0;
+
+        if (this.noise == null || seed != this.seed) {
+            this.noise = new Array(size);
+            this.seed = seed;
+            for (let i = 0; i < size; i++) {
+                this.noise[i] = new Array(size);
+                for (let j = 0; j < size; j++) {
+                    this.noise[i][j] = new Array(size);
+                    for (let k = 0; k < size; k++) {
+                        this.noise[i][j][k] = this.dumbSeedRandom();
+                    }
+                }
+            }
+            this.seed = seed;
+            this.prev_seed = seed;
+            this.size = size;
+        }
+
+        if (size > this.size && seed == this.seed) {
+            this.seed = this.prev_seed;
+            for (let i = this.size; i < size+1; i++) {
+                this.noise[i] = new Array(size);
+                for (let j = this.size; j < size+1; j++) {
+                    this.noise[i][j] = new Array(size);
+                    for (let k = this.size; k < size+1; k++) {
+                        this.noise[i][j][k] = this.dumbSeedRandom();
+                    }
+                }
+            }
+        }
     }
 
     GetRandomNoise(args, util) {
