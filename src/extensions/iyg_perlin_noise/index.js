@@ -69,13 +69,17 @@ class iygPerlin {
                     blockType: BlockType.REPORTER,
                     text: formatMessage({
                         id: 'iygPerlin.GetRandomNoise',
-                        default: 'Get noise with seed [SEED] at x [X], y [Y], and z [Z]',
+                        default: 'Get noise with seed [SEED] and size [SIZE] at x [X], y [Y], and z [Z]',
                         description: 'Get seeded noise with a specified seed at a specified x and y and z.'
                     }),
                     arguments: {
                         SEED: {
                             type: ArgumentType.NUMBER,
                             defaultValue: 123
+                        },
+                        SIZE: {
+                            type: ArgumentType.NUMBER,
+                            defaultValue: 256
                         },
                         X: {
                             type: ArgumentType.NUMBER,
@@ -135,8 +139,7 @@ class iygPerlin {
         let x = args.X + .5;
         let y = args.Y + .5;
         let z = args.Z + .5;
-
-        let size = 256;
+        let size = args.SIZE;
 
         if (this.noise == null || seed != this.seed) {
             this.noise = new Array(size);
