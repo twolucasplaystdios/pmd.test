@@ -410,6 +410,7 @@ class canvas {
     createNewCanvas () {
         const newCanvas = prompt('canvas name?', 'newCanvas');
         // if this camvas already exists, remove it to minimize confusion
+        if (!newCanvas) return alert('Canceled')
         if (store.getCanvasByName(newCanvas)) return;
         store.newCanvas(newCanvas);
         vm.emitWorkspaceUpdate();
