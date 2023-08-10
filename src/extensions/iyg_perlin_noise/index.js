@@ -136,14 +136,16 @@ class iygPerlin {
         let y = args.Y + .5;
         let z = args.Z + .5;
 
+        let size = 256;
+
         if (this.noise == null || seed != this.seed) {
-            this.noise = new Array(4095);
+            this.noise = new Array(size);
             this.seed = seed;
-            for (let i = 0; i < 4095; i++) {
-                this.noise[i] = new Array(4095);
-                for (let j = 0; j < 4095; j++) {
-                    this.noise[i][j] = new Array(4095);
-                    for (let k = 0; k < 4095; k++) {
+            for (let i = 0; i < size; i++) {
+                this.noise[i] = new Array(size);
+                for (let j = 0; j < size; j++) {
+                    this.noise[i][j] = new Array(size);
+                    for (let k = 0; k < size; k++) {
                         this.noise[i][j][k] = this.dumbSeedRandom();
                     }
                 }
