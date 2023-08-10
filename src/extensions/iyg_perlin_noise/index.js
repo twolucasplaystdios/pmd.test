@@ -20,6 +20,7 @@ class iygPerlin {
         this.runtime = runtime;
         this.noise;
         this.seed = 123;
+        this.size = 50;
         this.generator = new MersenneTwister(this.seed);
     }
 
@@ -79,7 +80,7 @@ class iygPerlin {
                         },
                         SIZE: {
                             type: ArgumentType.NUMBER,
-                            defaultValue: 256
+                            defaultValue: 50
                         },
                         X: {
                             type: ArgumentType.NUMBER,
@@ -154,7 +155,23 @@ class iygPerlin {
                 }
             }
             this.seed = seed;
+            this.prev_seed = seed;
+            this.size = size;
         }
+
+        if (size > this.size && seed == this.seed) {
+            this.seed = this.prev_seed;
+            for (let i = this.size; i < size+1; i++) {
+                this.noise[i] = new Array(size);
+                for (let j = this.size; j < size+1; j++) {
+                    this.noise[i][j] = new Array(size);
+                    for (let k = this.size; k < size+1; k++) {
+                        this.noise[i][j][k] = this.dumbSeedRandom();
+                    }
+                }
+            }
+
+
         
         x = x < 0 ? -x : x;
         y = y < 0 ? -y : y;
