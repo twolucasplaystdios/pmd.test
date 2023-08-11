@@ -219,7 +219,9 @@ class iygPerlin {
         let z = args.Z;
         let pre_seed = this.seed;
         this.seed = seed+x+y*1000+z*10000;
-        return pre_seed;
+        let result = this.dumbSeedRandom();
+        this.seed = pre_seed;
+        return result;
     }
 
     GetNoise(args, util) {
