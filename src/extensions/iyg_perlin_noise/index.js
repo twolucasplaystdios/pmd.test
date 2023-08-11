@@ -70,17 +70,13 @@ class iygPerlin {
                     blockType: BlockType.REPORTER,
                     text: formatMessage({
                         id: 'iygPerlin.GetRandomNoise',
-                        default: 'Get noise with seed [SEED] and size [SIZE] at x [X], y [Y], and z [Z]',
+                        default: 'Get noise with seed [SEED] at x [X], y [Y], and z [Z]',
                         description: 'Get seeded noise with a specified seed at a specified x and y and z.'
                     }),
                     arguments: {
                         SEED: {
                             type: ArgumentType.NUMBER,
                             defaultValue: 123
-                        },
-                        SIZE: {
-                            type: ArgumentType.NUMBER,
-                            defaultValue: 50
                         },
                         X: {
                             type: ArgumentType.NUMBER,
@@ -118,9 +114,10 @@ class iygPerlin {
                 {
                     opcode: 'GenerateRandomNoise',
                     blockType: BlockType.COMMAND,
+                    hideFromPalette: true,
                     text: formatMessage({
                         id: 'iygPerlin.GenerateRandomNoise',
-                        default: 'Pre-generate noise with seed [SEED] and size [SIZE]',
+                        default: 'not needed [SEED] [SIZE]',
                         description: 'Pre-generate seeded noise.'
                     }),
                     arguments: {
@@ -217,52 +214,12 @@ class iygPerlin {
 
     GetRandomNoise(args, util) {
         let seed = args.SEED;
-        let x = args.X + .5;
-        let y = args.Y + .5;
-        let z = args.Z + .5;
-        let size = args.SIZE;
-
-        if (this.noise == null || seed != this.seed) {
-            this.noise = new Array(size);
-            this.seed = seed;
-            for (let i = 0; i < size; i++) {
-                this.noise[i] = new Array(size);
-                for (let j = 0; j < size; j++) {
-                    this.noise[i][j] = new Array(size);
-                    for (let k = 0; k < size; k++) {
-                        this.noise[i][j][k] = this.dumbSeedRandom();
-                    }
-                }
-            }
-            this.seed = seed;
-            this.prev_seed = seed;
-            this.size = size;
-        }
-
-        if (size > this.size && seed == this.seed) {
-            this.seed = this.prev_seed;
-            for (let i = this.size; i < size+1; i++) {
-                this.noise[i] = new Array(size);
-                for (let j = this.size; j < size+1; j++) {
-                    this.noise[i][j] = new Array(size);
-                    for (let k = this.size; k < size+1; k++) {
-                        this.noise[i][j][k] = this.dumbSeedRandom();
-                    }
-                }
-            }
-        }
-
-
-        
-        x = x < 0 ? -x : x;
-        y = y < 0 ? -y : y;
-        z = z < 0 ? -z : z;
-
-        x = x % 4095;
-        y = y % 4095;
-        z = z % 4095;
-
-        return this.noise[Math.floor(x)][Math.floor(y)][Math.floor(z)];
+        let x = args.X;
+        let y = args.Y;
+        let z = args.Z;
+        let pre_seed = this.seed;
+        this.seed = seed+x+y*1000+z*10000;
+        return pre_seed;
     }
 
     GetNoise(args, util) {
