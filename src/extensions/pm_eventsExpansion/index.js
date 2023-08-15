@@ -212,6 +212,7 @@ class pmEventsExpansion {
         const emptyMenu = [{ text: '', value: '' }];
         const menu = [];
         for (const target of this.runtime.targets) {
+            if (!target.isOriginal) continue;
             if (target.isStage) {
                 menu.push({
                     text: "stage",
@@ -231,6 +232,7 @@ class pmEventsExpansion {
         const emptyMenu = [{ text: '', value: '' }];
         const menu = [];
         for (const target of this.runtime.targets) {
+            if (!target.isOriginal) continue;
             if (target.isStage) {
                 menu.push({
                     text: "stage",
