@@ -386,6 +386,7 @@ class JSGenerator {
         this._setupVariables = {};
 
         this.descendedIntoModulo = false;
+        this.isInHat = false;
 
         this.debug = this.target.runtime.debug;
     }
@@ -822,7 +823,10 @@ class JSGenerator {
             if (procedureData.stack === null) {
                 break;
             }
-            if (!this.isWarp && procedureCode === this.script.procedureCode) {
+
+            const yieldForRecursion = !this.isWarp && procedureCode === this.script.procedureCode;
+            const yieldForHat = this.isInHat;
+            if (yieldForRecursion || yieldForHat) {
                 // Direct recursion yields.
                 this.yieldNotWarp();
             }
@@ -1110,6 +1114,31 @@ class JSGenerator {
             this.source += `thread.spoofTarget = ${alreadySpoofTarget};\n`;
 
             this.source += `}\n`;
+            break;
+        case 'hat.edge':
+            this.isInHat = true;
+            this.source += '{\n';
+            // For exact Scratch parity, evaluate the input before checking old edge state.
+            // Can matter if the input is not instantly evaluated.
+            this.source += `const resolvedValue = ${this.descendInput(node.condition).asBoolean()};\n`;
+            this.source += `const id = "${sanitize(node.id)}";\n`;
+            this.source += 'const hasOldEdgeValue = target.hasEdgeActivatedValue(id);\n';
+            this.source += `const oldEdgeValue = target.updateEdgeActivatedValue(id, resolvedValue);\n`;
+            this.source += `const edgeWasActivated = hasOldEdgeValue ? (!oldEdgeValue && resolvedValue) : resolvedValue;\n`;
+            this.source += `if (!edgeWasActivated) {\n`;
+            this.retire();
+            this.source += '}\n';
+            this.source += 'yield;\n';
+            this.source += '}\n';
+            this.isInHat = false;
+            break;
+        case 'hat.predicate':
+            this.isInHat = true;
+            this.source += `if (!${this.descendInput(node.condition).asBoolean()}) {\n`;
+            this.retire();
+            this.source += '}\n';
+            this.source += 'yield;\n';
+            this.isInHat = false;
             break;
         case 'event.broadcast':
             this.source += `startHats("event_whenbroadcastreceived", { BROADCAST_OPTION: ${this.descendInput(node.broadcast).asString()} });\n`;

@@ -558,6 +558,14 @@ const execute = thread => {
     thread.generator.next();
 };
 
+const threadStack = [];
+const saveGlobalState = () => {
+    threadStack.push(globalState.thread);
+};
+const restoreGlobalState = () => {
+    globalState.thread = threadStack.pop();
+};
+
 const insertRuntime = source => {
     let result = baseRuntime;
     for (const functionName of Object.keys(runtimeFunctions)) {
@@ -586,5 +594,7 @@ const scopedEval = source => {
 
 execute.scopedEval = scopedEval;
 execute.runtimeFunctions = runtimeFunctions;
+execute.saveGlobalState = saveGlobalState;
+execute.restoreGlobalState = restoreGlobalState;
 
 module.exports = execute;
