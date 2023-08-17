@@ -1999,7 +1999,10 @@ class ScriptTreeGenerator {
             // We don't evaluate the procedures_definition top block as it never does anything
             // We also don't want it to be treated like a hat block
             let entryBlock;
-            if (topBlock.opcode === 'procedures_definition') {
+            if (
+                topBlock.opcode === 'procedures_definition'
+                || topBlock.opcode === 'procedures_definition_return'
+            ) {
                 entryBlock = topBlock.next;
             } else {
                 entryBlock = topBlockId;
