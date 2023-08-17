@@ -708,6 +708,7 @@ const serialize = function (runtime, targetId, {allowOptimization = true} = {}) 
     }
 
     const serializedTargets = flattenedOriginalTargets.map(t => serializeTarget(t, extensions));
+    const fonts = runtime.fontManager.serializeJSON();
 
     if (targetId) {
         const target = serializedTargets[0];
@@ -715,6 +716,9 @@ const serialize = function (runtime, targetId, {allowOptimization = true} = {}) 
         target.extensions = Array.from(extensions);
         if (extensionURLs) {
             obj.extensionURLs = extensionURLs;
+        }
+        if (fonts) {
+            target.customFonts = fonts;
         }
         return target;
     }
@@ -738,6 +742,10 @@ const serialize = function (runtime, targetId, {allowOptimization = true} = {}) 
     const extensionURLs = getExtensionURLsToSave(extensions, runtime);
     if (extensionURLs) {
         obj.extensionURLs = extensionURLs;
+    }
+
+    if (fonts) {
+        obj.customFonts = fonts;
     }
 
     // Assemble metadata
@@ -1464,6 +1472,14 @@ const deserialize = function (json, runtime, zip, isSingleSprite) {
         extensions.extensionData = json.extensionData;
     }
 
+    // Extract any custom fonts before loading costumes.
+    let fontPromise;
+    if (json.customFonts) {
+        fontPromise = runtime.fontManager.deserialize(json.customFonts, zip, isSingleSprite);
+    } else {
+        fontPromise = Promise.resolve();
+    }
+
     // First keep track of the current target order in the json,
     // then sort by the layer order property before parsing the targets
     // so that their corresponding render drawables can be created in
@@ -1474,10 +1490,7 @@ const deserialize = function (json, runtime, zip, isSingleSprite) {
 
     const monitorObjects = json.monitors || [];
 
-    return Promise.resolve(
-        targetObjects.map(target =>
-            parseScratchAssets(target, runtime, zip))
-    )
+    return fontPromise.then(() => targetObjects.map(target => parseScratchAssets(target, runtime, zip)))
         // Force this promise to wait for the next loop in the js tick. Let
         // storage have some time to send off asset requests.
         .then(assets => Promise.resolve(assets))
