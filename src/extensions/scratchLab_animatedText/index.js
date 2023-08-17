@@ -78,6 +78,60 @@ class Scratch3TextBlocks {
         return 'Scratch.text';
     }
 
+    _getFonts() {
+        return [{
+            text: 'Sans Serif',
+            value: SANS_SERIF_ID
+        }, {
+            text: 'Serif',
+            value: SERIF_ID
+        }, {
+            text: 'Handwriting',
+            value: HANDWRITING_ID
+        }, {
+            text: 'Marker',
+            value: MARKER_ID
+        }, {
+            text: 'Curly',
+            value: CURLY_ID
+        }, {
+            text: 'Pixel',
+            value: PIXEL_ID
+        }, {
+            text: 'Playful',
+            value: PLAYFUL_ID
+        }, {
+            text: 'Bubbly',
+            value: BUBBLY_ID
+        }, {
+            text: 'Arcade',
+            value: ARCADE_ID
+        }, {
+            text: 'Bits and Bytes',
+            value: BITSANDBYTES_ID
+        }, {
+            text: 'Technological',
+            value: TECHNOLOGICAL_ID
+        }, {
+            text: 'Scratch',
+            value: SCRATCH_ID
+        }, {
+            text: 'Archivo',
+            value: ARCHIVO_ID
+        }, {
+            text: 'Archivo Black',
+            value: ARCHIVOBLACK_ID
+        },
+        ...this.runtime.fontManager.getFonts().map(i => ({
+            text: i.name,
+            value: i.family
+        })),
+        {
+            text: 'random font',
+            value: RANDOM_ID
+        }];
+    }
+
     getInfo () {
         return {
             id: 'text',
@@ -249,52 +303,7 @@ class Scratch3TextBlocks {
             }],
             menus: {
                 FONT: {
-                    items: [{
-                        text: 'Sans Serif',
-                        value: SANS_SERIF_ID
-                    }, {
-                        text: 'Serif',
-                        value: SERIF_ID
-                    }, {
-                        text: 'Handwriting',
-                        value: HANDWRITING_ID
-                    }, {
-                        text: 'Marker',
-                        value: MARKER_ID
-                    }, {
-                        text: 'Curly',
-                        value: CURLY_ID
-                    }, {
-                        text: 'Pixel',
-                        value: PIXEL_ID
-                    }, {
-                        text: 'Playful',
-                        value: PLAYFUL_ID
-                    }, {
-                        text: 'Bubbly',
-                        value: BUBBLY_ID
-                    }, {
-                        text: 'Arcade',
-                        value: ARCADE_ID
-                    }, {
-                        text: 'Bits and Bytes',
-                        value: BITSANDBYTES_ID
-                    }, {
-                        text: 'Technological',
-                        value: TECHNOLOGICAL_ID
-                    }, {
-                        text: 'Scratch',
-                        value: SCRATCH_ID
-                    }, {
-                        text: 'Archivo',
-                        value: ARCHIVO_ID
-                    }, {
-                        text: 'Archivo Black',
-                        value: ARCHIVOBLACK_ID
-                    }, {
-                        text: 'random font',
-                        value: RANDOM_ID
-                    }],
+                    items: '_getFonts',
                     acceptReporters: true
                 },
                 ALIGN: {
