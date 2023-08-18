@@ -67,14 +67,14 @@ class Scratch3EventBlocks {
     }
 
     whenanything (args) {
-        return Boolean(args.ANYTHING || false);
+        return Cast.toBoolean(args.ANYTHING);
     }
 
     whenjavascript (args) {
-        return new Promise((resolve, reject) => {
+        return new Promise((resolve) => {
             const js = Cast.toString(args.JS);
             SandboxRunner.execute(js).then(result => {
-                resolve(result.value === true)
+                resolve(result.value === true);
             })
         })
     }
