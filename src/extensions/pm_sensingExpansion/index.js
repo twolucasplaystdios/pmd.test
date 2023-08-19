@@ -86,15 +86,7 @@ class pmSensingExpansion {
          */
         this.runtime = runtime;
         this.canVibrate = true;
-
-        this.dt = 0;
-        this.previousTime = 0;
-
-        vm.runtime.on('BEFORE_EXECUTE', () => {
-            const now = performance.now();
-            this.dt = now - this.previousTime;
-            this.previousTime = now;
-        });
+        this.lastUpdate = Date.now();
     }
 
     orderCategoryBlocks(extensionBlocks) {
@@ -470,7 +462,10 @@ class pmSensingExpansion {
     }
 
     deltaTime() {
-        return this.dt;
+        let now = Date.now();
+        let dt = now - this.lastUpdate;
+        this.lastUpdate = now;
+        return dt;
     }
 
 }
