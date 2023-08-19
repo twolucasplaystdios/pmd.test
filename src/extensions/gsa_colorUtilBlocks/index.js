@@ -367,7 +367,7 @@ class colorBlocks {
     mixColors (args) {
         const color1 = validateJSON(args.color1).object;
         const color2 = validateJSON(args.color2).object;
-        return JSON.stringify(Color.mixRgb(color1, color2, args.percent));
+        return JSON.stringify(Color.mixRgb(color1, color2, args.percent / 100));
     }
 
     rgbToDecimal (args) {
