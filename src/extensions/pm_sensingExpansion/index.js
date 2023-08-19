@@ -92,7 +92,7 @@ class pmSensingExpansion {
 
         vm.runtime.on('BEFORE_EXECUTE', () => {
             const now = performance.now();
-            this.dt = this.previousTime === 0 ? 0 : (now - this.previousTime);
+            this.dt = now - this.previousTime;
             this.previousTime = now;
         });
     }
