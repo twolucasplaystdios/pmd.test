@@ -85,6 +85,14 @@ class JgDevBlocks {
                     }
                 },
                 {
+                    opcode: 'logArgs4',
+                    text: 'color input [INPUT]',
+                    blockType: BlockType.REPORTER,
+                    arguments: {
+                        INPUT: { type: ArgumentType.COLOR }
+                    }
+                },
+                {
                     opcode: 'setEffectName',
                     text: 'set [EFFECT] to [VALUE]',
                     blockType: BlockType.COMMAND,
@@ -341,6 +349,10 @@ class JgDevBlocks {
         return JSON.stringify(args)
     }
     logArgs3(args) {
+        console.log(args)
+        return JSON.stringify(args)
+    }
+    logArgs4(args) {
         console.log(args)
         return JSON.stringify(args)
     }
