@@ -782,7 +782,7 @@ class ExtensionManager {
                 const normal = {
                     'angle': "number",
                     'Boolean': "boolean",
-                    'color': "number",
+                    'color': "string",
                     'number': "number",
                     'string': "string",
                     'matrix': "string",

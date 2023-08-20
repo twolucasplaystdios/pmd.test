@@ -7,6 +7,7 @@ const { ConvexGeometry } = require('three/examples/jsm/geometries/ConvexGeometry
 const { OBJLoader } = require('three/examples/jsm/loaders/OBJLoader.js');
 const { GLTFLoader } = require('three/examples/jsm/loaders/GLTFLoader.js');
 const { FBXLoader } = require('three/examples/jsm/loaders/FBXLoader.js');
+const Color = require('../../util/color');
 
 const MeshLoaders = {
     OBJ: new OBJLoader(),
@@ -383,13 +384,13 @@ class Jg3DBlocks {
     }
     setSceneBackgroundColor(args) {
         if (!this.renderer) return;
-        const color = Cast.toNumber(args.COLOR);
+        const color = Color.hexToDecimal(args.COLOR);
         this.renderer.penguinMod.backgroundColor = color;
         this.renderer.setClearColor(color, this.renderer.penguinMod.backgroundOpacity);
     }
     setSceneBackgroundOpacity(args) {
         if (!this.renderer) return;
-        let opacity = Cast.toNumber(args.OPACITY);
+        let opacity = Color.hexToDecimal(args.OPACITY);
         if (opacity > 100) opacity = 100;
         if (opacity < 0) opacity = 0;
         const backgroundOpac = 1 - (opacity / 100);

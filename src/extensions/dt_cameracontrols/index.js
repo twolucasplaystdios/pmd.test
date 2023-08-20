@@ -341,7 +341,7 @@ class Camera {
         return cameraDirection;
     }
     setCol(args, util) {
-        cameraBG = Scratch.Color.decimalToHex(args.val);
+        cameraBG = Scratch.Cast.toString(args.val);
         const rgb = Scratch.Cast.toRgbColorList(args.val);
         Scratch.vm.renderer.setBackgroundColor(rgb[0] / 255, rgb[1] / 255, rgb[2] / 255);
         updateCamera();

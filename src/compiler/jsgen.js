@@ -1644,7 +1644,7 @@ class JSGenerator {
                 continue;
             }
             result += `"${sanitize(fieldName)}":"${sanitize(field)}",`;
-        } 
+        }
         result += `"mutation":${JSON.stringify(node.mutation)},`;
         const opcodeFunction = this.evaluateOnce(`runtime.getOpcodeFunction("${sanitize(opcode)}")`);
         result += `}, ${opcodeFunction}, ${this.isWarp}, ${setFlags}, null)`;

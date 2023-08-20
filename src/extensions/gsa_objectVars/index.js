@@ -2,6 +2,7 @@ const BlockType = require('../../extension-support/block-type');
 const ArgumentType = require('../../extension-support/argument-type');
 const Color = require('../../util/color');
 const cstore = require('./objectStorage');
+const Cast = require('../../util/cast');
 const store = new cstore();
 
 /**
@@ -432,13 +433,13 @@ class canvas {
     }
 
     setBorderColor (args) {
-        const color = Color.decimalToHex(args.color);
+        const color = Cast.toString(args.color);
         const canvasObj = store.getCanvas(args.canvas);
         canvasObj.context.strokeStyle = color;
     }
 
     setFill (args) {
-        const color = Color.decimalToHex(args.color);
+        const color = Cast.toString(args.color);
         const canvasObj = store.getCanvas(args.canvas);
         canvasObj.context.fillStyle = color;
     }

@@ -395,7 +395,7 @@ class Scratch3TextBlocks {
     setColor (args, util) {
         const textState = this._getTextState(util.target);
 
-        textState.color = Color.decimalToHex(args.COLOR);
+        textState.color = Cast.toString(args.COLOR);
 
         this._renderText(util.target);
     }
@@ -432,7 +432,7 @@ class Scratch3TextBlocks {
     setOutlineColor (args, util) {
         const textState = this._getTextState(util.target);
 
-        textState.strokeColor = Color.decimalToHex(args.COLOR);
+        textState.strokeColor = Cast.toString(args.COLOR);
         textState.visible = true;
 
         this._renderText(util.target);

@@ -1059,7 +1059,7 @@ class Scratch3PenBlocks {
     drawRect (args) {
         const ctx = this._getBitmapCanvas();
 
-        const hex = Color.decimalToHex(args.COLOR);
+        const hex = Cast.toString(args.COLOR);
         ctx.fillStyle = hex;
         ctx.strokeStyle = ctx.fillStyle;
         ctx.fillRect(
@@ -1426,7 +1426,7 @@ class Scratch3PenBlocks {
 
         const ctx = this._getBitmapCanvas();
 
-        const hex = Color.decimalToHex(args.COLOR);
+        const hex = Cast.toString(args.COLOR);
         ctx.fillStyle = hex;
         ctx.strokeStyle = penColor;
         ctx.lineWidth = penAttributes.diameter;
