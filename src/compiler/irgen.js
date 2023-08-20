@@ -190,7 +190,7 @@ class ScriptTreeGenerator {
         case 'colour_picker':
             return {
                 kind: 'constant',
-                value: Color.hexToDecimal(block.fields.COLOUR.value)
+                value: block.fields.COLOUR.value
             };
         case 'math_angle':
         case 'math_integer':
