@@ -4,6 +4,7 @@ const maybeFormatMessage = require('../util/maybe-format-message');
 
 const BlockType = require('./block-type');
 const SecurityManager = require('./tw-security-manager');
+const Cast = require('../util/cast');
 
 const AddonSwitches = require('./extension-addon-switchers');
 
@@ -681,12 +682,12 @@ class ExtensionManager {
 
     _normalize(thing, to) {
         switch (to) {
-            case 'string': return String(thing);
+            case 'string': return Cast.toString(thing);
             case 'bigint':
-            case 'number': return Number(thing);
-            case 'boolean': return String(thing) === 'true';
+            case 'number': return Cast.toNumber(thing);
+            case 'boolean': return Cast.toBoolean(thing);
             case 'function': return new Function(thing);
-            default: return String(thing);
+            default: return Cast.toString(thing);
         }
     }
 

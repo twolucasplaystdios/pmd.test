@@ -1,5 +1,6 @@
 const BlockType = require('../../extension-support/block-type');
 const ArgumentType = require('../../extension-support/argument-type');
+const createTranslate = require('../../extension-support/tw-l10n');
 const Cast = require('../../util/cast');
 
 const blockSeparator = '<sep gap="36"/>'; // At default scale, about 28px
@@ -123,8 +124,9 @@ ${blockSeparator}
 %b9> `+/* euler */`
 %b10> `+/* inf */`
 ${blockSeparator}
-`
+`;
 
+const translate = createTranslate(vm);
 function generateJoin(amount) {
     const joinWords = [
         'apple',
@@ -149,12 +151,30 @@ function generateJoin(amount) {
         }
     }
 
+    const opcode = 'join' + amount;
+    const defaultText = 'join ' + argumentTextArray.join(' ');
+
     return {
-        opcode: 'join' + amount,
-        text: 'join ' + argumentTextArray.join(' '),
+        opcode: opcode,
+        text: translate({ id: opcode, default: defaultText }),
         blockType: BlockType.REPORTER,
         disableMonitor: true,
         arguments: argumentss
+    };
+}
+
+function generateJoinTranslations(amount, word, type) {
+    switch (type) {
+        case 1:
+            const obj = {};
+            for (let i = 0; i < amount; i++) {
+                let text = `${word} `;
+                for (let j = 0; j < amount; j++) {
+                    text += `[STRING${j + 1}]`;
+                }
+                obj[`join${i + 1}`] = text;
+            }
+            return obj;
     }
 }
 
@@ -169,6 +189,14 @@ class pmOperatorsExpansion {
          * @type {runtime}
          */
         this.runtime = runtime;
+        translate.setup({
+            "zh-cn": {
+                ...generateJoinTranslations(9, "连接字符串", 1)
+            },
+            "zh-tw": {
+                ...generateJoinTranslations(9, "字串組合", 1)
+            }
+        });
     }
 
     orderCategoryBlocks(extensionBlocks) {
