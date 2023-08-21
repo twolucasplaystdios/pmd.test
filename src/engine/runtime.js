@@ -1240,10 +1240,16 @@ class Runtime extends EventEmitter {
                 type: menuId,
                 inputsInline: true,
                 output: 'String',
-                colour: categoryInfo.color1,
-                colourSecondary: categoryInfo.color2,
-                colourTertiary: categoryInfo.color3,
-                outputShape: menuInfo.acceptReporters ?
+                colour: menuInfo.isTypeable 
+                    ? '#FFFFFF' 
+                    : categoryInfo.color1,
+                colourSecondary: menuInfo.isTypeable 
+                    ? '#FFFFFF' 
+                    : categoryInfo.color2,
+                colourTertiary: menuInfo.isTypeable 
+                    ? '#FFFFFF' 
+                    : categoryInfo.color3,
+                outputShape: menuInfo.acceptReporters || menuInfo.isTypeable ?
                     ScratchBlocksConstants.OUTPUT_SHAPE_ROUND : ScratchBlocksConstants.OUTPUT_SHAPE_SQUARE,
                 args0: [
                     (typeof menuInfo.variableType === 'string' ? 
@@ -1253,12 +1259,18 @@ class Runtime extends EventEmitter {
                             variableType: menuInfo.variableType === 'scaler' 
                                 ? '' 
                                 : menuInfo.variableType
-                        } : 
-                        {
-                            type: 'field_dropdown',
-                            name: menuName,
-                            options: menuItems
-                        })
+                        } : (menuInfo.isTypeable ? 
+                            {
+                                type: menuInfo.isNumeric 
+                                    ? 'field_numberdropdown' 
+                                    : 'field_textdropdown',
+                                name: menuName,
+                                options: menuItems
+                            } : {
+                                type: 'field_dropdown',
+                                name: menuName,
+                                options: menuItems
+                            }))
                 ]
             }
         };
@@ -1641,7 +1653,7 @@ class Runtime extends EventEmitter {
             let fieldName;
             if (argInfo.menu) {
                 const menuInfo = context.categoryInfo.menuInfo[argInfo.menu];
-                if (menuInfo.acceptReporters) {
+                if (menuInfo.acceptReporters || menuInfo.isTypeable) {
                     valueName = placeholder;
                     shadowType = this._makeExtensionMenuId(argInfo.menu, context.categoryInfo.id);
                     fieldName = argInfo.menu;

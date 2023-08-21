@@ -21,7 +21,6 @@ class JgDevBlocks {
     // util
 
 
-
     /**
      * @returns {object} metadata for this extension and its blocks.
      */
@@ -46,7 +45,7 @@ class JgDevBlocks {
                     blockType: BlockType.COMMAND,
                     arguments: {
                         ID: { type: ArgumentType.SOUND, defaultValue: "name or index" },
-                        SEX: { type: ArgumentType.NUMBER, defaultValue: 0 },
+                        SEX: { type: ArgumentType.NUMBER, defaultValue: 0 }
                     }
                 },
                 {
@@ -55,7 +54,7 @@ class JgDevBlocks {
                     blockType: BlockType.COMMAND,
                     arguments: {
                         ID: { type: ArgumentType.SOUND, defaultValue: "sound to set fade out effect on" },
-                        SEX: { type: ArgumentType.NUMBER, defaultValue: 1 },
+                        SEX: { type: ArgumentType.NUMBER, defaultValue: 1 }
                     }
                 },
                 {
@@ -98,7 +97,7 @@ class JgDevBlocks {
                     blockType: BlockType.COMMAND,
                     arguments: {
                         EFFECT: { type: ArgumentType.STRING, defaultValue: "color" },
-                        VALUE: { type: ArgumentType.NUMBER, defaultValue: 0 },
+                        VALUE: { type: ArgumentType.NUMBER, defaultValue: 0 }
                     }
                 },
                 {
@@ -167,15 +166,48 @@ class JgDevBlocks {
                     branchCount: 1,
                     blockType: BlockType.CONDITIONAL
                 },
-                // {
-                //     opcode: 'whatthescallop',
-                //     text: 'bruh',
-                //     branchCount: 85,
-                //     blockType: BlockType.CONDITIONAL
-                // }
+                {
+                    opcode: 'whatthescallop',
+                    text: 'bruh [numtypeableDropdown] [typeableDropdown] overriden: [overridennumtypeableDropdown] [overridentypeableDropdown]',
+                    arguments: {
+                        numtypeableDropdown: {
+                            menu: 'numericTypeableTest'
+                        },
+                        typeableDropdown: {
+                            menu: 'typeableTest'
+                        },
+                        overridennumtypeableDropdown: {
+                            menu: 'numericTypeableTest',
+                            defaultValue: 5
+                        },
+                        overridentypeableDropdown: {
+                            menu: 'typeableTest',
+                            defaultValue: 'your mom'
+                        }
+                    },
+                    blockType: BlockType.REPORTER
+                }
             ],
             menus: {
                 variable: "getVariablesMenu",
+                numericTypeableTest: {
+                    items: [
+                        'item1',
+                        'item2',
+                        'item3'
+                    ],
+                    isTypeable: true,
+                    isNumeric: true
+                },
+                typeableTest: {
+                    items: [
+                        'item1',
+                        'item2',
+                        'item3'
+                    ],
+                    isTypeable: true,
+                    isNumeric: false
+                }
             }
         };
     }
@@ -200,7 +232,7 @@ class JgDevBlocks {
                 }),
                 compiledOutput: () => ({
                     kind: 'input' /* input is output :troll: (it makes sense in the ir & jsgen implementation ok) */
-                }),
+                })
             },
             js: {
                 compiledIfNot: (node, compiler, imports) => {
@@ -222,7 +254,7 @@ class JgDevBlocks {
                     return new imports.TypedInput(JSON.stringify(code), imports.TYPE_STRING);
                 }
             }
-        }
+        };
     }
 
     // menu
@@ -233,11 +265,11 @@ class JgDevBlocks {
         if (!target) return emptyMenu;
         if (!target.variables) return emptyMenu;
         const menu = Object.getOwnPropertyNames(target.variables).map(variableId => {
-            const variable = target.variables[variableId]
+            const variable = target.variables[variableId];
             return {
                 text: variable.name,
-                value: variable.name,
-            }
+                value: variable.name
+            };
         });
         // check if menu has 0 items because pm throws an error if theres no items
         return (menu.length > 0) ? menu : emptyMenu;
@@ -266,7 +298,6 @@ class JgDevBlocks {
         // could not be found as a name or converted to index, return -1
         return -1;
     }
-
 
 
     _getSoundIndexByName(soundName, util) {
@@ -299,7 +330,7 @@ class JgDevBlocks {
         const sprite = target.sprite;
         if (!sprite) return;
 
-        const soundBank = sprite.soundBank
+        const soundBank = sprite.soundBank;
         if (!soundBank) return;
 
         const id = Cast.toString(args.ID);
@@ -317,7 +348,7 @@ class JgDevBlocks {
 
         const { soundId } = sprite.sounds[index];
 
-        const soundBank = sprite.soundBank
+        const soundBank = sprite.soundBank;
         if (!soundBank) return;
 
         soundBank.playSound(target, soundId, Cast.toNumber(args.SEX));
@@ -334,49 +365,49 @@ class JgDevBlocks {
 
         const { soundId } = sprite.sounds[index];
 
-        const soundBank = sprite.soundBank
+        const soundBank = sprite.soundBank;
         if (!soundBank) return;
 
         soundBank.soundPlayers[soundId].stopFadeDecay = Cast.toNumber(args.SEX);
     }
 
     logArgs1(args) {
-        console.log(args)
-        return JSON.stringify(args)
+        console.log(args);
+        return JSON.stringify(args);
     }
     logArgs2(args) {
-        console.log(args)
-        return JSON.stringify(args)
+        console.log(args);
+        return JSON.stringify(args);
     }
     logArgs3(args) {
-        console.log(args)
-        return JSON.stringify(args)
+        console.log(args);
+        return JSON.stringify(args);
     }
     logArgs4(args) {
-        console.log(args)
-        return JSON.stringify(args)
+        console.log(args);
+        return JSON.stringify(args);
     }
 
     setEffectName(args, util) {
-        const PX = Cast.toNumber(args.VALUE)
-        util.target.setEffect(args.EFFECT, PX)
+        const PX = Cast.toNumber(args.VALUE);
+        util.target.setEffect(args.EFFECT, PX);
     }
     setBlurEffect(args, util) {
-        const PX = Cast.toNumber(args.PX)
-        util.target.setEffect("blur", PX)
+        const PX = Cast.toNumber(args.PX);
+        util.target.setEffect("blur", PX);
     }
 
     doodooBlockLolol(args, util) {
-        if (args.INPUT === true) return
-        console.log(args, util)
-        util.startBranch(1, false)
-        console.log(util.target.getCurrentCostume())
+        if (args.INPUT === true) return;
+        console.log(args, util);
+        util.startBranch(1, false);
+        console.log(util.target.getCurrentCostume());
     }
 
     ifFalse(args, util) {
-        console.log(args, util)
+        console.log(args, util);
         if (!args.INPUT) {
-            util.startBranch(1, false)
+            util.startBranch(1, false);
         }
     }
     // compiled blocks should have interpreter versions
@@ -398,7 +429,7 @@ class JgDevBlocks {
         Object.getOwnPropertyNames(target.variables).forEach(variableId => {
             const variable = target.variables[variableId];
             if (variable.name !== Cast.toString(args.VAR)) return;
-            console.log(variable)
+            console.log(variable);
             if (typeof variable.value !== 'number') {
                 variable.value = 0;
             }
@@ -406,10 +437,8 @@ class JgDevBlocks {
         });
     }
 
-    whatthescallop(_, util) {
-        for (let i = 0; i < 85; i++) {
-            util.startBranch(i + 1, false)
-        }
+    whatthescallop(args) {
+        return JSON.stringify(args);
     }
 }
 
