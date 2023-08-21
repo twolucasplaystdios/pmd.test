@@ -304,7 +304,7 @@ class Scratch3TextBlocks {
             menus: {
                 FONT: {
                     items: '_getFonts',
-                    acceptReporters: true
+                    isTypeable: true
                 },
                 ALIGN: {
                     items: [{
