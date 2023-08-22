@@ -957,7 +957,7 @@ class JSGenerator {
         case 'control.case':
             console.log(this.currentFrame.parent);
             if (this.currentFrame.parent !== 'control.switch') {
-                this.source += 'throw "case block must be inside of a switch block"';
+                this.source += `throw 'All "case" blocks must be inside of a "switch" block.';`;
                 break;
             }
             this.source += `case ${this.descendInput(node.condition).asString()}:\n`;
@@ -987,7 +987,14 @@ class JSGenerator {
         }
         case 'control.exitCase':
             if (this.currentFrame.parent !== 'control.case') {
-                this.source += 'throw "exit case block must be inside a case block"';
+                this.source += `throw 'All "exit case" blocks must be inside of a "case" block.';`;
+                break;
+            }
+            this.source += `break;\n`;
+            break;
+        case 'control.exitLoop':
+            if (!this.currentFrame.isLoop) {
+                this.source += `throw 'All "exit loop" blocks must be inside of a looping block.';`;
                 break;
             }
             this.source += `break;\n`;
@@ -1402,7 +1409,7 @@ class JSGenerator {
             }
             this.source += `);\n`;
             if (node.type === 'hat') {
-                throw new Error('custom hat blocks are not suported');
+                throw new Error('Custom hat blocks are not supported');
             }
             // Variable input types may have changes after a procedure call.
             this.resetVariableInputs();
@@ -1734,10 +1741,11 @@ class JSGenerator {
         script += this.source;
 
         script += '} catch (err) {';
+        script += 'console.error(err);';
         script += `runtime.emit("BLOCK_STACK_ERROR", {`;
         script += `id:"${sanitize(this.script.topBlockId)}",`;
         script += `value:String(err)`;
-        script += `})`;
+        script += `});`;
         script += '}\n';
         if (!this.isProcedure) {
             script += 'retire();\n';

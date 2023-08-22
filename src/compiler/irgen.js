@@ -911,7 +911,7 @@ class ScriptTreeGenerator {
             };
         case 'control_exitLoop':
             return {
-                kind: 'control.exitCase'
+                kind: 'control.exitLoop'
             };
         case 'control_all_at_once':
             // In Scratch 3, this block behaves like "if 1 = 1"
