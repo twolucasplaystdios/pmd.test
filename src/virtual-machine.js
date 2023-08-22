@@ -112,6 +112,9 @@ class VirtualMachine extends EventEmitter {
         this.runtime.on(Runtime.VISUAL_REPORT, visualReport => {
             this.emit(Runtime.VISUAL_REPORT, visualReport);
         });
+        this.runtime.on(Runtime.BLOCK_STACK_ERROR, visualReport => {
+            this.emit(Runtime.BLOCK_STACK_ERROR, visualReport);
+        });
         this.runtime.on(Runtime.TARGETS_UPDATE, emitProjectChanged => {
             this.emitTargetsUpdate(emitProjectChanged);
         });

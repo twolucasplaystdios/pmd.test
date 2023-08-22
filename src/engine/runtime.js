@@ -734,6 +734,14 @@ class Runtime extends EventEmitter {
     }
 
     /**
+     * Event name for when a block errors.
+     * @const {string}
+     */
+    static get BLOCK_STACK_ERROR () {
+        return 'BLOCK_STACK_ERROR';
+    }
+
+    /**
      * Event name for project loaded report.
      * @const {string}
      */

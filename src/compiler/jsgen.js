@@ -330,7 +330,7 @@ const isSafeConstantForEqualsOptimization = input => {
  * A frame contains some information about the current substack being compiled.
  */
 class Frame {
-    constructor (isLoop) {
+    constructor (isLoop, parentKind) {
         /**
          * Whether the current stack runs in a loop (while, for)
          * @type {boolean}
@@ -343,6 +343,13 @@ class Frame {
          * @type {boolean}
          */
         this.isLastBlock = false;
+
+        /**
+         * the block who created this frame
+         * @type {string}
+         * @readonly
+         */
+        this.parent = parentKind;
     }
 }
 
@@ -505,7 +512,7 @@ class JSGenerator {
             const originalSource = this.source;
             this.source = '(yield* (function*() {';
             // descend now since descendStack modifies source
-            this.descendStack(node.code, new Frame(false));
+            this.descendStack(node.code, new Frame(false, 'control.inlineStackOutput'));
             this.source += '})())';
             // save edited
             const stackSource = this.source;
@@ -931,33 +938,38 @@ class JSGenerator {
             this.source += `while (${index} < ${this.descendInput(node.count).asNumber()}) { `;
             this.source += `${index}++; `;
             this.source += `${this.referenceVariable(node.variable)}.value = ${index};\n`;
-            this.descendStack(node.do, new Frame(true));
+            this.descendStack(node.do, new Frame(true, 'control.for'));
             this.yieldLoop();
             this.source += '}\n';
             break;
         }
         case 'control.switch':
             this.source += `switch (${this.descendInput(node.test).asString()}) {\n`;
-            this.descendStack(node.conditions, new Frame(false));
+            this.descendStack(node.conditions, new Frame(false, 'control.switch'));
             // only add the else branch if it won't be empty
             // this makes scripts have a bit less useless noise in them
             if (node.default.length) {
                 this.source += `default:\n`;
-                this.descendStack(node.default, new Frame(false));
+                this.descendStack(node.default, new Frame(false, 'control.switch'));
             }
             this.source += `}\n`;
             break;
         case 'control.case':
+            console.log(this.currentFrame.parent);
+            if (this.currentFrame.parent !== 'control.switch') {
+                this.source += 'throw "case block must be inside of a switch block"';
+                break;
+            }
             this.source += `case ${this.descendInput(node.condition).asString()}:\n`;
             if (!node.runsNext){
-                this.descendStack(node.code, new Frame(false));
+                this.descendStack(node.code, new Frame(false, 'control.case'));
                 this.source += `break;\n`;
             }
             break;
         case 'control.allAtOnce': {
             const ooldWarp = this.isWarp;
             this.isWarp = true;
-            this.descendStack(node.code, new Frame(false));
+            this.descendStack(node.code, new Frame(false, 'control.allAtOnce'));
             this.isWarp = ooldWarp;
             break;
         }
@@ -974,23 +986,27 @@ class JSGenerator {
             break;
         }
         case 'control.exitCase':
+            if (this.currentFrame.parent !== 'control.case') {
+                this.source += 'throw "exit case block must be inside a case block"';
+                break;
+            }
             this.source += `break;\n`;
             break;
         case 'control.if':
             this.source += `if (${this.descendInput(node.condition).asBoolean()}) {\n`;
-            this.descendStack(node.whenTrue, new Frame(false));
+            this.descendStack(node.whenTrue, new Frame(false, 'control.if'));
             // only add the else branch if it won't be empty
             // this makes scripts have a bit less useless noise in them
             if (node.whenFalse.length) {
                 this.source += `} else {\n`;
-                this.descendStack(node.whenFalse, new Frame(false));
+                this.descendStack(node.whenFalse, new Frame(false, 'control.if'));
             }
             this.source += `}\n`;
             break;
         case 'control.repeat': {
             const i = this.localVariables.next();
             this.source += `for (var ${i} = ${this.descendInput(node.times).asNumber()}; ${i} >= 0.5; ${i}--) {\n`;
-            this.descendStack(node.do, new Frame(true));
+            this.descendStack(node.do, new Frame(true, 'control.repeat'));
             this.yieldLoop();
             this.source += `}\n`;
             break;
@@ -1001,7 +1017,7 @@ class JSGenerator {
             this.source += `var ${duration} = Math.max(0, 1000 * ${this.descendInput(node.times).asNumber()});\n`;
             this.requestRedraw();
             this.source += `while (thread.timer.timeElapsed() < ${duration}) {\n`;
-            this.descendStack(node.do, new Frame(true));
+            this.descendStack(node.do, new Frame(true, 'control.repeatForSeconds'));
             this.yieldLoop();
             this.source += `}\n`;
             this.source += 'thread.timer = null;\n';
@@ -1062,7 +1078,7 @@ class JSGenerator {
         case 'control.while':
             this.resetVariableInputs();
             this.source += `while (${this.descendInput(node.condition).asBoolean()}) {\n`;
-            this.descendStack(node.do, new Frame(true));
+            this.descendStack(node.do, new Frame(true, 'control.while'));
             if (node.warpTimer) {
                 this.yieldStuckOrNotWarp();
             } else {
@@ -1098,7 +1114,7 @@ class JSGenerator {
             this.source += `thread.spoofTarget = target;\n`;
 
             // descendle stackle
-            this.descendStack(node.substack, new Frame(false));
+            this.descendStack(node.substack, new Frame(false, 'control.runAsSprite'));
 
             // undo thread target & spoofing change
             this.source += `thread.target = ${originalTarget};\n`;
@@ -1156,7 +1172,7 @@ class JSGenerator {
             `for (let index = 0; index < ${list}.value.length; index++) {` + 
                 `const value = ${list}.value[index];` + 
                 `${set.source} = ${to};`;
-            this.descendStack(node.do, new Frame(true));
+            this.descendStack(node.do, new Frame(true, 'list.forEach'));
             this.source += `};\n`;
             break;
         }
@@ -1615,7 +1631,7 @@ class JSGenerator {
             const input = node.inputs[inputName];
             if (inputName.startsWith('substack')) {
                 result += `"${sanitize(inputName.toLowerCase())}":(function* () {\n`;
-                this.descendStack(input, new Frame(true));
+                this.descendStack(input, new Frame(true, opcode));
                 result += '}),';
                 continue;
             }
@@ -1713,13 +1729,19 @@ class JSGenerator {
         script += `if (thread.spoofing) {\n`;
         script += `target = thread.spoofTarget;\n`;
         script += `};\n`;
+        script += 'try {\n';
 
         script += this.source;
 
+        script += '} catch (err) {';
+        script += `runtime.emit("BLOCK_STACK_ERROR", {`;
+        script += `id:"${sanitize(this.script.topBlockId)}",`;
+        script += `value:String(err)`;
+        script += `})`;
+        script += '}\n';
         if (!this.isProcedure) {
             script += 'retire();\n';
         }
-
         script += '}; })';
         return script;
     }
