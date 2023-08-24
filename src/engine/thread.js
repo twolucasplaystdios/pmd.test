@@ -366,6 +366,24 @@ class Thread {
     }
 
     /**
+     * pause this thread
+     */
+    pause () {
+        this.originalStatus = this.status;
+        this.status = Thread.STATUS_PROMISE_WAIT;
+        if (this.timer) this.timer.pause();
+    }
+
+    /**
+     * unpause this thread
+     */
+    play () {
+        this.status = this.originalStatus;
+        if (this.timer) this.timer.play();
+    }
+
+
+    /**
      * Add a parameter to the stack frame.
      * Use when calling a procedure with parameter values.
      * @param {!string} paramName Name of parameter.

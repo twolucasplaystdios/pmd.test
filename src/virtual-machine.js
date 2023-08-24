@@ -171,6 +171,12 @@ class VirtualMachine extends EventEmitter {
         this.runtime.on(Runtime.RUNTIME_STARTED, () => {
             this.emit(Runtime.RUNTIME_STARTED);
         });
+        this.runtime.on(Runtime.RUNTIME_PAUSED, () => {
+            this.emit(Runtime.RUNTIME_PAUSED);
+        });
+        this.runtime.on(Runtime.RUNTIME_UNPAUSED, () => {
+            this.emit(Runtime.RUNTIME_UNPAUSED);
+        });
         this.runtime.on(Runtime.RUNTIME_STOPPED, () => {
             this.emit(Runtime.RUNTIME_STOPPED);
         });
@@ -962,6 +968,20 @@ class VirtualMachine extends EventEmitter {
             };
         }
         return null;
+    }
+
+    /**
+     * Pause running scripts
+     */
+    pause() {
+        this.runtime.pause();
+    }
+
+    /**
+     * Unpause running scripts
+     */
+    play() {
+        this.runtime.play();
     }
 
     /**

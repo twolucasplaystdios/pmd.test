@@ -21,11 +21,13 @@ class Clock {
     }
 
     pause () {
+        if (this._paused) return;
         this._paused = true;
         this._pausedTime = this._projectTimer.timeElapsed();
     }
 
     resume () {
+        if (!this._paused) return;
         this._paused = false;
         const dt = this._projectTimer.timeElapsed() - this._pausedTime;
         this._projectTimer.startTime += dt;

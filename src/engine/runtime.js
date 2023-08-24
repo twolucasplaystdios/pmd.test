@@ -910,6 +910,22 @@ class Runtime extends EventEmitter {
     }
 
     /**
+     * Event name when the runtime is paused temporarily.
+     * @const {string}
+     */
+    static get RUNTIME_PAUSED () {
+        return 'RUNTIME_PAUSED';
+    }
+
+    /**
+     * Event name when the runtime is unpaused.
+     * @const {string}
+     */
+    static get RUNTIME_UNPAUSED () {
+        return 'RUNTIME_UNPAUSED';
+    }
+
+    /**
      * Event name when the runtime dispose has been called.
      * @const {string}
      */
@@ -2418,6 +2434,34 @@ class Runtime extends EventEmitter {
             this.targets[i].onGreenFlag();
         }
         this.startHats('event_whenflagclicked');
+    }
+
+    /**
+     * Pause running scripts
+     */
+    pause() {
+        if (this.paused) return;
+        this.paused = true;
+        this.audioEngine.audioContext.suspend();
+        this.ioDevices.clock.pause();
+        for (const thread of this.threads) {
+            thread.pause();
+        }
+        this.emit(Runtime.RUNTIME_PAUSED);
+    }
+
+    /**
+     * Unpause running scripts
+     */
+    play() {
+        if (!this.paused) return;
+        this.paused = false;
+        this.audioEngine.audioContext.resume();
+        this.ioDevices.clock.resume();
+        for (const thread of this.threads) {
+            thread.play();
+        }
+        this.emit(Runtime.RUNTIME_UNPAUSED);
     }
 
     /**
