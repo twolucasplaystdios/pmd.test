@@ -59,8 +59,15 @@ class RenderedTarget extends Target {
             red: 0,
             green: 0,
             blue: 0,
-            opaque: 0
+            opaque: 0,
+            saturation: 0
         };
+
+        /**
+         * Decimal color of the sprite's tint.
+         * @type {number}
+         */
+        this.tintColor = 0xffffff;
 
         /**
          * Whether this represents an "original" non-clone rendered-target for a sprite,
