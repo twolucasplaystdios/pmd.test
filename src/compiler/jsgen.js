@@ -478,7 +478,7 @@ class JSGenerator {
             } catch (err) {
                 log.warn(extensionId + '_' + blockId, 'failed to compile JavaScript;', err);
             }
-            log.log(input);
+            // log.log(input);
             return input;
         }
 
