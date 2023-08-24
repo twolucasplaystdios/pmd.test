@@ -15,6 +15,8 @@ const log = require('./util/log');
 const MathUtil = require('./util/math-util');
 const Runtime = require('./engine/runtime');
 const StringUtil = require('./util/string-util');
+const RenderedTarget = require('./sprites/rendered-target');
+const Sprite = require('./sprites/sprite');
 const formatMessage = require('format-message');
 
 const Variable = require('./engine/variable');
@@ -216,6 +218,15 @@ class VirtualMachine extends EventEmitter {
         this.addListener('workspaceUpdate', () => {
             this.extensionManager.refreshDynamicCategorys();
         });
+        
+        /**
+         * Export some internal classes for extensions.
+         */
+        this.exports = {
+            Sprite,
+            RenderedTarget,
+            JSZip
+        };
     }
 
     /**
