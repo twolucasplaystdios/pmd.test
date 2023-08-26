@@ -246,7 +246,7 @@ class PenguinModCamera {
             .map(target => target.getName());
         return [].concat([
             { text: 'this sprite', value: '__MYSELF__' },
-            { text: 'mousepointer', value: '__MOUSEPOINTER__' },
+            { text: 'mouse-pointer', value: '__MOUSEPOINTER__' },
             { text: 'pen layer', value: '__PEN__' },
             { text: 'backdrop', value: '__STAGE__' }
         ], targets);
