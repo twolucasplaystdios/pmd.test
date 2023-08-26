@@ -191,6 +191,8 @@ class RenderedTarget extends Target {
         this.onTargetVisualChange = null;
 
         this.interpolationData = null;
+
+        this.cameraBound = false;
     }
 
     /**
@@ -293,6 +295,35 @@ class RenderedTarget extends Target {
         }
     }
 
+    bindToCamera() {
+        if (this.cameraBound) return;
+        this.cameraBound = true;
+        this.cameraUpdateEvent = () => this.updateAllDrawableProperties();
+        this.runtime.on('CAMERA_CHANGED', this.cameraUpdateEvent);
+    }
+
+    removeCameraBinding() {
+        if (!this.cameraBound) return;
+        this.cameraBound = false;
+        this.runtime.off('CAMERA_CHANGED', this.cameraUpdateEvent);
+        this.updateAllDrawableProperties();
+    }
+
+    _translatePossitionToCamera() {
+        if (!this.cameraBound) return [this.x, this.y];
+        const cameraState = this.runtime.cameraState;
+        const radians = (Math.PI * cameraState.dir) / 180;
+        const cos = Math.cos(radians);
+        const sin = Math.sin(radians);
+        let cx = this.x;
+        let cy = this.y;
+        cx *= cameraState.scale;
+        cy *= cameraState.scale;
+        cx -= ((cameraState.pos[0] * cos) - (cameraState.pos[1] * sin)) * cameraState.scale;
+        cy -= ((cameraState.pos[0] * sin) + (cameraState.pos[1] * cos)) * cameraState.scale;
+        return [cx, cy];
+    }
+
     /**
      * Set the X and Y coordinates.
      * @param {!number} x New X coordinate, in Scratch coordinates.
@@ -311,7 +342,7 @@ class RenderedTarget extends Target {
             this.x = position[0];
             this.y = position[1];
 
-            this.renderer.updateDrawablePosition(this.drawableID, position);
+            this.renderer.updateDrawablePosition(this.drawableID, this._translatePossitionToCamera());
             if (this.visible) {
                 this.emitVisualChange();
                 this.runtime.requestRedraw();
@@ -349,6 +380,7 @@ class RenderedTarget extends Target {
      * @return {object<string, number>} Direction and scale to render.
      */
     _getRenderedDirectionAndScale () {
+        const cameraState = this.runtime.cameraState;
         // Default: no changes to `this.direction` or `this.scale`.
         let finalDirection = this.direction;
         let finalScale = [this.size, this.size];
@@ -372,6 +404,12 @@ class RenderedTarget extends Target {
         }
         finalScale[0] *= this.stretch[0] / 100;
         finalScale[1] *= this.stretch[1] / 100;
+
+        if (this.cameraBound) {
+            finalScale[0] *= cameraState.scale;
+            finalScale[1] *= cameraState.scale;
+            finalDirection -= cameraState.dir;
+        }
         return {direction: finalDirection, scale: finalScale, stretch: this.stretch};
     }
 
@@ -777,7 +815,8 @@ class RenderedTarget extends Target {
     updateAllDrawableProperties () {
         if (this.renderer) {
             const {direction, scale} = this._getRenderedDirectionAndScale();
-            this.renderer.updateDrawablePosition(this.drawableID, [this.x, this.y]);
+            const translatedPos = this._translatePossitionToCamera();
+            this.renderer.updateDrawablePosition(this.drawableID, translatedPos);
             this.renderer.updateDrawableDirectionScale(this.drawableID, direction, scale, this.transform);
             this.renderer.updateDrawableVisible(this.drawableID, this.visible);
 
@@ -1092,6 +1131,7 @@ class RenderedTarget extends Target {
         newClone.rotationStyle = this.rotationStyle;
         newClone.effects = Clone.simple(this.effects);
         newClone.variables = this.duplicateVariables();
+        newClone.cameraBound = this.cameraBound;
         newClone._edgeActivatedHatValues = Clone.simple(this._edgeActivatedHatValues);
         newClone.initDrawable(StageLayering.SPRITE_LAYER);
         newClone.updateAllDrawableProperties();
@@ -1117,6 +1157,7 @@ class RenderedTarget extends Target {
             newTarget.rotationStyle = this.rotationStyle;
             newTarget.effects = JSON.parse(JSON.stringify(this.effects));
             newTarget.variables = this.duplicateVariables(newTarget.blocks);
+            newTarget.cameraBound = this.cameraBound;
             newTarget.updateAllDrawableProperties();
             return newTarget;
         });

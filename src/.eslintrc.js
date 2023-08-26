@@ -24,7 +24,8 @@ module.exports = {
         'comma-spacing': 'off',
         'no-negated-condition': 'off',
         // @todo please jg, stop having your formater REMOVE THE SPACES
-        'space-before-function-paren': 'off'
+        'space-before-function-paren': 'off',
+        'no-throw-literal': 'off'
     },
     "globals": {
         "vm": true

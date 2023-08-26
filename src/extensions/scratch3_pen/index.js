@@ -262,7 +262,23 @@ class Scratch3PenBlocks {
             const penSkinId = this._getPenLayerID();
             if (penSkinId >= 0) {
                 const penState = this._getPenState(target);
-                this.runtime.renderer.penLine(penSkinId, penState.penAttributes, oldX, oldY, target.x, target.y);
+                // find the rendered possition of the sprite rather then the true possition of the sprite
+                const [newX, newY] = target._translatePossitionToCamera();
+                [oldX, oldY] = (() => {
+                    if (!target.cameraBound) return [oldX, oldY];
+                    const cameraState = this.runtime.cameraState;
+                    const radians = (Math.PI * cameraState.dir) / 180;
+                    const cos = Math.cos(radians);
+                    const sin = Math.sin(radians);
+                    let cx = oldX;
+                    let cy = oldY;
+                    cx *= cameraState.scale;
+                    cy *= cameraState.scale;
+                    cx -= ((cameraState.pos[0] * cos) - (cameraState.pos[1] * sin)) * cameraState.scale;
+                    cy -= ((cameraState.pos[0] * sin) + (cameraState.pos[1] * cos)) * cameraState.scale;
+                    return [cx, cy];
+                })();
+                this.runtime.renderer.penLine(penSkinId, penState.penAttributes, oldX, oldY, newX, newY);
                 this.runtime.requestRedraw();
             }
         }

@@ -539,6 +539,12 @@ class Runtime extends EventEmitter {
          * Responsible for managing custom fonts.
          */
         this.fontManager = new FontManager(this);
+
+        this.cameraState = {
+            pos: [0, 0],
+            dir: 0,
+            scale: 1
+        };
     }
 
     /**
@@ -947,6 +953,14 @@ class Runtime extends EventEmitter {
      */
     static get BLOCKS_NEED_UPDATE () {
         return 'BLOCKS_NEED_UPDATE';
+    }
+
+    /**
+     * Event name for camera movements.
+     * @const {string}
+     */
+    static get CAMERA_CHANGED () {
+        return 'CAMERA_CHANGED';
     }
 
     /**
@@ -3264,6 +3278,14 @@ class Runtime extends EventEmitter {
      */
     fireTargetWasRemoved (target) {
         this.emit('targetWasRemoved', target);
+    }
+
+    /**
+     * assign new camera state options
+     */
+    updateCamera(state) {
+        Object.assign(this.cameraState, state);
+        this.emit(Runtime.CAMERA_CHANGED);
     }
 
     /**

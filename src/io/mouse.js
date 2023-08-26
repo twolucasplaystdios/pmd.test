@@ -15,12 +15,22 @@ class Mouse {
         // pm: keep track of clicks
         this._isClicked = false;
         this._clickId = 0;
+
+        this.cameraBound = false;
         /**
          * Reference to the owning Runtime.
          * Can be used, for example, to activate hats.
          * @type{!Runtime}
          */
         this.runtime = runtime;
+    }
+
+    bindToCamera() {
+        this.cameraBound = true;
+    }
+
+    removeCameraBinding() {
+        this.cameraBound = false;
     }
 
     /**
@@ -158,10 +168,25 @@ class Mouse {
      * @return {number} Clamped and integer rounded X position of the mouse cursor.
      */
     getScratchX () {
+        const cameraState = this.runtime.cameraState;
+        const mouseX = this.cameraBound 
+            ? (() => {
+                const radians = (Math.PI * cameraState.dir) / 180;
+                const cos = Math.cos(radians);
+                const sin = Math.sin(radians);
+                let cx = this._scratchX;
+                cx *= cameraState.scale;
+                const rx = cameraState.pos[0] * cos;
+                const ry = cameraState.pos[1] * sin;
+                cx += (rx - ry) * cameraState.scale;
+                return cx;
+            })()
+            // ? (this._scratchX * cameraState.scale) - cameraState.pos[0]
+            : this._scratchX;
         if (this.runtime.runtimeOptions.miscLimits) {
-            return Math.round(this._scratchX);
+            return Math.round(mouseX);
         }
-        return roundToThreeDecimals(this._scratchX);
+        return roundToThreeDecimals(mouseX);
     }
 
     /**
@@ -169,10 +194,25 @@ class Mouse {
      * @return {number} Clamped and integer rounded Y position of the mouse cursor.
      */
     getScratchY () {
+        const cameraState = this.runtime.cameraState;
+        const mouseY = this.cameraBound 
+            ? (() => {
+                const radians = (Math.PI * cameraState.dir) / 180;
+                const cos = Math.cos(radians);
+                const sin = Math.sin(radians);
+                let cy = this._scratchY;
+                cy *= cameraState.scale;
+                const rx = cameraState.pos[0] * sin;
+                const ry = cameraState.pos[1] * cos;
+                cy += (rx + ry) * cameraState.scale;
+                return cy;
+            })()
+            // ? (this._scratchY * cameraState.scale) - cameraState.pos[1]
+            : this._scratchY;
         if (this.runtime.runtimeOptions.miscLimits) {
-            return Math.round(this._scratchY);
+            return Math.round(mouseY);
         }
-        return roundToThreeDecimals(this._scratchY);
+        return roundToThreeDecimals(mouseY);
     }
 
     /**

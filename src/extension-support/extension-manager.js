@@ -140,6 +140,8 @@ const builtinExtensions = {
     tempVars: () => require('../extensions/gsa_tempVars'),
     // colors: fill out your introduction stupet!!!
     colors: () => require('../extensions/gsa_colorUtilBlocks'),
+    // Camera: camera
+    pmCamera: () => require('../extensions/pm_camera'),
 
     // silvxrcat: ...
     // oddMessage: ...
@@ -166,8 +168,8 @@ const builtinExtensions = {
     // iygPerlin: 
     iygPerlin: () => require('../extensions/iyg_perlin_noise'),
     // fr: waw 3d physics!!
-    //fr3d:
-    fr3d: () => require('../extensions/fr_3d'),
+    // fr3d:
+    fr3d: () => require('../extensions/fr_3d')
 };
 
 const coreExtensionList = Object.getOwnPropertyNames(builtinExtensions);
