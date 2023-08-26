@@ -248,7 +248,7 @@ class PenguinModCamera {
             { text: 'this sprite', value: '__MYSELF__' },
             { text: 'mousepointer', value: '__MOUSEPOINTER__' },
             { text: 'pen layer', value: '__PEN__' },
-            { text: 'background', value: '__STAGE__' }
+            { text: 'backdrop', value: '__STAGE__' }
         ], targets);
     }
     moveSteps(args) {
