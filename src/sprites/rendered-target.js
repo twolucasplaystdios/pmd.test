@@ -194,6 +194,13 @@ class RenderedTarget extends Target {
         this.interpolationData = null;
 
         this.cameraBound = -1;
+
+        this.cameraUpdateEvent = screen => {
+            if (screen === this.cameraBound) {
+                this.updateAllDrawableProperties();
+            }
+        };
+        this.runtime.on('CAMERA_CHANGED', this.cameraUpdateEvent);
     }
 
     /**
@@ -297,17 +304,11 @@ class RenderedTarget extends Target {
     }
 
     bindToCamera(screen) {
-        if (this.cameraBound >= 0) return;
         this.cameraBound = screen;
-        this.cameraUpdateEvent = () => this.updateAllDrawableProperties();
-        this.runtime.on('CAMERA_CHANGED', this.cameraUpdateEvent);
     }
 
     removeCameraBinding() {
-        if (this.cameraBound < 0) return;
         this.cameraBound = -1;
-        this.runtime.off('CAMERA_CHANGED', this.cameraUpdateEvent);
-        this.updateAllDrawableProperties();
     }
 
     _translatePossitionToCamera() {

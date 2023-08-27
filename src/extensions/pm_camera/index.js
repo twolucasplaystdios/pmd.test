@@ -11,7 +11,8 @@ const defaultState = {
     pos: [0, 0],
     size: 100,
     dir: 90,
-    camera: 0
+    camera: 0,
+    silent: false
 };
 
 class PenguinModCamera {
@@ -37,13 +38,28 @@ class PenguinModCamera {
         }
         return penState;
     }
+    _loadCameraState(target) {
+        const state = this._getPenState(target);
+        if (!this.runtime.cameraStates[state.camera]) {
+            this.runtime.cameraStates[state.camera] = {
+                pos: [0, 0],
+                dir: 0,
+                scale: 1
+            };
+        }
+        const {pos, dir, scale} = this.runtime.cameraStates[state.camera];
+        state.pos = pos;
+        state.dir = dir + 90;
+        state.size = scale * 100;
+    }
     _updateRender(target) {
         const state = this._getPenState(target);
+        console.log(state);
         this.runtime.updateCamera(state.camera, {
             pos: state.pos,
             dir: 90 - state.dir,
             scale: state.size / 100
-        });
+        }, state.silent);
     }
     _fixDirection(target) {
         const state = this._getPenState(target);
@@ -132,6 +148,22 @@ class PenguinModCamera {
                             defaultValue: '0'
                         }
                     }
+                },
+                {
+                    opcode: 'setRenderImediat',
+                    blockType: BlockType.COMMAND,
+                    text: 'set render mode to [RENDER_MODE]',
+                    arguments: {
+                        RENDER_MODE: {
+                            type: ArgumentType.STRING,
+                            menu: 'RENDER_MODES'
+                        }
+                    }
+                },
+                {
+                    opcode: 'manualRender',
+                    blockType: BlockType.COMMAND,
+                    text: 'render camera'
                 },
                 '---',
                 {
@@ -275,6 +307,12 @@ class PenguinModCamera {
                 BINDABLE_TARGETS: {
                     items: 'getBindableTargets',
                     acceptReports: true
+                },
+                RENDER_MODES: {
+                    items: [
+                        'immediate',
+                        'manual'
+                    ]
                 }
             }
         };
@@ -303,7 +341,7 @@ class PenguinModCamera {
     turnRight(args, util) {
         const deg = Cast.toNumber(args.DEGREES);
         this.dir -= deg;
-        this._fixDirection();
+        this._fixDirection(util.target);
         this._updateRender(util.target);
     }
     turnLeft(args, util) {
@@ -340,7 +378,6 @@ class PenguinModCamera {
             sprite.bindToCamera(screen);
             break;
         }
-        state.camera = screen;
         this._updateRender(util.target);
     }
     unbindTarget(args, util) {
@@ -378,6 +415,25 @@ class PenguinModCamera {
         const state = this._getPenState(util.target);
         const screen = Cast.toNumber(args.SCREEN);
         state.camera = screen;
+        this._loadCameraState(util.target);
+    }
+    setRenderImediat(args, util) {
+        const state = this._getPenState(util.target);
+        const renderMode = Cast.toString(args.RENDER_MODE);
+        // possibly add more render modes?
+        switch (renderMode) {
+        case 'immediate':
+            state.silent = false;
+            break;
+        case 'manual':
+            state.silent = true;
+            break;
+        }
+    }
+    manualRender(_, util) {
+        const state = this._getPenState(util.target);
+        this._updateRender(util.target);
+        this.runtime.emit('CAMERA_CHANGED', state.camera);
     }
 
     gotoXY(args, util) {
