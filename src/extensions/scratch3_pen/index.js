@@ -269,7 +269,7 @@ class Scratch3PenBlocks {
                 const penState = this._getPenState(target);
                 // find the rendered possition of the sprite rather then the true possition of the sprite
                 const [newX, newY] = target._translatePossitionToCamera();
-                [oldX, oldY] = translateForCamera(this.runtime, oldX, oldY);
+                [oldX, oldY] = translateForCamera(this.runtime, 0, oldX, oldY);
                 this.runtime.renderer.penLine(penSkinId, penState.penAttributes, oldX, oldY, newX, newY);
                 this.runtime.requestRedraw();
             }
