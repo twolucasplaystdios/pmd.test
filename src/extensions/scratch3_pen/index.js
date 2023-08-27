@@ -4,6 +4,7 @@ const TargetType = require('../../extension-support/target-type');
 const Cast = require('../../util/cast');
 const Clone = require('../../util/clone');
 const Color = require('../../util/color');
+const { translateForCamera } = require('../../util/pos-math');
 const formatMessage = require('format-message');
 const MathUtil = require('../../util/math-util');
 const log = require('../../util/log');
@@ -124,11 +125,15 @@ class Scratch3PenBlocks {
 
         this._onTargetCreated = this._onTargetCreated.bind(this);
         this._onTargetMoved = this._onTargetMoved.bind(this);
+        this._onCameraMoved = this._onCameraMoved.bind(this);
 
         runtime.on('targetWasCreated', this._onTargetCreated);
         runtime.on('RUNTIME_DISPOSED', this.clear.bind(this));
+        runtime.on('CAMERA_CHANGED', this._onCameraMoved);
 
         this.preloadedImages = {};
+
+        this.cameraBound = -1;
     }
 
     /**
@@ -264,23 +269,33 @@ class Scratch3PenBlocks {
                 const penState = this._getPenState(target);
                 // find the rendered possition of the sprite rather then the true possition of the sprite
                 const [newX, newY] = target._translatePossitionToCamera();
-                [oldX, oldY] = (() => {
-                    if (!target.cameraBound) return [oldX, oldY];
-                    const cameraState = this.runtime.cameraState;
-                    const radians = (Math.PI * cameraState.dir) / 180;
-                    const cos = Math.cos(radians);
-                    const sin = Math.sin(radians);
-                    let cx = oldX;
-                    let cy = oldY;
-                    cx *= cameraState.scale;
-                    cy *= cameraState.scale;
-                    cx -= ((cameraState.pos[0] * cos) - (cameraState.pos[1] * sin)) * cameraState.scale;
-                    cy -= ((cameraState.pos[0] * sin) + (cameraState.pos[1] * cos)) * cameraState.scale;
-                    return [cx, cy];
-                })();
+                [oldX, oldY] = translateForCamera(this.runtime, oldX, oldY);
                 this.runtime.renderer.penLine(penSkinId, penState.penAttributes, oldX, oldY, newX, newY);
                 this.runtime.requestRedraw();
             }
+        }
+    }
+
+    _onCameraMoved(screen) {
+        if (screen !== this.cameraBound) return;
+        const cameraState = this.runtime.cameraStates[screen];
+        const penSkinId = this._getPenLayerID();
+        if (penSkinId >= 0) {
+            this.runtime.renderer.penTranslate(penSkinId, ...cameraState.pos, cameraState.scale, cameraState.dir);
+        }
+        this.runtime.requestRedraw();
+    }
+
+    bindToCamera(screen) {
+        this.cameraBound = screen;
+        this._onCameraMoved();
+    }
+
+    removeCameraBinding() {
+        this.cameraBound = -1;
+        const penSkinId = this._getPenLayerID();
+        if (penSkinId >= 0) {
+            this.runtime.renderer.penTranslate(penSkinId, 0, 0, 1, 0);
         }
     }
 

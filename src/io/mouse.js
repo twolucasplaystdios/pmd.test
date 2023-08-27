@@ -1,4 +1,5 @@
 const MathUtil = require('../util/math-util');
+const { translateScreenPos } = require('../util/pos-math');
 
 const roundToThreeDecimals = number => Math.round(number * 1000) / 1000;
 
@@ -16,7 +17,7 @@ class Mouse {
         this._isClicked = false;
         this._clickId = 0;
 
-        this.cameraBound = false;
+        this.cameraBound = -1;
         /**
          * Reference to the owning Runtime.
          * Can be used, for example, to activate hats.
@@ -25,12 +26,12 @@ class Mouse {
         this.runtime = runtime;
     }
 
-    bindToCamera() {
-        this.cameraBound = true;
+    bindToCamera(screen) {
+        this.cameraBound = screen;
     }
 
     removeCameraBinding() {
-        this.cameraBound = false;
+        this.cameraBound = -1;
     }
 
     /**
@@ -168,19 +169,8 @@ class Mouse {
      * @return {number} Clamped and integer rounded X position of the mouse cursor.
      */
     getScratchX () {
-        const cameraState = this.runtime.cameraState;
-        const mouseX = this.cameraBound 
-            ? (() => {
-                const radians = (Math.PI * cameraState.dir) / 180;
-                const cos = Math.cos(radians);
-                const sin = Math.sin(radians);
-                let cx = this._scratchX;
-                cx *= cameraState.scale;
-                const rx = cameraState.pos[0] * cos;
-                const ry = cameraState.pos[1] * sin;
-                cx += (rx - ry) * cameraState.scale;
-                return cx;
-            })()
+        const mouseX = this.cameraBound >= 0
+            ? translateScreenPos(this.runtime, this.cameraBound, this._scratchX, this._scratchY)[0]
             // ? (this._scratchX * cameraState.scale) - cameraState.pos[0]
             : this._scratchX;
         if (this.runtime.runtimeOptions.miscLimits) {
@@ -194,19 +184,8 @@ class Mouse {
      * @return {number} Clamped and integer rounded Y position of the mouse cursor.
      */
     getScratchY () {
-        const cameraState = this.runtime.cameraState;
-        const mouseY = this.cameraBound 
-            ? (() => {
-                const radians = (Math.PI * cameraState.dir) / 180;
-                const cos = Math.cos(radians);
-                const sin = Math.sin(radians);
-                let cy = this._scratchY;
-                cy *= cameraState.scale;
-                const rx = cameraState.pos[0] * sin;
-                const ry = cameraState.pos[1] * cos;
-                cy += (rx + ry) * cameraState.scale;
-                return cy;
-            })()
+        const mouseY = this.cameraBound >= 0
+            ? translateScreenPos(this.runtime, this.cameraBound, this._scratchX, this._scratchY)[1]
             // ? (this._scratchY * cameraState.scale) - cameraState.pos[1]
             : this._scratchY;
         if (this.runtime.runtimeOptions.miscLimits) {

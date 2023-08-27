@@ -540,11 +540,13 @@ class Runtime extends EventEmitter {
          */
         this.fontManager = new FontManager(this);
 
-        this.cameraState = {
-            pos: [0, 0],
-            dir: 0,
-            scale: 1
-        };
+        this.cameraStates = [
+            {
+                pos: [0, 0],
+                dir: 0,
+                scale: 1
+            }
+        ];
     }
 
     /**
@@ -2270,7 +2272,7 @@ class Runtime extends EventEmitter {
         // threads are stepped. See ScratchRuntime.as for original implementation
         newThreads.forEach(thread => {
             // just incase, pause any new threads that appear while we are paused
-            if (this.paused) thread.pause()
+            if (this.paused) thread.pause();
             if (thread.isCompiled) {
                 if (thread.executableHat) {
                     // It is quite likely that we are currently executing a block, so make sure
@@ -2485,7 +2487,7 @@ class Runtime extends EventEmitter {
      */
     stopAll () {
         // unpause everything before we destroy all the threads
-        this.play()
+        this.play();
         // Emit stop event to allow blocks to clean up any state.
         this.emit(Runtime.PROJECT_STOP_ALL);
 
@@ -3283,9 +3285,12 @@ class Runtime extends EventEmitter {
     /**
      * assign new camera state options
      */
-    updateCamera(state) {
-        Object.assign(this.cameraState, state);
-        this.emit(Runtime.CAMERA_CHANGED);
+    updateCamera(screen, state) {
+        if (!this.cameraStates[screen]) {
+            this.cameraStates[screen] = screen;
+        }
+        Object.assign(this.cameraStates[screen], state);
+        this.emit(Runtime.CAMERA_CHANGED, screen);
     }
 
     /**

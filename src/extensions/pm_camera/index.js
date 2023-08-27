@@ -18,10 +18,11 @@ class PenguinModCamera {
         runtime.setRuntimeOptions({
             fencing: false
         });
-        runtime.ioDevices.mouse.bindToCamera();
+        runtime.ioDevices.mouse.bindToCamera(0);
     }
-    _updateRender() {
-        this.runtime.updateCamera({
+    _updateRender(screen) {
+        if (screen < 0) return;
+        this.runtime.updateCamera(screen, {
             pos: this.pos,
             dir: 90 - this.dir,
             scale: this.size / 100
@@ -80,18 +81,22 @@ class PenguinModCamera {
                 {
                     opcode: 'bindTarget',
                     blockType: BlockType.COMMAND,
-                    text: 'bind [TARGET] to camera',
+                    text: 'bind [TARGET] to camera [SCREEN]',
                     arguments: {
                         TARGET: {
                             type: ArgumentType.STRING,
                             menu: 'BINDABLE_TARGETS'
+                        },
+                        SCREEN: {
+                            type: ArgumentType.NUMBER,
+                            defaultValue: '0'
                         }
                     }
                 },
                 {
                     opcode: 'unbindTarget',
                     blockType: BlockType.COMMAND,
-                    text: 'unbind [TARGET] to camera',
+                    text: 'unbind [TARGET] from the camera',
                     arguments: {
                         TARGET: {
                             type: ArgumentType.STRING,
@@ -235,7 +240,7 @@ class PenguinModCamera {
             menus: {
                 BINDABLE_TARGETS: {
                     items: 'getBindableTargets',
-                    acceotReports: true
+                    acceptReports: true
                 }
             }
         };
@@ -251,53 +256,54 @@ class PenguinModCamera {
             { text: 'backdrop', value: '__STAGE__' }
         ], targets);
     }
-    moveSteps(args) {
+    moveSteps(args, util) {
         const steps = Cast.toNumber(args.STEPS);
         const radians = MathUtil.degToRad(90 - this.dir);
         const dx = steps * Math.cos(radians);
         const dy = steps * Math.sin(radians);
         this.pos[0] += dx;
         this.pos[1] += dy;
-        this._updateRender();
+        this._updateRender(util.target.cameraBound);
     }
-    turnRight(args) {
+    turnRight(args, util) {
         const deg = Cast.toNumber(args.DEGREES);
         this.dir -= deg;
         this._fixDirection();
-        this._updateRender();
+        this._updateRender(util.target.cameraBound);
     }
-    turnLeft(args) {
+    turnLeft(args, util) {
         const deg = Cast.toNumber(args.DEGREES);
         this.dir += deg;
         this._fixDirection();
-        this._updateRender();
+        this._updateRender(util.target.cameraBound);
     }
     bindTarget(args, util) {
         const target = Cast.toString(args.TARGET);
+        const screen = Cast.toNumber(args.SCREEN);
         switch (target) {
         case '__MYSELF__':
             const myself = util.target;
-            myself.bindToCamera();
+            myself.bindToCamera(screen);
             break;
         case '__MOUSEPOINTER__':
-            util.ioQuery('mouse', 'bindToCamera');
+            util.ioQuery('mouse', 'bindToCamera', screen);
             break;
         case '__PEN__':
             const pen = this.runtime.ext_pen;
             if (!pen) break;
-            pen.bindToCamera();
+            pen.bindToCamera(screen);
             break;
         case '__STAGE__':
             const stage = this.runtime.getTargetForStage();
-            stage.bindToCamera();
+            stage.bindToCamera(screen);
             break;
         default:
             const sprite = this.runtime.getSpriteTargetByName(target);
             if (!sprite) throw `unkown target ${target}`;
-            sprite.bindToCamera();
+            sprite.bindToCamera(screen);
             break;
         }
-        this._updateRender();
+        this._updateRender(util.target.cameraBound);
     }
     unbindTarget(args, util) {
         const target = Cast.toString(args.TARGET);
@@ -328,33 +334,33 @@ class PenguinModCamera {
             break;
         }
         }
-        this._updateRender();
+        this._updateRender(util.target.cameraBound);
     }
 
-    gotoXY(args) {
+    gotoXY(args, util) {
         const x = Cast.toNumber(args.X);
         const y = Cast.toNumber(args.Y);
         this.pos = [x, y];
-        this._updateRender();
+        this._updateRender(util.target.cameraBound);
     }
-    setSize(args) {
+    setSize(args, util) {
         const size = Cast.toNumber(args.ZOOM);
         this.size = size;
-        this._updateRender();
+        this._updateRender(util.target.cameraBound);
     }
-    changeSize(args) {
+    changeSize(args, util) {
         const size = Cast.toNumber(args.ZOOM);
         this.size += size;
-        this._updateRender();
+        this._updateRender(util.target.cameraBound);
     }
 
-    pointTowards(args) {
+    pointTowards(args, util) {
         const direction = Cast.toNumber(args.DIRECTION);
         this.dir = direction;
         this._fixDirection();
-        this._updateRender();
+        this._updateRender(util.target.cameraBound);
     }
-    pointTowardsPoint(args) {
+    pointTowardsPoint(args, util) {
         const targetX = Cast.toNumber(args.X);
         const targetY = Cast.toNumber(args.Y);
 
@@ -364,28 +370,28 @@ class PenguinModCamera {
         this.dir = direction;
         // might not need to do this here but its prob better if we do
         this._fixDirection();
-        this._updateRender();
+        this._updateRender(util.target.cameraBound);
     }
 
-    changeXpos(args) {
+    changeXpos(args, util) {
         const nx = Cast.toNumber(args.X);
         this.pos[0] += nx;
-        this._updateRender();
+        this._updateRender(util.target.cameraBound);
     }
-    setXpos(args) {
+    setXpos(args, util) {
         const nx = Cast.toNumber(args.X);
         this.pos[0] = nx;
-        this._updateRender();
+        this._updateRender(util.target.cameraBound);
     }
-    changeYpos(args) {
+    changeYpos(args, util) {
         const ny = Cast.toNumber(args.Y);
         this.pos[1] += ny;
-        this._updateRender();
+        this._updateRender(util.target.cameraBound);
     }
-    setYpos(args) {
+    setYpos(args, util) {
         const ny = Cast.toNumber(args.Y);
         this.pos[1] = ny;
-        this._updateRender();
+        this._updateRender(util.target.cameraBound);
     }
 
     xPosition() {

@@ -2,6 +2,7 @@ const MathUtil = require('../util/math-util');
 const StringUtil = require('../util/string-util');
 const Cast = require('../util/cast');
 const Clone = require('../util/clone');
+const { translateForCamera } = require('../util/pos-math');
 const Target = require('../engine/target');
 const StageLayering = require('../engine/stage-layering');
 
@@ -192,7 +193,7 @@ class RenderedTarget extends Target {
 
         this.interpolationData = null;
 
-        this.cameraBound = false;
+        this.cameraBound = -1;
     }
 
     /**
@@ -295,33 +296,23 @@ class RenderedTarget extends Target {
         }
     }
 
-    bindToCamera() {
-        if (this.cameraBound) return;
-        this.cameraBound = true;
+    bindToCamera(screen) {
+        if (this.cameraBound >= 0) return;
+        this.cameraBound = screen;
         this.cameraUpdateEvent = () => this.updateAllDrawableProperties();
         this.runtime.on('CAMERA_CHANGED', this.cameraUpdateEvent);
     }
 
     removeCameraBinding() {
-        if (!this.cameraBound) return;
-        this.cameraBound = false;
+        if (this.cameraBound < 0) return;
+        this.cameraBound = -1;
         this.runtime.off('CAMERA_CHANGED', this.cameraUpdateEvent);
         this.updateAllDrawableProperties();
     }
 
     _translatePossitionToCamera() {
-        if (!this.cameraBound) return [this.x, this.y];
-        const cameraState = this.runtime.cameraState;
-        const radians = (Math.PI * cameraState.dir) / 180;
-        const cos = Math.cos(radians);
-        const sin = Math.sin(radians);
-        let cx = this.x;
-        let cy = this.y;
-        cx *= cameraState.scale;
-        cy *= cameraState.scale;
-        cx -= ((cameraState.pos[0] * cos) - (cameraState.pos[1] * sin)) * cameraState.scale;
-        cy -= ((cameraState.pos[0] * sin) + (cameraState.pos[1] * cos)) * cameraState.scale;
-        return [cx, cy];
+        if (this.cameraBound < 0) return [this.x, this.y];
+        return translateForCamera(this.runtime, this.cameraBound, this.x, this.y);
     }
 
     /**
@@ -380,7 +371,7 @@ class RenderedTarget extends Target {
      * @return {object<string, number>} Direction and scale to render.
      */
     _getRenderedDirectionAndScale () {
-        const cameraState = this.runtime.cameraState;
+        const cameraState = this.runtime.cameraStates[this.cameraBound];
         // Default: no changes to `this.direction` or `this.scale`.
         let finalDirection = this.direction;
         let finalScale = [this.size, this.size];
@@ -405,7 +396,7 @@ class RenderedTarget extends Target {
         finalScale[0] *= this.stretch[0] / 100;
         finalScale[1] *= this.stretch[1] / 100;
 
-        if (this.cameraBound) {
+        if (this.cameraBound >= 0) {
             finalScale[0] *= cameraState.scale;
             finalScale[1] *= cameraState.scale;
             finalDirection -= cameraState.dir;
