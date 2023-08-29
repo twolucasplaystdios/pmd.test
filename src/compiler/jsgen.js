@@ -345,11 +345,30 @@ class Frame {
         this.isLastBlock = false;
 
         /**
+         * General important data that needs to be carried down from other threads.
+         * @type {boolean}
+         */
+        this.importantData = {
+            parents: [parentKind]
+        };
+        if (isLoop) {
+            this.importantData.containedByLoop = true;
+        }
+
+        /**
          * the block who created this frame
          * @type {string}
          * @readonly
          */
         this.parent = parentKind;
+    }
+
+    assignData(obj) {
+        if (obj instanceof Frame) {
+            obj = obj.importantData;
+            obj.parents = obj.parents.concat(this.importantData.parents);
+        }
+        Object.assign(this.importantData, obj);
     }
 }
 
@@ -423,7 +442,7 @@ class JSGenerator {
             TYPE_BOOLEAN: TYPE_BOOLEAN,
             TYPE_UNKNOWN: TYPE_UNKNOWN,
             TYPE_NUMBER_NAN: TYPE_NUMBER_NAN
-        }
+        };
     }
 
     /**
@@ -955,14 +974,17 @@ class JSGenerator {
             this.source += `}\n`;
             break;
         case 'control.case':
-            console.log(this.currentFrame.parent);
             if (this.currentFrame.parent !== 'control.switch') {
                 this.source += `throw 'All "case" blocks must be inside of a "switch" block.';`;
                 break;
             }
             this.source += `case ${this.descendInput(node.condition).asString()}:\n`;
             if (!node.runsNext){
-                this.descendStack(node.code, new Frame(false, 'control.case'));
+                const frame = new Frame(false, 'control.case');
+                frame.assignData({
+                    containedByCase: true
+                });
+                this.descendStack(node.code, frame);
                 this.source += `break;\n`;
             }
             break;
@@ -986,14 +1008,14 @@ class JSGenerator {
             break;
         }
         case 'control.exitCase':
-            if (this.currentFrame.parent !== 'control.case') {
+            if (this.currentFrame.importantData.containedByCase) {
                 this.source += `throw 'All "exit case" blocks must be inside of a "case" block.';`;
                 break;
             }
             this.source += `break;\n`;
             break;
         case 'control.exitLoop':
-            if (!this.currentFrame.isLoop) {
+            if (!this.currentFrame.importantData.containedByLoop) {
                 this.source += `throw 'All "exit loop" blocks must be inside of a looping block.';`;
                 break;
             }
@@ -1524,6 +1546,7 @@ class JSGenerator {
         // Entering a stack -- all bets are off.
         // TODO: allow if/else to inherit values
         this.resetVariableInputs();
+        frame.assignData(this.currentFrame);
         this.pushFrame(frame);
 
         for (let i = 0; i < nodes.length; i++) {
