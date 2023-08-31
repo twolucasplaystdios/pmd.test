@@ -17,6 +17,16 @@ const blocks = `
         </shadow>
     </value>
 </block>
+<block type="pmEventsExpansion_sendWithDataReporter">
+    <value name="BROADCAST">
+        <shadow type="event_broadcast_menu"></shadow>
+    </value>
+    <value name="DATA">
+        <shadow type="text">
+            <field name="TEXT">abc</field>
+        </shadow>
+    </value>
+</block>
 %b5>
 ${blockSeparator}
 <!-- %b6 > -->
@@ -28,6 +38,14 @@ ${blockSeparator}
 <block type="pmEventsExpansion_broadcastFunction">
     <value name="BROADCAST">
         <shadow type="event_broadcast_menu"></shadow>
+    </value>
+</block>
+<block type="pmEventsExpansion_broadcastFunctionWithData">
+    <value name="BROADCAST">
+        <shadow type="event_broadcast_menu"></shadow>
+    </value>
+    <value name="DATA">
+        <shadow type="text"></shadow>
     </value>
 </block>
 %b8>
@@ -177,6 +195,21 @@ class pmEventsExpansion {
                         BROADCAST: {
                             type: ArgumentType.STRING,
                             defaultValue: "your not supposed to see this?"
+                        }
+                    }
+                },
+                {
+                    opcode: 'broadcastFunctionWithData',
+                    text: 'broadcast [BROADCAST] with data [DATA]',
+                    blockType: BlockType.REPORTER,
+                    arguments: {
+                        BROADCAST: {
+                            type: ArgumentType.STRING,
+                            defaultValue: "your not supposed to see this?"
+                        },
+                        DATA: {
+                            type: ArgumentType.STRING,
+                            defaultValue: "abc"
                         }
                     }
                 },
