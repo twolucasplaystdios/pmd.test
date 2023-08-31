@@ -616,39 +616,39 @@ class JSGenerator {
             source += `return '';`;
             source += '})())';
             return new TypedInput(source, TYPE_STRING);
-        case 'pmEventsExpansion.broadcastFunction':
+        case 'pmEventsExpansion.broadcastFunctionWithData': {
             // we need to do function otherwise this block would be stupidly long
             // called source2 because if not javascript gets mad because its technically in the same scope
-            let source2 = '(yield* (function*() {';
+            let source = '(yield* (function*() {';
             // same reason as above
-            const threads2 = this.localVariables.next();
-            source2 += `var ${threads2} = startHats("event_whenbroadcastreceived", { BROADCAST_OPTION: ${this.descendInput(node.broadcast).asString()} });`;
-            source2 += `const data = Cast.toString(args.DATA);`
-            source2 += `for (const thread of threads) {thread.__evex_recievedDataa = data;}`
-            source2 += `waitThreads(${threads2});`;
+            const threads = this.localVariables.next();
+            source += `var ${threads} = startHats("event_whenbroadcastreceived", { BROADCAST_OPTION: ${this.descendInput(node.broadcast).asString()} });`;
+            source += `const data = Cast.toString(args.DATA);`
+            source += `for (const thread of threads) {thread.__evex_recievedDataa = data;}`
+            source += `waitThreads(${threads});`;
             // wait an extra frame so the thread has the new value
             if (this.isWarp) {
-                source2 += 'if (isStuck()) yield;\n';
+                source += 'if (isStuck()) yield;\n';
             } else {
-                source2 += 'yield;\n';
+                source += 'yield;\n';
             }
             // Control may have been yielded to another script -- all bets are off.
             this.resetVariableInputs();
             // get value
-            const value2 = this.localVariables.next();
-            const thread2 = this.localVariables.next();
-            source2 += `var ${value2} = undefined;`;
-            source2 += `for (var ${thread2} of ${threads2}) {`;
+            const value = this.localVariables.next();
+            const thread = this.localVariables.next();
+            source += `var ${value} = undefined;`;
+            source += `for (var ${thread} of ${threads}) {`;
             // if not undefined, return value
-            source2 += `if (typeof ${thread2}.__evex_returnDataa !== 'undefined') {`;
-            source2 += `return ${thread2}.__evex_returnDataa;`;
-            source2 += `}`;
-            source2 += `}`;
+            source += `if (typeof ${thread}.__evex_returnDataa !== 'undefined') {`;
+            source += `return ${thread}.__evex_returnDataa;`;
+            source += `}`;
+            source += `}`;
             // no value, return empty value
-            source2 += `return '';`;
-            source2 += '})())';
-            return new TypedInput(source2, TYPE_STRING);
-    
+            source += `return '';`;
+            source += '})())';
+            return new TypedInput(source, TYPE_STRING);
+        }
         case 'op.abs':
             return new TypedInput(`Math.abs(${this.descendInput(node.value).asNumber()})`, TYPE_NUMBER);
         case 'op.acos':
