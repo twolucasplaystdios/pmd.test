@@ -338,8 +338,9 @@ class PenguinModCamera {
         this._updateRender(util.target);
     }
     turnRight(args, util) {
+        const state = this._getPenState(util.target);
         const deg = Cast.toNumber(args.DEGREES);
-        this.dir -= deg;
+        state.dir -= deg;
         this._fixDirection(util.target);
         this._updateRender(util.target);
     }
