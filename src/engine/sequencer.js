@@ -110,13 +110,12 @@ class Sequencer {
                     stoppedThread = true;
                     continue;
                 }
-                // needs fixed so ti doesnt break things
-                /*
-                // we dont tick waiting promises
-                if (activeThread.status === Thread.STATUS_PROMISE_WAIT) {
+                if (activeThread.status === Thread.STATUS_PAUSED) {
+                    if (activeThread.timer && !activeThread.timer._pausedTime) {
+                        activeThread.timer.pause();
+                    }
                     continue;
                 }
-                */
                 if (activeThread.status === Thread.STATUS_YIELD_TICK &&
                     !ranFirstTick) {
                     // Clear single-tick yield from the last call of `stepThreads`.

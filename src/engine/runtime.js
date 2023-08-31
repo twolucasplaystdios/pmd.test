@@ -21,7 +21,7 @@ const xmlEscape = require('../util/xml-escape');
 const ScratchLinkWebSocket = require('../util/scratch-link-websocket');
 const FontManager = require('./tw-font-manager');
 const { validateJSON } = require('../util/json-block-utilities');
-const Color = require('../util/color')
+const Color = require('../util/color');
 
 // Virtual I/O devices.
 const Clock = require('../io/clock');
@@ -2462,6 +2462,8 @@ class Runtime extends EventEmitter {
         this.paused = true;
         this.audioEngine.audioContext.suspend();
         this.ioDevices.clock.pause();
+        // safest way to stop the threads from being steped /shrug
+        this.frameLoop.stop();
         for (const thread of this.threads) {
             thread.pause();
         }
@@ -2476,6 +2478,8 @@ class Runtime extends EventEmitter {
         this.paused = false;
         this.audioEngine.audioContext.resume();
         this.ioDevices.clock.resume();
+        // frameloop is always stoped by pause() so restart it
+        this.frameLoop.start();
         for (const thread of this.threads) {
             thread.play();
         }

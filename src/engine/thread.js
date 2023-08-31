@@ -246,6 +246,16 @@ class Thread {
     }
 
     /**
+     * Thread status for a paused thread.
+     * Thread is in this state when it has been told to pause and needs to pause 
+     * any new yields from the compiler
+     * @const
+     */
+    static get STATUS_PAUSED () {
+        return 5;
+    }
+
+    /**
      * Thread status for a finished/done thread.
      * Thread is in this state when there are no more blocks to execute.
      * @const
@@ -370,7 +380,7 @@ class Thread {
      */
     pause () {
         this.originalStatus = this.status;
-        this.status = Thread.STATUS_PROMISE_WAIT;
+        this.status = Thread.STATUS_PAUSED;
         if (this.timer) this.timer.pause();
     }
 

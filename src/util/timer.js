@@ -97,7 +97,7 @@ class Timer {
      */
     pause() {
         if (this._pausedTime) return;
-        this._pausedTime = this.timeElapsed();
+        this._pausedTime = this.nowObj.now();
     }
 
     /**
@@ -111,7 +111,8 @@ class Timer {
 
     timeElapsed () {
         if (this._pausedTime) return this._pausedTime;
-        return this.nowObj.now() - this.startTime;
+        const now = this.nowObj.now();
+        return now - this.startTime;
     }
 
     /**
