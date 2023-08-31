@@ -17,16 +17,6 @@ const blocks = `
         </shadow>
     </value>
 </block>
-<block type="pmEventsExpansion_sendWithDataReporter">
-    <value name="BROADCAST">
-        <shadow type="event_broadcast_menu"></shadow>
-    </value>
-    <value name="DATA">
-        <shadow type="text">
-            <field name="TEXT">abc</field>
-        </shadow>
-    </value>
-</block>
 %b5>
 ${blockSeparator}
 <!-- %b6 > -->
