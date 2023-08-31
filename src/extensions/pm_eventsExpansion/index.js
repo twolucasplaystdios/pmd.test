@@ -45,7 +45,9 @@ ${blockSeparator}
         <shadow type="event_broadcast_menu"></shadow>
     </value>
     <value name="DATA">
-        <shadow type="text"></shadow>
+        <shadow type="text">
+            <field name="TEXT">abc</field>
+        </shadow>
     </value>
 </block>
 %b8>
