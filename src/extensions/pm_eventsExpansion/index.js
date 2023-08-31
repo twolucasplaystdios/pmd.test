@@ -148,6 +148,12 @@ class pmEventsExpansion {
                     }
                 },
                 {
+                    opcode: 'recievedDataReporter',
+                    text: 'recieved data',
+                    blockType: BlockType.REPORTER,
+                    disableMonitor: true
+                },
+                {
                     opcode: 'broadcastToSprite',
                     text: 'broadcast [BROADCAST] to [SPRITE]',
                     blockType: BlockType.COMMAND,
