@@ -30,16 +30,6 @@ ${blockSeparator}
         <shadow type="event_broadcast_menu"></shadow>
     </value>
 </block>
-<block type="pmEventsExpansion_broadcastFunctionWithData">
-    <value name="BROADCAST">
-        <shadow type="event_broadcast_menu"></shadow>
-    </value>
-    <value name="DATA">
-        <shadow type="text">
-            <field name="TEXT">abc</field>
-        </shadow>
-    </value>
-</block>
 %b8>
 ${blockSeparator}
 %b2>
@@ -181,21 +171,6 @@ class pmEventsExpansion {
                         BROADCAST: {
                             type: ArgumentType.STRING,
                             defaultValue: "your not supposed to see this?"
-                        }
-                    }
-                },
-                {
-                    opcode: 'broadcastFunctionWithData',
-                    text: 'broadcast [BROADCAST] with data [DATA]',
-                    blockType: BlockType.REPORTER,
-                    arguments: {
-                        BROADCAST: {
-                            type: ArgumentType.STRING,
-                            defaultValue: "your not supposed to see this?"
-                        },
-                        DATA: {
-                            type: ArgumentType.STRING,
-                            defaultValue: "abc"
                         }
                     }
                 },
