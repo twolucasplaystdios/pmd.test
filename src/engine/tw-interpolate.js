@@ -1,3 +1,5 @@
+const { translateForCamera } = require('../util/pos-math');
+
 /**
  * Prepare the targets of a runtime for interpolation.
  * @param {Runtime} runtime The Runtime with targets to prepare for interpolation.
@@ -10,10 +12,7 @@ const setupInitialState = runtime => {
 
         // If sprite may have been interpolated in the previous frame, reset its renderer state.
         if (renderer && target.interpolationData) {
-            const drawableID = target.drawableID;
-            renderer.updateDrawablePosition(drawableID, [target.x, target.y]);
-            renderer.updateDrawableDirectionScale(drawableID, directionAndScale.direction, directionAndScale.scale);
-            renderer.updateDrawableEffect(drawableID, 'ghost', target.effects.ghost);
+            target.updateAllDrawableProperties();
         }
 
         if (target.visible && !target.isStage) {
@@ -58,8 +57,12 @@ const interpolate = (runtime, time) => {
         const drawableID = target.drawableID;
 
         // Position interpolation.
-        const xDistance = target.x - interpolationData.x;
-        const yDistance = target.y - interpolationData.y;
+        const [icpX, icpY] = target.cameraBound >= 0 
+            ? translateForCamera(runtime, target.cameraBound, interpolationData.x, interpolationData.y)
+            : [interpolationData.x, interpolationData.y];
+        const [tX, tY] = target._translatePossitionToCamera();
+        const xDistance = tX - icpX;
+        const yDistance = tY - icpY;
         const absoluteXDistance = Math.abs(xDistance);
         const absoluteYDistance = Math.abs(yDistance);
         if (absoluteXDistance > 0.1 || absoluteYDistance > 0.1) {
@@ -70,8 +73,8 @@ const interpolate = (runtime, time) => {
             const tolerance = Math.min(240, Math.max(50, 1.5 * (bounds.width + bounds.height)));
             const distance = Math.sqrt((absoluteXDistance ** 2) + (absoluteYDistance ** 2));
             if (distance < tolerance) {
-                const newX = interpolationData.x + (xDistance * time);
-                const newY = interpolationData.y + (yDistance * time);
+                const newX = icpX + (xDistance * time);
+                const newY = icpY + (yDistance * time);
                 renderer.updateDrawablePosition(drawableID, [newX, newY]);
             }
         }
