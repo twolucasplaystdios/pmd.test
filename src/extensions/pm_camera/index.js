@@ -324,7 +324,6 @@ class PenguinModCamera {
         return [].concat([
             { text: 'this sprite', value: '__MYSELF__' },
             { text: 'mouse-pointer', value: '__MOUSEPOINTER__' },
-            { text: 'pen layer', value: '__PEN__' },
             { text: 'backdrop', value: '__STAGE__' }
         ], targets);
     }
@@ -363,11 +362,13 @@ class PenguinModCamera {
         case '__MOUSEPOINTER__':
             util.ioQuery('mouse', 'bindToCamera', screen);
             break;
+        /*
         case '__PEN__':
             const pen = this.runtime.ext_pen;
             if (!pen) break;
             pen.bindToCamera(screen);
             break;
+            */
         case '__STAGE__':
             const stage = this.runtime.getTargetForStage();
             stage.bindToCamera(screen);
@@ -378,7 +379,6 @@ class PenguinModCamera {
             sprite.bindToCamera(screen);
             break;
         }
-        this._updateRender(util.target);
     }
     unbindTarget(args, util) {
         const target = Cast.toString(args.TARGET);
@@ -391,12 +391,14 @@ class PenguinModCamera {
         case '__MOUSEPOINTER__':
             util.ioQuery('mouse', 'removeCameraBinding');
             break;
+        /*
         case '__PEN__': {
             const pen = this.runtime.ext_pen;
             if (!pen) break;
             pen.removeCameraBinding();
             break;
         }
+        */
         case '__STAGE__': {
             const stage = this.runtime.getTargetForStage();
             stage.removeCameraBinding();
@@ -409,7 +411,6 @@ class PenguinModCamera {
             break;
         }
         }
-        this._updateRender(util.target);
     }
     setCurrentCamera(args, util) {
         const state = this._getPenState(util.target);

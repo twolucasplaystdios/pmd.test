@@ -304,11 +304,15 @@ class RenderedTarget extends Target {
     }
 
     bindToCamera(screen) {
+        const isNew = this.cameraBound !== screen
         this.cameraBound = screen;
+        if (isNew) this.updateAllDrawableProperties()
     }
 
     removeCameraBinding() {
+        const isNew = this.cameraBound >= 0
         this.cameraBound = -1;
+        if (isNew) this.updateAllDrawableProperties()
     }
 
     _translatePossitionToCamera() {

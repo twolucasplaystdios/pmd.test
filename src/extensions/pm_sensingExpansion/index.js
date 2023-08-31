@@ -1,6 +1,7 @@
 const BlockType = require('../../extension-support/block-type');
 const ArgumentType = require('../../extension-support/argument-type');
 const Cast = require('../../util/cast');
+const Color = require('../../util/color');
 
 const blockSeparator = '<sep gap="36"/>'; // At default scale, about 28px
 
@@ -233,6 +234,21 @@ class pmSensingExpansion {
                     blockType: BlockType.REPORTER,
                     disableMonitor: false
                 },
+                {
+                    opcode: 'pickColor',
+                    text: 'grab color at x: [X] y: [Y]',
+                    blockType: BlockType.REPORTER,
+                    arguments: {
+                        X: {
+                            type: ArgumentType.NUMBER,
+                            defaultValue: '0'
+                        },
+                        Y: {
+                            type: ArgumentType.NUMBER,
+                            defaultValue: '0'
+                        }
+                    }
+                }
             ],
             menus: {
                 urlSections: {
@@ -252,6 +268,16 @@ class pmSensingExpansion {
                 }
             }
         };
+    }
+
+    pickColor(args) {
+        const renderer = this.runtime.renderer
+        const scratchX = Cast.toNumber(args.X)
+        const scratchY = Cast.toNumber(args.Y)
+        const clientX = (scratchX / this.runtime.stageWidth) * renderer._gl.canvas.clientWidth
+        const clientY = (scratchY / this.runtime.stageHeight) * renderer._gl.canvas.clientHeight
+        const colorInfo = renderer.extractColor(x, y)
+        return Color.rgbToDecimal(colorInfo.color)
     }
 
     // util

@@ -129,7 +129,7 @@ class Scratch3PenBlocks {
 
         runtime.on('targetWasCreated', this._onTargetCreated);
         runtime.on('RUNTIME_DISPOSED', this.clear.bind(this));
-        runtime.on('CAMERA_CHANGED', this._onCameraMoved);
+        //runtime.on('CAMERA_CHANGED', this._onCameraMoved);
 
         this.preloadedImages = {};
 
