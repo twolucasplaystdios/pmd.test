@@ -186,7 +186,12 @@ class JgDevBlocks {
                         }
                     },
                     blockType: BlockType.REPORTER
-                }
+                },
+                {
+                    opcode: 'booleanMonitor',
+                    text: 'boolean monitor',
+                    blockType: BlockType.BOOLEAN
+                },
             ],
             menus: {
                 variable: "getVariablesMenu",
@@ -323,6 +328,10 @@ class JgDevBlocks {
         if (branchBlock) {
             util.sequencer.runtime._pushThread(branchBlock, util.target, {});
         }
+    }
+
+    booleanMonitor() {
+        return Math.round(Math.random()) == 1;
     }
 
     stopSound(args, util) {

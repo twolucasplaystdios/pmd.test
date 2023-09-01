@@ -22,6 +22,7 @@ const ScratchLinkWebSocket = require('../util/scratch-link-websocket');
 const FontManager = require('./tw-font-manager');
 const { validateJSON } = require('../util/json-block-utilities');
 const Color = require('../util/color');
+const TabManager = require('../extension-support/pm-tab-manager');
 
 // Virtual I/O devices.
 const Clock = require('../io/clock');
@@ -313,6 +314,11 @@ class Runtime extends EventEmitter {
          * @type {Array<Thread>}
          */
         this._lastStepDoneThreads = null;
+
+        /**
+         * pm: The current tab manager for this runtime.
+         */
+        this.tabManager = new TabManager(this);
 
         /**
          * Currently known number of clones, used to enforce clone limit.
@@ -950,6 +956,22 @@ class Runtime extends EventEmitter {
     }
 
     /**
+     * Event name when an editor tab is created.
+     * @const {string}
+     */
+    static get EDITOR_TABS_NEW () {
+        return 'EDITOR_TABS_NEW';
+    }
+
+    /**
+     * Event name when editor tabs need to be updated.
+     * @const {string}
+     */
+    static get EDITOR_TABS_UPDATE () {
+        return 'EDITOR_TABS_UPDATE';
+    }
+
+    /**
      * Event name for reporting that a block was updated and needs to be rerendered.
      * @const {string}
      */
@@ -1515,7 +1537,7 @@ class Runtime extends EventEmitter {
             }
         }
 
-        if (blockInfo.blockType === BlockType.REPORTER) {
+        if (blockInfo.blockType === BlockType.REPORTER || blockInfo.blockType === BlockType.BOOLEAN) {
             if (!blockInfo.disableMonitor && context.inputList.length === 0) {
                 blockJSON.checkboxInFlyout = true;
             }

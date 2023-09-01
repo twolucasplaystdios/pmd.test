@@ -79,6 +79,8 @@ const builtinExtensions = {
     jgTween: () => require("../extensions/jg_tween"),
     // jgPackagerApplications: uuhhhhhhh packager
     jgPackagerApplications: () => require("../extensions/jg_packagerApplications"),
+    // jgScripts: what you know about rollin down in the
+    jgScripts: () => require("../extensions/jg_scripts"),
     // jg3d: damn daniel
     jg3d: () => require("../extensions/jg_3d"),
     // jg3dVr: epic
