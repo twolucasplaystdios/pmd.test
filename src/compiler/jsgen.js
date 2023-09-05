@@ -95,6 +95,7 @@ class TypedInput {
         if (this.type === TYPE_STRING) return `${this.source} === 'false' || ${this.source} === '0' ? false : true`;
         if (this.type === TYPE_NUMBER) return `${this.source} !== 0`;
         if (this.type === TYPE_NUMBER_NAN) return `(${this.source} || 0) !== 0`;
+        
         return this.source;
     }
 
