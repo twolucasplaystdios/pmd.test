@@ -832,14 +832,6 @@ class JSGenerator {
         case 'var.get':
             return this.descendVariable(node.variable);
 
-        case 'procedures.call': {
-            const types = {
-                string: TYPE_STRING,
-                number: TYPE_NUMBER,
-                boolean: TYPE_BOOLEAN
-            };
-            const type = node.type || 'string';
-            const blockType = types[type];
             const procedureCode = node.code;
             const procedureVariant = node.variant;
             let source = '(';
@@ -873,7 +865,7 @@ class JSGenerator {
             source += `))`;
             // Variable input types may have changes after a procedure call.
             this.resetVariableInputs();
-            return new TypedInput(source, blockType);
+            return new TypedInput(source, TYPE_UNKNOWN);
         }
 
         case 'noop':
@@ -1399,7 +1391,7 @@ class JSGenerator {
             break;
 
         case 'procedures.return': 
-            this.source += `return ${this.descendInput(node.return).asString()};`;
+            this.source += `return ${this.descendInput(node.return).asUnknown()};`;
             break;
         case 'procedures.call': {
             const procedureCode = node.code;
