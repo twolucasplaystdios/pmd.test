@@ -319,12 +319,13 @@ class PenguinModCamera {
     }
     getBindableTargets() {
         const targets = this.runtime.targets
-            .filter(target => !target.isStage && target.isOriginal)
+            .filter(target => !target.isStage && target.isOriginal && target.id !== this.runtime.vm.editingTarget)
             .map(target => target.getName());
         return [].concat([
             { text: 'this sprite', value: '__MYSELF__' },
             { text: 'mouse-pointer', value: '__MOUSEPOINTER__' },
-            { text: 'backdrop', value: '__STAGE__' }
+            { text: 'backdrop', value: '__STAGE__' },
+            { text: 'all sprites', value: '__ALL__' }
         ], targets);
     }
     moveSteps(args, util) {
@@ -374,6 +375,11 @@ class PenguinModCamera {
             const stage = this.runtime.getTargetForStage();
             stage.bindToCamera(screen);
             break;
+        case '__ALL__':
+            for (const target of this.runtime.targets) {
+                target.bindToCamera(screen)
+            }
+            break;
         default:
             const sprite = this.runtime.getSpriteTargetByName(target);
             if (!sprite) throw `unkown target ${target}`;
@@ -405,6 +411,11 @@ class PenguinModCamera {
             stage.removeCameraBinding();
             break;
         }
+        case '__ALL__':
+            for (const target of this.runtime.targets) {
+                target.removeCameraBinding()
+            }
+            break;
         default: {
             const sprite = this.runtime.getSpriteTargetByName(target);
             if (!sprite) throw `unkown target ${target}`;
