@@ -197,7 +197,11 @@ class RenderedTarget extends Target {
 
         this.cameraUpdateEvent = screen => {
             if (screen === this.cameraBound) {
-                this.updateAllDrawableProperties();
+                const {direction, scale} = this._getRenderedDirectionAndScale();
+                const translatedPos = this._translatePossitionToCamera();
+                this.renderer.updateDrawablePosition(this.drawableID, translatedPos);
+                this.renderer.updateDrawableDirectionScale(this.drawableID, direction, scale, this.transform);
+                this.renderer.updateDrawableVisible(this.drawableID, this.visible);
             }
         };
         this.runtime.on('CAMERA_CHANGED', this.cameraUpdateEvent);
