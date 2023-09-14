@@ -54,7 +54,7 @@ class PenguinModCamera {
     }
     _updateRender(target) {
         const state = this._getPenState(target);
-        console.log(state);
+        // console.log(state);
         this.runtime.updateCamera(state.camera, {
             pos: state.pos,
             dir: 90 - state.dir,
