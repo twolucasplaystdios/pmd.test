@@ -820,6 +820,14 @@ class Runtime extends EventEmitter {
     }
 
     /**
+     * Event name for reporting that an extension was removed
+     * @const {string}
+     */
+    static get EXTENSION_REMOVED () {
+        return 'EXTENSION_REMOVED';
+    }
+
+    /**
      * Event name for reporting that an extension as asked for a custom field to be added
      * @const {string}
      */
@@ -1137,9 +1145,18 @@ class Runtime extends EventEmitter {
         };
 
         if (extensionInfo.color1) {
+            const color1 = Color.hexToRgb(extensionInfo.color1);
             categoryInfo.color1 = extensionInfo.color1;
-            categoryInfo.color2 = extensionInfo.color2 ?? Color.rgbToHex(Color.mixRgb(Color.hexToRgb(extensionInfo.color1), Color.RGB_BLACK, 0.1));
-            categoryInfo.color3 = extensionInfo.color3 ?? Color.rgbToHex(Color.mixRgb(Color.hexToRgb(extensionInfo.color1), Color.RGB_BLACK, 0.2));
+            categoryInfo.color2 = extensionInfo.color2;
+            if (!extensionInfo.color2) {
+                const mixed = Color.mixRgb(color1, Color.RGB_BLACK, 0.1);
+                categoryInfo.color2 = Color.rgbToHex(mixed);
+            }
+            categoryInfo.color3 = extensionInfo.color3;
+            if (!extensionInfo.color3) {
+                const mixed = Color.mixRgb(color1, Color.RGB_BLACK, 0.2);
+                categoryInfo.color3 = Color.rgbToHex(mixed);
+            }
         } else {
             categoryInfo.color1 = defaultExtensionColors[0];
             categoryInfo.color2 = defaultExtensionColors[1];
@@ -1183,6 +1200,11 @@ class Runtime extends EventEmitter {
 
             this.emit(Runtime.BLOCKSINFO_UPDATE, categoryInfo);
         }
+    }
+
+    _removeExtensionPrimitive(extensionId) {
+        this._blockInfo = this._blockInfo.filter(ext => ext.id !== extensionId);
+        this.emit(Runtime.EXTENSION_REMOVED);
     }
 
     /**
@@ -1828,6 +1850,7 @@ class Runtime extends EventEmitter {
 
             let xml = `<category name="${xmlEscape(name)}"`;
             xml += ` id="${xmlEscape(categoryInfo.id)}"`;
+            xml += ` options="extensionControls"`;
             xml += ` ${statusButtonXML}`;
             xml += ` ${colorXML}`;
             xml += ` ${menuIconXML}>`;
