@@ -5,7 +5,7 @@ const MathUtil = require('../../util/math-util');
 const Clone = require('../../util/clone');
 
 // eslint-disable-next-line no-undef
-const pathToMedia = ScratchBlocks.mainWorkspace.options.pathToMedia;
+const pathToMedia = 'static/blocks-media'; // ScratchBlocks.mainWorkspace.options.pathToMedia
 const stateKey = 'CAMERA_INFO';
 const defaultState = {
     pos: [0, 0],
@@ -353,7 +353,6 @@ class PenguinModCamera {
         this._updateRender(util.target);
     }
     bindTarget(args, util) {
-        const state = this._getPenState(util.target);
         const target = Cast.toString(args.TARGET);
         const screen = Cast.toNumber(args.SCREEN);
         switch (target) {
@@ -377,7 +376,7 @@ class PenguinModCamera {
             break;
         case '__ALL__':
             for (const target of this.runtime.targets) {
-                target.bindToCamera(screen)
+                target.bindToCamera(screen);
             }
             break;
         default:
@@ -413,7 +412,7 @@ class PenguinModCamera {
         }
         case '__ALL__':
             for (const target of this.runtime.targets) {
-                target.removeCameraBinding()
+                target.removeCameraBinding();
             }
             break;
         default: {
