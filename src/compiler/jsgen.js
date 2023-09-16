@@ -597,7 +597,7 @@ class JSGenerator {
             let source = '(yield* (function*() {';
             const threads = this.localVariables.next();
             source += `var ${threads} = startHats("event_whenbroadcastreceived", { BROADCAST_OPTION: ${this.descendInput(node.broadcast).asString()} });`;
-            source += `waitThreads(${threads});`;
+            source += `yield* waitThreads(${threads});`;
             // wait an extra frame so the thread has the new value
             if (this.isWarp) {
                 source += 'if (isStuck()) yield;\n';

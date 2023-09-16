@@ -2,6 +2,8 @@ const formatMessage = require('format-message');
 const BlockType = require('../../extension-support/block-type');
 const ArgumentType = require('../../extension-support/argument-type');
 const BufferUtil = new (require('../../util/array buffer'));
+const Cast = require('../../util/cast');
+const Color = require('../../util/color');
 
 // ShovelUtils
 let fps = 0;
@@ -54,7 +56,7 @@ class JgRuntimeBlocks {
             id: 'jgRuntime',
             name: 'Runtime',
             color1: '#777777',
-            color2: '#555555',
+            color2: '#6a6a6a',
             blocks: [
                 {
                     opcode: 'addSpriteUrl',
@@ -119,6 +121,7 @@ class JgRuntimeBlocks {
                         }
                     }
                 },
+                '---',
                 {
                     opcode: 'setStageSize',
                     text: formatMessage({
@@ -137,26 +140,6 @@ class JgRuntimeBlocks {
                             defaultValue: 360
                         }
                     }
-                },
-                {
-                    opcode: 'turboModeEnabled',
-                    text: formatMessage({
-                        id: 'jgRuntime.blocks.turboModeEnabled',
-                        default: 'turbo mode enabled?',
-                        description: 'Block that returns whether Turbo Mode is enabled on the project or not.'
-                    }),
-                    disableMonitor: false,
-                    blockType: BlockType.BOOLEAN
-                },
-                {
-                    opcode: 'amountOfClones',
-                    text: formatMessage({
-                        id: 'jgRuntime.blocks.amountOfClones',
-                        default: 'clone count',
-                        description: 'Block that returns the amount of clones that currently exist.'
-                    }),
-                    disableMonitor: false,
-                    blockType: BlockType.REPORTER
                 },
                 {
                     opcode: 'getStageWidth',
@@ -178,6 +161,99 @@ class JgRuntimeBlocks {
                     disableMonitor: false,
                     blockType: BlockType.REPORTER
                 },
+                '---',
+                {
+                    opcode: 'updateRuntimeConfig',
+                    text: formatMessage({
+                        id: 'jgRuntime.blocks.updateRuntimeConfig',
+                        default: 'set [OPTION] to [ENABLED]',
+                        description: 'Block that enables or disables configuration on the runtime like high quality pen or turbo mode.'
+                    }),
+                    disableMonitor: false,
+                    blockType: BlockType.COMMAND,
+                    arguments: {
+                        OPTION: {
+                            menu: 'runtimeConfig'
+                        },
+                        ENABLED: {
+                            menu: 'onoff'
+                        }
+                    }
+                },
+                {
+                    opcode: 'runtimeConfigEnabled',
+                    text: formatMessage({
+                        id: 'jgRuntime.blocks.runtimeConfigEnabled',
+                        default: '[OPTION] enabled?',
+                        description: 'Block that returns whether a runtime option like Turbo Mode is enabled on the project or not.'
+                    }),
+                    disableMonitor: false,
+                    blockType: BlockType.BOOLEAN,
+                    arguments: {
+                        OPTION: {
+                            menu: 'runtimeConfig'
+                        }
+                    }
+                },
+                {
+                    opcode: 'turboModeEnabled',
+                    text: formatMessage({
+                        id: 'jgRuntime.blocks.turboModeEnabled',
+                        default: 'turbo mode enabled?',
+                        description: 'Block that returns whether Turbo Mode is enabled on the project or not.'
+                    }),
+                    disableMonitor: false,
+                    hideFromPalette: true,
+                    blockType: BlockType.BOOLEAN
+                },
+                '---',
+                {
+                    opcode: 'setMaxClones',
+                    text: formatMessage({
+                        id: 'jgRuntime.blocks.setMaxClones',
+                        default: 'set max clones to [MAX]',
+                        description: 'Block that enables or disables configuration on the runtime like high quality pen or turbo mode.'
+                    }),
+                    disableMonitor: false,
+                    blockType: BlockType.COMMAND,
+                    arguments: {
+                        MAX: {
+                            menu: 'cloneLimit',
+                            defaultValue: 300
+                        }
+                    }
+                },
+                {
+                    opcode: 'maxAmountOfClones',
+                    text: formatMessage({
+                        id: 'jgRuntime.blocks.maxAmountOfClones',
+                        default: 'max clone count',
+                        description: 'Block that returns the maximum amount of clones that may exist.'
+                    }),
+                    disableMonitor: false,
+                    blockType: BlockType.REPORTER
+                },
+                {
+                    opcode: 'amountOfClones',
+                    text: formatMessage({
+                        id: 'jgRuntime.blocks.amountOfClones',
+                        default: 'clone count',
+                        description: 'Block that returns the amount of clones that currently exist.'
+                    }),
+                    disableMonitor: false,
+                    blockType: BlockType.REPORTER
+                },
+                {
+                    opcode: 'getIsClone',
+                    text: formatMessage({
+                        id: 'jgRuntime.blocks.getIsClone',
+                        default: 'is clone?',
+                        description: 'Block that returns whether the sprite is a clone or not.'
+                    }),
+                    disableMonitor: true,
+                    blockType: BlockType.BOOLEAN
+                },
+                '---',
                 {
                     opcode: 'setMaxFrameRate',
                     text: formatMessage({
@@ -209,6 +285,31 @@ class JgRuntimeBlocks {
                         id: 'jgRuntime.blocks.getFrameRate',
                         default: 'framerate',
                         description: 'Block that returns the amount of FPS.'
+                    }),
+                    disableMonitor: false,
+                    blockType: BlockType.REPORTER
+                },
+                '---',
+                {
+                    opcode: 'setBackgroundColor',
+                    text: formatMessage({
+                        id: 'jgRuntime.blocks.setBackgroundColor',
+                        default: 'set stage background color to [COLOR]',
+                        description: 'Sets the background color of the stage.'
+                    }),
+                    blockType: BlockType.COMMAND,
+                    arguments: {
+                        COLOR: {
+                            type: ArgumentType.COLOR
+                        }
+                    }
+                },
+                {
+                    opcode: 'getBackgroundColor',
+                    text: formatMessage({
+                        id: 'jgRuntime.blocks.getBackgroundColor',
+                        default: 'stage background color',
+                        description: 'Block that returns the stage background color in HEX.'
                     }),
                     disableMonitor: false,
                     blockType: BlockType.REPORTER
@@ -435,18 +536,6 @@ class JgRuntimeBlocks {
                         }
                     }
                 },
-                "---",
-                {
-                    opcode: 'getIsClone',
-                    text: formatMessage({
-                        id: 'jgRuntime.blocks.getIsClone',
-                        default: 'is clone? (deprecated)',
-                        description: 'Block that returns whether the sprite is a clone or not.'
-                    }),
-                    disableMonitor: true,
-                    hideFromPalette: true,
-                    blockType: BlockType.BOOLEAN
-                },
             ],
             menus: {
                 objectType: {
@@ -489,6 +578,38 @@ class JgRuntimeBlocks {
                         "cloud",
                     ].map(item => ({ text: item, value: item }))
                 },
+                cloneLimit: {
+                    items: [
+                        '100',
+                        '128',
+                        '300',
+                        '500',
+                        '1000',
+                        '1024',
+                        '5000',
+                        '10000',
+                        '16384',
+                        'Infinity'
+                    ],
+                    isTypeable: true,
+                    isNumeric: true
+                },
+                runtimeConfig: {
+                    acceptReporters: true,
+                    items: [
+                        "turbo mode",
+                        "high quality pen",
+                        "offscreen sprites",
+                        "remove miscellaneous limits",
+                        "interpolation",
+                    ]
+                },
+                onoff: {
+                    items: [
+                        "on",
+                        "off"
+                    ]
+                }
             }
         };
     }
@@ -551,12 +672,12 @@ class JgRuntimeBlocks {
         });
     }
     deleteCostume(args, util) {
-        const index = (Number(args.COSTUME) ? Number(args.COSTUME) : 1) - 1;
+        const index = Math.round(Cast.toNumber(args.COSTUME)) - 1;
         if (index < 0) return;
         util.target.deleteCostume(index);
     }
     deleteSound(args, util) {
-        const index = (Number(args.SOUND) ? Number(args.SOUND) : 1) - 1;
+        const index = Math.round(Cast.toNumber(args.SOUND)) - 1;
         if (index < 0) return;
         util.target.deleteSound(index);
     }
@@ -573,8 +694,8 @@ class JgRuntimeBlocks {
         return index;
     }
     setStageSize(args) {
-        let width = Number(args.WIDTH) || 480;
-        let height = Number(args.HEIGHT) || 360;
+        let width = Cast.toNumber(args.WIDTH);
+        let height = Cast.toNumber(args.HEIGHT);
         if (width <= 0) width = 1;
         if (height <= 0) height = 1;
         if (vm) vm.setStageSize(width, height);
@@ -597,9 +718,78 @@ class JgRuntimeBlocks {
     getIsClone(_, util) {
         return !(util.target.isOriginal);
     }
+
+    updateRuntimeConfig(args) {
+        const enabled = Cast.toString(args.ENABLED).toLowerCase() === 'on';
+
+        switch (Cast.toString(args.OPTION).toLowerCase()) {
+            case 'turbo mode':
+                this.runtime.vm.setTurboMode(enabled);
+                break;
+            case "high quality pen":
+                this.runtime.renderer.setUseHighQualityRender(enabled);
+                break;
+            case "offscreen sprites":
+                this.runtime.vm.setRuntimeOptions({
+                    fencing: !enabled,
+                });
+                break;
+            case "remove miscellaneous limits":
+                this.runtime.vm.setRuntimeOptions({
+                    miscLimits: !enabled,
+                });
+                break;
+            case "interpolation":
+                this.runtime.vm.setInterpolation(enabled);
+                break;
+        }
+    }
+    runtimeConfigEnabled(args) {
+        switch (Cast.toString(args.OPTION).toLowerCase()) {
+            case 'turbo mode':
+                return this.runtime.turboMode;
+            case "high quality pen":
+                return this.runtime.renderer.useHighQualityRender;
+            case "offscreen sprites":
+                return !this.runtime.runtimeOptions.fencing;
+            case "remove miscellaneous limits":
+                return !this.runtime.runtimeOptions.miscLimits;
+            case "interpolation":
+                return this.runtime.interpolationEnabled;
+            default:
+                return false;
+        }
+    }
+    setMaxClones(args) {
+        const limit = Math.round(Cast.toNumber(args.MAX));
+        this.runtime.vm.setRuntimeOptions({
+            maxClones: limit,
+        });
+    }
+    maxAmountOfClones() {
+        return this.runtime.runtimeOptions.maxClones;
+    }
+    setBackgroundColor(args) {
+        const color = Cast.toRgbColorObject(args.COLOR);
+        this.runtime.renderer.setBackgroundColor(
+            color.r / 255,
+            color.g / 255,
+            color.b / 255
+        );
+    }
+    getBackgroundColor() {
+        const colorArray = this.runtime.renderer._backgroundColor3b;
+        const colorObject = {
+            r: Math.round(Cast.toNumber(colorArray[0])),
+            g: Math.round(Cast.toNumber(colorArray[1])),
+            b: Math.round(Cast.toNumber(colorArray[2])),
+        };
+        const hex = Color.rgbToHex(colorObject);
+        return hex;
+    }
+
     setMaxFrameRate(args) {
-        let frameRate = Number(args.FRAMERATE) || 1;
-        if (frameRate <= 0) frameRate = 1;
+        let frameRate = Cast.toNumber(args.FRAMERATE);
         this.runtime.frameLoop.setFramerate(frameRate);
     }
     deleteSprite(args) {
