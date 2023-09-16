@@ -66,7 +66,7 @@ class Scratch3ControlBlocks {
     }
 
     if_return_else_return (args) {
-        return args.boolean ? args.TEXT1 : args.TEXT2;
+        return Cast.toBoolean(args.boolean) ? args.TEXT1 : args.TEXT2;
     }
 
     getHats () {
@@ -78,12 +78,12 @@ class Scratch3ControlBlocks {
     }
 
     runJavascript(args) {
-        return new Promise((resolve, reject) => {
+        return new Promise((resolve) => {
             const js = Cast.toString(args.JS);
             SandboxRunner.execute(js).then(result => {
-                resolve(result.value)
-            })
-        })
+                resolve(result.value);
+            });
+        });
     }
 
     repeat (args, util) {
