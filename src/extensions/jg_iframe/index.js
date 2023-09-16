@@ -521,13 +521,13 @@ class JgIframeBlocks {
         frame.style.height = `${(height / stage.height) * 100}%`;
         frame.style.transformOrigin = "center center"; // rotation and translation begins at center
 
-        let xpos = x + (stage.width - width);
-        let ypos = y - (stage.height - height);
-        xpos = ((xpos / stage.width) * 100);
-        ypos = (((0 - ypos) / stage.height) * 100);
-
         // epic maths to place x and y at the center
-        frame.style.transform = `translate(${xpos}%, ${ypos}%) rotate(${rotation - 90}deg)`;
+        let xpos = ((((stage.width / 2) - (width / 2)) + x) / stage.width) * 100;
+        let ypos = ((((stage.height / 2) - (height / 2)) - y) / stage.height) * 100;
+
+        frame.style.left = `${xpos}%`;
+        frame.style.top = `${ypos}%`;
+        frame.style.transform = `rotate(${rotation - 90}deg)`;
         this.iframeSettings = {
             ...this.iframeSettings,
             x: x,
