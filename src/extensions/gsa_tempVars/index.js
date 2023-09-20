@@ -13,8 +13,6 @@ class tempVars {
          * @type {runtime}
          */
         this.runtime = runtime;
-        // register compiled blocks
-        this.runtime.registerCompiledExtensionBlocks('tempVars', this.getCompileInfo());
     }
 
     getThreadVars (thread) {
@@ -133,7 +131,7 @@ class tempVars {
                             defaultValue: 10
                         }
                     }
-                },
+                }
             ]
         };
     }
@@ -142,8 +140,9 @@ class tempVars {
      * Data in this function is given to the IR & JS generators.
      * Data must be valid otherwise errors may occur.
      * @returns {object} functions that create data for compiled blocks.
+     * @deprecated nolonger in use as all of this is now inside the compiler
      */
-    getCompileInfo() {
+    getCompileInfoOld() {
         return {
             ir: {
                 forEachTempVar: (generator, block) => {

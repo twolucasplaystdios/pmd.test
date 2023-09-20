@@ -314,10 +314,10 @@ class ScriptTreeGenerator {
         }
 
         case 'pmEventsExpansion_broadcastFunction':
-        return {
-            kind: 'pmEventsExpansion.broadcastFunction',
-            broadcast: this.descendInputOfBlock(block, 'BROADCAST')
-        };
+            return {
+                kind: 'pmEventsExpansion.broadcastFunction',
+                broadcast: this.descendInputOfBlock(block, 'BROADCAST')
+            };
         
         case 'control_inline_stack_output':
             return {
@@ -692,10 +692,26 @@ class ScriptTreeGenerator {
             };
 
         case 'sound_sounds_menu':
-            // This menu is special compared to other menus -- it actually has an opcode function.
             return {
                 kind: 'constant',
                 value: block.fields.SOUND_MENU.value
+            };
+
+        case 'tempVars_getVariable':
+            return {
+                kind: 'tempVars.get',
+                var: this.descendInputOfBlock(block, 'name')
+            };
+
+        case 'tempVars_variableExists':
+            // This menu is special compared to other menus -- it actually has an opcode function.
+            return {
+                kind: 'tempVars.exists',
+                var: this.descendInputOfBlock(block, 'name')
+            };
+        case 'tempVars_allVariables':
+            return {
+                kind: 'tempVars.all'
             };
 
         // used by the stacked version of this block to run as an input block 
@@ -1672,6 +1688,44 @@ class ScriptTreeGenerator {
             control.backToGreenFlag
             control.if.return.else.return
             */
+
+        case 'tempVars_setVariable':
+            return {
+                kind: 'tempVars.set',
+                var: this.descendInputOfBlock(block, 'name'),
+                val: this.descendInputOfBlock(block, 'value')
+            };
+        case 'tempVars_changeVariable': {
+            const name = this.descendInputOfBlock(block, 'name');
+            return {
+                kind: 'tempVars.set',
+                var: name,
+                val: {
+                    kind: 'op.add',
+                    left: {
+                        kind: 'tempVars.get',
+                        var: name
+                    },
+                    right: this.descendInputOfBlock(block, 'value')
+                }
+            };
+        }
+        case 'tempVars_deleteVariable':
+            return {
+                kind: 'tempVars.delete',
+                var: this.descendInputOfBlock(block, 'name')
+            };
+        case 'tempVars_deleteAllVariables':
+            return {
+                kind: 'tempVars.deleteAll'
+            };
+        case 'tempVars_forEachTempVar':
+            return {
+                kind: 'tempVars.forEach',
+                var: this.descendInputOfBlock(block, 'NAME'),
+                loops: this.descendInputOfBlock(block, 'REPEAT'),
+                do: this.descendSubstack(block, 'SUBSTACK')
+            };
 
         default: {
             const opcodeFunction = this.runtime.getOpcodeFunction(block.opcode);
