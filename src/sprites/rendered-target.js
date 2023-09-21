@@ -193,7 +193,7 @@ class RenderedTarget extends Target {
 
         this.interpolationData = null;
 
-        this.cameraBound = -1;
+        this.cameraBound = 0;
 
         this.cameraUpdateEvent = screen => {
             if (screen === this.cameraBound) {
