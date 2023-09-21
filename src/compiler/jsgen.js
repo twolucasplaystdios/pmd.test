@@ -355,9 +355,7 @@ class Frame {
         this.importantData = {
             parents: [parentKind]
         };
-        if (isLoop) {
-            this.importantData.containedByLoop = true;
-        }
+        this.importantData.containedByLoop = isLoop;
 
         /**
          * the block who created this frame
@@ -876,6 +874,20 @@ class JSGenerator {
         case 'noop':
             console.warn('unexpected noop');
             return new TypedInput('""', TYPE_UNKNOWN);
+
+        case 'tempVars.get': {
+            const name = this.descendInput(node.var);
+            if (environment.supportsNullishCoalescing) {
+                return new TypedInput(`(tempVars[${name.asString()}] ?? "")`, TYPE_UNKNOWN);
+            }
+            return new TypedInput(`nullish(${name.asString()}, "")`, TYPE_UNKNOWN);
+        }
+        case 'tempVars.exists': {
+            const name = this.descendInput(node.var);
+            return new TypedInput(`!!tempVars[${name.asString()}]`, TYPE_BOOLEAN);
+        }
+        case 'tempVars.all':
+            return new TypedInput(`JSON.stringify(Object.keys(tempVars))`, TYPE_STRING);
 
         default:
             log.warn(`JS: Unknown input: ${node.kind}`, node);
@@ -1510,6 +1522,40 @@ class JSGenerator {
                 this.source += `${variableReference}.value = ${value.asString()};`;
                 break;
             }
+            break;
+        }
+
+        case 'tempVars.set': {
+            const name = this.descendInput(node.var);
+            const val = this.descendInput(node.val);
+            this.source += `tempVars[${name.asString()}] = ${val.asUnknown()};`;
+            break;
+        }
+        case 'tempVars.change': {
+            const name = this.descendInput(node.var);
+            const val = this.descendInput(node.val);
+            this.source += `tempVars[${name.asString()}] += ${val.asUnknown()};`;
+            break;
+        }
+        case 'tempVars.delete': {
+            const name = this.descendInput(node.var);
+            this.source += `delete tempVars[${name.asString()}];`;
+            break;
+        }
+        case 'tempVars.deleteAll': {
+            this.source += `tempVars = {};`;
+            break;
+        }
+        case 'tempVars.forEach': {
+            const name = this.descendInput(node.var);
+            const loops = this.descendInput(node.loops);
+            const index = `tempVars[${name.asString()}]`;
+            this.source += `${index} = 0; `;
+            this.source += `while (${index} < ${loops.asNumber()}) { `;
+            this.source += `${index}++;\n`;
+            this.descendStack(node.do, new Frame(true, 'tempVars.forEach'));
+            this.yieldLoop();
+            this.source += '}\n';
             break;
         }
 

@@ -38,6 +38,7 @@ const blocks = `
     </value>
 </block>
 ${blockSeparator}
+%b14>
 <block type="sensing_getspritewithattrib">
     <value name="var">
         <shadow type="text">
@@ -55,6 +56,7 @@ ${blockSeparator}
 %b6>
 %b9>
 %b11>
+%b15>
 %b12>
 %b13>
 ${blockSeparator}
@@ -248,6 +250,11 @@ class pmSensingExpansion {
                             defaultValue: '0'
                         }
                     }
+                },
+                {
+                    opcode: 'maxSpriteLayers',
+                    text: 'max sprite layers',
+                    blockType: BlockType.REPORTER
                 }
             ],
             menus: {
@@ -271,13 +278,13 @@ class pmSensingExpansion {
     }
 
     pickColor(args) {
-        const renderer = this.runtime.renderer
-        const scratchX = Cast.toNumber(args.X)
-        const scratchY = Cast.toNumber(args.Y)
-        const clientX = (scratchX / this.runtime.stageWidth) * renderer._gl.canvas.clientWidth
-        const clientY = (scratchY / this.runtime.stageHeight) * renderer._gl.canvas.clientHeight
-        const colorInfo = renderer.extractColor(x, y)
-        return Color.rgbToDecimal(colorInfo.color)
+        const renderer = this.runtime.renderer;
+        const scratchX = Cast.toNumber(args.X);
+        const scratchY = Cast.toNumber(args.Y);
+        const clientX = Math.round((((this.runtime.stageWidth / 2) + scratchX) / this.runtime.stageWidth) * renderer._gl.canvas.clientWidth);
+        const clientY = Math.round((((this.runtime.stageHeight / 2) - scratchY) / this.runtime.stageHeight) * renderer._gl.canvas.clientHeight);
+        const colorInfo = renderer.extractColor(clientX, clientY, 20);
+        return Color.rgbToHex(colorInfo.color);
     }
 
     // util
@@ -352,6 +359,10 @@ class pmSensingExpansion {
         } else {
             return true;
         }
+    }
+
+    maxSpriteLayers() {
+        return this.runtime.renderer._drawList.length - 1;
     }
 
     vibrateDevice() {

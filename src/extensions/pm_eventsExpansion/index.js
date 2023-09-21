@@ -35,6 +35,7 @@ ${blockSeparator}
 %b2>
 %b0>
 %b1>
+${blockSeparator}
 <block type="pmEventsExpansion_broadcastThreadCount">
     <value name="BROADCAST">
         <shadow type="event_broadcast_menu"></shadow>
@@ -99,19 +100,19 @@ class pmEventsExpansion {
                 {
                     opcode: 'everyOtherFrame',
                     text: 'every other frame',
-                    blockType: BlockType.HAT,
+                    blockType: BlockType.EVENT,
                     isEdgeActivated: false
                 },
                 {
                     opcode: 'neverr',
                     text: 'never',
-                    blockType: BlockType.HAT,
+                    blockType: BlockType.EVENT,
                     isEdgeActivated: false
                 },
                 {
                     opcode: 'whenSpriteClicked',
                     text: 'when [SPRITE] clicked',
-                    blockType: BlockType.HAT,
+                    blockType: BlockType.EVENT,
                     isEdgeActivated: false,
                     arguments: {
                         SPRITE: {
@@ -138,7 +139,7 @@ class pmEventsExpansion {
                 {
                     opcode: 'receivedData',
                     text: 'when I receive [BROADCAST] with data',
-                    blockType: BlockType.HAT,
+                    blockType: BlockType.EVENT,
                     isEdgeActivated: false,
                     arguments: {
                         BROADCAST: {
@@ -280,6 +281,9 @@ class pmEventsExpansion {
     }
     returnFromBroadcastFunc(args, util) {
         util.thread.__evex_returnDataa = args.VALUE;
+    }
+    broadcastFunction() {
+        return; // compiler block
     }
 }
 

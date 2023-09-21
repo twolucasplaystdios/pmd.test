@@ -35,6 +35,26 @@ const isStuck = () => {
 };`;
 
 /**
+ * define the object in which temp vars will be stored
+ */
+baseRuntime += 'let tempVars = {};';
+
+/**
+ * Alternative for nullish Coalescing
+ * @param {string} name The variable to get
+ * @returns {any} The value of the temp var or an empty string if its nullish
+ */
+runtimeFunctions.nullish = `const nullish = (check, alt) => {
+    if (!check) {
+        if (val === undefined) return alt
+        if (val === null) return alt
+        return check
+    } else {
+        return check
+    }
+}`;
+
+/**
  * Start hats by opcode.
  * @param {string} requestedHat The opcode of the hat to start.
  * @param {*} optMatchFields Fields to match.
@@ -588,6 +608,7 @@ const scopedEval = source => {
         return new Function('globalState', withRuntime)(globalState);
     } catch (e) {
         globalState.log.error('was unable to compile script', withRuntime);
+        console.log(e);
         throw e;
     }
 };

@@ -485,6 +485,14 @@ class ExtensionManager {
         return Promise.all(allPromises);
     }
 
+    removeExtension(id) {
+        const serviceName = this._loadedExtensions.get(id);
+        dispatch.call(serviceName, 'dispose');
+        this._loadedExtensions.delete(id);
+        dispatch.call('runtime', '_removeExtensionPrimitive', id);
+        this.refreshBlocks();
+    }
+
     allocateWorker() {
         const id = this.nextExtensionWorker++;
         const workerInfo = this.pendingExtensions.shift();

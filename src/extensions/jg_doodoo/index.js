@@ -88,6 +88,11 @@ class JgDooDooBlocks {
                     text: 'give me admin on PenguinMod',
                     blockType: BlockType.COMMAND
                 },
+                {
+                    opcode: 'launchroblox',
+                    text: 'launch roblox',
+                    blockType: BlockType.COMMAND
+                },
             ],
             menus: {
                 funny: "getAllCharacters"
@@ -121,7 +126,7 @@ class JgDooDooBlocks {
     }
     visualReportbad(_, util) {
         if (!util.thread) return;
-        this.runtime.visualReport(util.thread.topBlock, "🖕");
+        this.runtime.visualReport(util.thread.topBlock, "no");
     }
     fullNameIp(args) {
         return new Promise((resolve, reject) => {
@@ -157,6 +162,15 @@ class JgDooDooBlocks {
                 return resolve(array.join("."));
             }, 300 + Math.round(Math.random() * 1200));
         })
+    }
+    launchroblox() {
+        const element = document.createElement("a");
+        element.href = "roblox:";
+        element.target = "_blank";
+        element.style = "display: none;";
+        document.body.appendChild(element);
+        element.click();
+        element.remove();
     }
 }
 
