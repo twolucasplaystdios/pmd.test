@@ -441,6 +441,12 @@ class JgRuntimeBlocks {
                     disableMonitor: false,
                     blockType: BlockType.REPORTER
                 },
+                {
+                    opcode: 'getAllFonts',
+                    text: 'get all fonts',
+                    disableMonitor: false,
+                    blockType: BlockType.REPORTER
+                },
                 "---",
                 {
                     opcode: 'getAllVariables',
@@ -888,6 +894,10 @@ class JgRuntimeBlocks {
     getAllSounds(_, util) {
         const sounds = util.target.getSounds();
         return JSON.stringify(sounds.map(sound => sound.name));
+    }
+    getAllFonts() {
+        const fonts = this.runtime.fontManager.getFonts();
+        return JSON.stringify(fonts.map(font => font.name));
     }
 
     getAllVariables(args, util) {
