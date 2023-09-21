@@ -1,6 +1,7 @@
 const BlockType = require('../../extension-support/block-type');
 const ArgumentType = require('../../extension-support/argument-type');
 const createTranslate = require('../../extension-support/tw-l10n');
+const MathJS = require('mathjs');
 const Cast = require('../../util/cast');
 
 const blockSeparator = '<sep gap="36"/>'; // At default scale, about 28px
@@ -13,6 +14,7 @@ ${blockSeparator}
 <block type="operator_xor" />
 <block type="operator_xnor" />
 ${blockSeparator}
+%b20> `+/* evaluate math expression */`
 <block type="operator_countAppearTimes">
     <value name="TEXT1">
         <shadow type="text">
@@ -400,6 +402,18 @@ class pmOperatorsExpansion {
                         },
                     }
                 },
+                {
+                    opcode: 'evaluateMath',
+                    text: 'answer to [EQUATION]',
+                    blockType: BlockType.REPORTER,
+                    disableMonitor: true,
+                    arguments: {
+                        EQUATION: {
+                            type: ArgumentType.STRING,
+                            defaultValue: "5 * 2"
+                        },
+                    }
+                },
             ],
             menus: {
                 part: {
@@ -488,6 +502,31 @@ class pmOperatorsExpansion {
     isEven(args) {
         const num = Cast.toNumber(args.NUM);
         return num % 2 == 0;
+    }
+
+    evaluateMath(args) {
+        const equation = Cast.toString(args.EQUATION);
+        // "" is undefined when evalutated
+        if (equation.trim().length === 0) return 0;
+        // evalueate
+        let answer = 0;
+        try {
+            answer = MathJS.evaluate(equation);
+        } catch {
+            // syntax errors cause real errors
+            answer = 0;
+        }
+        // multiline or semi-colon breaks create a ResultSet, we can get the last item in the set for that
+        if (typeof answer === "object") {
+            if ("entries" in answer) {
+                const answers = answer.entries;
+                if (answers.length === 0) return 0;
+                const lastIdx = answers.length - 1;
+                return Number(answers[lastIdx]);
+            }
+        }
+        // Cast.toNumber converts NaN to 0
+        return Number(answer);
     }
 
     exactlyEqual(args) {
