@@ -1742,13 +1742,21 @@ class Runtime extends EventEmitter {
                     shadowType = this._makeExtensionMenuId(argInfo.menu, context.categoryInfo.id);
                     fieldName = argInfo.menu;
                 } else {
-                    argJSON.type = menuInfo.variableType === 'scalar' 
-                        ? '' 
-                        : menuInfo.variableType;
-                    argJSON.options = this._convertMenuItems(menuInfo.items);
-                    valueName = null;
-                    shadowType = null;
-                    fieldName = placeholder;
+                    if (typeof menuInfo.variableType === 'string') {
+                        argJSON.type = 'field_variable_getter';
+                        argJSON.variableType = menuInfo.variableType === 'scalar' 
+                            ? '' 
+                            : menuInfo.variableType;
+                        valueName = null;
+                        shadowType = null;
+                        fieldName = placeholder;
+                    } else {
+                        argJSON.type = 'field_dropdown';
+                        argJSON.options = this._convertMenuItems(menuInfo.items);
+                        valueName = null;
+                        shadowType = null;
+                        fieldName = placeholder;
+                    }
                 }
             } else {
                 valueName = placeholder;
