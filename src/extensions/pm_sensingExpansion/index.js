@@ -38,6 +38,17 @@ const blocks = `
     </value>
 </block>
 ${blockSeparator}
+%b16>
+%b17>
+%b20>
+<block type="pmSensingExpansion_amountOfTimeKeyHasBeenHeld">
+    <value name="KEY">
+        <shadow type="sensing_keyoptions" />
+    </value>
+</block>
+%b18>
+%b19>
+${blockSeparator}
 %b14>
 <block type="sensing_getspritewithattrib">
     <value name="var">
@@ -88,8 +99,15 @@ class pmSensingExpansion {
          * @type {runtime}
          */
         this.runtime = runtime;
+
         this.canVibrate = true;
+
         this.lastUpdate = Date.now();
+
+        this.canGetLoudness = false;
+        this.loudnessArray = [0];
+
+        this.scrollDistance = 0;
     }
 
     orderCategoryBlocks(extensionBlocks) {
@@ -243,11 +261,11 @@ class pmSensingExpansion {
                     arguments: {
                         X: {
                             type: ArgumentType.NUMBER,
-                            defaultValue: '0'
+                            defaultValue: 0
                         },
                         Y: {
                             type: ArgumentType.NUMBER,
-                            defaultValue: '0'
+                            defaultValue: 0
                         }
                     }
                 },
@@ -255,7 +273,56 @@ class pmSensingExpansion {
                     opcode: 'maxSpriteLayers',
                     text: 'max sprite layers',
                     blockType: BlockType.REPORTER
-                }
+                },
+                {
+                    opcode: 'averageLoudness',
+                    text: 'average loudness',
+                    blockType: BlockType.REPORTER
+                },
+                {
+                    opcode: 'scrollingDistance',
+                    text: 'scrolling distance',
+                    blockType: BlockType.REPORTER
+                },
+                {
+                    opcode: 'setScrollingDistance',
+                    text: 'set scrolling distance to [AMOUNT]',
+                    blockType: BlockType.COMMAND,
+                    arguments: {
+                        AMOUNT: {
+                            type: ArgumentType.NUMBER,
+                            defaultValue: 0
+                        }
+                    }
+                },
+                {
+                    opcode: 'changeScrollingDistanceBy',
+                    text: 'change scrolling distance by [AMOUNT]',
+                    blockType: BlockType.COMMAND,
+                    arguments: {
+                        AMOUNT: {
+                            type: ArgumentType.NUMBER,
+                            defaultValue: 100
+                        }
+                    }
+                },
+                {
+                    opcode: 'currentKeyPressed',
+                    text: 'current key pressed',
+                    blockType: BlockType.REPORTER
+                },
+                {
+                    opcode: 'amountOfTimeKeyHasBeenHeld',
+                    text: 'seconds since holding [KEY]',
+                    blockType: BlockType.REPORTER,
+                    arguments: {
+                        KEY: {
+                            // this is replaced later
+                            type: ArgumentType.STRING,
+                            defaultValue: 'a'
+                        }
+                    }
+                },
             ],
             menus: {
                 urlSections: {
@@ -363,6 +430,61 @@ class pmSensingExpansion {
 
     maxSpriteLayers() {
         return this.runtime.renderer._drawList.length - 1;
+    }
+    averageLoudness() {
+        if (!this.canGetLoudness) {
+            // set interval here because why create an interval
+            // on extension register if we never use the block
+            console.log('created average loudness loop');
+            setInterval(() => {
+                if (!this.canGetLoudness) return;
+                const loudness = this.runtime.audioEngine.getLoudness();
+                if (typeof loudness !== 'number') return;
+                if (this.loudnessArray.length > 20) {
+                    this.loudnessArray.shift();
+                }
+                if (loudness < 0) {
+                    this.loudnessArray.push(0);
+                    return;
+                }
+                this.loudnessArray.push(loudness);
+            }, 50);
+        }
+        // get average
+        this.canGetLoudness = true;
+        let addedTogether = 0;
+        let max = this.loudnessArray.length;
+        for (const loudness of this.loudnessArray) {
+            addedTogether += loudness;
+        }
+        return addedTogether / max;
+    }
+
+    scrollingDistance() {
+        return this.scrollDistance;
+    }
+    setScrollingDistance(args) {
+        const amount = Cast.toNumber(args.AMOUNT);
+        this.scrollDistance = amount;
+    }
+    changeScrollingDistanceBy(args) {
+        const amount = Cast.toNumber(args.AMOUNT);
+        this.scrollDistance += amount;
+    }
+
+    currentKeyPressed(_, util) {
+        const keys = util.ioQuery('keyboard', 'getAllKeysPressed');
+        const key = keys[keys.length - 1];
+        if (!key) return '';
+        return Cast.toString(key).toLowerCase();
+    }
+    amountOfTimeKeyHasBeenHeld(args, util) {
+        const key = Cast.toString(args.KEY);
+        const keyTimestamp = util.ioQuery('keyboard', 'getKeyTimestamp', [key]);
+        if (keyTimestamp === 0) return 0;
+        const currentTime = Date.now();
+        const timestamp = currentTime - keyTimestamp;
+        return timestamp / 1000;
     }
 
     vibrateDevice() {

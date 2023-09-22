@@ -61,6 +61,8 @@ const builtinExtensions = {
     jgWebsiteRequests: () => require("../extensions/jg_websiteRequests"),
     // jgJSON: handle JSON objects
     jgJSON: () => require("../extensions/jg_json"),
+    // jgJSONParsed: handle JSON objects BETTER
+    // jgJSONParsed: () => require("../extensions/jg_jsonParsed"),
     // jgRuntime: edit stage and other stuff
     jgRuntime: () => require("../extensions/jg_runtime"),
     // jgPrism: blocks for specific use cases or major convenience
@@ -77,6 +79,8 @@ const builtinExtensions = {
     jgClones: () => require("../extensions/jg_clones"),
     // jgTween: epic animation
     jgTween: () => require("../extensions/jg_tween"),
+    // jgEasySave: easy save stuff
+    jgEasySave: () => require("../extensions/jg_easySave"),
     // jgPackagerApplications: uuhhhhhhh packager
     jgPackagerApplications: () => require("../extensions/jg_packagerApplications"),
     // jgScripts: what you know about rollin down in the
