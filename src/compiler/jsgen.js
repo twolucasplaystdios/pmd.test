@@ -1791,6 +1791,7 @@ class JSGenerator {
             script += args.join(',');
         }
         script += ') {\n';
+        script += 'let tempVars = {};';
 
         // pm: check if we are spoofing the target
         // ex: as (Sprite) {} block needs to replace the target
