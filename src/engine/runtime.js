@@ -1578,7 +1578,9 @@ class Runtime extends EventEmitter {
             ++outLineNum;
         }
 
-        const mutation = blockInfo.isDynamic ? `<mutation blockInfo="${xmlEscape.escapeAttribute(JSON.stringify(blockInfo))}"/>` : '';
+        const mutation = blockInfo.isDynamic 
+            ? `<mutation blockInfo="${xmlEscape.escapeAttribute(JSON.stringify(blockInfo))}"/>` 
+            : '';
         const inputs = context.inputList.join('');
         const blockXML = `<block type="${xmlEscape.escapeAttribute(extendedOpcode)}">${mutation}${inputs}</block>`;
 
@@ -1628,10 +1630,14 @@ class Runtime extends EventEmitter {
      */
     _convertButtonForScratchBlocks (buttonInfo) {
         const extensionMessageContext = this.makeMessageContextForTarget();
-        const buttonText = maybeFormatMessage(buttonInfo.text, extensionMessageContext);
+        const buttonText = xmlEscape.escapeAttribute(maybeFormatMessage(buttonInfo.text, extensionMessageContext));
+        const callback = xmlEscape.escapeAttribute(buttonInfo.opcode 
+            ? buttonInfo.opcode 
+            : buttonInfo.func);
+        
         return {
             info: buttonInfo,
-            xml: `<button text="${xmlEscape.escapeAttribute(buttonText)}" callbackKey="${xmlEscape.escapeAttribute(buttonInfo.opcode ? buttonInfo.opcode : buttonInfo.func)}"></button>`
+            xml: `<button text="${buttonText}" callbackKey="${callback}"></button>`
         };
     }
 
@@ -1666,7 +1672,8 @@ class Runtime extends EventEmitter {
     }
 
     /**
-     * Helper for _convertPlaceholdes which handles variable dropdowns which are a specialized case of block "arguments".
+     * Helper for _convertPlaceholdes which handles variable dropdowns 
+     * which are a specialized case of block "arguments".
      * @param {object} argInfo Metadata about the variable dropdown
      * @return {object} JSON blob for a scratch-blocks variable field.
      * @private
@@ -1679,7 +1686,7 @@ class Runtime extends EventEmitter {
             type: 'field_variable',
             name: placeholder,
             variableTypes: isList ? ['list'] : (isBroadcast ? ['broadcast_msg'] : ['']),
-            variable: isBroadcast ? 'message1' : undefined
+            variable: isBroadcast ? 'message1' : null
         };
     }
 
@@ -1723,7 +1730,8 @@ class Runtime extends EventEmitter {
 
             const defaultValue =
                 typeof argInfo.defaultValue === 'undefined' ? '' :
-                    xmlEscape.escapeAttribute(maybeFormatMessage(argInfo.defaultValue, this.makeMessageContextForTarget()).toString());
+                    xmlEscape.escapeAttribute(maybeFormatMessage(
+                        argInfo.defaultValue, this.makeMessageContextForTarget()).toString());
 
             if (argTypeInfo.check) {
                 // Right now the only type of 'check' we have specifies that the
