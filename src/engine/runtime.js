@@ -1743,10 +1743,10 @@ class Runtime extends EventEmitter {
                     fieldName = argInfo.menu;
                 } else {
                     if (typeof menuInfo.variableType === 'string') {
-                        argJSON.type = 'field_variable_getter';
-                        argJSON.variableType = menuInfo.variableType === 'scalar' 
+                        argJSON.type = 'field_variable';
+                        argJSON.variableTypes = [menuInfo.variableType === 'scalar' 
                             ? '' 
-                            : menuInfo.variableType;
+                            : menuInfo.variableType];
                         valueName = null;
                         shadowType = null;
                         fieldName = placeholder;
