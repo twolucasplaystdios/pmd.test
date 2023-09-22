@@ -1340,7 +1340,7 @@ class Runtime extends EventEmitter {
                         {
                             type: 'field_variable_getter',
                             name: menuName,
-                            variableType: menuInfo.variableType === 'scaler' 
+                            variableType: menuInfo.variableType === 'scalar' 
                                 ? '' 
                                 : menuInfo.variableType
                         } : (menuInfo.isTypeable ? 
@@ -1742,7 +1742,9 @@ class Runtime extends EventEmitter {
                     shadowType = this._makeExtensionMenuId(argInfo.menu, context.categoryInfo.id);
                     fieldName = argInfo.menu;
                 } else {
-                    argJSON.type = 'field_dropdown';
+                    argJSON.type = menuInfo.variableType === 'scalar' 
+                        ? '' 
+                        : menuInfo.variableType;
                     argJSON.options = this._convertMenuItems(menuInfo.items);
                     valueName = null;
                     shadowType = null;
