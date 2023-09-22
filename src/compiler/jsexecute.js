@@ -35,11 +35,6 @@ const isStuck = () => {
 };`;
 
 /**
- * define the object in which temp vars will be stored
- */
-baseRuntime += 'let tempVars = {};';
-
-/**
  * Alternative for nullish Coalescing
  * @param {string} name The variable to get
  * @returns {any} The value of the temp var or an empty string if its nullish
