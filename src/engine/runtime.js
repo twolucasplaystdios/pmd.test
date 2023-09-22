@@ -1611,7 +1611,7 @@ class Runtime extends EventEmitter {
      * @private
      */
     _convertLabelForScratchBlocks (blockInfo) {
-        const text = xmlEscape.escapeAttribute(blockInfo.text)
+        const text = xmlEscape.escapeAttribute(blockInfo.text);
         return {
             info: blockInfo,
             xml: `<label text="${text}"></label>`
@@ -1741,22 +1741,20 @@ class Runtime extends EventEmitter {
                     valueName = placeholder;
                     shadowType = this._makeExtensionMenuId(argInfo.menu, context.categoryInfo.id);
                     fieldName = argInfo.menu;
+                } else if (typeof menuInfo.variableType === 'string') {
+                    argJSON.type = 'field_variable';
+                    argJSON.variableTypes = [menuInfo.variableType === 'scalar' 
+                        ? '' 
+                        : menuInfo.variableType];
+                    valueName = null;
+                    shadowType = null;
+                    fieldName = placeholder;
                 } else {
-                    if (typeof menuInfo.variableType === 'string') {
-                        argJSON.type = 'field_variable';
-                        argJSON.variableTypes = [menuInfo.variableType === 'scalar' 
-                            ? '' 
-                            : menuInfo.variableType];
-                        valueName = null;
-                        shadowType = null;
-                        fieldName = placeholder;
-                    } else {
-                        argJSON.type = 'field_dropdown';
-                        argJSON.options = this._convertMenuItems(menuInfo.items);
-                        valueName = null;
-                        shadowType = null;
-                        fieldName = placeholder;
-                    }
+                    argJSON.type = 'field_dropdown';
+                    argJSON.options = this._convertMenuItems(menuInfo.items);
+                    valueName = null;
+                    shadowType = null;
+                    fieldName = placeholder;
                 }
             } else {
                 valueName = placeholder;
