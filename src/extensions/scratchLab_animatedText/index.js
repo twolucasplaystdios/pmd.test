@@ -341,9 +341,6 @@ class Scratch3TextBlocks {
         textState.animating = false;
 
         this._renderText(util.target); // Yield until the next tick.
-
-
-        return Promise.resolve();
     }
     clearText (args, util) {
         const target = util.target;
@@ -355,8 +352,6 @@ class Scratch3TextBlocks {
         textState.animating = false;
         const costume = target.getCostumes()[target.currentCostume];
         this.runtime.renderer.updateDrawableSkinId(target.drawableID, costume.skinId); // Yield until the next tick.
-
-        return Promise.resolve();
     }
     stopAll () {
         this.runtime.targets.forEach(target => {
@@ -373,9 +368,6 @@ class Scratch3TextBlocks {
         textState.animating = false;
 
         this._renderText(util.target); // Yield until the next tick.
-
-
-        return Promise.resolve();
     }
     setFont (args, util) {
         const textState = this._getTextState(util.target);

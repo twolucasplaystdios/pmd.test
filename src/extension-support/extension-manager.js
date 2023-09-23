@@ -42,6 +42,7 @@ const builtinExtensions = {
     twFiles: () => require('../extensions/tw_files'),
 
     // pm: category expansions & seperations go here
+    // TODO: motion expansion, move some motion blocks there & merge more motion from nameless into it
     // pmOperatorsExpansion: extra operators that were in the category & new ones that werent
     pmOperatorsExpansion: () => require("../extensions/pm_operatorsExpansion"),
     // pmSensingExpansion: extra sensing blocks that were in the category & new ones that werent
@@ -137,6 +138,16 @@ const builtinExtensions = {
     // mikedev: ghytfhygfvbl
     // cl: () => require("../extensions/cl"),
     Gamepad: () => require("../extensions/GamepadExtension"),
+
+    // theshovel: ...
+    // theshovelcanvaseffects: ...
+    theshovelcanvaseffects: () => require("../extensions/theshovel_canvasEffects"),
+    // shovellzcompresss: ...
+    shovellzcompresss: () => require("../extensions/theshovel_lzString"),
+    // shovelColorPicker: ...
+    shovelColorPicker: () => require("../extensions/theshovel_colorPicker"),
+    // shovelcss: ...
+    shovelcss: () => require("../extensions/theshovel_customStyles"),
 
     // gsa: fill out your introduction stupet!!!
     // no >:(

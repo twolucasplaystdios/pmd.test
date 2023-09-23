@@ -100,6 +100,17 @@ class JgRuntimeBlocks {
                     }
                 },
                 {
+                    opcode: 'loadProjectDataUrl',
+                    text: 'load project from [URL]',
+                    blockType: BlockType.COMMAND,
+                    arguments: {
+                        URL: {
+                            type: ArgumentType.STRING,
+                            defaultValue: ''
+                        }
+                    }
+                },
+                {
                     opcode: 'getIndexOfCostume',
                     text: 'get costume index of [costume]',
                     blockType: BlockType.REPORTER,
@@ -120,6 +131,12 @@ class JgRuntimeBlocks {
                             defaultValue: "Pop"
                         }
                     }
+                },
+                {
+                    opcode: 'getProjectDataUrl',
+                    text: 'get data url of project',
+                    blockType: BlockType.REPORTER,
+                    disableMonitor: true
                 },
                 '---',
                 {
@@ -898,6 +915,44 @@ class JgRuntimeBlocks {
     getAllFonts() {
         const fonts = this.runtime.fontManager.getFonts();
         return JSON.stringify(fonts.map(font => font.name));
+    }
+
+    loadProjectDataUrl(args) {
+        const url = Cast.toString(args.URL);
+        if (typeof ScratchBlocks !== "undefined") {
+            // We are in the editor. Ask before loading a new project to avoid unrecoverable data loss.
+            if (!confirm(`Runtime Extension - Editor: Are you sure you want to load a new project?\nEverything in the current project will be permanently deleted.`)) {
+                return;
+            }
+        }
+        console.log("Loading project from custom source...");
+        fetch(url)
+            .then((r) => r.arrayBuffer())
+            .then((buffer) => vm.loadProject(buffer))
+            .then(() => {
+                console.log("Loaded project!");
+                vm.greenFlag();
+            })
+            .catch((error) => {
+                console.log("Error loading custom project;", error);
+            });
+    }
+    getProjectDataUrl() {
+        return new Promise((resolve) => {
+            const failingUrl = 'data:application/octet-stream;base64,';
+            vm.saveProjectSb3().then(blob => {
+                const fileReader = new FileReader();
+                fileReader.onload = () => {
+                    resolve(fileReader.result);
+                };
+                fileReader.onerror = () => {
+                    resolve(failingUrl);
+                }
+                fileReader.readAsDataURL(blob);
+            }).catch(() => {
+                resolve(failingUrl);
+            });
+        });
     }
 
     getAllVariables(args, util) {
