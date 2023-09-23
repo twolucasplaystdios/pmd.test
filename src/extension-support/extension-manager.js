@@ -747,10 +747,13 @@ class ExtensionManager {
             }
             break;
         case BlockType.BUTTON:
-            if (!blockInfo.opcode) {
-                throw new Error(`Missing opcode for button: ${blockInfo.text}`);
+            if (!blockInfo.opcode && !blockInfo.func) {
+                throw new Error(`Missing opcode or func for button: ${blockInfo.text}`);
             }
 
+            if (blockInfo.func && !blockInfo.opcode) {
+                blockInfo.opcode = blockInfo.func;
+            }
             const funcName = blockInfo.opcode;
             const callBlockFunc = (...args) => dispatch.call(serviceName, funcName, ...args);
 
