@@ -83,6 +83,8 @@ const BROADCAST_PRIMITIVE = 11;
 const VAR_PRIMITIVE = 12;
 // data_listcontents
 const LIST_PRIMITIVE = 13;
+// any single-fielded item not covered above
+const LONE_FIELD = 14;
 
 // Map block opcodes to the above primitives and the name of the field we can use
 // to find the value of the field
@@ -100,7 +102,7 @@ const primitiveOpcodeInfoMap = {
 };
 
 // the list of blocks and there replacements for jwUnite
-const replacments = {
+const uniteReplacments = {
     'jwUnite_always': 'event_always',
     'jwUnite_whenanything': 'event_whenanything',
     'jwUnite_getspritewithattrib': 'sensing_getspritewithattrib',
@@ -139,8 +141,8 @@ const ExtensionPatches = {
             block = blocks[blockIDs[idx]];
             if (typeof block !== 'object' || Array.isArray(block)) continue;
             // handle all 1:1 blocks
-            if (replacments[block.opcode]) {
-                block.opcode = replacments[block.opcode];
+            if (uniteReplacments[block.opcode]) {
+                block.opcode = uniteReplacments[block.opcode];
                 if (block.opcode === 'sensing_regextest' || block.opcode === 'operator_regexmatch') {
                     block.inputs.regrule = [
                         INPUT_SAME_BLOCK_SHADOW, 
@@ -166,6 +168,33 @@ const ExtensionPatches = {
             blocks[blockIDs[idx]] = block;
         }
         object.blocks = blocks;
+    },
+    // eslint-disable-next-line no-unused-vars
+    'text': (extensions, object, runtime) => {
+        const blocks = object.blocks;
+        const patcher = extensions.patcher;
+        if (!patcher.loaded.includes('text')) {
+            runtime.extensionManager.loadExtensionURL('text');
+            patcher.loaded.push('text');
+        }
+        for (const id in blocks) {
+            const block = blocks[id];
+            const oldFont = block.fields?.FONT ?? block.fields?.font;
+            if (!oldFont) continue;
+            block.inputs.FONT = [
+                INPUT_SAME_BLOCK_SHADOW,
+                [
+                    LONE_FIELD,
+                    'text_menu_FONT',
+                    'FONT',
+                    {
+                        name: 'FONT',
+                        value: oldFont[0],
+                        id: oldFont[1]
+                    }
+                ]
+            ];
+        }
     }
 };
 
@@ -178,6 +207,17 @@ const ExtensionPatches = {
 const serializePrimitiveBlock = function (block) {
     // Returns an array represeting a primitive block or null if not one of
     // the primitive types above
+    if (Object.keys(block.inputs).length === 0 && Object.keys(block.fields).length === 1) {
+        const opcode = block.opcode;
+        const fieldName = Object.keys(block.fields)[0];
+        const fieldValue = block.fields[fieldName];
+        const primitiveDesc = [LONE_FIELD, opcode, fieldName, fieldValue];
+        if (block.topLevel) {
+            primitiveDesc.push(block.x ? Math.round(block.x) : 0);
+            primitiveDesc.push(block.y ? Math.round(block.y) : 0);
+        }
+        return primitiveDesc;
+    }
     if (hasOwnProperty.call(primitiveOpcodeInfoMap, block.opcode)) {
         const primitiveInfo = primitiveOpcodeInfoMap[block.opcode];
         const primitiveConstant = primitiveInfo[0];
@@ -914,6 +954,18 @@ const deserializeInputDesc = function (inputDescOrId, parentId, isShadow, blocks
             primitiveObj.topLevel = true;
             primitiveObj.x = inputDescOrId[3];
             primitiveObj.y = inputDescOrId[4];
+        }
+        break;
+    }
+    case LONE_FIELD: {
+        primitiveObj.opcode = inputDescOrId[1];
+        primitiveObj.fields = {
+            [inputDescOrId[2]]: inputDescOrId[3]
+        };
+        if (inputDescOrId.length > 4) {
+            primitiveObj.topLevel = true;
+            primitiveObj.x = inputDescOrId[4];
+            primitiveObj.y = inputDescOrId[5];
         }
         break;
     }

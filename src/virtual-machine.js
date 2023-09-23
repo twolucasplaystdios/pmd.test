@@ -480,7 +480,7 @@ class VirtualMachine extends EventEmitter {
             .catch(error => {
                 // Intentionally rejecting here (want errors to be handled by caller)
                 if (error.hasOwnProperty('validationError')) {
-                    return Promise.reject(JSON.stringify(error));
+                    return Promise.reject(JSON.stringify(error, null, 4));
                 }
                 return Promise.reject(error);
             });
