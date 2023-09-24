@@ -177,24 +177,24 @@ const ExtensionPatches = {
             runtime.extensionManager.loadExtensionURL('text');
             patcher.loaded.push('text');
         }
-        // for (const id in blocks) {
-        //     const block = blocks[id];
-        //     const oldFont = block.fields?.FONT ?? block.fields?.font;
-        //     if (!oldFont) continue;
-        //     block.inputs.FONT = [
-        //         INPUT_SAME_BLOCK_SHADOW,
-        //         [
-        //             LONE_FIELD,
-        //             'text_menu_FONT',
-        //             'FONT',
-        //             {
-        //                 name: 'FONT',
-        //                 value: oldFont[0],
-        //                 id: oldFont[1]
-        //             }
-        //         ]
-        //     ];
-        // }
+        for (const id in blocks) {
+            const block = blocks[id];
+            const oldFont = block.fields?.FONT ?? block.fields?.font;
+            if (!oldFont) continue;
+            block.inputs.FONT = [
+                INPUT_SAME_BLOCK_SHADOW,
+                [
+                    LONE_FIELD,
+                    'text_menu_FONT',
+                    'FONT',
+                    {
+                        name: 'FONT',
+                        value: oldFont[0],
+                        id: oldFont[1]
+                    }
+                ]
+            ];
+        }
     }
 };
 
