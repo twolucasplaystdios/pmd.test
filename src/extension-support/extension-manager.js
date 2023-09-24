@@ -42,14 +42,15 @@ const builtinExtensions = {
     twFiles: () => require('../extensions/tw_files'),
 
     // pm: category expansions & seperations go here
-    // TODO: motion expansion, move some motion blocks there & merge more motion from nameless into it
+    // pmMotionExpansion: extra motion blocks that were in the category & new ones that werent
+    pmMotionExpansion: () => require("../extensions/pm_motionExpansion"),
     // pmOperatorsExpansion: extra operators that were in the category & new ones that werent
     pmOperatorsExpansion: () => require("../extensions/pm_operatorsExpansion"),
     // pmSensingExpansion: extra sensing blocks that were in the category & new ones that werent
     pmSensingExpansion: () => require("../extensions/pm_sensingExpansion"),
-    // pmControlsExpansion: extra controls blocks that were in the category & new ones that werent
+    // pmControlsExpansion: extra control blocks that were in the category & new ones that werent
     pmControlsExpansion: () => require("../extensions/pm_controlsExpansion"),
-    // pmEventsExpansion: extra controls blocks that were in the category & new ones that werent
+    // pmEventsExpansion: extra event blocks that were in the category & new ones that werent
     pmEventsExpansion: () => require("../extensions/pm_eventsExpansion"),
 
     // pmInlineBlocks: seperates the inline function block to prevent confusled
@@ -148,6 +149,8 @@ const builtinExtensions = {
     shovelColorPicker: () => require("../extensions/theshovel_colorPicker"),
     // shovelcss: ...
     shovelcss: () => require("../extensions/theshovel_customStyles"),
+    // profanityAPI: ...
+    profanityAPI: () => require("../extensions/theshovel_profanity"),
 
     // gsa: fill out your introduction stupet!!!
     // no >:(
