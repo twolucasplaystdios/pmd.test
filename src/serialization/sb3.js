@@ -170,32 +170,32 @@ const ExtensionPatches = {
         object.blocks = blocks;
     },
     // eslint-disable-next-line no-unused-vars
-    'text': (extensions, object, runtime) => {
-        const blocks = object.blocks;
-        const patcher = extensions.patcher;
-        if (!patcher.loaded.includes('text')) {
-            runtime.extensionManager.loadExtensionURL('text');
-            patcher.loaded.push('text');
-        }
-        for (const id in blocks) {
-            const block = blocks[id];
-            const oldFont = block.fields?.FONT ?? block.fields?.font;
-            if (!oldFont) continue;
-            block.inputs.FONT = [
-                INPUT_SAME_BLOCK_SHADOW,
-                [
-                    LONE_FIELD,
-                    'text_menu_FONT',
-                    'FONT',
-                    {
-                        name: 'FONT',
-                        value: oldFont[0],
-                        id: oldFont[1]
-                    }
-                ]
-            ];
-        }
-    }
+    // 'text': (extensions, object, runtime) => {
+    //     const blocks = object.blocks;
+    //     const patcher = extensions.patcher;
+    //     if (!patcher.loaded.includes('text')) {
+    //         runtime.extensionManager.loadExtensionURL('text');
+    //         patcher.loaded.push('text');
+    //     }
+    //     for (const id in blocks) {
+    //         const block = blocks[id];
+    //         const oldFont = block.fields?.FONT ?? block.fields?.font;
+    //         if (!oldFont) continue;
+    //         block.inputs.FONT = [
+    //             INPUT_SAME_BLOCK_SHADOW,
+    //             [
+    //                 LONE_FIELD,
+    //                 'text_menu_FONT',
+    //                 'FONT',
+    //                 {
+    //                     name: 'FONT',
+    //                     value: oldFont[0],
+    //                     id: oldFont[1]
+    //                 }
+    //             ]
+    //         ];
+    //     }
+    // }
 };
 
 /**
@@ -207,17 +207,17 @@ const ExtensionPatches = {
 const serializePrimitiveBlock = function (block) {
     // Returns an array represeting a primitive block or null if not one of
     // the primitive types above
-    if (Object.keys(block.inputs).length === 0 && Object.keys(block.fields).length === 1) {
-        const opcode = block.opcode;
-        const fieldName = Object.keys(block.fields)[0];
-        const fieldValue = block.fields[fieldName];
-        const primitiveDesc = [LONE_FIELD, opcode, fieldName, fieldValue];
-        if (block.topLevel) {
-            primitiveDesc.push(block.x ? Math.round(block.x) : 0);
-            primitiveDesc.push(block.y ? Math.round(block.y) : 0);
-        }
-        return primitiveDesc;
-    }
+    // if (Object.keys(block.inputs).length === 0 && Object.keys(block.fields).length === 1) {
+    //     const opcode = block.opcode;
+    //     const fieldName = Object.keys(block.fields)[0];
+    //     const fieldValue = block.fields[fieldName];
+    //     const primitiveDesc = [LONE_FIELD, opcode, fieldName, fieldValue];
+    //     if (block.topLevel) {
+    //         primitiveDesc.push(block.x ? Math.round(block.x) : 0);
+    //         primitiveDesc.push(block.y ? Math.round(block.y) : 0);
+    //     }
+    //     return primitiveDesc;
+    // }
     if (hasOwnProperty.call(primitiveOpcodeInfoMap, block.opcode)) {
         const primitiveInfo = primitiveOpcodeInfoMap[block.opcode];
         const primitiveConstant = primitiveInfo[0];
