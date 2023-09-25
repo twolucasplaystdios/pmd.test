@@ -195,7 +195,7 @@ class RenderedTarget extends Target {
 
         this.cameraBound = 0;
 
-        this.cameraUpdateEvent = screen => {
+        this.cameraUpdateEvent = (screen) => {
             if (screen === this.cameraBound) {
                 const {direction, scale} = this._getRenderedDirectionAndScale();
                 const translatedPos = this._translatePossitionToCamera();
@@ -1260,6 +1260,9 @@ class RenderedTarget extends Target {
      * Dispose, destroying any run-time properties.
      */
     dispose () {
+        // pm: remove this event
+        this.runtime.removeListener('CAMERA_CHANGED', this.cameraUpdateEvent);
+
         if (!this.isOriginal) {
             this.runtime.changeCloneCounter(-1);
         }
