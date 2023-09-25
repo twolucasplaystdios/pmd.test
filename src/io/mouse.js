@@ -44,11 +44,15 @@ class Mouse {
         // They were separated into two opcodes for labeling,
         // but should act the same way.
         // Intentionally not checking isStage to make it work when sharing blocks.
-        this.runtime.startHats('event_whenthisspriteclicked',
-            null, target);
-        this.runtime.startHats('event_whenstageclicked',
-            null, target);
-        this.runtime.startHats('pmEventsExpansion_whenSpriteClicked', { SPRITE: target.id });
+        this.runtime.startHats('event_whenthisspriteclicked', null, target);
+        this.runtime.startHats('event_whenstageclicked', null, target);
+        if (target.isStage) {
+            this.runtime.startHats('pmEventsExpansion_whenSpriteClicked', { SPRITE: '_stage_' });
+            return;
+        }
+        if (target.sprite) {
+            this.runtime.startHats('pmEventsExpansion_whenSpriteClicked', { SPRITE: target.sprite.name });
+        }
     }
 
     /**

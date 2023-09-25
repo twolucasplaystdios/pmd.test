@@ -117,7 +117,7 @@ class pmEventsExpansion {
                     arguments: {
                         SPRITE: {
                             type: ArgumentType.STRING,
-                            menu: "spriteId"
+                            menu: "spriteName"
                         }
                     }
                 },
@@ -165,7 +165,7 @@ class pmEventsExpansion {
                         },
                         SPRITE: {
                             type: ArgumentType.STRING,
-                            menu: "spriteId"
+                            menu: "spriteName"
                         }
                     }
                 },
@@ -202,7 +202,7 @@ class pmEventsExpansion {
                 },
             ],
             menus: {
-                spriteId: "_spriteId",
+                spriteName: "_spriteName",
                 broadcastMenu: "_broadcastMenu"
             }
         };
@@ -224,6 +224,26 @@ class pmEventsExpansion {
             menu.push({
                 text: target.sprite.name,
                 value: target.id
+            });
+        }
+        if (menu.length <= 0) return emptyMenu;
+        return menu;
+    }
+    _spriteName() {
+        const emptyMenu = [{ text: '', value: '' }];
+        const menu = [];
+        for (const target of this.runtime.targets) {
+            if (!target.isOriginal) continue;
+            if (target.isStage) {
+                menu.push({
+                    text: "stage",
+                    value: "_stage_"
+                });
+                continue;
+            }
+            menu.push({
+                text: target.sprite.name,
+                value: target.sprite.name
             });
         }
         if (menu.length <= 0) return emptyMenu;
@@ -264,7 +284,9 @@ class pmEventsExpansion {
     broadcastToSprite(args, util) {
         const broadcast = Cast.toString(args.BROADCAST);
         const sprite = Cast.toString(args.SPRITE);
-        const target = this.runtime.getTargetById(sprite);
+        const target = sprite === "_stage_" ?
+            this.runtime.getTargetForStage()
+            : this.runtime.getSpriteTargetByName(sprite);
         util.startHats("event_whenbroadcastreceived", {
             BROADCAST_OPTION: broadcast
         }, target);

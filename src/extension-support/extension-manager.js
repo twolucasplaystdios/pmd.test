@@ -81,6 +81,8 @@ const builtinExtensions = {
     jgClones: () => require("../extensions/jg_clones"),
     // jgTween: epic animation
     jgTween: () => require("../extensions/jg_tween"),
+    // jgDebugging: epic animation
+    jgDebugging: () => require("../extensions/jg_debugging"),
     // jgEasySave: easy save stuff
     jgEasySave: () => require("../extensions/jg_easySave"),
     // jgPackagerApplications: uuhhhhhhh packager
