@@ -198,6 +198,43 @@ class JgRuntimeBlocks {
                     }
                 },
                 {
+                    opcode: 'changeRenderingCapping',
+                    text: formatMessage({
+                        id: 'jgRuntime.blocks.changeRenderingCapping',
+                        default: 'change render setting [OPTION] to [CAPPED]',
+                        description: 'Block that updates configuration on the renderer like resolution for certain content.'
+                    }),
+                    disableMonitor: false,
+                    blockType: BlockType.COMMAND,
+                    arguments: {
+                        OPTION: {
+                            menu: 'renderConfigCappable'
+                        },
+                        CAPPED: {
+                            menu: 'cappableSettings'
+                        }
+                    }
+                },
+                {
+                    opcode: 'setRenderingNumber',
+                    text: formatMessage({
+                        id: 'jgRuntime.blocks.setRenderingNumber',
+                        default: 'set render setting [OPTION] to [NUM]',
+                        description: 'Block that sets configuration on the renderer like resolution for certain content.'
+                    }),
+                    disableMonitor: false,
+                    blockType: BlockType.COMMAND,
+                    arguments: {
+                        OPTION: {
+                            menu: 'renderConfigNumber'
+                        },
+                        NUM: {
+                            type: ArgumentType.NUMBER,
+                            defaultValue: 0
+                        }
+                    }
+                },
+                {
                     opcode: 'runtimeConfigEnabled',
                     text: formatMessage({
                         id: 'jgRuntime.blocks.runtimeConfigEnabled',
@@ -627,10 +664,29 @@ class JgRuntimeBlocks {
                         "interpolation",
                     ]
                 },
+                renderConfigCappable: {
+                    acceptReporters: true,
+                    items: [
+                        "animated text resolution",
+                    ]
+                },
+                renderConfigNumber: {
+                    acceptReporters: true,
+                    items: [
+                        "animated text resolution",
+                    ]
+                },
                 onoff: {
                     items: [
                         "on",
                         "off"
+                    ]
+                },
+                cappableSettings: {
+                    items: [
+                        "uncapped",
+                        "capped",
+                        "fixed",
                     ]
                 }
             }
@@ -740,6 +796,41 @@ class JgRuntimeBlocks {
     }
     getIsClone(_, util) {
         return !(util.target.isOriginal);
+    }
+
+    changeRenderingCapping(args) {
+        const option = Cast.toString(args.OPTION).toLowerCase();
+        const capping = Cast.toString(args.CAPPED).toLowerCase();
+        switch (option) {
+            case "animated text resolution": {
+                this.runtime.renderer.customRenderConfig.textCostumeResolution.fixed = false;
+                this.runtime.renderer.customRenderConfig.textCostumeResolution.capped = false;
+                if (capping === "fixed") {
+                    this.runtime.renderer.customRenderConfig.textCostumeResolution.fixed = true;
+                } else if (capping === "capped") {
+                    this.runtime.renderer.customRenderConfig.textCostumeResolution.capped = true;
+                }
+                break;
+            }
+        }
+        this.runtime.renderer.dirty = true;
+        this.runtime.requestRedraw();
+    }
+    setRenderingNumber(args) {
+        const option = Cast.toString(args.OPTION).toLowerCase();
+        const number = Cast.toNumber(args.NUM);
+        switch (option) {
+            case "animated text resolution": {
+                this.runtime.renderer.customRenderConfig.textCostumeResolution.value = number;
+                break;
+            }
+            case "max texture scale for new svg images": {
+                this.runtime.renderer.setMaxTextureDimension(number);
+                break;
+            }
+        }
+        this.runtime.renderer.dirty = true;
+        this.runtime.requestRedraw();
     }
 
     updateRuntimeConfig(args) {
