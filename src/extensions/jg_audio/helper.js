@@ -20,7 +20,7 @@ function SafeNumberConvert(tonumber) {
 const AudioNodeStorage = [];
 
 class AudioSource {
-    constructor(audioContext, audioGroup, source, data) {
+    constructor(audioContext, audioGroup, source, data, parent) {
         if (source == null) source = "";
         if (data == null) data = {};
         
@@ -39,13 +39,14 @@ class AudioSource {
         this.notPlaying = true;
         this._pauseTime = null;
         this._pauseTimeOffset = null;
+        this.parent = parent;
 
         this._audioContext = audioContext == null ? new AudioContext() : audioContext;
         this._audioNode = null;
         this._audioGroup = audioGroup;
         this._audioPanner = this._audioContext.createPanner();
         this._audioPanner.panningModel = 'equalpower';
-        this._audioPanner.connect(this._audioContext.destination);
+        this._audioPanner.connect(parent.audioGlobalVolumeNode);
         this._audioGainNode = this._audioContext.createGain();
         this._audioGainNode.gain.value = 1;
         this._audioGainNode.connect(this._audioPanner);
@@ -153,6 +154,7 @@ class AudioExtensionHelper {
         this.runtime = runtime;
         this.audioGroups = {};
         this.audioContext = null;
+        this.audioGlobalVolumeNode = null;
     }
     /**
         * Sets a new runtime that the helper will use for all functions.
@@ -223,7 +225,16 @@ class AudioExtensionHelper {
         const group = typeof parent == "string" ? this.GetAudioGroup(parent) : parent;
         if (!group) return;
         if (!this.audioContext) this.audioContext = new AudioContext();
-        group.sources[name] = new AudioSource(this.audioContext, group, src, settings);
+        // gain node for volume slidor
+        if (!this.audioGlobalVolumeNode) {
+            this.audioGlobalVolumeNode = this.audioContext.createGain();
+            this.audioGlobalVolumeNode.gain.value = 1;
+            if (this.runtime.audioEngine) {
+                this.audioGlobalVolumeNode.gain.value = this.runtime.audioEngine.inputNode.gain.value;
+            }
+            this.audioGlobalVolumeNode.connect(this.audioContext.destination);
+        }
+        group.sources[name] = new AudioSource(this.audioContext, group, src, settings, this);
         return group.sources[name];
     }
     /**

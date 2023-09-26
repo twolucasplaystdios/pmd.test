@@ -2515,13 +2515,47 @@ class Runtime extends EventEmitter {
         this.startHats('event_whenflagclicked');
     }
 
+    _accountForExtendedSoundsAudioContexts() {
+        // extended audio
+        if ("ext_jgExtendedAudio" in this) {
+            const extension = this.ext_jgExtendedAudio;
+            const helper = extension.helper;
+            // audio context might not be created, make it for him
+            if (!helper.audioContext) helper.audioContext = new AudioContext();
+            // gain node for volume slidor might not be created, make it for him
+            if (!helper.audioGlobalVolumeNode) {
+                helper.audioGlobalVolumeNode = helper.audioContext.createGain();
+                helper.audioGlobalVolumeNode.gain.value = 1;
+                helper.audioGlobalVolumeNode.connect(helper.audioContext.destination);
+                if (this.audioEngine) {
+                    helper.audioGlobalVolumeNode.gain.value = this.audioEngine.inputNode.gain.value;
+                }
+            }
+        }
+    }
+    _getExtendedSoundsAudioContext() {
+        // extended audio
+        if ("ext_jgExtendedAudio" in this) {
+            const extension = this.ext_jgExtendedAudio;
+            const helper = extension.helper;
+            return helper.audioContext;
+        }
+    }
+
     /**
      * Pause running scripts
      */
     pause() {
         if (this.paused) return;
         this.paused = true;
+        // pause all audio contexts (that includes you, extended audio)
         this.audioEngine.audioContext.suspend();
+        this._accountForExtendedSoundsAudioContexts();
+        const extAudioAC = this._getExtendedSoundsAudioContext();
+        if (extAudioAC) {
+            extAudioAC.suspend();
+        }
+
         this.ioDevices.clock.pause();
         // safest way to stop the threads from being steped /shrug
         this.frameLoop.stop();
@@ -2537,7 +2571,14 @@ class Runtime extends EventEmitter {
     play() {
         if (!this.paused) return;
         this.paused = false;
+        // resume all audio contexts (that includes you, extended audio)
         this.audioEngine.audioContext.resume();
+        this._accountForExtendedSoundsAudioContexts();
+        const extAudioAC = this._getExtendedSoundsAudioContext();
+        if (extAudioAC) {
+            extAudioAC.resume();
+        }
+
         this.ioDevices.clock.resume();
         // frameloop is always stoped by pause() so restart it
         this.frameLoop.start();
