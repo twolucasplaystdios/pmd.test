@@ -355,7 +355,8 @@ class Frame {
         this.importantData = {
             parents: [parentKind]
         };
-        this.importantData.containedByLoop = isLoop;
+        if (isLoop)
+            this.importantData.containedByLoop = isLoop;
 
         /**
          * the block who created this frame
