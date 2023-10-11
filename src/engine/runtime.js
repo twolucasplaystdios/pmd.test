@@ -2361,6 +2361,8 @@ class Runtime extends EventEmitter {
         // For compatibility with Scratch 2, edge triggered hats need to be processed before
         // threads are stepped. See ScratchRuntime.as for original implementation
         newThreads.forEach(thread => {
+            // just incase, pause any new threads that appear while we are paused
+            if (this.paused) thread.pause();
             if (thread.isCompiled) {
                 if (thread.executableHat) {
                     // It is quite likely that we are currently executing a block, so make sure
