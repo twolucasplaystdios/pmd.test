@@ -506,12 +506,12 @@ class ExtensionManager {
     }
 
     removeExtension(id) {
-        const serviceName = this._loadedExtensions.get(id);
-        dispatch.call(serviceName, 'dispose');
         this._loadedExtensions.delete(id);
         delete this.workerURLs[id]
         dispatch.call('runtime', '_removeExtensionPrimitive', id);
         this.refreshBlocks();
+        const serviceName = this._loadedExtensions.get(id);
+        dispatch.call(serviceName, 'dispose');
     }
 
     allocateWorker() {
