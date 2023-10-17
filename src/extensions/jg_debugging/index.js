@@ -96,6 +96,9 @@ class jgDebuggingBlocks {
         consoleBarIndicator.onclick = () => {
             this.consoleBarInput.focus();
         };
+        // this.consoleLogs.onclick = () => {
+        //     this.consoleBarInput.focus();
+        // };
 
         this.consoleBarInput.onkeydown = (e) => {
             if (e.ctrlKey || e.metaKey || e.shiftKey || e.altKey) return;
@@ -187,6 +190,28 @@ class jgDebuggingBlocks {
                         INFO: {
                             type: ArgumentType.STRING,
                             defaultValue: "Hello!"
+                        }
+                    }
+                },
+                {
+                    opcode: 'warn',
+                    text: 'warn [INFO]',
+                    blockType: BlockType.COMMAND,
+                    arguments: {
+                        INFO: {
+                            type: ArgumentType.STRING,
+                            defaultValue: "Warning"
+                        }
+                    }
+                },
+                {
+                    opcode: 'error',
+                    text: 'error [INFO]',
+                    blockType: BlockType.COMMAND,
+                    arguments: {
+                        INFO: {
+                            type: ArgumentType.STRING,
+                            defaultValue: "Error"
                         }
                     }
                 },
@@ -312,6 +337,13 @@ class jgDebuggingBlocks {
                 break;
         }
     }
+    _findBlockFromId(id, target) {
+        if (!target) return;
+        if (!target.blocks) return;
+        if (!target.blocks._blocks) return;
+        const block = target.blocks._blocks[id];
+        return block;
+    }
 
     openDebugger() {
         this.console.style.display = '';
@@ -324,6 +356,39 @@ class jgDebuggingBlocks {
         const text = Cast.toString(args.INFO);
         console.log(text);
         this._addLog(text);
+    }
+    warn(args) {
+        const text = Cast.toString(args.INFO);
+        console.warn(text);
+        this._addLog(text, "color: yellow;");
+    }
+    error(args, util) {
+        // create error stack
+        const stack = [];
+        const target = util.target;
+        const thread = util.thread;
+        if (thread.stackClick) {
+            stack.push('clicked blocks');
+        }
+        const commandBlockId = thread.peekStack();
+        const block = this._findBlockFromId(commandBlockId, target);
+        if (block) {
+            stack.push(`block ${block.opcode}`);
+        } else {
+            stack.push(`block ${commandBlockId}`);
+        }
+        const eventBlock = this._findBlockFromId(thread.topBlock, target);
+        if (eventBlock) {
+            stack.push(`event ${eventBlock.opcode}`);
+        } else {
+            stack.push(`event ${thread.topBlock}`);
+        }
+        stack.push(`sprite ${target.sprite.name}`);
+
+        const text = `Error: ${Cast.toString(args.INFO)}`
+            + `\n${stack.map(text => (`\tat ${text}`)).join("\n")}`;
+        console.error(text);
+        this._addLog(text, "color: red;");
     }
 }
 
