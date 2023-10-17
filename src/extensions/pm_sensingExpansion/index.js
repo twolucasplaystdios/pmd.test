@@ -182,7 +182,7 @@ class pmSensingExpansion {
                         },
                         URL: {
                             type: ArgumentType.STRING,
-                            defaultValue: "https://home.penguinmod.site:3000/some/random/page?param=10#20"
+                            defaultValue: "https://home.penguinmod.com:3000/some/random/page?param=10#20"
                         }
                     }
                 },
@@ -220,7 +220,7 @@ class pmSensingExpansion {
                         },
                         URL: {
                             type: ArgumentType.STRING,
-                            defaultValue: "https://penguinmod.site/?param=10"
+                            defaultValue: "https://penguinmod.com/?param=10"
                         }
                     }
                 },

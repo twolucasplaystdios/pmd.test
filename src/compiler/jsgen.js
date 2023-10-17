@@ -918,9 +918,9 @@ class JSGenerator {
 
         switch (node.kind) {
         case 'your mom':
-            const urmom = 'https://penguinmod.site/dump/urmom-your-mom.mp4';
-            const yaTried = 'https://penguinmod.site/dump/chips.mp4';
-            const MISTERBEAST = 'https://penguinmod.site/dump/MISTER_BEAST.webm';
+            const urmom = 'https://penguinmod.com/dump/urmom-your-mom.mp4';
+            const yaTried = 'https://penguinmod.com/dump/chips.mp4';
+            const MISTERBEAST = 'https://penguinmod.com/dump/MISTER_BEAST.webm';
             const createVideo = url => `\`<video src="${url}" height="\${height}" autoplay loop style="alignment:center;"></video>\``;
             this.source += `
             const stage = document.getElementsByClassName('stage_stage_1fD7k box_box_2jjDp')[0].children[0]

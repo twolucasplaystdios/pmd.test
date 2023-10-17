@@ -10,7 +10,7 @@ const store = new cstore();
  * @constructor
  */
 class canvas {
-    constructor (runtime) {
+    constructor(runtime) {
         /**
          * The runtime instantiating this block package.
          * @type {runtime}
@@ -19,28 +19,28 @@ class canvas {
         store.attachRuntime(runtime);
     }
 
-    static get canvasStorageHeader () {
+    static get canvasStorageHeader() {
         return 'canvases: ';
     }
 
-    deserialize (data) {
+    deserialize(data) {
         store.canvases = {};
         for (const canvas of data) {
             store.newCanvas(canvas.name, canvas.width, canvas.height, canvas.id);
         }
     }
 
-    serialize () {
+    serialize() {
         return store.getAllCanvases()
             .map(variable => ({
-                name: variable.name, 
-                width: variable.width, 
-                height: variable.height, 
+                name: variable.name,
+                width: variable.width,
+                height: variable.height,
                 id: variable.id
             }));
     }
 
-    readAsImageElement (src) {
+    readAsImageElement(src) {
         return new Promise((resolve, reject) => {
             const image = new Image();
             image.onload = function () {
@@ -57,7 +57,7 @@ class canvas {
         });
     }
 
-    orderCategoryBlocks (blocks) {
+    orderCategoryBlocks(blocks) {
         const button = blocks[0];
         const varBlock = blocks[1];
         delete blocks[0];
@@ -82,7 +82,7 @@ class canvas {
     /**
      * @returns {object} metadata for this extension and its blocks.
      */
-    getInfo () {
+    getInfo() {
         return {
             id: 'canvas',
             name: 'html canvas',
@@ -288,7 +288,7 @@ class canvas {
                         },
                         src: {
                             type: ArgumentType.STRING,
-                            defaultValue: 'https://studio.penguinmod.site/favicon.ico'
+                            defaultValue: 'https://studio.penguinmod.com/favicon.ico'
                         }
                     },
                     blockType: BlockType.COMMAND
@@ -408,7 +408,7 @@ class canvas {
         };
     }
 
-    createNewCanvas () {
+    createNewCanvas() {
         const newCanvas = prompt('canvas name?', 'newCanvas');
         // if this camvas already exists, remove it to minimize confusion
         if (!newCanvas) return alert('Canceled')
@@ -418,50 +418,50 @@ class canvas {
         this.serialize();
     }
 
-    getCanvasMenuItems () {
+    getCanvasMenuItems() {
         const canvases = store.getAllCanvases();
-        if (canvases.length < 1) return [{text: '', value: ''}];
+        if (canvases.length < 1) return [{ text: '', value: '' }];
         return canvases.map(canvas => ({
             text: canvas.name,
             value: canvas.id
         }));
     }
 
-    canvasGetter (args) {
+    canvasGetter(args) {
         const canvasObj = store.getCanvas(args.canvas);
         return canvasObj.element.toDataURL();
     }
 
-    setGlobalCompositeOperation (args) {
+    setGlobalCompositeOperation(args) {
         const canvasObj = store.getCanvas(args.canvas);
         canvasObj.context.globalCompositeOperation = args.CompositeOperation;
     }
 
-    setBorderColor (args) {
+    setBorderColor(args) {
         const color = Cast.toString(args.color);
         const canvasObj = store.getCanvas(args.canvas);
         canvasObj.context.strokeStyle = color;
     }
 
-    setFill (args) {
+    setFill(args) {
         const color = Cast.toString(args.color);
         const canvasObj = store.getCanvas(args.canvas);
         canvasObj.context.fillStyle = color;
     }
 
-    setSize (args) {
+    setSize(args) {
         const canvasObj = store.getCanvas(args.canvas);
         canvasObj.element.width = args.width;
         canvasObj.element.height = args.height;
         canvasObj.context = canvasObj.element.getContext('2d');
     }
 
-    drawRect (args) {
+    drawRect(args) {
         const canvasObj = store.getCanvas(args.canvas);
         canvasObj.context.fillRect(args.x, args.y, args.width, args.height);
     }
 
-    drawImage (args) {
+    drawImage(args) {
         return new Promise(resolve => {
             const canvasObj = store.getCanvas(args.canvas);
             const image = new Image();
@@ -473,17 +473,17 @@ class canvas {
         });
     }
 
-    clearAria (args) {
+    clearAria(args) {
         const canvasObj = store.getCanvas(args.canvas);
         canvasObj.context.clearRect(args.x, args.y, args.width, args.height);
     }
 
-    clearCanvas (args) {
+    clearCanvas(args) {
         const canvasObj = store.getCanvas(args.canvas);
         canvasObj.context.clearRect(0, 0, canvasObj.width, canvasObj.height);
     }
 
-    setTransparency (args) {
+    setTransparency(args) {
         const canvasObj = store.getCanvas(args.canvas);
         canvasObj.context.globalAlpha = args.transparency / 100;
     }

@@ -31,7 +31,7 @@ class JgStorageBlocks {
             name: 'Storage',
             color1: '#76A8FE',
             color2: '#538EFC',
-            docsURI: 'https://docs.penguinmod.site/extensions/storage',
+            docsURI: 'https://docs.penguinmod.com/extensions/storage',
             blocks: [
                 {
                     blockType: BlockType.LABEL,
