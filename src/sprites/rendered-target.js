@@ -84,6 +84,12 @@ class RenderedTarget extends Target {
         this.isStage = false;
 
         /**
+         * Whether this rendered target has been disposed.
+         * @type {boolean}
+         */
+        this.isDisposed = false;
+
+        /**
          * Scratch X coordinate. Currently should range from -240 to 240.
          * @type {Number}
          */
@@ -1232,6 +1238,7 @@ class RenderedTarget extends Target {
             id: this.id,
             name: this.getName(),
             isStage: this.isStage,
+            isDisposed: this.isDisposed,
             x: this.x,
             y: this.y,
             size: this.size,
@@ -1266,6 +1273,7 @@ class RenderedTarget extends Target {
         if (!this.isOriginal) {
             this.runtime.changeCloneCounter(-1);
         }
+        this.isDisposed = true;
         this.runtime.stopForTarget(this);
         this.runtime.removeExecutable(this);
         this.sprite.removeClone(this);
