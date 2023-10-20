@@ -889,6 +889,36 @@ class VirtualMachine extends EventEmitter {
         const target = optTargetId ? this.runtime.getTargetById(optTargetId) :
             this.editingTarget;
         if (target) {
+            if (costumeObject.fromPenguinModLibrary === true) {
+                return new Promise((resolve, reject) => {
+                    fetch(`${PM_LIBRARY_API}files/${costumeObject.libraryId}`)
+                        .then((r) => r.arrayBuffer())
+                        .then((arrayBuffer) => {
+                            const dataFormat = costumeObject.dataFormat;
+                            const storage = this.runtime.storage;
+                            const asset = new storage.Asset(
+                                storage.AssetType[dataFormat === 'svg' ? "ImageVector" : "ImageBitmap"],
+                                null,
+                                storage.DataFormat[dataFormat.toUpperCase()],
+                                new Uint8Array(arrayBuffer),
+                                true
+                            );
+                            const newCostumeObject = {
+                                md5: asset.assetId + '.' + asset.dataFormat,
+                                asset: asset,
+                                name: costumeObject.name
+                            }
+                            loadCostume(newCostumeObject.md5, newCostumeObject, this.runtime, optVersion).then(costumeAsset => {
+                                target.addCostume(newCostumeObject);
+                                target.setCostume(
+                                    target.getCostumes().length - 1
+                                );
+                                this.runtime.emitProjectChanged();
+                                resolve(costumeAsset, newCostumeObject);
+                            })
+                        }).catch(reject);
+                });
+            }
             return loadCostume(md5ext, costumeObject, this.runtime, optVersion).then(costumeObject => {
                 target.addCostume(costumeObject);
                 target.setCostume(
@@ -1021,7 +1051,7 @@ class VirtualMachine extends EventEmitter {
                                 target.addSound(newSoundObject);
                                 this.emitTargetsUpdate();
                                 resolve(soundAsset, newSoundObject);
-                            })
+                            });
                         }).catch(reject);
                 });
             }
