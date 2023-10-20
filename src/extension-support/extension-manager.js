@@ -87,6 +87,8 @@ const builtinExtensions = {
     jgEasySave: () => require("../extensions/jg_easySave"),
     // jgPackagerApplications: uuhhhhhhh packager
     jgPackagerApplications: () => require("../extensions/jg_packagerApplications"),
+    // jgTailgating: follow sprites like in an RPG
+    jgTailgating: () => require("../extensions/jg_tailgating"),
     // jgScripts: what you know about rollin down in the
     jgScripts: () => require("../extensions/jg_scripts"),
     // jg3d: damn daniel
