@@ -4,11 +4,14 @@
 
 const BlockType = require('../../extension-support/block-type');
 const ArgumentType = require('../../extension-support/argument-type');
+const Clone = require('../../util/clone');
 const Cast = require('../../util/cast');
 
 const blockSeparator = '<sep gap="36"/>'; // At default scale, about 28px
 
 const blocks = `
+%block6>
+%block7>
 %block2>
 %block3>
 ${blockSeparator}
@@ -76,6 +79,44 @@ class pmMotionExpansion {
          * @type {runtime}
          */
         this.runtime = runtime;
+
+        this.spriteHomes = {};
+        this.cloneHomes = {};
+    }
+
+    // cloneHomes contains targetId's which do not save, so dont serialize them
+    // clones in general dont save anyways so theres no point if we did
+    deserialize(data) {
+        this.spriteHomes = data;
+    }
+    serialize() {
+        return this.filterHomes("sprite", this.spriteHomes);
+    }
+
+    /**
+     * filter out the homes to only contain existing targets
+     * @param {string} type clone or sprite
+     * @param {object} homes sprite or clone homes
+     * @returns the homes with only the existing targets
+     */
+    filterHomes(type, homes) {
+        const newHomes = {};
+        for (const targetNameOrId in homes) {
+            let canCopy = true;
+            if (type === 'clone') {
+                if (!this.runtime.getTargetById(targetNameOrId)) {
+                    canCopy = false;
+                }
+            } else {
+                if (!this.runtime.getSpriteTargetByName(targetNameOrId)) {
+                    canCopy = false;
+                }
+            }
+            if (canCopy) {
+                newHomes[targetNameOrId] = homes[targetNameOrId];
+            }
+        }
+        return newHomes;
     }
 
     orderCategoryBlocks(extensionBlocks) {
@@ -100,10 +141,7 @@ class pmMotionExpansion {
     }
 
     /**
-     * @returns {object} metadata for extension category NOT blocks
-     * this extension only contains blocks defined elsewhere,
-     * since we just want to seperate them rather than create
-     * slow versions of them
+     * @returns {object} metadata for extension
      */
     getInfo() {
         return {
@@ -201,6 +239,16 @@ class pmMotionExpansion {
                             defaultValue: "100",
                         },
                     },
+                },
+                {
+                    opcode: "setHome",
+                    blockType: BlockType.COMMAND,
+                    text: "set my home",
+                },
+                {
+                    opcode: "gotoHome",
+                    blockType: BlockType.COMMAND,
+                    text: "go to home",
                 },
             ]
         };
@@ -313,6 +361,69 @@ class pmMotionExpansion {
         // Position should technically be a twgl vec3, but it doesn't actually need to be
         drawable.updateCPURenderAttributes();
         return drawable.isTouching([x, y]);
+    }
+
+    setHome(_, util) {
+        const target = util.target;
+        if (target.isStage) return;
+        // this is all of the sprite specific data we will save
+        // variables are a bit too far, and most other data is stage only or shouldnt be overwritten
+        const savedState = {
+            x: target.x,
+            y: target.y,
+            size: target.size,
+            stretch: Clone.simple(target.stretch), // array
+            transform: Clone.simple(target.transform), // array
+            direction: target.direction,
+            rotationStyle: target.rotationStyle,
+            visible: target.visible,
+            effects: Clone.simple(target.effects), // object
+            draggable: target.draggable,
+            currentCostume: target.currentCostume,
+            tintColor: target.tintColor,
+            volume: target.volume
+        };
+        if (target.isOriginal) {
+            const name = target.getName();
+            this.spriteHomes[name] = savedState;
+            this.spriteHomes = this.filterHomes("sprite", this.spriteHomes);
+            return;
+        }
+        this.cloneHomes[target.id] = savedState;
+        this.cloneHomes = this.filterHomes("clone", this.cloneHomes);
+    }
+    gotoHome(_, util) {
+        const target = util.target;
+        if (target.isStage) return;
+        const identifier = target.isOriginal ? target.getName() : target.id;
+        const homeTable = target.isOriginal ? this.spriteHomes : this.cloneHomes;
+        // dont do anything if theres no name in here
+        if (!(identifier in homeTable)) {
+            return;
+        }
+        const homeState = homeTable[identifier];
+        if (!homeState) {
+            return;
+        }
+        // set state
+        target.setXY(homeState.x, homeState.y);
+        target.setSize(homeState.size);
+        target.setStretch(...homeState.stretch);
+        target.setTransform(homeState.transform);
+        target.setDirection(homeState.direction);
+        target.setRotationStyle(homeState.rotationStyle);
+        target.setVisible(homeState.visible);
+        if (homeState.effects) {
+            for (const effectName in homeState.effects) {
+                const value = homeState.effects[effectName];
+                target.setEffect(effectName, value);
+            }
+        }
+        target.setDraggable(homeState.draggable);
+        target.setCostume(homeState.currentCostume);
+        target.tintColor = homeState.tintColor; // tintColor isnt fully implemented yet so just do this
+        target.volume = homeState.volume;
+        this.runtime.requestRedraw();
     }
 }
 
