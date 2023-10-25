@@ -399,11 +399,6 @@ class ExtensionManager {
             return;
         }
 
-        if (this.isExtensionURLLoaded(extensionURL)) {
-            // Extension is already loaded.
-            return;
-        }
-
         if (!this._isValidExtensionURL(extensionURL)) {
             throw new Error(`Invalid extension URL: ${extensionURL}`);
         }
@@ -508,12 +503,17 @@ class ExtensionManager {
     }
 
     removeExtension(id) {
+        const serviceName = this._loadedExtensions.get(id);
+        const {provider} = dispatch._getServiceProvider(serviceName)
+        if (typeof provider.remove === 'function') {
+            dispatch.call(serviceName, 'dispose');
+        }
+
         this._loadedExtensions.delete(id);
-        delete this.workerURLs[id]
+        const workerId = +serviceName.split('.')[1];
+        delete this.workerURLs[workerId]
         dispatch.call('runtime', '_removeExtensionPrimitive', id);
         this.refreshBlocks();
-        const serviceName = this._loadedExtensions.get(id);
-        dispatch.call(serviceName, 'dispose');
     }
 
     allocateWorker() {
@@ -867,7 +867,7 @@ class ExtensionManager {
     }
 
     isExtensionURLLoaded (url) {
-        return Object.values(this.workerURLs).includes(url);
+        return this.workerURLs.includes(url);
     }
 }
 
