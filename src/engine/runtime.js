@@ -3040,8 +3040,8 @@ class Runtime extends EventEmitter {
         if (parsed.runtimeOptions) {
             this.setRuntimeOptions(parsed.runtimeOptions);
         }
-        if (parsed.nohq && this.renderer) {
-            this.renderer.setUseHighQualityRender(false);
+        if (typeof parsed.hq === 'boolean' && this.renderer) {
+            this.renderer.setUseHighQualityRender(parsed.hq);
         }
         const storedWidth = +parsed.width || this.stageWidth;
         const storedHeight = +parsed.height || this.stageHeight;
@@ -3056,7 +3056,7 @@ class Runtime extends EventEmitter {
             runtimeOptions: this.runtimeOptions,
             interpolation: this.interpolationEnabled,
             turbo: this.turboMode,
-            hq: this.renderer ? this.renderer.useHighQualityRender : false,
+            hq: this.renderer ? this.renderer.useHighQualityRender : true,
             width: this.stageWidth,
             height: this.stageHeight
         };
@@ -3085,7 +3085,7 @@ class Runtime extends EventEmitter {
     storeProjectOptions () {
         const options = this.generateDifferingProjectOptions();
         // TODO: translate
-        const text = `Configuration for https://turbowarp.org/\nYou can move, resize, and minimize this comment, but don't edit it by hand. This comment can be deleted to remove the stored settings.\n${ExtendedJSON.stringify(options)}${COMMENT_CONFIG_MAGIC}`;
+        const text = `Configuration for https://penguinmod.com/\nYou can move, resize, and minimize this comment, but don't edit it by hand. This comment can be deleted to remove the stored settings.\n${ExtendedJSON.stringify(options)}${COMMENT_CONFIG_MAGIC}`;
         const existingComment = this.findProjectOptionsComment();
         if (existingComment) {
             existingComment.text = text;
