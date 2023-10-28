@@ -108,6 +108,22 @@ class TailgatingExtension {
             }
           },
         },
+        {
+          opcode: "getSpriteFollowPos",
+          blockType: BlockType.REPORTER,
+          disableMonitor: true,
+          text: "get position [INDEX] behind [NAME]",
+          arguments: {
+            INDEX: {
+              type: ArgumentType.NUMBER,
+              defaultValue: 20,
+            },
+            NAME: {
+              type: ArgumentType.STRING,
+              defaultValue: "leader",
+            }
+          },
+        },
       ],
       menus: {
         spriteMenu: '_getSpriteMenu'
@@ -168,6 +184,25 @@ class TailgatingExtension {
       position = spritePositions[spritePositions.length - 1];
     }
     util.target.setXY(position.x, position.y);
+  }
+  getSpriteFollowPos(args) {
+    const trackerName = Cast.toString(args.NAME);
+    const index = Cast.toNumber(args.INDEX);
+    const spritePositions = this.positions[trackerName];
+    if (!spritePositions) return '{}';
+    let position = spritePositions[index];
+    if (typeof position !== "object") {
+      // this index position was not found
+      // use the last one in the list instead
+
+      // if there is nothing in the list, dont do anything
+      if (spritePositions.length <= 0) return '{}';
+      position = spritePositions[spritePositions.length - 1];
+    }
+    return JSON.stringify({
+      x: position.x,
+      y: position.y
+    });
   }
   savePositionsBehindSprite(args, util) {
     const trackerName = Cast.toString(args.NAME);
