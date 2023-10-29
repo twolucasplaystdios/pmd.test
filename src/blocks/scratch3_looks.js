@@ -446,7 +446,7 @@ class Scratch3LooksBlocks {
         );
     }
     setColor (args, util) {
-        const numColor = Cast.toNumber(args.color);
+        const numColor = Number(args.color);
         if (!isNaN(numColor)) {
             args.color = Color.decimalToHex(numColor);
         }
