@@ -20,6 +20,9 @@ class JgRuntimeBlocks {
          */
         this.runtime = runtime;
 
+        // SharkPool
+        this.pausedScripts = Object.create({});
+
         // ShovelUtils
         // Based on from https://www.growingwiththeweb.com/2017/12/fast-simple-js-fps-counter.html
         const times = [];
@@ -34,6 +37,9 @@ class JgRuntimeBlocks {
             times.push(now);
             fps = times.length;
         };
+        this.runtime.on('PROJECT_STOP_ALL', () => {
+            this.pausedScripts = Object.create({});
+        });
     }
 
     _typeIsBitmap(type) {
@@ -367,6 +373,40 @@ class JgRuntimeBlocks {
                     }),
                     disableMonitor: false,
                     blockType: BlockType.REPORTER
+                },
+                "---",
+                {
+                    opcode: "pauseScript",
+                    blockType: BlockType.COMMAND,
+                    text: "pause this script using name: [NAME]",
+                    arguments: {
+                        NAME: {
+                            type: ArgumentType.STRING,
+                            defaultValue: "my script",
+                        },
+                    }
+                },
+                {
+                    opcode: "unpauseScript",
+                    blockType: BlockType.COMMAND,
+                    text: "unpause script named: [NAME]",
+                    arguments: {
+                        NAME: {
+                            type: ArgumentType.STRING,
+                            defaultValue: "my script",
+                        },
+                    }
+                },
+                {
+                    opcode: "isScriptPaused",
+                    blockType: BlockType.BOOLEAN,
+                    text: "is script named [NAME] paused?",
+                    arguments: {
+                        NAME: {
+                            type: ArgumentType.STRING,
+                            defaultValue: "my script",
+                        },
+                    }
                 },
                 "---",
                 {
@@ -900,6 +940,29 @@ class JgRuntimeBlocks {
         };
         const hex = Color.rgbToHex(colorObject);
         return hex;
+    }
+
+    // SharkPool, edited by JeremyGamer13
+    pauseScript(args, util) {
+        const scriptName = Cast.toString(args.NAME);
+        const state = util.stackFrame.pausedScript;
+        if (!state) {
+            this.pausedScripts[scriptName] = true;
+            util.stackFrame.pausedScript = scriptName;
+            util.yield();
+        } else if (state in this.pausedScripts) {
+            util.yield();
+        }
+    }
+    unpauseScript(args) {
+        const scriptName = Cast.toString(args.NAME);
+        if (scriptName in this.pausedScripts) {
+            delete this.pausedScripts[scriptName];
+        }
+    }
+    isScriptPaused(args) {
+        const scriptName = Cast.toString(args.NAME);
+        return scriptName in this.pausedScripts;
     }
 
     setMaxFrameRate(args) {
