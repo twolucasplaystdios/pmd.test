@@ -23,6 +23,7 @@ const FontManager = require('./tw-font-manager');
 const { validateJSON } = require('../util/json-block-utilities');
 const Color = require('../util/color');
 const TabManager = require('../extension-support/pm-tab-manager');
+const ModalManager = require('../extension-support/pm-modal-manager');
 
 // Virtual I/O devices.
 const Clock = require('../io/clock');
@@ -319,6 +320,11 @@ class Runtime extends EventEmitter {
          * pm: The current tab manager for this runtime.
          */
         this.tabManager = new TabManager(this);
+
+        /**
+         * pm: The current modal manager for this runtime.
+         */
+        this.modalManager = new ModalManager(this);
 
         /**
          * Currently known number of clones, used to enforce clone limit.
