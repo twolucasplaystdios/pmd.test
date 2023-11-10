@@ -23,6 +23,7 @@ const FontManager = require('./tw-font-manager');
 const { validateJSON } = require('../util/json-block-utilities');
 const Color = require('../util/color');
 const TabManager = require('../extension-support/pm-tab-manager');
+const ModalManager = require('../extension-support/pm-modal-manager');
 
 // Virtual I/O devices.
 const Clock = require('../io/clock');
@@ -321,6 +322,11 @@ class Runtime extends EventEmitter {
         this.tabManager = new TabManager(this);
 
         /**
+         * pm: The current modal manager for this runtime.
+         */
+        this.modalManager = new ModalManager(this);
+
+        /**
          * Currently known number of clones, used to enforce clone limit.
          * @type {number}
          */
@@ -540,6 +546,13 @@ class Runtime extends EventEmitter {
          * @type {Map<string, function>}
          */
         this.extensionButtons = new Map();
+
+        /**
+         * Contains the audio context and gain node for each extension that registers them.
+         * Used to make sure the extensions respect addons or the pause button.
+         * @type {Map<string, {audioContext: AudioContext, gainNode: GainNode}>}
+         */
+        this._extensionAudioObjects = new Map();
 
         /**
          * Responsible for managing custom fonts.
@@ -1102,6 +1115,28 @@ class Runtime extends EventEmitter {
         JSGenerator.setExtensionJs(extensionId, information.js);
     }
 
+    /**
+     * Allows AudioContexts and GainNodes from an extension to respect addons and runtime pausing by default.
+     * If audioContext is not supplied, recording addon + pause button will not work with the extension this way.
+     * If gainNode is not supplied, recording addon + volume slider will not work with the extension this way.
+     * @param {string} extensionId The extension's ID. May be used internally in the future, or by other extensions.
+     * @param {AudioContext} audioContext The AudioContext being used in the extension.
+     * @param {GainNode} gainNode The GainNode that is connected to the AudioContext. All other nodes in the extension should be connected to this GainNode, and this GainNode should be connected to the destination of the AudioContext.
+     */
+    registerExtensionAudioContext(extensionId, audioContext, gainNode) {
+        if (typeof extensionId !== "string") throw new TypeError('Extension ID must be string');
+        if (!extensionId) throw new Error('No extension ID specified'); // empty string
+        
+        const obj = {};
+        if (audioContext) {
+            obj.audioContext = audioContext;
+        }
+        if (gainNode) {
+            obj.gainNode = gainNode;
+        }
+        this._extensionAudioObjects.set(extensionId, obj);
+    }
+
     getMonitorState () {
         return this._monitorState;
     }
@@ -1340,7 +1375,7 @@ class Runtime extends EventEmitter {
                         {
                             type: 'field_variable_getter',
                             name: menuName,
-                            variableType: menuInfo.variableType === 'scaler' 
+                            variableType: menuInfo.variableType === 'scalar' 
                                 ? '' 
                                 : menuInfo.variableType
                         } : (menuInfo.isTypeable ? 
@@ -1578,7 +1613,9 @@ class Runtime extends EventEmitter {
             ++outLineNum;
         }
 
-        const mutation = blockInfo.isDynamic ? `<mutation blockInfo="${xmlEscape.escapeAttribute(JSON.stringify(blockInfo))}"/>` : '';
+        const mutation = blockInfo.isDynamic 
+            ? `<mutation blockInfo="${xmlEscape.escapeAttribute(JSON.stringify(blockInfo))}"/>` 
+            : '';
         const inputs = context.inputList.join('');
         const blockXML = `<block type="${xmlEscape.escapeAttribute(extendedOpcode)}">${mutation}${inputs}</block>`;
 
@@ -1611,7 +1648,7 @@ class Runtime extends EventEmitter {
      * @private
      */
     _convertLabelForScratchBlocks (blockInfo) {
-        const text = xmlEscape.escapeAttribute(blockInfo.text)
+        const text = xmlEscape.escapeAttribute(blockInfo.text);
         return {
             info: blockInfo,
             xml: `<label text="${text}"></label>`
@@ -1628,10 +1665,14 @@ class Runtime extends EventEmitter {
      */
     _convertButtonForScratchBlocks (buttonInfo) {
         const extensionMessageContext = this.makeMessageContextForTarget();
-        const buttonText = maybeFormatMessage(buttonInfo.text, extensionMessageContext);
+        const buttonText = xmlEscape.escapeAttribute(maybeFormatMessage(buttonInfo.text, extensionMessageContext));
+        const callback = xmlEscape.escapeAttribute(buttonInfo.opcode 
+            ? buttonInfo.opcode 
+            : buttonInfo.func);
+        
         return {
             info: buttonInfo,
-            xml: `<button text="${xmlEscape.escapeAttribute(buttonText)}" callbackKey="${xmlEscape.escapeAttribute(buttonInfo.opcode ? buttonInfo.opcode : buttonInfo.func)}"></button>`
+            xml: `<button text="${buttonText}" callbackKey="${callback}"></button>`
         };
     }
 
@@ -1666,7 +1707,8 @@ class Runtime extends EventEmitter {
     }
 
     /**
-     * Helper for _convertPlaceholdes which handles variable dropdowns which are a specialized case of block "arguments".
+     * Helper for _convertPlaceholdes which handles variable dropdowns 
+     * which are a specialized case of block "arguments".
      * @param {object} argInfo Metadata about the variable dropdown
      * @return {object} JSON blob for a scratch-blocks variable field.
      * @private
@@ -1679,7 +1721,7 @@ class Runtime extends EventEmitter {
             type: 'field_variable',
             name: placeholder,
             variableTypes: isList ? ['list'] : (isBroadcast ? ['broadcast_msg'] : ['']),
-            variable: isBroadcast ? 'message1' : undefined
+            variable: isBroadcast ? 'message1' : null
         };
     }
 
@@ -1723,7 +1765,8 @@ class Runtime extends EventEmitter {
 
             const defaultValue =
                 typeof argInfo.defaultValue === 'undefined' ? '' :
-                    xmlEscape.escapeAttribute(maybeFormatMessage(argInfo.defaultValue, this.makeMessageContextForTarget()).toString());
+                    xmlEscape.escapeAttribute(maybeFormatMessage(
+                        argInfo.defaultValue, this.makeMessageContextForTarget()).toString());
 
             if (argTypeInfo.check) {
                 // Right now the only type of 'check' we have specifies that the
@@ -1741,6 +1784,14 @@ class Runtime extends EventEmitter {
                     valueName = placeholder;
                     shadowType = this._makeExtensionMenuId(argInfo.menu, context.categoryInfo.id);
                     fieldName = argInfo.menu;
+                } else if (typeof menuInfo.variableType === 'string') {
+                    argJSON.type = 'field_variable';
+                    argJSON.variableTypes = [menuInfo.variableType === 'scalar' 
+                        ? '' 
+                        : menuInfo.variableType];
+                    valueName = null;
+                    shadowType = null;
+                    fieldName = placeholder;
                 } else {
                     argJSON.type = 'field_dropdown';
                     argJSON.options = this._convertMenuItems(menuInfo.items);
@@ -2499,13 +2550,53 @@ class Runtime extends EventEmitter {
         this.startHats('event_whenflagclicked');
     }
 
+    _accountForExtendedSoundsAudioContexts() {
+        // extended audio
+        if ("ext_jgExtendedAudio" in this) {
+            const extension = this.ext_jgExtendedAudio;
+            const helper = extension.helper;
+            // audio context might not be created, make it for him
+            if (!helper.audioContext) helper.audioContext = new AudioContext();
+            // gain node for volume slidor might not be created, make it for him
+            if (!helper.audioGlobalVolumeNode) {
+                helper.audioGlobalVolumeNode = helper.audioContext.createGain();
+                helper.audioGlobalVolumeNode.gain.value = 1;
+                helper.audioGlobalVolumeNode.connect(helper.audioContext.destination);
+                if (this.audioEngine) {
+                    helper.audioGlobalVolumeNode.gain.value = this.audioEngine.inputNode.gain.value;
+                }
+            }
+        }
+    }
+    _getExtendedSoundsAudioContext() {
+        // extended audio
+        if ("ext_jgExtendedAudio" in this) {
+            const extension = this.ext_jgExtendedAudio;
+            const helper = extension.helper;
+            return helper.audioContext;
+        }
+    }
+
     /**
      * Pause running scripts
      */
     pause() {
         if (this.paused) return;
         this.paused = true;
+        // pause all audio contexts (that includes you, extended audio)
+        // yea extended audio gets extra permissions :3
         this.audioEngine.audioContext.suspend();
+        this._accountForExtendedSoundsAudioContexts();
+        const extAudioAC = this._getExtendedSoundsAudioContext();
+        if (extAudioAC) {
+            extAudioAC.suspend();
+        }
+        for (const audioData of this._extensionAudioObjects.values()) {
+            if (audioData.audioContext) {
+                audioData.audioContext.suspend();
+            }
+        }
+
         this.ioDevices.clock.pause();
         // safest way to stop the threads from being steped /shrug
         this.frameLoop.stop();
@@ -2521,7 +2612,19 @@ class Runtime extends EventEmitter {
     play() {
         if (!this.paused) return;
         this.paused = false;
+        // resume all audio contexts (that includes you, extended audio)
         this.audioEngine.audioContext.resume();
+        this._accountForExtendedSoundsAudioContexts();
+        const extAudioAC = this._getExtendedSoundsAudioContext();
+        if (extAudioAC) {
+            extAudioAC.resume();
+        }
+        for (const audioData of this._extensionAudioObjects.values()) {
+            if (audioData.audioContext) {
+                audioData.audioContext.resume();
+            }
+        }
+
         this.ioDevices.clock.resume();
         // frameloop is always stoped by pause() so restart it
         this.frameLoop.start();
@@ -2943,8 +3046,8 @@ class Runtime extends EventEmitter {
         if (parsed.runtimeOptions) {
             this.setRuntimeOptions(parsed.runtimeOptions);
         }
-        if (parsed.nohq && this.renderer) {
-            this.renderer.setUseHighQualityRender(false);
+        if (typeof parsed.hq === 'boolean' && this.renderer) {
+            this.renderer.setUseHighQualityRender(parsed.hq);
         }
         const storedWidth = +parsed.width || this.stageWidth;
         const storedHeight = +parsed.height || this.stageHeight;
@@ -2959,7 +3062,7 @@ class Runtime extends EventEmitter {
             runtimeOptions: this.runtimeOptions,
             interpolation: this.interpolationEnabled,
             turbo: this.turboMode,
-            hq: this.renderer ? this.renderer.useHighQualityRender : false,
+            hq: this.renderer ? this.renderer.useHighQualityRender : true,
             width: this.stageWidth,
             height: this.stageHeight
         };
@@ -2988,7 +3091,7 @@ class Runtime extends EventEmitter {
     storeProjectOptions () {
         const options = this.generateDifferingProjectOptions();
         // TODO: translate
-        const text = `Configuration for https://turbowarp.org/\nYou can move, resize, and minimize this comment, but don't edit it by hand. This comment can be deleted to remove the stored settings.\n${ExtendedJSON.stringify(options)}${COMMENT_CONFIG_MAGIC}`;
+        const text = `Configuration for https://penguinmod.com/\nYou can move, resize, and minimize this comment, but don't edit it by hand. This comment can be deleted to remove the stored settings.\n${ExtendedJSON.stringify(options)}${COMMENT_CONFIG_MAGIC}`;
         const existingComment = this.findProjectOptionsComment();
         if (existingComment) {
             existingComment.text = text;

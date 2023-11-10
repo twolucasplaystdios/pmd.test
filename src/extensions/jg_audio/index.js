@@ -15,6 +15,7 @@ class AudioExtension {
          * @type {runtime}
          */
         this.runtime = runtime;
+        this.helper = Helper;
         Helper.SetRuntime(runtime);
         this.runtime.on('PROJECT_STOP_ALL', () => {
             Helper.KillAllProcesses();

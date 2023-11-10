@@ -446,10 +446,9 @@ class Scratch3LooksBlocks {
         );
     }
     setColor (args, util) {
-        const numColor = Cast.toNumber(args.color);
+        const numColor = Number(args.color);
         if (!isNaN(numColor)) {
-            args.color = Color.decimalToRgb(numColor);
-            args.color = `rgba(${args.color.r}, ${args.color.g}, ${args.color.b}, ${args.color.a / 255})`;
+            args.color = Color.decimalToHex(numColor);
         }
         this._setBubbleProperty(
             util.target,

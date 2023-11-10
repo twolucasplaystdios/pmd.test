@@ -20,6 +20,9 @@ class JgRuntimeBlocks {
          */
         this.runtime = runtime;
 
+        // SharkPool
+        this.pausedScripts = Object.create({});
+
         // ShovelUtils
         // Based on from https://www.growingwiththeweb.com/2017/12/fast-simple-js-fps-counter.html
         const times = [];
@@ -34,6 +37,9 @@ class JgRuntimeBlocks {
             times.push(now);
             fps = times.length;
         };
+        this.runtime.on('PROJECT_STOP_ALL', () => {
+            this.pausedScripts = Object.create({});
+        });
     }
 
     _typeIsBitmap(type) {
@@ -76,7 +82,7 @@ class JgRuntimeBlocks {
                     arguments: {
                         URL: {
                             type: ArgumentType.STRING,
-                            defaultValue: 'https://api.allorigins.win/raw?url=https://studio.penguinmod.site/static/assets/9525874be2b1d66bd448bf53400011a9.svg'
+                            defaultValue: 'https://api.allorigins.win/raw?url=https://studio.penguinmod.com/static/assets/9525874be2b1d66bd448bf53400011a9.svg'
                         },
                         name: {
                             type: ArgumentType.STRING,
@@ -96,6 +102,17 @@ class JgRuntimeBlocks {
                         NAME: {
                             type: ArgumentType.STRING,
                             defaultValue: 'Buauauau'
+                        }
+                    }
+                },
+                {
+                    opcode: 'loadProjectDataUrl',
+                    text: 'load project from [URL]',
+                    blockType: BlockType.COMMAND,
+                    arguments: {
+                        URL: {
+                            type: ArgumentType.STRING,
+                            defaultValue: ''
                         }
                     }
                 },
@@ -120,6 +137,12 @@ class JgRuntimeBlocks {
                             defaultValue: "Pop"
                         }
                     }
+                },
+                {
+                    opcode: 'getProjectDataUrl',
+                    text: 'get data url of project',
+                    blockType: BlockType.REPORTER,
+                    disableMonitor: true
                 },
                 '---',
                 {
@@ -177,6 +200,43 @@ class JgRuntimeBlocks {
                         },
                         ENABLED: {
                             menu: 'onoff'
+                        }
+                    }
+                },
+                {
+                    opcode: 'changeRenderingCapping',
+                    text: formatMessage({
+                        id: 'jgRuntime.blocks.changeRenderingCapping',
+                        default: 'change render setting [OPTION] to [CAPPED]',
+                        description: 'Block that updates configuration on the renderer like resolution for certain content.'
+                    }),
+                    disableMonitor: false,
+                    blockType: BlockType.COMMAND,
+                    arguments: {
+                        OPTION: {
+                            menu: 'renderConfigCappable'
+                        },
+                        CAPPED: {
+                            menu: 'cappableSettings'
+                        }
+                    }
+                },
+                {
+                    opcode: 'setRenderingNumber',
+                    text: formatMessage({
+                        id: 'jgRuntime.blocks.setRenderingNumber',
+                        default: 'set render setting [OPTION] to [NUM]',
+                        description: 'Block that sets configuration on the renderer like resolution for certain content.'
+                    }),
+                    disableMonitor: false,
+                    blockType: BlockType.COMMAND,
+                    arguments: {
+                        OPTION: {
+                            menu: 'renderConfigNumber'
+                        },
+                        NUM: {
+                            type: ArgumentType.NUMBER,
+                            defaultValue: 0
                         }
                     }
                 },
@@ -313,6 +373,40 @@ class JgRuntimeBlocks {
                     }),
                     disableMonitor: false,
                     blockType: BlockType.REPORTER
+                },
+                "---",
+                {
+                    opcode: "pauseScript",
+                    blockType: BlockType.COMMAND,
+                    text: "pause this script using name: [NAME]",
+                    arguments: {
+                        NAME: {
+                            type: ArgumentType.STRING,
+                            defaultValue: "my script",
+                        },
+                    }
+                },
+                {
+                    opcode: "unpauseScript",
+                    blockType: BlockType.COMMAND,
+                    text: "unpause script named: [NAME]",
+                    arguments: {
+                        NAME: {
+                            type: ArgumentType.STRING,
+                            defaultValue: "my script",
+                        },
+                    }
+                },
+                {
+                    opcode: "isScriptPaused",
+                    blockType: BlockType.BOOLEAN,
+                    text: "is script named [NAME] paused?",
+                    arguments: {
+                        NAME: {
+                            type: ArgumentType.STRING,
+                            defaultValue: "my script",
+                        },
+                    }
                 },
                 "---",
                 {
@@ -610,10 +704,29 @@ class JgRuntimeBlocks {
                         "interpolation",
                     ]
                 },
+                renderConfigCappable: {
+                    acceptReporters: true,
+                    items: [
+                        "animated text resolution",
+                    ]
+                },
+                renderConfigNumber: {
+                    acceptReporters: true,
+                    items: [
+                        "animated text resolution",
+                    ]
+                },
                 onoff: {
                     items: [
                         "on",
                         "off"
+                    ]
+                },
+                cappableSettings: {
+                    items: [
+                        "uncapped",
+                        "capped",
+                        "fixed",
                     ]
                 }
             }
@@ -725,6 +838,41 @@ class JgRuntimeBlocks {
         return !(util.target.isOriginal);
     }
 
+    changeRenderingCapping(args) {
+        const option = Cast.toString(args.OPTION).toLowerCase();
+        const capping = Cast.toString(args.CAPPED).toLowerCase();
+        switch (option) {
+            case "animated text resolution": {
+                this.runtime.renderer.customRenderConfig.textCostumeResolution.fixed = false;
+                this.runtime.renderer.customRenderConfig.textCostumeResolution.capped = false;
+                if (capping === "fixed") {
+                    this.runtime.renderer.customRenderConfig.textCostumeResolution.fixed = true;
+                } else if (capping === "capped") {
+                    this.runtime.renderer.customRenderConfig.textCostumeResolution.capped = true;
+                }
+                break;
+            }
+        }
+        this.runtime.renderer.dirty = true;
+        this.runtime.requestRedraw();
+    }
+    setRenderingNumber(args) {
+        const option = Cast.toString(args.OPTION).toLowerCase();
+        const number = Cast.toNumber(args.NUM);
+        switch (option) {
+            case "animated text resolution": {
+                this.runtime.renderer.customRenderConfig.textCostumeResolution.value = number;
+                break;
+            }
+            case "max texture scale for new svg images": {
+                this.runtime.renderer.setMaxTextureDimension(number);
+                break;
+            }
+        }
+        this.runtime.renderer.dirty = true;
+        this.runtime.requestRedraw();
+    }
+
     updateRuntimeConfig(args) {
         const enabled = Cast.toString(args.ENABLED).toLowerCase() === 'on';
 
@@ -792,6 +940,29 @@ class JgRuntimeBlocks {
         };
         const hex = Color.rgbToHex(colorObject);
         return hex;
+    }
+
+    // SharkPool, edited by JeremyGamer13
+    pauseScript(args, util) {
+        const scriptName = Cast.toString(args.NAME);
+        const state = util.stackFrame.pausedScript;
+        if (!state) {
+            this.pausedScripts[scriptName] = true;
+            util.stackFrame.pausedScript = scriptName;
+            util.yield();
+        } else if (state in this.pausedScripts) {
+            util.yield();
+        }
+    }
+    unpauseScript(args) {
+        const scriptName = Cast.toString(args.NAME);
+        if (scriptName in this.pausedScripts) {
+            delete this.pausedScripts[scriptName];
+        }
+    }
+    isScriptPaused(args) {
+        const scriptName = Cast.toString(args.NAME);
+        return scriptName in this.pausedScripts;
     }
 
     setMaxFrameRate(args) {
@@ -898,6 +1069,44 @@ class JgRuntimeBlocks {
     getAllFonts() {
         const fonts = this.runtime.fontManager.getFonts();
         return JSON.stringify(fonts.map(font => font.name));
+    }
+
+    loadProjectDataUrl(args) {
+        const url = Cast.toString(args.URL);
+        if (typeof ScratchBlocks !== "undefined") {
+            // We are in the editor. Ask before loading a new project to avoid unrecoverable data loss.
+            if (!confirm(`Runtime Extension - Editor: Are you sure you want to load a new project?\nEverything in the current project will be permanently deleted.`)) {
+                return;
+            }
+        }
+        console.log("Loading project from custom source...");
+        fetch(url)
+            .then((r) => r.arrayBuffer())
+            .then((buffer) => vm.loadProject(buffer))
+            .then(() => {
+                console.log("Loaded project!");
+                vm.greenFlag();
+            })
+            .catch((error) => {
+                console.log("Error loading custom project;", error);
+            });
+    }
+    getProjectDataUrl() {
+        return new Promise((resolve) => {
+            const failingUrl = 'data:application/octet-stream;base64,';
+            vm.saveProjectSb3().then(blob => {
+                const fileReader = new FileReader();
+                fileReader.onload = () => {
+                    resolve(fileReader.result);
+                };
+                fileReader.onerror = () => {
+                    resolve(failingUrl);
+                }
+                fileReader.readAsDataURL(blob);
+            }).catch(() => {
+                resolve(failingUrl);
+            });
+        });
     }
 
     getAllVariables(args, util) {

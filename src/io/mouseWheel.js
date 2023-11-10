@@ -9,6 +9,12 @@ class MouseWheel {
         this.scrollDelta = 0;
     }
 
+    _addToScrollingDistanceBlock (amount) {
+        if ('ext_pmSensingExpansion' in this.runtime) {
+            this.runtime.ext_pmSensingExpansion.scrollDistance += amount;
+        }
+    }
+
     /**
      * Mouse wheel DOM event handler.
      * @param  {object} data Data from DOM event.
@@ -16,6 +22,8 @@ class MouseWheel {
     postData (data) {
         // pm: store scroll delta
         this.scrollDelta = data.deltaY;
+        // add to scrolling distance
+        this._addToScrollingDistanceBlock(0 - data.deltaY);
         // wait 2 ticks then set back to zero since we dont get a post for scroll stop
         this.runtime.once("RUNTIME_STEP_START", () => {
             this.runtime.once("RUNTIME_STEP_START", () => {

@@ -1119,6 +1119,7 @@ class Scratch3PenBlocks {
                 return handler(preloadedImage);
             }
             const image = new Image();
+            image.crossOrigin = "anonymous";
             image.onload = () => handler(image);
             image.onerror = () => resolve(); // ignore loading errors lol!
             image.src = Cast.toString(URI);
@@ -1151,6 +1152,7 @@ class Scratch3PenBlocks {
     preloadUriImage ({ URI, NAME }) {
         return new Promise(resolve => {
             const image = new Image();
+            image.crossOrigin = "anonymous";
             image.onload = () => {
                 this.preloadedImages[Cast.toString(NAME)] = image;
                 resolve();

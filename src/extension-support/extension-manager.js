@@ -42,13 +42,15 @@ const builtinExtensions = {
     twFiles: () => require('../extensions/tw_files'),
 
     // pm: category expansions & seperations go here
+    // pmMotionExpansion: extra motion blocks that were in the category & new ones that werent
+    pmMotionExpansion: () => require("../extensions/pm_motionExpansion"),
     // pmOperatorsExpansion: extra operators that were in the category & new ones that werent
     pmOperatorsExpansion: () => require("../extensions/pm_operatorsExpansion"),
     // pmSensingExpansion: extra sensing blocks that were in the category & new ones that werent
     pmSensingExpansion: () => require("../extensions/pm_sensingExpansion"),
-    // pmControlsExpansion: extra controls blocks that were in the category & new ones that werent
+    // pmControlsExpansion: extra control blocks that were in the category & new ones that werent
     pmControlsExpansion: () => require("../extensions/pm_controlsExpansion"),
-    // pmEventsExpansion: extra controls blocks that were in the category & new ones that werent
+    // pmEventsExpansion: extra event blocks that were in the category & new ones that werent
     pmEventsExpansion: () => require("../extensions/pm_eventsExpansion"),
 
     // pmInlineBlocks: seperates the inline function block to prevent confusled
@@ -61,6 +63,8 @@ const builtinExtensions = {
     jgWebsiteRequests: () => require("../extensions/jg_websiteRequests"),
     // jgJSON: handle JSON objects
     jgJSON: () => require("../extensions/jg_json"),
+    // jgJSONParsed: handle JSON objects BETTER
+    // jgJSONParsed: () => require("../extensions/jg_jsonParsed"),
     // jgRuntime: edit stage and other stuff
     jgRuntime: () => require("../extensions/jg_runtime"),
     // jgPrism: blocks for specific use cases or major convenience
@@ -77,8 +81,14 @@ const builtinExtensions = {
     jgClones: () => require("../extensions/jg_clones"),
     // jgTween: epic animation
     jgTween: () => require("../extensions/jg_tween"),
+    // jgDebugging: epic animation
+    jgDebugging: () => require("../extensions/jg_debugging"),
+    // jgEasySave: easy save stuff
+    jgEasySave: () => require("../extensions/jg_easySave"),
     // jgPackagerApplications: uuhhhhhhh packager
     jgPackagerApplications: () => require("../extensions/jg_packagerApplications"),
+    // jgTailgating: follow sprites like in an RPG
+    jgTailgating: () => require("../extensions/jg_tailgating"),
     // jgScripts: what you know about rollin down in the
     jgScripts: () => require("../extensions/jg_scripts"),
     // jg3d: damn daniel
@@ -133,6 +143,18 @@ const builtinExtensions = {
     // mikedev: ghytfhygfvbl
     // cl: () => require("../extensions/cl"),
     Gamepad: () => require("../extensions/GamepadExtension"),
+
+    // theshovel: ...
+    // theshovelcanvaseffects: ...
+    theshovelcanvaseffects: () => require("../extensions/theshovel_canvasEffects"),
+    // shovellzcompresss: ...
+    shovellzcompresss: () => require("../extensions/theshovel_lzString"),
+    // shovelColorPicker: ...
+    shovelColorPicker: () => require("../extensions/theshovel_colorPicker"),
+    // shovelcss: ...
+    shovelcss: () => require("../extensions/theshovel_customStyles"),
+    // profanityAPI: ...
+    profanityAPI: () => require("../extensions/theshovel_profanity"),
 
     // gsa: fill out your introduction stupet!!!
     // no >:(
@@ -377,11 +399,6 @@ class ExtensionManager {
             return;
         }
 
-        if (this.isExtensionURLLoaded(extensionURL)) {
-            // Extension is already loaded.
-            return;
-        }
-
         if (!this._isValidExtensionURL(extensionURL)) {
             throw new Error(`Invalid extension URL: ${extensionURL}`);
         }
@@ -487,8 +504,14 @@ class ExtensionManager {
 
     removeExtension(id) {
         const serviceName = this._loadedExtensions.get(id);
-        dispatch.call(serviceName, 'dispose');
+        const {provider} = dispatch._getServiceProvider(serviceName)
+        if (typeof provider.remove === 'function') {
+            dispatch.call(serviceName, 'dispose');
+        }
+
         this._loadedExtensions.delete(id);
+        const workerId = +serviceName.split('.')[1];
+        delete this.workerURLs[workerId]
         dispatch.call('runtime', '_removeExtensionPrimitive', id);
         this.refreshBlocks();
     }
@@ -732,10 +755,13 @@ class ExtensionManager {
             }
             break;
         case BlockType.BUTTON:
-            if (!blockInfo.opcode) {
-                throw new Error(`Missing opcode for button: ${blockInfo.text}`);
+            if (!blockInfo.opcode && !blockInfo.func) {
+                throw new Error(`Missing opcode or func for button: ${blockInfo.text}`);
             }
 
+            if (blockInfo.func && !blockInfo.opcode) {
+                blockInfo.opcode = blockInfo.func;
+            }
             const funcName = blockInfo.opcode;
             const callBlockFunc = (...args) => dispatch.call(serviceName, funcName, ...args);
 
@@ -841,7 +867,7 @@ class ExtensionManager {
     }
 
     isExtensionURLLoaded (url) {
-        return Object.values(this.workerURLs).includes(url);
+        return this.workerURLs.includes(url);
     }
 }
 

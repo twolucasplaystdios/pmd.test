@@ -12,7 +12,7 @@ const Icon = require("./icon.svg");
  */
 let currentPrivateCode = '';
 class JgScratchAuthenticateBlocks {
-    constructor (runtime) {
+    constructor(runtime) {
         /**
          * The runtime instantiating this block package.
          * @type {Runtime}
@@ -32,18 +32,18 @@ class JgScratchAuthenticateBlocks {
         this.disableConfirmationShown = false;
     }
 
-    
+
     /**
      * dummy function for reseting user provided permisions when a save is loaded
      */
-    deserialize () {
+    deserialize() {
         this.disableConfirmationShown = false;
     }
 
     /**
      * @returns {object} metadata for this extension and its blocks.
      */
-    getInfo () {
+    getInfo() {
         return {
             id: 'jgScratchAuthenticate',
             name: 'Scratch Auth',
@@ -51,7 +51,7 @@ class JgScratchAuthenticateBlocks {
             color2: '#ff8C00',
             blockIconURI: Icon,
             // TODO: docs doesnt exist, make some docs
-            // docsURI: 'https://docs.penguinmod.site/extensions/scratch-auth',
+            // docsURI: 'https://docs.penguinmod.com/extensions/scratch-auth',
             blocks: [
                 // LEGACY BLOCK
                 {
@@ -177,7 +177,7 @@ class JgScratchAuthenticateBlocks {
     }
 
     // menus
-    _getLoginLocations () {
+    _getLoginLocations() {
         const nameSplit = document.title.split(" - ");
         nameSplit.pop();
         const projectName = Cast.toString(nameSplit.join(" - "));
@@ -189,7 +189,7 @@ class JgScratchAuthenticateBlocks {
     }
 
     // util
-    async parseLoginCode_ () {
+    async parseLoginCode_() {
         if (!currentPrivateCode) throw new Error('Private code not present');
         const req = await fetch(`https://pm-bapi.vercel.app/api/verifyToken?privateCode=${currentPrivateCode}`);
         const json = await req.json();
@@ -201,7 +201,7 @@ class JgScratchAuthenticateBlocks {
     }
 
     // blocks
-    showPrompt (args) {
+    showPrompt(args) {
         // reset
         this.promptStatus = {
             inProgress: true,
@@ -213,7 +213,7 @@ class JgScratchAuthenticateBlocks {
 
         const loginLocation = Cast.toString(args.NAME);
         const sanitizedName = encodeURIComponent(loginLocation.substring(0, 256).replace(/[^a-zA-Z0-9 _\-\.\[\]\(\)]+/gmi, ""));
-        const waitingLink = `https://studio.penguinmod.site/scratchAuthExt.html?openLocation=${encodeURIComponent(window.origin)}`;
+        const waitingLink = `https://studio.penguinmod.com/scratchAuthExt.html?openLocation=${encodeURIComponent(window.origin)}`;
 
         // listen for events before opening
         let login;
@@ -267,23 +267,23 @@ class JgScratchAuthenticateBlocks {
             clearInterval(closedInterval);
         }, 500);
     }
-    privateCode () {
+    privateCode() {
         const code = currentPrivateCode;
         currentPrivateCode = '';
         return code;
     }
-    serverRedirectLocation () {
-        const waitingLink = `https://studio.penguinmod.site/scratchAuthExt.html?openLocation=${window.origin}`;
+    serverRedirectLocation() {
+        const waitingLink = `https://studio.penguinmod.com/scratchAuthExt.html?openLocation=${window.origin}`;
         return waitingLink;
     }
-    getPromptStatus (args) {
+    getPromptStatus(args) {
         const option = Cast.toString(args.STATUS);
         if (!(option in this.promptStatus)) return false;
         return this.promptStatus[option];
     }
 
     // parsing privat4e code blocks
-    async validLogin () {
+    async validLogin() {
         if (Object.keys(this.loginInfo).length <= 0) {
             try {
                 await this.parseLoginCode_();
@@ -294,7 +294,7 @@ class JgScratchAuthenticateBlocks {
         }
         return !!this.loginInfo.valid;
     }
-    async scratchUsername () {
+    async scratchUsername() {
         if (Object.keys(this.loginInfo).length <= 0) {
             try {
                 await this.parseLoginCode_();
@@ -307,7 +307,7 @@ class JgScratchAuthenticateBlocks {
     }
 
     // legacy block
-    authenticate (...args) {
+    authenticate(...args) {
         return Legacy.authenticate(this, ...args);
     }
 }

@@ -30,7 +30,7 @@ const {exportCostume} = require('./serialization/tw-costume-import-export');
 const Base64Util = require('./util/base64-util');
 
 const RESERVED_NAMES = ['_mouse_', '_stage_', '_edge_', '_myself_', '_random_'];
-const PM_LIBRARY_API = "https://penguinmod-objectlibraries.vercel.app/";
+const PM_LIBRARY_API = "https://library.penguinmod.com/";
 
 const CORE_EXTENSIONS = [
     // 'motion',
@@ -480,7 +480,7 @@ class VirtualMachine extends EventEmitter {
             .catch(error => {
                 // Intentionally rejecting here (want errors to be handled by caller)
                 if (error.hasOwnProperty('validationError')) {
-                    return Promise.reject(JSON.stringify(error));
+                    return Promise.reject(JSON.stringify(error, null, 4));
                 }
                 return Promise.reject(error);
             });
@@ -889,6 +889,36 @@ class VirtualMachine extends EventEmitter {
         const target = optTargetId ? this.runtime.getTargetById(optTargetId) :
             this.editingTarget;
         if (target) {
+            if (costumeObject.fromPenguinModLibrary === true) {
+                return new Promise((resolve, reject) => {
+                    fetch(`${PM_LIBRARY_API}files/${costumeObject.libraryId}`)
+                        .then((r) => r.arrayBuffer())
+                        .then((arrayBuffer) => {
+                            const dataFormat = costumeObject.dataFormat;
+                            const storage = this.runtime.storage;
+                            const asset = new storage.Asset(
+                                storage.AssetType[dataFormat === 'svg' ? "ImageVector" : "ImageBitmap"],
+                                null,
+                                storage.DataFormat[dataFormat.toUpperCase()],
+                                new Uint8Array(arrayBuffer),
+                                true
+                            );
+                            const newCostumeObject = {
+                                md5: asset.assetId + '.' + asset.dataFormat,
+                                asset: asset,
+                                name: costumeObject.name
+                            }
+                            loadCostume(newCostumeObject.md5, newCostumeObject, this.runtime, optVersion).then(costumeAsset => {
+                                target.addCostume(newCostumeObject);
+                                target.setCostume(
+                                    target.getCostumes().length - 1
+                                );
+                                this.runtime.emitProjectChanged();
+                                resolve(costumeAsset, newCostumeObject);
+                            })
+                        }).catch(reject);
+                });
+            }
             return loadCostume(md5ext, costumeObject, this.runtime, optVersion).then(costumeObject => {
                 target.addCostume(costumeObject);
                 target.setCostume(
@@ -1021,7 +1051,7 @@ class VirtualMachine extends EventEmitter {
                                 target.addSound(newSoundObject);
                                 this.emitTargetsUpdate();
                                 resolve(soundAsset, newSoundObject);
-                            })
+                            });
                         }).catch(reject);
                 });
             }
