@@ -1065,6 +1065,12 @@ const parseScratchAssets = function (object, runtime, zip) {
             rotationCenterX: costumeSource.rotationCenterX,
             rotationCenterY: costumeSource.rotationCenterY
         };
+        const possiblyFolder = costumeSource.name.split('//')
+        const name = possiblyFolder[1]
+        if (name) {
+            costume.folder = possiblyFolder[0]
+            costume.name = name
+        }
         const dataFormat =
             costumeSource.dataFormat ||
             (costumeSource.assetType && costumeSource.assetType.runtimeFormat) || // older format
@@ -1098,6 +1104,12 @@ const parseScratchAssets = function (object, runtime, zip) {
             dataFormat: soundSource.dataFormat,
             data: null
         };
+        const possiblyFolder = soundSource.name.split('//')
+        const name = possiblyFolder[1]
+        if (name) {
+            sound.folder = possiblyFolder[0]
+            sound.name = name
+        }
         // deserializeSound should be called on the sound object we're
         // creating above instead of the source sound object, because this way
         // we're always loading the 'sb3' representation of the costume
@@ -1137,6 +1149,12 @@ const parseScratchObject = function (object, runtime, extensions, zip, assets) {
     // Sprite/stage name from JSON.
     if (object.hasOwnProperty('name')) {
         sprite.name = object.name;
+        const possiblyFolder = object.name.split('//')
+        const name = possiblyFolder[1]
+        if (name) {
+            sprite.folder = possiblyFolder[0]
+            sprite.name = name
+        }
     }
     if (object.hasOwnProperty('blocks')) {
         // register and patch extensions

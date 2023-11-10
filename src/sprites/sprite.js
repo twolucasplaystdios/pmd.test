@@ -27,6 +27,7 @@ class Sprite {
          * @type {string}
          */
         this.name = '';
+        this.folder = null
         /**
          * List of costumes for this sprite.
          * Each entry is an object, e.g.,
