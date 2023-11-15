@@ -566,6 +566,8 @@ class Runtime extends EventEmitter {
                 scale: 1
             }
         ];
+
+        this.on('RUNTIME_STEP_START', () => this.emit('BEFORE_EXECUTE'));
     }
 
     /**
