@@ -898,8 +898,9 @@ class Blocks {
      * Block management: delete blocks and their associated scripts. Does nothing if a block
      * with the given ID does not exist.
      * @param {!string} blockId Id of block to delete
+     * @param {boolean} preserveStack If we should reconect the bottom blocks to the top block 
      */
-    deleteBlock (blockId) {
+    deleteBlock (blockId, preserveStack) {
         // @todo In runtime, stop threads running on this script.
 
         // Get block
@@ -910,8 +911,15 @@ class Blocks {
         }
 
         // Delete children
-        if (block.next !== null) {
+        if (block.next !== null && !preserveStack) {
             this.deleteBlock(block.next);
+        }
+
+        if (preserveStack) {
+            const parent = this._blocks[block.parent];
+            const next = this._blocks[block.next];
+            parent.next = block.next;
+            next.parent = block.parent;
         }
 
         // Delete inputs (including branches)
