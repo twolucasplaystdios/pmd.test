@@ -1017,7 +1017,7 @@ class JSGenerator {
             break;
         }
         case 'control.exitCase':
-            if (this.currentFrame.importantData.containedByCase) {
+            if (!this.currentFrame.importantData.containedByCase) {
                 this.source += `throw 'All "exit case" blocks must be inside of a "case" block.';`;
                 break;
             }
