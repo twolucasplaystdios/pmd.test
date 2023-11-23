@@ -1602,6 +1602,16 @@ class VirtualMachine extends EventEmitter {
     }
 
     /**
+     * @param {Block[]} blockObjects
+     * @returns {object}
+     */
+    exportStandaloneBlocks (blockObjects) {
+        const sb3 = require('./serialization/sb3');
+        const serialized = sb3.serializeStandaloneBlocks(blockObjects, this.runtime);
+        return serialized;
+    }
+
+    /**
      * Called when blocks are dragged from one sprite to another. Adds the blocks to the
      * workspace of the given target.
      * @param {!Array<object>} blocks Blocks to add.
