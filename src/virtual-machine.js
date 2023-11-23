@@ -1623,7 +1623,7 @@ class VirtualMachine extends EventEmitter {
     shareBlocksToTarget (blocks, targetId, optFromTargetId) {
         const sb3 = require('./serialization/sb3');
 
-        const copiedBlocks = JSON.parse(JSON.stringify(blocks));
+        const {blocks: copiedBlocks, extensionURLs} = sb3.deserializeStandaloneBlocks(blocks);
         newBlockIds(copiedBlocks);
         const target = this.runtime.getTargetById(targetId);
 
@@ -1641,7 +1641,7 @@ class VirtualMachine extends EventEmitter {
             .filter(id => !this.extensionManager.isExtensionLoaded(id)) // and remove loaded extensions
         );
 
-        return this._loadExtensions(extensionIDs).then(() => {
+        return this._loadExtensions(extensionIDs, extensionURLs).then(() => {
             copiedBlocks.forEach(block => {
                 target.blocks.createBlock(block);
             });
