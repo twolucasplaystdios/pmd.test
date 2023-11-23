@@ -697,6 +697,19 @@ class ScriptTreeGenerator {
             return {
                 kind: 'sensing.username'
             };
+            
+        case 'operator_trueBoolean':
+            return {
+                kind: 'op.true'
+            };
+        case 'operator_falseBoolean':
+            return {
+                kind: 'op.false'
+            };
+        case 'operator_randomBoolean':
+            return {
+                kind: 'op.randbool'
+            };
 
         case 'sound_sounds_menu':
             return {

@@ -614,6 +614,13 @@ class JSGenerator {
         case 'mouse.y':
             return new TypedInput('runtime.ioDevices.mouse.getScratchY()', TYPE_NUMBER);
             
+        case 'op.true':
+            return new TypedInput('(true)', TYPE_BOOLEAN);
+        case 'op.false':
+            return new TypedInput('(false)', TYPE_BOOLEAN);
+        case 'op.randbool':
+            return new TypedInput('(Boolean(Math.round(Math.random())))', TYPE_BOOLEAN);
+            
         case 'pmEventsExpansion.broadcastFunction':
             // we need to do function otherwise this block would be stupidly long
             let source = '(yield* (function*() {';
