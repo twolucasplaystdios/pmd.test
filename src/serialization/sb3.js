@@ -490,6 +490,58 @@ const serializeBlocks = function (blocks) {
 };
 
 /**
+ * @param {unknown} blocks Output of serializeStandaloneBlocks
+ * @returns {{blocks: Block[], extensionURLs: Map<string, string>}}
+ */
+const deserializeStandaloneBlocks = blocks => {
+    // deep clone to ensure it's safe to modify later
+    blocks = JSON.parse(JSON.stringify(blocks));
+
+    if (blocks.extensionURLs) {
+        const extensionURLs = new Map();
+        for (const [id, url] of Object.entries(blocks.extensionURLs)) {
+            extensionURLs.set(id, url);
+        }
+        return {
+            blocks: blocks.blocks,
+            extensionURLs
+        };
+    }
+
+    // Vanilla Scratch format is just a list of block objects
+    return {
+        blocks,
+        extensionURLs: new Map()
+    };
+};
+
+/**
+ * @param {Block[]} blocks List of block objects.
+ * @param {Runtime} runtime Runtime
+ * @returns {object} Something that can be understood by deserializeStandaloneBlocks
+ */
+const serializeStandaloneBlocks = (blocks, runtime) => {
+    const extensionIDs = new Set();
+    for (const block of blocks) {
+        const extensionID = getExtensionIdForOpcode(block.opcode);
+        if (extensionID) {
+            extensionIDs.add(extensionID);
+        }
+    }
+    const extensionURLs = getExtensionURLsToSave(extensionIDs, runtime);
+    if (extensionURLs) {
+        return {
+            blocks,
+            // same format as project.json
+            extensionURLs: extensionURLs
+        };
+    }
+    // Vanilla Scratch always just uses the block array as-is. To reduce compatibility concerns
+    // we too will use that when possible.
+    return blocks;
+};
+
+/**
  * Serialize the given costume.
  * @param {object} costume The costume to be serialized.
  * @return {object} A serialized representation of the costume.
@@ -1580,5 +1632,7 @@ module.exports = {
     deserialize: deserialize,
     deserializeBlocks: deserializeBlocks,
     serializeBlocks: serializeBlocks,
+    deserializeStandaloneBlocks: deserializeStandaloneBlocks,
+    serializeStandaloneBlocks: serializeStandaloneBlocks,
     getExtensionIdForOpcode: getExtensionIdForOpcode
 };
