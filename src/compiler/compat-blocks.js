@@ -8,10 +8,6 @@
 // haha cry about it - jerem
 
 const statementBlocks = [
-    'control_clear_counter',
-    'control_incr_counter',
-    'control_decr_counter',
-    'control_set_counter',
     'looks_hideallsprites',
     'looks_say',
     'looks_sayforsecs',
@@ -83,7 +79,6 @@ const statementBlocks = [
 ];
 
 const outputBlocks = [
-    'control_get_counter',
     'motion_xscroll',
     'motion_yscroll',
     'sensing_loud',

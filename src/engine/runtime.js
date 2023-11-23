@@ -492,6 +492,15 @@ class Runtime extends EventEmitter {
             warpTimer: false
         };
 
+        this.optimizationUtil = {
+            sin: new Array(360),
+            cos: new Array(360)
+        };
+        for (let i = 0; i < 360; i++) {
+            this.optimizationUtil.sin[i] = Math.round(Math.sin((Math.PI * i) / 180) * 1e10) / 1e10;
+            this.optimizationUtil.cos[i] = Math.round(Math.cos((Math.PI * i) / 180) * 1e10) / 1e10;
+        }
+
         this.debug = false;
 
         this._lastStepTime = Date.now();
