@@ -1250,8 +1250,20 @@ class Runtime extends EventEmitter {
     }
 
     _removeExtensionPrimitive(extensionId) {
-        this._blockInfo = this._blockInfo.filter(ext => ext.id !== extensionId);
+        const extIdx = this._blockInfo.findIndex(ext => ext.id === extensionId);
+        const info = this._blockInfo[extIdx];
+        this._blockInfo.splice(extIdx, 1);
         this.emit(Runtime.EXTENSION_REMOVED);
+        // cleanup blocks
+        for (const target of this.targets) {
+            for (const blockId in target.blocks._blocks) {
+                const {opcode} = target.blocks.getBlock(blockId);
+                if (info.blocks.find(block => block.json?.type === opcode)) {
+                    target.blocks.deleteBlock(blockId, true);
+                }
+            }
+        }
+        this.emit(Runtime.BLOCKS_NEED_UPDATE);
     }
 
     /**
