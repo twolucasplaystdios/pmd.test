@@ -483,23 +483,13 @@ class Runtime extends EventEmitter {
         this.runtimeOptions = {
             maxClones: Runtime.MAX_CLONES,
             miscLimits: true,
-            fencing: true,
-            dangerousOptimizations: false
+            fencing: true
         };
 
         this.compilerOptions = {
             enabled: true,
             warpTimer: false
         };
-
-        this.optimizationUtil = {
-            sin: new Array(360),
-            cos: new Array(360)
-        };
-        for (let i = 0; i < 360; i++) {
-            this.optimizationUtil.sin[i] = Math.round(Math.sin((Math.PI * i) / 180) * 1e10) / 1e10;
-            this.optimizationUtil.cos[i] = Math.round(Math.cos((Math.PI * i) / 180) * 1e10) / 1e10;
-        }
 
         this.debug = false;
 
@@ -576,8 +566,6 @@ class Runtime extends EventEmitter {
                 scale: 1
             }
         ];
-
-        this.on('RUNTIME_STEP_START', () => this.emit('BEFORE_EXECUTE'));
     }
 
     /**
@@ -1250,8 +1238,20 @@ class Runtime extends EventEmitter {
     }
 
     _removeExtensionPrimitive(extensionId) {
-        this._blockInfo = this._blockInfo.filter(ext => ext.id !== extensionId);
+        const extIdx = this._blockInfo.findIndex(ext => ext.id === extensionId);
+        const info = this._blockInfo[extIdx];
+        this._blockInfo.splice(extIdx, 1);
         this.emit(Runtime.EXTENSION_REMOVED);
+        // cleanup blocks
+        for (const target of this.targets) {
+            for (const blockId in target.blocks._blocks) {
+                const {opcode} = target.blocks.getBlock(blockId);
+                if (info.blocks.find(block => block.json?.type === opcode)) {
+                    target.blocks.deleteBlock(blockId, true);
+                }
+            }
+        }
+        this.emit(Runtime.BLOCKS_NEED_UPDATE);
     }
 
     /**
