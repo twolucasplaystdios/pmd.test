@@ -1251,6 +1251,7 @@ class Runtime extends EventEmitter {
                 }
             }
         }
+        this.emit(Runtime.BLOCKS_NEED_UPDATE);
     }
 
     /**
