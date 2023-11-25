@@ -501,6 +501,16 @@ runtimeFunctions.listContains = `const listContains = (list, item) => {
 }`;
 
 /**
+ * pm: Returns whether a list contains a value, using Array.some
+ * @param {import('../engine/variable')} list The list.
+ * @param {*} item The value to search for.
+ * @returns {boolean} True if the list contains the item
+ */
+runtimeFunctions.listContainsFastest = `const listContainsFastest = (list, item) => {
+    return list.value.some(litem => compareEqual(litem, item));
+}`;
+
+/**
  * Find the 1-indexed index of an item in a list.
  * @param {import('../engine/variable')} list The list.
  * @param {*} item The item to search for

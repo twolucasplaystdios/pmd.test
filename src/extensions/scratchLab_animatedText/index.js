@@ -300,7 +300,194 @@ class Scratch3TextBlocks {
                 opcode: 'getHeight',
                 text: 'get height of the text',
                 blockType: BlockType.REPORTER
-            }],
+            },
+
+                // TODO: Give these blocks actual functionality.
+                //       Most of them can be done easily.
+
+                // TURBOWARP BLOCKS (added for compatibility reasons)
+                // TURBOWARP BLOCKS (added for compatibility reasons)
+                // TURBOWARP BLOCKS (added for compatibility reasons)
+                // TURBOWARP BLOCKS (added for compatibility reasons)
+                // TURBOWARP BLOCKS (added for compatibility reasons)
+                // TURBOWARP BLOCKS (added for compatibility reasons)
+
+                // TODO: Give these blocks actual functionality.
+                //       Most of them can be done easily.
+
+                {
+                    opcode: "setAlignment",
+                    blockType: BlockType.COMMAND,
+                    text: ("(NOT USABLE YET) align text to [ALIGN]"),
+                    hideFromPalette: true,
+                    arguments: {
+                        ALIGN: {
+                            type: ArgumentType.STRING,
+                            menu: "twAlign",
+                        },
+                    },
+                },
+                {
+                    // why is the other block called "setWidth" :(
+                    opcode: "setWidthValue",
+                    blockType: BlockType.COMMAND,
+                    text: ("(NOT USABLE YET) set width to [WIDTH]"),
+                    hideFromPalette: true,
+                    arguments: {
+                        WIDTH: {
+                            type: ArgumentType.NUMBER,
+                            defaultValue: 200,
+                        },
+                    },
+                },
+                {
+                    opcode: "resetWidth",
+                    blockType: BlockType.COMMAND,
+                    text: ("(NOT USABLE YET) reset text width"),
+                    hideFromPalette: true,
+                },
+                "---",
+                {
+                    opcode: "getLines",
+                    blockType: BlockType.REPORTER,
+                    text: ("(NOT USABLE YET) # of lines"),
+                    hideFromPalette: true,
+                    disableMonitor: true,
+                },
+                "---",
+                {
+                    opcode: "startAnimate",
+                    blockType: BlockType.COMMAND,
+                    text: ("(NOT USABLE YET) start [ANIMATE] animation"),
+                    hideFromPalette: true,
+                    arguments: {
+                        ANIMATE: {
+                            type: ArgumentType.STRING,
+                            menu: "twAnimate",
+                            defaultValue: "rainbow",
+                        },
+                    },
+                },
+                {
+                    opcode: "animateUntilDone",
+                    blockType: BlockType.COMMAND,
+                    text: ("(NOT USABLE YET) animate [ANIMATE] until done"),
+                    hideFromPalette: true,
+                    arguments: {
+                        ANIMATE: {
+                            type: ArgumentType.STRING,
+                            menu: "twAnimate",
+                            defaultValue: "rainbow",
+                        },
+                    },
+                },
+                {
+                    opcode: "isAnimating",
+                    blockType: BlockType.BOOLEAN,
+                    text: ("(NOT USABLE YET) is animating?"),
+                    hideFromPalette: true,
+                    disableMonitor: true,
+                },
+                "---",
+                {
+                    opcode: "setAnimateDuration",
+                    blockType: BlockType.COMMAND,
+                    text: ("(NOT USABLE YET) set [ANIMATE] duration to [NUM] seconds"),
+                    hideFromPalette: true,
+                    arguments: {
+                        ANIMATE: {
+                            type: ArgumentType.STRING,
+                            menu: "twAnimateDuration",
+                            defaultValue: "rainbow",
+                        },
+                        NUM: {
+                            type: ArgumentType.NUMBER,
+                            defaultValue: 3,
+                        },
+                    },
+                },
+                {
+                    opcode: "resetAnimateDuration",
+                    blockType: BlockType.COMMAND,
+                    text: ("(NOT USABLE YET) reset [ANIMATE] duration"),
+                    hideFromPalette: true,
+                    arguments: {
+                        ANIMATE: {
+                            type: ArgumentType.STRING,
+                            menu: "twAnimateDuration",
+                            defaultValue: "rainbow",
+                        },
+                    },
+                },
+                {
+                    opcode: "getAnimateDuration",
+                    blockType: BlockType.REPORTER,
+                    text: ("(NOT USABLE YET) [ANIMATE] duration"),
+                    hideFromPalette: true,
+                    arguments: {
+                        ANIMATE: {
+                            type: ArgumentType.STRING,
+                            menu: "twAnimateDuration",
+                            defaultValue: "rainbow",
+                        },
+                    },
+                },
+                "---",
+                {
+                    opcode: "setTypeDelay",
+                    blockType: BlockType.COMMAND,
+                    text: ("(NOT USABLE YET) set typing delay to [NUM] seconds"),
+                    hideFromPalette: true,
+                    arguments: {
+                        NUM: {
+                            type: ArgumentType.NUMBER,
+                            defaultValue: 0.1,
+                        },
+                    },
+                },
+                {
+                    opcode: "resetTypeDelay",
+                    blockType: BlockType.COMMAND,
+                    text: ("(NOT USABLE YET) reset typing delay"),
+                    hideFromPalette: true,
+                },
+                {
+                    opcode: "getTypeDelay",
+                    blockType: BlockType.REPORTER,
+                    text: ("(NOT USABLE YET) typing delay"),
+                    hideFromPalette: true,
+                    disableMonitor: true,
+                },
+                "---",
+                {
+                    opcode: "textActive",
+                    blockType: BlockType.BOOLEAN,
+                    text: ("(NOT USABLE YET) is showing text?"),
+                    hideFromPalette: true,
+                    disableMonitor: true,
+                },
+                {
+                    opcode: "getDisplayedText",
+                    blockType: BlockType.REPORTER,
+                    text: ("(NOT USABLE YET) displayed text"),
+                    hideFromPalette: true,
+                    disableMonitor: true,
+                },
+                {
+                    opcode: "getTextAttribute",
+                    blockType: BlockType.REPORTER,
+                    text: "(NOT USABLE YET) text [ATTRIBUTE]",
+                    arguments: {
+                        ATTRIBUTE: {
+                            type: ArgumentType.STRING,
+                            menu: "attribute",
+                        },
+                    },
+                    disableMonitor: true,
+                    hideFromPalette: true,
+                },
+        
+        ],
             menus: {
                 FONT: {
                     items: '_getFonts',
@@ -329,7 +516,55 @@ class Scratch3TextBlocks {
                         text: 'zoom',
                         value: 'zoom'
                     }]
-                }
+                },
+                // TurboWarp menus (acceptReporters: true)
+                twAnimate: {
+                    acceptReporters: true,
+                    items: [
+                        {
+                            text: ("type"),
+                            value: "type",
+                        },
+                        {
+                            text: ("rainbow"),
+                            value: "rainbow",
+                        },
+                        {
+                            text: ("zoom"),
+                            value: "zoom",
+                        },
+                    ],
+                },
+                twAnimateDuration: {
+                    acceptReporters: true,
+                    items: [
+                        {
+                            text: ("rainbow"),
+                            value: "rainbow",
+                        },
+                        {
+                            text: ("zoom"),
+                            value: "zoom",
+                        },
+                    ],
+                },
+                twAlign: {
+                    acceptReporters: true,
+                    items: [
+                        {
+                            text: ("left"),
+                            value: "left",
+                        },
+                        {
+                            text: ("center"),
+                            value: "center",
+                        },
+                        {
+                            text: ("right"),
+                            value: "right",
+                        },
+                    ],
+                },
             }
         };
     }

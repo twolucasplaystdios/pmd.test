@@ -393,6 +393,8 @@ class JSGenerator {
         this.variableInputs = {};
 
         this.isWarp = script.isWarp;
+        this.isOptimized = script.isOptimized;
+        this.optimizationUtil = script.optimizationUtil;
         this.isProcedure = script.isProcedure;
         this.warpTimer = script.warpTimer;
 
@@ -517,6 +519,8 @@ class JSGenerator {
 
         case 'constant':
             return this.safeConstantInput(node.value);
+        case 'counter.get':
+            return new TypedInput('runtime.ext_scratch3_control._counter', TYPE_NUMBER);
         case 'math.polygon':
             let points = JSON.stringify(node.points.map((point, num) => ({x: `x${num}`, y: `y${num}`})));
             for (let num = 0; num < node.points.length; num++) {
@@ -546,8 +550,16 @@ class JSGenerator {
             return new TypedInput(`runtime.ioDevices.keyboard.getKeyIsDown(${this.descendInput(node.key).asSafe()})`, TYPE_BOOLEAN);
 
         case 'list.contains':
+            if (this.isOptimized) {
+                // pm: we can use a better function here
+                return new TypedInput(`listContainsFastest(${this.referenceVariable(node.list)}, ${this.descendInput(node.item).asUnknown()})`, TYPE_BOOLEAN);
+            }
             return new TypedInput(`listContains(${this.referenceVariable(node.list)}, ${this.descendInput(node.item).asUnknown()})`, TYPE_BOOLEAN);
         case 'list.contents':
+            if (this.isOptimized) {
+                // pm: its more consistent to just return the list with spaces inbetween
+                return new TypedInput(`(${this.referenceVariable(node.list)}.value.join(' '))`, TYPE_STRING);
+            }
             return new TypedInput(`listContents(${this.referenceVariable(node.list)})`, TYPE_STRING);
         case 'list.get': {
             const index = this.descendInput(node.index);
@@ -558,6 +570,10 @@ class JSGenerator {
                 if (index instanceof ConstantInput && index.constantValue === 'last') {
                     return new TypedInput(`(${this.referenceVariable(node.list)}.value[${this.referenceVariable(node.list)}.value.length - 1] ?? "")`, TYPE_UNKNOWN);
                 }
+            }
+            if (this.isOptimized) {
+                // pm: we can just use this as an index ignoring the string input, the nullish coalescing operator will just make sure we dont return undefined
+                return new TypedInput(`(${this.referenceVariable(node.list)}.value[${index.asUnknown()} - 1] ?? "")`, TYPE_UNKNOWN);
             }
             return new TypedInput(`listGet(${this.referenceVariable(node.list)}.value, ${index.asUnknown()})`, TYPE_UNKNOWN);
         }
@@ -579,9 +595,16 @@ class JSGenerator {
 
         case 'motion.direction':
             return new TypedInput('target.direction', TYPE_NUMBER);
+
         case 'motion.x':
+            if (this.isOptimized) {
+                return new TypedInput('(target.x)', TYPE_NUMBER);
+            }
             return new TypedInput('limitPrecision(target.x)', TYPE_NUMBER);
         case 'motion.y':
+            if (this.isOptimized) {
+                return new TypedInput('(target.y)', TYPE_NUMBER);
+            }
             return new TypedInput('limitPrecision(target.y)', TYPE_NUMBER);
 
         case 'mouse.down':
@@ -590,6 +613,13 @@ class JSGenerator {
             return new TypedInput('runtime.ioDevices.mouse.getScratchX()', TYPE_NUMBER);
         case 'mouse.y':
             return new TypedInput('runtime.ioDevices.mouse.getScratchY()', TYPE_NUMBER);
+            
+        case 'op.true':
+            return new TypedInput('(true)', TYPE_BOOLEAN);
+        case 'op.false':
+            return new TypedInput('(false)', TYPE_BOOLEAN);
+        case 'op.randbool':
+            return new TypedInput('(Boolean(Math.round(Math.random())))', TYPE_BOOLEAN);
             
         case 'pmEventsExpansion.broadcastFunction':
             // we need to do function otherwise this block would be stupidly long
@@ -639,6 +669,11 @@ class JSGenerator {
         case 'op.contains':
             return new TypedInput(`(${this.descendInput(node.string).asString()}.toLowerCase().indexOf(${this.descendInput(node.contains).asString()}.toLowerCase()) !== -1)`, TYPE_BOOLEAN);
         case 'op.cos':
+            // pm: optimizations allow us to use a premade list for sin values on integers
+            if (this.isOptimized) {
+                const value = `${this.descendInput(node.value).asNumber()}`;
+                return new TypedInput(`(Number.isInteger(${value}) ? runtime.optimizationUtil.cos[${value} % 360] : (Math.round(Math.cos((Math.PI * ${value}) / 180) * 1e10) / 1e10))`, TYPE_NUMBER_NAN);
+            }
             return new TypedInput(`(Math.round(Math.cos((Math.PI * ${this.descendInput(node.value).asNumber()}) / 180) * 1e10) / 1e10)`, TYPE_NUMBER_NAN);
         case 'op.divide':
             // Needs to be marked as NaN because 0 / 0 === NaN
@@ -744,6 +779,11 @@ class JSGenerator {
         case 'op.round':
             return new TypedInput(`Math.round(${this.descendInput(node.value).asNumber()})`, TYPE_NUMBER);
         case 'op.sin':
+            // pm: optimizations allow us to use a premade list for sin values on integers
+            if (this.isOptimized) {
+                const value = `${this.descendInput(node.value).asNumber()}`;
+                return new TypedInput(`(Number.isInteger(${value}) ? runtime.optimizationUtil.sin[${value} % 360] : (Math.round(Math.sin((Math.PI * ${value}) / 180) * 1e10) / 1e10))`, TYPE_NUMBER_NAN);
+            }
             return new TypedInput(`(Math.round(Math.sin((Math.PI * ${this.descendInput(node.value).asNumber()}) / 180) * 1e10) / 1e10)`, TYPE_NUMBER_NAN);
         case 'op.sqrt':
             // Needs to be marked as NaN because Math.sqrt(-1) === NaN
@@ -1017,7 +1057,7 @@ class JSGenerator {
             break;
         }
         case 'control.exitCase':
-            if (this.currentFrame.importantData.containedByCase) {
+            if (!this.currentFrame.importantData.containedByCase) {
                 this.source += `throw 'All "exit case" blocks must be inside of a "case" block.';`;
                 break;
             }
@@ -1168,6 +1208,18 @@ class JSGenerator {
             this.source += `thread.spoofTarget = ${alreadySpoofTarget};\n`;
 
             this.source += `}\n`;
+            break;
+        case 'counter.clear':
+            this.source += 'runtime.ext_scratch3_control._counter = 0;\n';
+            break;
+        case 'counter.increment':
+            this.source += 'runtime.ext_scratch3_control._counter++;\n';
+            break;
+        case 'counter.decrement':
+            this.source += 'runtime.ext_scratch3_control._counter--;\n';
+            break;
+        case 'counter.set':
+            this.source += `runtime.ext_scratch3_control._counter = ${this.descendInput(node.value).asNumber()};\n`;
             break;
         case 'hat.edge':
             this.isInHat = true;

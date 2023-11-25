@@ -75,6 +75,8 @@ class ScriptTreeGenerator {
          */
         this.script = new IntermediateScript();
         this.script.warpTimer = this.target.runtime.compilerOptions.warpTimer;
+        this.script.isOptimized = this.target.runtime.runtimeOptions.dangerousOptimizations;
+        this.script.optimizationUtil = this.target.runtime.optimizationUtil;
 
         /**
          * Cache of variable ID to variable data object.
@@ -267,6 +269,11 @@ class ScriptTreeGenerator {
                 index: index
             };
         }
+
+        case 'control_get_counter':
+            return {
+                kind: 'counter.get'
+            };
 
         case 'data_variable':
             return {
@@ -690,6 +697,19 @@ class ScriptTreeGenerator {
             return {
                 kind: 'sensing.username'
             };
+            
+        case 'operator_trueBoolean':
+            return {
+                kind: 'op.true'
+            };
+        case 'operator_falseBoolean':
+            return {
+                kind: 'op.false'
+            };
+        case 'operator_randomBoolean':
+            return {
+                kind: 'op.randbool'
+            };
 
         case 'sound_sounds_menu':
             return {
@@ -940,6 +960,10 @@ class ScriptTreeGenerator {
                 },
                 code: this.descendSubstack(block, 'SUBSTACK')
             };
+        case 'control_clear_counter':
+            return {
+                kind: 'counter.clear'
+            };
         case 'control_create_clone_of':
             return {
                 kind: 'control.createClone',
@@ -981,6 +1005,19 @@ class ScriptTreeGenerator {
                 condition: this.descendInputOfBlock(block, 'CONDITION'),
                 whenTrue: this.descendSubstack(block, 'SUBSTACK'),
                 whenFalse: this.descendSubstack(block, 'SUBSTACK2')
+            };
+        case 'control_incr_counter':
+            return {
+                kind: 'counter.increment'
+            };
+        case 'control_decr_counter':
+            return {
+                kind: 'counter.decrement'
+            };
+        case 'control_set_counter':
+            return {
+                kind: 'counter.set',
+                value: this.descendInputOfBlock(block, 'VALUE')
             };
         case 'control_repeat':
             this.analyzeLoop();

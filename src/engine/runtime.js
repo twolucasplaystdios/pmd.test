@@ -483,13 +483,23 @@ class Runtime extends EventEmitter {
         this.runtimeOptions = {
             maxClones: Runtime.MAX_CLONES,
             miscLimits: true,
-            fencing: true
+            fencing: true,
+            dangerousOptimizations: false
         };
 
         this.compilerOptions = {
             enabled: true,
             warpTimer: false
         };
+
+        this.optimizationUtil = {
+            sin: new Array(360),
+            cos: new Array(360)
+        };
+        for (let i = 0; i < 360; i++) {
+            this.optimizationUtil.sin[i] = Math.round(Math.sin((Math.PI * i) / 180) * 1e10) / 1e10;
+            this.optimizationUtil.cos[i] = Math.round(Math.cos((Math.PI * i) / 180) * 1e10) / 1e10;
+        }
 
         this.debug = false;
 
@@ -566,6 +576,8 @@ class Runtime extends EventEmitter {
                 scale: 1
             }
         ];
+
+        this.on('RUNTIME_STEP_START', () => this.emit('BEFORE_EXECUTE'));
     }
 
     /**
