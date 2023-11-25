@@ -918,8 +918,8 @@ class Blocks {
         if (preserveStack) {
             const parent = this._blocks[block.parent];
             const next = this._blocks[block.next];
-            parent.next = block.next;
-            next.parent = block.parent;
+            if (parent) parent.next = block.next;
+            if (next) next.parent = block.parent;
         }
 
         // Delete inputs (including branches)
@@ -935,8 +935,19 @@ class Blocks {
             }
         }
 
-        // Delete any script starting with this block.
-        this._deleteScript(blockId);
+        if (!preserveStack) {
+            // Delete any script starting with this block.
+            this._deleteScript(blockId);
+        }
+        const i = this._scripts.indexOf(blockId);
+        if (preserveStack && i > -1) {
+            const next = this._blocks[block.next];
+            if (next) {
+                this._scripts.push(next.id);
+                next.topLevel = true;
+            }
+            this._scripts.splice(i, 1);
+        }
 
         // Delete block itself.
         delete this._blocks[blockId];

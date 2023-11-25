@@ -1251,7 +1251,6 @@ class Runtime extends EventEmitter {
                 }
             }
         }
-        this.vm.emitTargetsUpdate();
     }
 
     /**
