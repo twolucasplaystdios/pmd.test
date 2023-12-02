@@ -503,7 +503,7 @@ class RenderedTarget extends Target {
             return;
         }
         if (this.renderer) {
-            this.size = size;
+            this.size = Math.max(0, size);
             const {direction, scale} = this._getRenderedDirectionAndScale();
             this.renderer.updateDrawableDirectionScale(this.drawableID, direction, scale, this.transform);
             if (this.visible) {
