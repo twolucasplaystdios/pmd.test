@@ -503,18 +503,7 @@ class RenderedTarget extends Target {
             return;
         }
         if (this.renderer) {
-            // Clamp to scales relative to costume and stage size.
-            // See original ScratchSprite.as:setSize.
-            const costumeSize = this.renderer.getCurrentSkinSize(this.drawableID);
-            const origW = costumeSize[0];
-            const origH = costumeSize[1];
-            const fencing = this.runtime.runtimeOptions.fencing;
-            const minScale = fencing ? Math.min(1, Math.max(5 / origW, 5 / origH)) : 0;
-            const maxScale = fencing ? Math.min(
-                (1.5 * this.runtime.stageWidth) / origW,
-                (1.5 * this.runtime.stageHeight) / origH
-            ) : Infinity;
-            this.size = MathUtil.clamp(size / 100, minScale, maxScale) * 100;
+            this.size = size;
             const {direction, scale} = this._getRenderedDirectionAndScale();
             this.renderer.updateDrawableDirectionScale(this.drawableID, direction, scale, this.transform);
             if (this.visible) {
