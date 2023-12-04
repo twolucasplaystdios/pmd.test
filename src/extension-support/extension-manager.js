@@ -839,6 +839,7 @@ class ExtensionManager {
                     const expected = normal[realBlockInfo.arguments[arg].type];
                     if (realBlockInfo.arguments[arg].exemptFromNormalization === true) return;
                     if (expected === 'exception') return;
+                    if (!expected) return;
                     if (arg.startsWith('substack')) return;
                     if (!(typeof args[arg] === expected)) args[arg] = this._normalize(args[arg], expected);
                 });
