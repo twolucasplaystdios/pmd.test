@@ -297,11 +297,11 @@ class JgStorageBlocks {
 
         const returned = localStorage.getItem(key);
         if (returned === null) return "";
-        return isNaN(Number(args.KEY)) ? Cast.toString(returned) : Cast.toNumber(returned);
+        return Cast.toString(returned);
     }
     setValue(args) {
         const key = this.getPrefix() + Cast.toString(args.KEY);
-        const value = isNaN(Number(args.VALUE)) ? Cast.toString(args.VALUE) : Cast.toNumber(args.VALUE);
+        const value = Cast.toString(args.VALUE);
 
         return localStorage.setItem(key, value);
     }
@@ -320,11 +320,11 @@ class JgStorageBlocks {
 
         const returned = localStorage.getItem(key);
         if (returned === null) return "";
-        return isNaN(Number(args.KEY)) ? Cast.toString(returned) : Cast.toNumber(returned);
+        return Cast.toString(returned);
     }
     setProjectValue(args) {
         const key = this.getPrefix(this.getProjectId()) + Cast.toString(args.KEY);
-        const value = isNaN(Number(args.VALUE)) ? Cast.toString(args.VALUE) : Cast.toNumber(args.VALUE);
+        const value = Cast.toString(args.VALUE);
 
         return localStorage.setItem(key, value);
     }
@@ -374,7 +374,7 @@ class JgStorageBlocks {
     }
     setServerValue(args) {
         const key = Cast.toString(args.KEY);
-        const value = isNaN(Number(args.VALUE)) ? Cast.toString(args.VALUE) : Cast.toNumber(args.VALUE);
+        const value = Cast.toString(args.VALUE);
 
         return this.runPenguinWebRequest(`${this.currentServer}set?key=${key}${this.useGlobal ? "" : `&project=${this.getProjectId()}`}`, {
             method: "POST",
