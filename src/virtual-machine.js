@@ -713,8 +713,8 @@ class VirtualMachine extends EventEmitter {
      */
     async _loadExtensions (extensionIDs, extensionURLs = new Map()) {
         const extensionPromises = [];
-        const url = extensionURLs.get(extensionID);
         for (const extensionID of extensionIDs) {
+            const url = extensionURLs.get(extensionID);
             if (this.extensionManager.isExtensionLoaded(extensionID)) {
                 // Already loaded
             } else if (url) {
@@ -727,7 +727,6 @@ class VirtualMachine extends EventEmitter {
             } else if (this.extensionManager.isBuiltinExtension(extensionID)) {
                 // Builtin extension
                 this.extensionManager.loadExtensionIdSync(extensionID);
-                continue;
             } else {
                 throw new Error(`Unknown extension: ${extensionID}`);
             }
