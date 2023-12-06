@@ -713,24 +713,23 @@ class VirtualMachine extends EventEmitter {
      */
     async _loadExtensions (extensionIDs, extensionURLs = new Map()) {
         const extensionPromises = [];
+        const url = extensionURLs.get(extensionID);
         for (const extensionID of extensionIDs) {
             if (this.extensionManager.isExtensionLoaded(extensionID)) {
                 // Already loaded
-            } else if (this.extensionManager.isBuiltinExtension(extensionID)) {
-                // Builtin extension
-                this.extensionManager.loadExtensionIdSync(extensionID);
-                continue;
-            } else {
-                // Custom extension
-                const url = extensionURLs.get(extensionID);
-                if (!url) {
-                    throw new Error(`Unknown extension: ${extensionID}`);
-                }
+            } else if (url) {
+                // extension url
                 if (await this.securityManager.canLoadExtensionFromProject(url)) {
                     extensionPromises.push(this.extensionManager.loadExtensionURL(url));
                 } else {
                     throw new Error(`Permission to load extension denied: ${extensionID}`);
                 }
+            } else if (this.extensionManager.isBuiltinExtension(extensionID)) {
+                // Builtin extension
+                this.extensionManager.loadExtensionIdSync(extensionID);
+                continue;
+            } else {
+                throw new Error(`Unknown extension: ${extensionID}`);
             }
         }
         return Promise.all(extensionPromises);
