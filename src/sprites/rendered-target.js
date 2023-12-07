@@ -61,14 +61,9 @@ class RenderedTarget extends Target {
             green: 0,
             blue: 0,
             opaque: 0,
-            saturation: 0
+            saturation: 0,
+            tintColor: 0xffffff + 1 // we add 1 since 0x000000 = 0, effects set to 0 will not even be enabled in the shader (so we can never tint to black if we didnt add 1)
         };
-
-        /**
-         * Decimal color of the sprite's tint.
-         * @type {number}
-         */
-        this.tintColor = 0xffffff;
 
         /**
          * Whether this represents an "original" non-clone rendered-target for a sprite,
@@ -503,18 +498,7 @@ class RenderedTarget extends Target {
             return;
         }
         if (this.renderer) {
-            // Clamp to scales relative to costume and stage size.
-            // See original ScratchSprite.as:setSize.
-            const costumeSize = this.renderer.getCurrentSkinSize(this.drawableID);
-            const origW = costumeSize[0];
-            const origH = costumeSize[1];
-            const fencing = this.runtime.runtimeOptions.fencing;
-            const minScale = fencing ? Math.min(1, Math.max(5 / origW, 5 / origH)) : 0;
-            const maxScale = fencing ? Math.min(
-                (1.5 * this.runtime.stageWidth) / origW,
-                (1.5 * this.runtime.stageHeight) / origH
-            ) : Infinity;
-            this.size = MathUtil.clamp(size / 100, minScale, maxScale) * 100;
+            this.size = Math.max(0, size);
             const {direction, scale} = this._getRenderedDirectionAndScale();
             this.renderer.updateDrawableDirectionScale(this.drawableID, direction, scale, this.transform);
             if (this.visible) {

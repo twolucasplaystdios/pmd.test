@@ -122,6 +122,8 @@ const builtinExtensions = {
     jgDev: () => require("../extensions/jg_dev"),
     // jgDooDoo: test extension used for making test extensions
     jgDooDoo: () => require("../extensions/jg_doodoo"),
+    // jgChristmas: Christmas extension used for making Christmas extensions
+    jgChristmas: () => require("../extensions/jg_christmas"),
 
     // jw: hello it is i jwklong
     // jwUnite: literal features that should of been added in the first place
@@ -835,7 +837,9 @@ class ExtensionManager {
                 const realBlockInfo = getBlockInfo(args);
                 Object.keys(realBlockInfo.arguments).forEach(arg => {
                     const expected = normal[realBlockInfo.arguments[arg].type];
+                    if (realBlockInfo.arguments[arg].exemptFromNormalization === true) return;
                     if (expected === 'exception') return;
+                    if (!expected) return;
                     if (arg.startsWith('substack')) return;
                     if (!(typeof args[arg] === expected)) args[arg] = this._normalize(args[arg], expected);
                 });

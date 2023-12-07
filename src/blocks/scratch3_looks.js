@@ -384,6 +384,8 @@ class Scratch3LooksBlocks {
             looks_changeVisibilityOfSpriteHide: this.hideSprite,
             looks_stoptalking: this.stopTalking,
             looks_getinputofcostume: this.getCostumeValue,
+            looks_tintColor: this.getTintColor,
+            looks_setTintColor: this.setTintColor
         };
     }
 
@@ -592,6 +594,17 @@ class Scratch3LooksBlocks {
         if (!effects.hasOwnProperty(effect)) return 0;
         const value = Cast.toNumber(effects[effect]);
         return value;
+    }
+
+    getTintColor (_, util) {
+        const effects = util.target.effects;
+        if (typeof effects.tintColor !== 'number') return '#ffffff';
+        return Color.decimalToHex(effects.tintColor - 1);
+    }
+    setTintColor (args, util) { // used by compiler
+        const rgb = Cast.toRgbColorObject(args.color);
+        const decimal = Color.rgbToDecimal(rgb);
+        util.target.setEffect("tintColor", decimal + 1);
     }
 
     /**
