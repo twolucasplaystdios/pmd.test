@@ -856,10 +856,6 @@ class ExtensionManager {
     getExtensionURLs() {
         const extensionURLs = {};
         for (const [extensionId, serviceName] of this._loadedExtensions.entries()) {
-            if (builtinExtensions.hasOwnProperty(extensionId)) {
-                continue;
-            }
-
             // Service names for extension workers are in the format "extension.WORKER_ID.EXTENSION_ID"
             const workerId = +serviceName.split('.')[1];
             const extensionURL = this.workerURLs[workerId];
