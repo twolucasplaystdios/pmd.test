@@ -1,5 +1,6 @@
 const BlockType = require('../../extension-support/block-type');
 const ArgumentType = require('../../extension-support/argument-type');
+const Cast = require('../../util/cast');
 
 const HelperTool = require('./helper');
 const Helper = new HelperTool.Helper();
@@ -69,7 +70,7 @@ class AudioExtension {
     getInfo() {
         return {
             id: 'jgExtendedAudio',
-            name: 'Extended Audio',
+            name: 'Sound Systems',
             color1: '#E256A1',
             color2: '#D33388',
             isDynamic: true,
@@ -108,6 +109,14 @@ class AudioExtension {
                         AUDIOGROUP: { type: ArgumentType.STRING, menu: 'audioGroup', defaultValue: "" },
                     },
                 },
+                // {
+                //     opcode: 'audioSourceDuplicate', text: 'duplicate audio source from [NAME] to [COPY] in [AUDIOGROUP]', blockType: BlockType.COMMAND,
+                //     arguments: {
+                //         NAME: { type: ArgumentType.STRING, defaultValue: "AudioSource1" },
+                //         COPY: { type: ArgumentType.STRING, defaultValue: "AudioSource2" },
+                //         AUDIOGROUP: { type: ArgumentType.STRING, menu: 'audioGroup', defaultValue: "" },
+                //     },
+                // },
                 {
                     opcode: 'audioSourceDeleteAll', text: '[DELETEOPTION] all audio sources in [AUDIOGROUP]', blockType: BlockType.COMMAND,
                     arguments: {
@@ -335,6 +344,11 @@ class AudioExtension {
                 Helper.RemoveAudioSource(audioGroup, args.NAME);
                 break;
         }
+    }
+    audioSourceDuplicate(args) {
+        const audioGroup = Helper.GetAudioGroup(args.AUDIOGROUP);
+        const origin = Cast.toString(args.NAME);
+        const newName = Cast.toString(args.COPY);
     }
     audioSourceDeleteAll(args) {
         const audioGroup = Helper.GetAudioGroup(args.AUDIOGROUP);
