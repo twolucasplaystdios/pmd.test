@@ -109,14 +109,14 @@ class AudioExtension {
                         AUDIOGROUP: { type: ArgumentType.STRING, menu: 'audioGroup', defaultValue: "" },
                     },
                 },
-                // {
-                //     opcode: 'audioSourceDuplicate', text: 'duplicate audio source from [NAME] to [COPY] in [AUDIOGROUP]', blockType: BlockType.COMMAND,
-                //     arguments: {
-                //         NAME: { type: ArgumentType.STRING, defaultValue: "AudioSource1" },
-                //         COPY: { type: ArgumentType.STRING, defaultValue: "AudioSource2" },
-                //         AUDIOGROUP: { type: ArgumentType.STRING, menu: 'audioGroup', defaultValue: "" },
-                //     },
-                // },
+                {
+                    opcode: 'audioSourceDuplicate', text: 'duplicate audio source from [NAME] to [COPY] in [AUDIOGROUP]', blockType: BlockType.COMMAND,
+                    arguments: {
+                        NAME: { type: ArgumentType.STRING, defaultValue: "AudioSource1" },
+                        COPY: { type: ArgumentType.STRING, defaultValue: "AudioSource2" },
+                        AUDIOGROUP: { type: ArgumentType.STRING, menu: 'audioGroup', defaultValue: "" },
+                    },
+                },
                 {
                     opcode: 'audioSourceDeleteAll', text: '[DELETEOPTION] all audio sources in [AUDIOGROUP]', blockType: BlockType.COMMAND,
                     arguments: {
@@ -349,6 +349,11 @@ class AudioExtension {
         const audioGroup = Helper.GetAudioGroup(args.AUDIOGROUP);
         const origin = Cast.toString(args.NAME);
         const newName = Cast.toString(args.COPY);
+        if (!audioGroup) return;
+        const audioSource = Helper.GrabAudioSource(audioGroup, origin);
+        if (!audioSource) return;
+        Helper.RemoveAudioSource(audioGroup, newName);
+        audioGroup.sources[newName] = audioSource.clone();
     }
     audioSourceDeleteAll(args) {
         const audioGroup = Helper.GetAudioGroup(args.AUDIOGROUP);

@@ -30,6 +30,7 @@ class AudioSource {
         this.pitch = data.pitch != null ? data.pitch : 0;
         this.pan = data.pan != null ? data.pan : 0;
         this.looping = data.looping != null ? data.looping : false;
+        this._originalConfig = data;
 
         this._startingTime = 0;
         this._endingTime = null;
@@ -67,7 +68,7 @@ class AudioSource {
         }
         this._audioNode = this._audioContext.createBufferSource();
         AudioNodeStorage.push(this._audioNode);
-        const source = this._audioNode
+        const source = this._audioNode;
         this.update();
         source.buffer = this.src;
         source.connect(this._audioGainNode);
@@ -131,6 +132,10 @@ class AudioSource {
 
         const position = this.calculatePannerPosition(Clamp(SafeNumberConvert(this.pan / audioGroup.globalPan), -1, 1));
         audioPanner.setPosition(position.x, position.y, position.z);
+    }
+    clone() {
+        const newSource = new AudioSource(this._audioContext, this._audioGroup, this.src, this._originalConfig, this.parent);
+        return newSource;
     }
 
     calculateTimePosition() {
@@ -225,13 +230,9 @@ class AudioExtensionHelper {
         const group = typeof parent == "string" ? this.GetAudioGroup(parent) : parent;
         if (!group) return;
         if (!this.audioContext) this.audioContext = new AudioContext();
-        // gain node for volume slidor
         if (!this.audioGlobalVolumeNode) {
             this.audioGlobalVolumeNode = this.audioContext.createGain();
             this.audioGlobalVolumeNode.gain.value = 1;
-            if (this.runtime.audioEngine) {
-                this.audioGlobalVolumeNode.gain.value = this.runtime.audioEngine.inputNode.gain.value;
-            }
             this.audioGlobalVolumeNode.connect(this.audioContext.destination);
         }
         group.sources[name] = new AudioSource(this.audioContext, group, src, settings, this);
