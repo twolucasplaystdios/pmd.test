@@ -174,9 +174,9 @@ class Scratch3OperatorsBlocks {
     }
 
     lerpFunc (args) {
-        const one = isNaN(Cast.toNumber(args.ONE)) ? 0 : Cast.toNumber(args.ONE);
-        const two = isNaN(Cast.toNumber(args.TWO)) ? 0 : Cast.toNumber(args.TWO);
-        const amount = isNaN(Cast.toNumber(args.AMOUNT)) ? 0 : Cast.toNumber(args.AMOUNT);
+        const one = Cast.toNumber(args.ONE);
+        const two = Cast.toNumber(args.TWO);
+        const amount = Cast.toNumber(args.AMOUNT);
         let lerped = one;
         lerped += ((two - one) * amount);
         return lerped;
