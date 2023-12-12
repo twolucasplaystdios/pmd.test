@@ -178,7 +178,7 @@ class Scratch3OperatorsBlocks {
         const two = isNaN(Cast.toNumber(args.TWO)) ? 0 : Cast.toNumber(args.TWO);
         const amount = isNaN(Cast.toNumber(args.AMOUNT)) ? 0 : Cast.toNumber(args.AMOUNT);
         let lerped = one;
-        lerped += ((two - one) * amount) + one;
+        lerped += ((two - one) * amount);
         return lerped;
     }
     advMath (args) {
