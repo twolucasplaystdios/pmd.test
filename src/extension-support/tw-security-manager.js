@@ -49,6 +49,15 @@ class SecurityManager {
         // Default to false for security
         return Promise.resolve(false);
     }
+    
+    /**
+     * Allows last-minute changing the real URL of the extension that gets loaded.
+     * @param {*} extensionURL The URL requested to be loaded.
+     * @returns {Promise<string>|string} The URL to actually load.
+     */
+    rewriteExtensionURL (extensionURL) {
+        return Promise.resolve(extensionURL);
+    }
 
     /**
      * Determine whether an extension is allowed to fetch a remote resource URL.
@@ -132,6 +141,15 @@ class SecurityManager {
      * @returns {Promise<boolean>|boolean}
      */
     canGeolocate () {
+        return Promise.resolve(true);
+    }
+
+    /**
+     * Determine whether an extension is allowed to embed content from a given URL.
+     * @param {string} documentURL The URL of the embed.
+     * @returns {Promise<boolean>|boolean}
+     */
+    canEmbed (documentURL) {
         return Promise.resolve(true);
     }
 }

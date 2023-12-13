@@ -1786,7 +1786,7 @@ class ScriptTreeGenerator {
                     const args = this.descendCompatLayer(block, blockInfo.info);
                     args.block = block;
                     if (block.mutation) args.mutation = block.mutation;
-                    if (type === BlockType.COMMAND) {
+                    if (type === BlockType.COMMAND || type === BlockType.CONDITIONAL || type === BlockType.LOOP) {
                         return args;
                     }
                 }
@@ -1945,19 +1945,26 @@ class ScriptTreeGenerator {
      */
     descendCompatLayer (block, blockInfo) {
         this.script.yields = true;
-        const inputs = {};
-        const fields = {};
-        for (const name of Object.keys(block.inputs)) {
-            inputs[name] = this.descendInputOfBlock(block, name);
+        if (!blockInfo) {
+            blockInfo = this.getBlockInfo(block.opcode);
+            blockInfo = blockInfo ? blockInfo.info : null;
         }
-        if (blockInfo && blockInfo.branchCount) {
-            let branch = 0;
-            while (branch < blockInfo.branchCount) {
-                let name = `SUBSTACK${branch + 1}`;
-                const substack = this.descendSubstack(block, name);
-                name = name.toLowerCase();
-                inputs[name] = substack;
-                branch++;
+        
+        const inputs = {};
+        for (const name of Object.keys(block.inputs)) {
+            if (!name.startsWith('SUBSTACK')) {
+                inputs[name] = this.descendInputOfBlock(block, name);
+            }
+        }
+
+        const fields = {};
+        const substacks = [];
+        const blockType = (blockInfo && blockInfo.blockType) || BlockType.COMMAND;
+        if (blockType === BlockType.CONDITIONAL || blockType === BlockType.LOOP) {
+            const branchCount = blockInfo.branchCount;
+            for (let i = 0; i < branchCount; i++) {
+                const inputName = i === 0 ? 'SUBSTACK' : `SUBSTACK${i + 1}`;
+                substacks.push(this.descendSubstack(block, inputName));
             }
         }
         for (const name of Object.keys(block.fields)) {
@@ -1972,9 +1979,12 @@ class ScriptTreeGenerator {
         }
         return {
             kind: 'compat',
+            id: block.id,
             opcode: block.opcode,
+            blockType,
             inputs,
-            fields
+            fields,
+            substacks
         };
     }
 

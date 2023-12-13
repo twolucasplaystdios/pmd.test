@@ -1,5 +1,6 @@
 const log = require('../util/log');
 const Cast = require('../util/cast');
+const BlockType = require('../extension-support/block-type');
 const VariablePool = require('./variable-pool');
 const jsexecute = require('./jsexecute');
 const environment = require('./environment');
@@ -984,7 +985,29 @@ class JSGenerator {
             // If the last command in a loop returns a promise, immediately continue to the next iteration.
             // If you don't do this, the loop effectively yields twice per iteration and will run at half-speed.
             const isLastInLoop = this.isLastBlockInLoop();
-            this.source += `${this.generateCompatibilityLayerCall(node, isLastInLoop)};\n`;
+
+            const blockType = node.blockType;
+            if (blockType === BlockType.COMMAND || blockType === BlockType.HAT) {
+                this.source += `${this.generateCompatibilityLayerCall(node, isLastInLoop)};\n`;
+            } else if (blockType === BlockType.CONDITIONAL || blockType === BlockType.LOOP) {
+                const branchVariable = this.localVariables.next();
+                this.source += `const ${branchVariable} = createBranchInfo(${blockType === BlockType.LOOP});\n`;
+                this.source += `while (${branchVariable}.branch = +(${this.generateCompatibilityLayerCall(node, false, branchVariable)})) {\n`;
+                this.source += `switch (${branchVariable}.branch) {\n`;
+                for (let i = 0; i < node.substacks.length; i++) {
+                    this.source += `case ${i + 1}: {\n`;
+                    this.descendStack(node.substacks[i], new Frame(false));
+                    this.source += `break;\n`;
+                    this.source += `}\n`; // close case
+                }
+                this.source += '}\n'; // close switch
+                this.source += `if (!${branchVariable}.isLoop) break;\n`;
+                this.yieldLoop();
+                this.source += '}\n'; // close while
+            } else {
+                throw new Error(`Unknown block type: ${blockType}`);
+            }
+
             if (isLastInLoop) {
                 this.source += 'if (hasResumedFromPromise) {hasResumedFromPromise = false;continue;}\n';
             }
@@ -1750,9 +1773,10 @@ class JSGenerator {
      * Generate a call into the compatibility layer.
      * @param {*} node The "compat" kind node to generate from.
      * @param {boolean} setFlags Whether flags should be set describing how this function was processed.
+     * @param {string|null} [frameName] Name of the stack frame variable, if any
      * @returns {string} The JS of the call.
      */
-    generateCompatibilityLayerCall (node, setFlags) {
+    generateCompatibilityLayerCall (node, setFlags, frameName = null) {
         const opcode = node.opcode;
 
         let result = 'yield* executeInCompatibilityLayer({';
@@ -1793,7 +1817,7 @@ class JSGenerator {
         }
         result += `"mutation":${JSON.stringify(node.mutation)},`;
         const opcodeFunction = this.evaluateOnce(`runtime.getOpcodeFunction("${sanitize(opcode)}")`);
-        result += `}, ${opcodeFunction}, ${this.isWarp}, ${setFlags}, null)`;
+        result += `}, ${opcodeFunction}, ${this.isWarp}, ${setFlags}, "${sanitize(node.id)}", ${frameName})`;
 
         return result;
     }

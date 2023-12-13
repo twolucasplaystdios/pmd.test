@@ -138,7 +138,7 @@ class JgDevBlocks {
                 },
                 {
                     opcode: 'compiledIfNot',
-                    text: 'if not [CONDITION] then',
+                    text: 'if not [CONDITION] then (compiled)',
                     branchCount: 1,
                     blockType: BlockType.CONDITIONAL,
                     arguments: {
@@ -192,6 +192,26 @@ class JgDevBlocks {
                     text: 'boolean monitor',
                     blockType: BlockType.BOOLEAN
                 },
+                {
+                    opcode: 'ifFalseReturned',
+                    text: 'if [INPUT] is false (return)',
+                    branchCount: 1,
+                    blockType: BlockType.CONDITIONAL,
+                    arguments: {
+                        INPUT: { type: ArgumentType.BOOLEAN }
+                    }
+                },
+                {
+                    opcode: 'turbrowaorploop',
+                    blockType: BlockType.LOOP,
+                    text: 'my repeat [TIMES]',
+                    arguments: {
+                        TIMES: {
+                            type: ArgumentType.NUMBER,
+                            defaultValue: 10
+                        }
+                    }
+                }
             ],
             menus: {
                 variable: "getVariablesMenu",
@@ -417,6 +437,21 @@ class JgDevBlocks {
         console.log(args, util);
         if (!args.INPUT) {
             util.startBranch(1, false);
+        }
+    }
+    ifFalseReturned(args) {
+        if (!args.INPUT) {
+            return 1;
+        }
+    }
+    turbrowaorploop ({TIMES}, util) {
+        const times = Math.round(Cast.toNumber(TIMES));
+        if (typeof util.stackFrame.loopCounter === 'undefined') {
+            util.stackFrame.loopCounter = times;
+        }
+        util.stackFrame.loopCounter--;
+        if (util.stackFrame.loopCounter >= 0) {
+            return true;
         }
     }
     // compiled blocks should have interpreter versions
