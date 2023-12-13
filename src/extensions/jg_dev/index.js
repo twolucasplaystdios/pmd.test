@@ -339,14 +339,13 @@ class JgDevBlocks {
     // blocks
 
     branchNewThread(_, util) {
-        const currentBlockId = util.thread.peekStack();
-        const branchBlock = util.thread.target.blocks.getBranch(
-            currentBlockId,
-            0
-        );
-
-        if (branchBlock) {
-            util.sequencer.runtime._pushThread(branchBlock, util.target, {});
+        // CubesterYT probably
+        if (util.thread.target.blocks.getBranch(util.thread.peekStack(), 0)) {
+            util.sequencer.runtime._pushThread(
+                util.thread.target.blocks.getBranch(util.thread.peekStack(), 0),
+                util.target,
+                {}
+            );
         }
     }
 
