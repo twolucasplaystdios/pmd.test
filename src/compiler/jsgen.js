@@ -631,7 +631,7 @@ class JSGenerator {
             source += `var ${threads} = startHats("event_whenbroadcastreceived", { BROADCAST_OPTION: ${this.descendInput(node.broadcast).asString()} });`;
             const threadVar = this.localVariables.next();
             source += `for (const ${threadVar} of ${threads}) { ${threadVar}.__evex_recievedDataa = '' };`;
-            source += `waitThreads(${threads});`;
+            source += `yield* waitThreads(${threads});`;
             // wait an extra frame so the thread has the new value
             if (this.isWarp) {
                 source += 'if (isStuck()) yield;\n';
@@ -661,7 +661,7 @@ class JSGenerator {
             source += `var ${threads} = startHats("event_whenbroadcastreceived", { BROADCAST_OPTION: ${this.descendInput(node.broadcast).asString()} });`;
             const threadVar = this.localVariables.next();
             source += `for (const ${threadVar} of ${threads}) { ${threadVar}.__evex_recievedDataa = ${this.descendInput(node.args).asString()} };`;
-            source += `waitThreads(${threads});`;
+            source += `yield* waitThreads(${threads});`;
             // wait an extra frame so the thread has the new value
             if (this.isWarp) {
                 source += 'if (isStuck()) yield;\n';
