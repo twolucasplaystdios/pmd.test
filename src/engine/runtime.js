@@ -1638,7 +1638,6 @@ class Runtime extends EventEmitter {
             ++outLineNum;
         }
 
-        // TODO: this sucks and someone should make this better (i do not care if it is not backwards-compatible until the better one is made)
         if (Array.isArray(blockInfo.alignments)) {
             let idx = 0;
             // i love for (const of)

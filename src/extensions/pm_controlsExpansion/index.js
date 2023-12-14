@@ -123,7 +123,6 @@ class pmControlsExpansion {
                     ],
                     branchCount: 1,
                     blockType: BlockType.CONDITIONAL,
-                    // TODO: this sucks and someone should make this better (i do not care if it is not backwards-compatible until the better one is made)
                     alignments: [
                         null, // text
                         null, // SUBSTACK

@@ -211,6 +211,26 @@ class JgDevBlocks {
                             defaultValue: 10
                         }
                     }
+                },
+                {
+                    opcode: 'alignmentTestate',
+                    blockType: BlockType.CONDITIONAL,
+                    text: [
+                        'this block tests alignments',
+                        'left',
+                        'middle',
+                        'right'
+                    ],
+                    alignments: [
+                        null,
+                        null,
+                        'LEFT',
+                        null,
+                        'CENTRE',
+                        null,
+                        'RIGHT'
+                    ],
+                    branchCount: 3
                 }
             ],
             menus: {
