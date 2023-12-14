@@ -1,6 +1,7 @@
 const BlockType = require('../../extension-support/block-type');
 const ArgumentType = require('../../extension-support/argument-type');
 const Cast = require('../../util/cast');
+const AsyncIcon = require('./async.svg');
 
 const blockSeparator = '<sep gap="36"/>'; // At default scale, about 28px
 
@@ -27,6 +28,7 @@ const blocks = `
         </block>
     </value>
 </block>
+%block2>
 <block type="control_waittick"/>
 <block type="control_exitLoop"/>
 ${blockSeparator}
@@ -113,6 +115,27 @@ class pmControlsExpansion {
                         CONDITION2: { type: ArgumentType.BOOLEAN },
                     }
                 },
+                {
+                    opcode: 'asNewBroadcast',
+                    text: [
+                        'as new broadcast',
+                        '[ICON]'
+                    ],
+                    branchCount: 1,
+                    blockType: BlockType.CONDITIONAL,
+                    // TODO: this sucks and someone should make this better (i do not care if it is not backwards-compatible until the better one is made)
+                    alignments: [
+                        null, // text
+                        null, // SUBSTACK
+                        'right', // ICON
+                    ],
+                    arguments: {
+                        ICON: {
+                            type: ArgumentType.IMAGE,
+                            dataURI: AsyncIcon
+                        },
+                    }
+                },
             ]
         };
     }
@@ -182,6 +205,17 @@ class pmControlsExpansion {
             util.startBranch(2, false);
         } else {
             util.startBranch(3, false);
+        }
+    }
+
+    asNewBroadcast(_, util) {
+        // CubesterYT probably
+        if (util.thread.target.blocks.getBranch(util.thread.peekStack(), 0)) {
+            util.sequencer.runtime._pushThread(
+                util.thread.target.blocks.getBranch(util.thread.peekStack(), 0),
+                util.target,
+                {}
+            );
         }
     }
 }

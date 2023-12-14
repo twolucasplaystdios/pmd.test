@@ -30,6 +30,16 @@ ${blockSeparator}
         <shadow type="event_broadcast_menu"></shadow>
     </value>
 </block>
+<block type="pmEventsExpansion_broadcastFunctionArgs">
+    <value name="BROADCAST">
+        <shadow type="event_broadcast_menu"></shadow>
+    </value>
+    <value name="ARGS">
+        <shadow type="text">
+            <field name="TEXT">abc</field>
+        </shadow>
+    </value>
+</block>
 %b8>
 ${blockSeparator}
 %b2>
@@ -200,6 +210,22 @@ class pmEventsExpansion {
                     blockType: BlockType.REPORTER,
                     disableMonitor: true
                 },
+                {
+                    opcode: 'broadcastFunctionArgs',
+                    text: 'broadcast [BROADCAST] with data [ARGS] and wait',
+                    blockType: BlockType.REPORTER,
+                    disableMonitor: true,
+                    arguments: {
+                        BROADCAST: {
+                            type: ArgumentType.STRING,
+                            defaultValue: "your not supposed to see this?"
+                        },
+                        ARGS: {
+                            type: ArgumentType.STRING,
+                            defaultValue: "abc"
+                        }
+                    }
+                },
             ],
             menus: {
                 spriteName: "_spriteName",
@@ -305,6 +331,9 @@ class pmEventsExpansion {
         util.thread.__evex_returnDataa = args.VALUE;
     }
     broadcastFunction() {
+        return; // compiler block
+    }
+    broadcastFunctionArgs() {
         return; // compiler block
     }
 }

@@ -1638,6 +1638,18 @@ class Runtime extends EventEmitter {
             ++outLineNum;
         }
 
+        // TODO: this sucks and someone should make this better (i do not care if it is not backwards-compatible until the better one is made)
+        if (Array.isArray(blockInfo.alignments)) {
+            let idx = 0;
+            // i love for (const of)
+            for (const alignment of blockInfo.alignments) {
+                if (typeof alignment === "string") {
+                    blockJSON[`lastDummyAlign${idx}`] = alignment.toUpperCase();
+                }
+                idx++;
+            }
+        }
+
         const mutation = blockInfo.isDynamic 
             ? `<mutation blockInfo="${xmlEscape.escapeAttribute(JSON.stringify(blockInfo))}"/>` 
             : '';
@@ -1722,8 +1734,8 @@ class Runtime extends EventEmitter {
             type: 'field_image',
             src: argInfo.dataURI || '',
             // TODO these probably shouldn't be hardcoded...?
-            width: 24,
-            height: 24,
+            width: argInfo.width ?? 24,
+            height: argInfo.height ?? 24,
             // Whether or not the inline image should be flipped horizontally
             // in RTL languages. Defaults to false, indicating that the
             // image will not be flipped.
