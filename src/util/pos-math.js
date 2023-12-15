@@ -1,16 +1,6 @@
-const defaultCameraState = require('../engine/default-camera-state');
-
-const getOrCreateScreen = (runtime, screen) => {
-    const cameraState = runtime.cameraStates[screen]
-    if (!cameraState) {
-        runtime.updateCamera(screen, defaultCameraState)
-        return defaultCameraState
-    }
-    return cameraState
-};
-
+/* eslint-disable no-mixed-operators */
 const translateForCamera = (runtime, screen, x, y) => {
-    const {pos, scale, dir} = getOrCreateScreen(runtime, screen);
+    const {pos, scale, dir} = runtime.cameraStates[screen];
     const radians = (dir / 180) * Math.PI;
     const sin = Math.sin(radians);
     const cos = Math.cos(radians);
@@ -23,7 +13,7 @@ const translateForCamera = (runtime, screen, x, y) => {
 };
 
 const translateScreenPos = (runtime, screen, x, y) => {
-    const {pos, scale, dir} = getOrCreateScreen(runtime, screen);
+    const {pos, scale, dir} = runtime.cameraStates[screen];
     const radians = (-dir / 180) * Math.PI;
     const sin = Math.sin(radians);
     const cos = Math.cos(radians);
@@ -38,6 +28,5 @@ const translateScreenPos = (runtime, screen, x, y) => {
 
 module.exports = {
     translateForCamera,
-    translateScreenPos,
-    getOrCreateScreen
+    translateScreenPos
 };

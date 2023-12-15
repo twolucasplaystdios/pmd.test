@@ -3,7 +3,6 @@ const ArgumentType = require('../../extension-support/argument-type');
 const Cast = require('../../util/cast');
 const MathUtil = require('../../util/math-util');
 const Clone = require('../../util/clone');
-const {getOrCreateScreen} = require('../../util/pos-math')
 
 // eslint-disable-next-line no-undef
 const pathToMedia = 'static/blocks-media'; // ScratchBlocks.mainWorkspace.options.pathToMedia
@@ -34,14 +33,21 @@ class PenguinModCamera {
         let penState = target._customState[stateKey];
         if (!penState) {
             penState = Clone.simple(defaultState);
-            if (target.cameraBound) penState.camera = target.cameraBound;
+            if (target.cameraBound >= 0) penState.camera = target.cameraBound;
             target.setCustomState(stateKey, penState);
         }
         return penState;
     }
     _loadCameraState(target) {
         const state = this._getPenState(target);
-        const {pos, dir, scale} = getOrCreateScreen(this.runtime.cameraStates, state.camera);
+        if (!this.runtime.cameraStates[state.camera]) {
+            this.runtime.cameraStates[state.camera] = {
+                pos: [0, 0],
+                dir: 0,
+                scale: 1
+            };
+        }
+        const {pos, dir, scale} = this.runtime.cameraStates[state.camera];
         state.pos = pos;
         state.dir = dir + 90;
         state.size = scale * 100;
@@ -116,8 +122,8 @@ class PenguinModCamera {
                             menu: 'BINDABLE_TARGETS'
                         },
                         SCREEN: {
-                            type: ArgumentType.STRING,
-                            defaultValue: 'default'
+                            type: ArgumentType.NUMBER,
+                            defaultValue: '0'
                         }
                     }
                 },
@@ -138,8 +144,8 @@ class PenguinModCamera {
                     text: 'set current camera to [SCREEN]',
                     arguments: {
                         SCREEN: {
-                            type: ArgumentType.STRING,
-                            defaultValue: 'default'
+                            type: ArgumentType.NUMBER,
+                            defaultValue: '0'
                         }
                     }
                 },
@@ -348,14 +354,14 @@ class PenguinModCamera {
     }
     bindTarget(args, util) {
         const target = Cast.toString(args.TARGET);
-        const screen = Cast.toString(args.SCREEN);
+        const screen = Cast.toNumber(args.SCREEN);
         switch (target) {
         case '__MYSELF__':
             const myself = util.target;
             myself.bindToCamera(screen);
             break;
         case '__MOUSEPOINTER__':
-            util.ioQuery('mouse', 'bindToCamera', [screen]);
+            util.ioQuery('mouse', 'bindToCamera', screen);
             break;
         /*
         case '__PEN__':
@@ -419,7 +425,7 @@ class PenguinModCamera {
     }
     setCurrentCamera(args, util) {
         const state = this._getPenState(util.target);
-        const screen = Cast.toString(args.SCREEN);
+        const screen = Cast.toNumber(args.SCREEN);
         state.camera = screen;
         this._loadCameraState(util.target);
     }
