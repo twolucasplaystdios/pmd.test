@@ -569,13 +569,13 @@ class Runtime extends EventEmitter {
          */
         this.fontManager = new FontManager(this);
 
-        this.cameraStates = [
-            {
+        this.cameraStates = {
+            default: {
                 pos: [0, 0],
                 dir: 0,
                 scale: 1
             }
-        ];
+        };
 
         // it back
         this.on('RUNTIME_STEP_START', () => this.emit('BEFORE_EXECUTE'));
@@ -3476,7 +3476,26 @@ class Runtime extends EventEmitter {
     }
 
     /**
+     * gets a screen, if no screen can be found it will create one
+     * @param {string} screen the screen to get
+     * @returns {Object} the screen state object
+     */
+    getCamera(screen) {
+        if (!this.cameraStates[screen]) {
+            this.cameraStates[screen] = {
+                pos: [0, 0],
+                dir: 0,
+                scale: 1
+            };
+        }
+        return this.cameraStates[screen];
+    }
+
+    /**
      * assign new camera state options
+     * @param {string} screen the screen
+     * @param {Object} state the state to apply to the screen
+     * @param {boolean} silent if we should emit an event because of this change
      */
     updateCamera(screen, state, silent) {
         if (!this.cameraStates[screen]) {

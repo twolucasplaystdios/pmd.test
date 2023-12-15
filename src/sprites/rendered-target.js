@@ -62,7 +62,9 @@ class RenderedTarget extends Target {
             blue: 0,
             opaque: 0,
             saturation: 0,
-            tintColor: 0xffffff + 1 // we add 1 since 0x000000 = 0, effects set to 0 will not even be enabled in the shader (so we can never tint to black if we didnt add 1)
+            // we add 1 since 0x000000 = 0, effects set to 0 will not even be enabled in the shader 
+            // (so we can never tint to black if we didnt add 1)
+            tintColor: 0xffffff + 1 
         };
 
         /**
@@ -194,9 +196,9 @@ class RenderedTarget extends Target {
 
         this.interpolationData = null;
 
-        this.cameraBound = 0;
+        this.cameraBound = 'default';
 
-        this.cameraUpdateEvent = (screen) => {
+        this.cameraUpdateEvent = screen => {
             if (screen === this.cameraBound) {
                 const {direction, scale} = this._getRenderedDirectionAndScale();
                 const translatedPos = this._translatePossitionToCamera();
@@ -309,19 +311,17 @@ class RenderedTarget extends Target {
     }
 
     bindToCamera(screen) {
-        const isNew = this.cameraBound !== screen;
         this.cameraBound = screen;
-        if (isNew) this.updateAllDrawableProperties();
+        this.updateAllDrawableProperties();
     }
 
     removeCameraBinding() {
-        const isNew = this.cameraBound >= 0;
-        this.cameraBound = -1;
-        if (isNew) this.updateAllDrawableProperties();
+        this.cameraBound = null;
+        this.updateAllDrawableProperties();
     }
 
     _translatePossitionToCamera() {
-        if (this.cameraBound < 0) return [this.x, this.y];
+        if (!this.cameraBound) return [this.x, this.y];
         return translateForCamera(this.runtime, this.cameraBound, this.x, this.y);
     }
 
@@ -381,7 +381,7 @@ class RenderedTarget extends Target {
      * @return {object<string, number>} Direction and scale to render.
      */
     _getRenderedDirectionAndScale () {
-        const cameraState = this.runtime.cameraStates[this.cameraBound];
+        const cameraState = this.runtime.getCamera(this.cameraBound);
         // Default: no changes to `this.direction` or `this.scale`.
         let finalDirection = this.direction;
         let finalScale = [this.size, this.size];
@@ -406,7 +406,7 @@ class RenderedTarget extends Target {
         finalScale[0] *= this.stretch[0] / 100;
         finalScale[1] *= this.stretch[1] / 100;
 
-        if (this.cameraBound >= 0 && cameraState) {
+        if (this.cameraBound) {
             finalScale[0] *= cameraState.scale;
             finalScale[1] *= cameraState.scale;
             finalDirection -= cameraState.dir;

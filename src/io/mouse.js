@@ -17,7 +17,7 @@ class Mouse {
         this._isClicked = false;
         this._clickId = 0;
 
-        this.cameraBound = -1;
+        this.cameraBound = null;
         /**
          * Reference to the owning Runtime.
          * Can be used, for example, to activate hats.
@@ -31,7 +31,7 @@ class Mouse {
     }
 
     removeCameraBinding() {
-        this.cameraBound = -1;
+        this.cameraBound = null;
     }
 
     /**
@@ -173,7 +173,7 @@ class Mouse {
      * @return {number} Clamped and integer rounded X position of the mouse cursor.
      */
     getScratchX () {
-        const mouseX = this.cameraBound >= 0
+        const mouseX = this.cameraBound
             ? translateScreenPos(this.runtime, this.cameraBound, this._scratchX, this._scratchY)[0]
             // ? (this._scratchX * cameraState.scale) - cameraState.pos[0]
             : this._scratchX;
@@ -188,7 +188,7 @@ class Mouse {
      * @return {number} Clamped and integer rounded Y position of the mouse cursor.
      */
     getScratchY () {
-        const mouseY = this.cameraBound >= 0
+        const mouseY = this.cameraBound
             ? translateScreenPos(this.runtime, this.cameraBound, this._scratchX, this._scratchY)[1]
             // ? (this._scratchY * cameraState.scale) - cameraState.pos[1]
             : this._scratchY;
