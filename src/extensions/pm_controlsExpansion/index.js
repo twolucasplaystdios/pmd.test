@@ -1,5 +1,6 @@
 const BlockType = require('../../extension-support/block-type');
 const ArgumentType = require('../../extension-support/argument-type');
+const ArgumentAlignment = require('../../extension-support/argument-alignment');
 const Cast = require('../../util/cast');
 const AsyncIcon = require('./async.svg');
 
@@ -126,7 +127,7 @@ class pmControlsExpansion {
                     alignments: [
                         null, // text
                         null, // SUBSTACK
-                        'right', // ICON
+                        ArgumentAlignment.RIGHT, // ICON
                     ],
                     arguments: {
                         ICON: {

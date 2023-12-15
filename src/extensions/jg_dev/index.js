@@ -1,7 +1,10 @@
 const BlockType = require('../../extension-support/block-type');
+const BlockShape = require('../../extension-support/block-shape');
 const ArgumentType = require('../../extension-support/argument-type');
+const ArgumentAlignment = require('../../extension-support/argument-alignment');
 const Cast = require('../../util/cast');
 const MathUtil = require('../../util/math-util');
+const test_indicator = require('./test_indicator.png');
 
 /**
  * Class for Dev blocks
@@ -224,14 +227,32 @@ class JgDevBlocks {
                     alignments: [
                         null,
                         null,
-                        'LEFT',
+                        ArgumentAlignment.LEFT,
                         null,
-                        'CENTRE',
+                        ArgumentAlignment.CENTER,
                         null,
-                        'RIGHT'
+                        ArgumentAlignment.RIGHT
                     ],
                     branchCount: 3
-                }
+                },
+                {
+                    opcode: 'squareReporter',
+                    text: 'square boy',
+                    blockType: BlockType.REPORTER,
+                    blockShape: BlockShape.SQUARE
+                },
+                {
+                    opcode: 'branchIndicatorTest',
+                    text: 'this has a custom branchIndicator',
+                    branchCount: 1,
+                    blockType: BlockType.CONDITIONAL,
+                    branchIndicator: test_indicator
+                },
+                {
+                    opcode: 'givesAnError',
+                    text: 'throw an error',
+                    blockType: BlockType.COMMAND
+                },
             ],
             menus: {
                 variable: "getVariablesMenu",
@@ -502,6 +523,16 @@ class JgDevBlocks {
 
     whatthescallop(args) {
         return JSON.stringify(args);
+    }
+
+    squareReporter() {
+        return 0;
+    }
+    alignmentTestate() {
+        return;
+    }
+    givesAnError() {
+        throw new Error('woah an error');
     }
 }
 

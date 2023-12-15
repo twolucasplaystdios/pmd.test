@@ -406,7 +406,7 @@ class RenderedTarget extends Target {
         finalScale[0] *= this.stretch[0] / 100;
         finalScale[1] *= this.stretch[1] / 100;
 
-        if (this.cameraBound >= 0) {
+        if (this.cameraBound >= 0 && cameraState) {
             finalScale[0] *= cameraState.scale;
             finalScale[1] *= cameraState.scale;
             finalDirection -= cameraState.dir;
