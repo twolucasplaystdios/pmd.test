@@ -11,7 +11,7 @@ const blocks = `
 <!--<block type="control_new_script"></block>-->
 <block type="control_repeatForSeconds">
     <value name="TIMES">
-        <shadow type="math_whole_number">
+        <shadow type="math_number">
             <field name="NUM">1</field>
         </shadow>
     </value>
