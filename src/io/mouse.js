@@ -1,5 +1,5 @@
 const MathUtil = require('../util/math-util');
-const { translateScreenPos } = require('../util/pos-math');
+const { translateScreenPos, getOrCreateScreen } = require('../util/pos-math');
 
 const roundToThreeDecimals = number => Math.round(number * 1000) / 1000;
 
@@ -17,7 +17,7 @@ class Mouse {
         this._isClicked = false;
         this._clickId = 0;
 
-        this.cameraBound = -1;
+        this.cameraBound = '';
         /**
          * Reference to the owning Runtime.
          * Can be used, for example, to activate hats.
@@ -31,7 +31,7 @@ class Mouse {
     }
 
     removeCameraBinding() {
-        this.cameraBound = -1;
+        this.cameraBound = '';
     }
 
     /**

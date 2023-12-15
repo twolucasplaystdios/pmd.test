@@ -24,6 +24,7 @@ const { validateJSON } = require('../util/json-block-utilities');
 const Color = require('../util/color');
 const TabManager = require('../extension-support/pm-tab-manager');
 const ModalManager = require('../extension-support/pm-modal-manager');
+const defaultCameraState = require('./default-camera-state');
 
 // Virtual I/O devices.
 const Clock = require('../io/clock');
@@ -569,13 +570,9 @@ class Runtime extends EventEmitter {
          */
         this.fontManager = new FontManager(this);
 
-        this.cameraStates = [
-            {
-                pos: [0, 0],
-                dir: 0,
-                scale: 1
-            }
-        ];
+        this.cameraStates = {
+            default: defaultCameraState
+        };
 
         // it back
         this.on('RUNTIME_STEP_START', () => this.emit('BEFORE_EXECUTE'));

@@ -2,7 +2,7 @@ const MathUtil = require('../util/math-util');
 const StringUtil = require('../util/string-util');
 const Cast = require('../util/cast');
 const Clone = require('../util/clone');
-const { translateForCamera } = require('../util/pos-math');
+const { translateForCamera, getOrCreateScreen } = require('../util/pos-math');
 const Target = require('../engine/target');
 const StageLayering = require('../engine/stage-layering');
 
@@ -194,7 +194,7 @@ class RenderedTarget extends Target {
 
         this.interpolationData = null;
 
-        this.cameraBound = 0;
+        this.cameraBound = 'default';
 
         this.cameraUpdateEvent = (screen) => {
             if (screen === this.cameraBound) {
@@ -315,13 +315,13 @@ class RenderedTarget extends Target {
     }
 
     removeCameraBinding() {
-        const isNew = this.cameraBound >= 0;
-        this.cameraBound = -1;
+        const isNew = !this.cameraBound;
+        this.cameraBound = '';
         if (isNew) this.updateAllDrawableProperties();
     }
 
     _translatePossitionToCamera() {
-        if (this.cameraBound < 0) return [this.x, this.y];
+        if (!this.cameraBound) return [this.x, this.y];
         return translateForCamera(this.runtime, this.cameraBound, this.x, this.y);
     }
 
@@ -381,7 +381,7 @@ class RenderedTarget extends Target {
      * @return {object<string, number>} Direction and scale to render.
      */
     _getRenderedDirectionAndScale () {
-        const cameraState = this.runtime.cameraStates[this.cameraBound];
+        const cameraState = getOrCreateScreen(this.runtime.cameraStates, this.cameraBound);
         // Default: no changes to `this.direction` or `this.scale`.
         let finalDirection = this.direction;
         let finalScale = [this.size, this.size];
@@ -406,7 +406,7 @@ class RenderedTarget extends Target {
         finalScale[0] *= this.stretch[0] / 100;
         finalScale[1] *= this.stretch[1] / 100;
 
-        if (this.cameraBound >= 0 && cameraState) {
+        if (this.cameraBound) {
             finalScale[0] *= cameraState.scale;
             finalScale[1] *= cameraState.scale;
             finalDirection -= cameraState.dir;
