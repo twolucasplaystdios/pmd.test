@@ -112,6 +112,12 @@ class JgDevBlocks {
                     }
                 },
                 {
+                    opcode: 'restartFromTheTop',
+                    text: 'restart from the top',
+                    blockType: BlockType.COMMAND,
+                    isTerminal: true
+                },
+                {
                     opcode: 'doodooBlockLolol',
                     text: 'ignore blocks inside [INPUT]',
                     branchCount: 1,
@@ -296,6 +302,9 @@ class JgDevBlocks {
                     kind: 'stack',
                     return: generator.descendInputOfBlock(block, 'RETURN')
                 }),
+                restartFromTheTop: () => ({
+                    kind: 'stack'
+                }),
                 compiledOutput: () => ({
                     kind: 'input' /* input is output :troll: (it makes sense in the ir & jsgen implementation ok) */
                 })
@@ -314,6 +323,10 @@ class JgDevBlocks {
                 },
                 compiledReturn: (node, compiler) => {
                     compiler.source += `return ${compiler.descendInput(node.return).asString()};`;
+                },
+                restartFromTheTop: (_, compiler) => {
+                    // TODO: should this return?
+                    compiler.source += `runtime._restartThread(thread);`;
                 },
                 compiledOutput: (_, compiler, imports) => {
                     const code = Cast.toString(compiler.source);
@@ -502,6 +515,9 @@ class JgDevBlocks {
         }
     }
     compiledReturn() {
+        return 'noop';
+    }
+    restartFromTheTop() {
         return 'noop';
     }
     compiledOutput() {
