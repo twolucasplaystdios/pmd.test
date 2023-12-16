@@ -1216,6 +1216,8 @@ class Runtime extends EventEmitter {
             categoryInfo.orderBlocks = extensionInfo.orderBlocks;
         }
 
+        categoryInfo.tbShow = extensionInfo.tbShow || false
+
         this._blockInfo.push(categoryInfo);
 
         this._fillExtensionCategory(categoryInfo, extensionInfo);
