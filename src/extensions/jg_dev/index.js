@@ -6,6 +6,8 @@ const Cast = require('../../util/cast');
 const MathUtil = require('../../util/math-util');
 const test_indicator = require('./test_indicator.png');
 
+const pathToMedia = 'static/blocks-media';
+
 /**
  * Class for Dev blocks
  * @constructor
@@ -113,9 +115,15 @@ class JgDevBlocks {
                 },
                 {
                     opcode: 'restartFromTheTop',
-                    text: 'restart from the top',
+                    text: 'restart from the top [ICON]',
                     blockType: BlockType.COMMAND,
-                    isTerminal: true
+                    isTerminal: true,
+                    arguments: {
+                        ICON: {
+                            type: ArgumentType.IMAGE,
+                            dataURI: pathToMedia + "/repeat.svg"
+                        }
+                    }
                 },
                 {
                     opcode: 'doodooBlockLolol',
@@ -325,8 +333,8 @@ class JgDevBlocks {
                     compiler.source += `return ${compiler.descendInput(node.return).asString()};`;
                 },
                 restartFromTheTop: (_, compiler) => {
-                    // TODO: should this return?
                     compiler.source += `runtime._restartThread(thread);`;
+                    compiler.source += `return;`;
                 },
                 compiledOutput: (_, compiler, imports) => {
                     const code = Cast.toString(compiler.source);

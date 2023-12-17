@@ -5,6 +5,7 @@ const Cast = require('../../util/cast');
 const AsyncIcon = require('./async.svg');
 
 const blockSeparator = '<sep gap="36"/>'; // At default scale, about 28px
+const pathToMedia = 'static/blocks-media'; // ScratchBlocks.mainWorkspace.options.pathToMedia
 
 const blocks = `
 <!-- this one dont work right -->
@@ -31,7 +32,7 @@ const blocks = `
 </block>
 %block2>
 <block type="control_waittick"/>
-<block type="control_exitLoop"/>
+%block3>
 ${blockSeparator}
 <block type="control_get_counter"/>
 <block type="control_incr_counter"/>
@@ -119,7 +120,7 @@ class pmControlsExpansion {
                 {
                     opcode: 'asNewBroadcast',
                     text: [
-                        'as new broadcast',
+                        'new thread',
                         '[ICON]'
                     ],
                     branchCount: 1,
@@ -136,6 +137,18 @@ class pmControlsExpansion {
                         },
                     }
                 },
+                {
+                    opcode: 'restartFromTheTop',
+                    text: 'restart from the top [ICON]',
+                    blockType: BlockType.COMMAND,
+                    isTerminal: true,
+                    arguments: {
+                        ICON: {
+                            type: ArgumentType.IMAGE,
+                            dataURI: pathToMedia + "/repeat.svg"
+                        }
+                    }
+                }
             ]
         };
     }
@@ -163,6 +176,9 @@ class pmControlsExpansion {
                     whenTrue1: generator.descendSubstack(block, 'SUBSTACK'),
                     whenTrue2: generator.descendSubstack(block, 'SUBSTACK2'),
                     whenTrue3: generator.descendSubstack(block, 'SUBSTACK3')
+                }),
+                restartFromTheTop: () => ({
+                    kind: 'stack'
                 })
             },
             js: {
@@ -181,6 +197,10 @@ class pmControlsExpansion {
                     compiler.source += `} else {\n`;
                     compiler.descendStack(node.whenTrue3, new imports.Frame(false));
                     compiler.source += `}\n`;
+                },
+                restartFromTheTop: (_, compiler) => {
+                    compiler.source += `runtime._restartThread(thread);`;
+                    compiler.source += `return;`;
                 }
             }
         }
@@ -217,6 +237,9 @@ class pmControlsExpansion {
                 {}
             );
         }
+    }
+    restartFromTheTop() {
+        return; // doesnt work in compat
     }
 }
 
