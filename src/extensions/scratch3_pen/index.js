@@ -1539,7 +1539,8 @@ class Scratch3PenBlocks {
 
         const ctx = this._getBitmapCanvas();
 
-        const hex = Cast.toString(args.COLOR);
+        const rgb = Cast.toRgbColorObject(args.COLOR);
+        const hex = Color.rgbToHex(rgb);
         ctx.fillStyle = hex;
         ctx.strokeStyle = penColor;
         ctx.lineWidth = penAttributes.diameter;
