@@ -423,6 +423,13 @@ class JSGenerator {
         this.debug = this.target.runtime.debug;
     }
 
+    static exports = {
+        TypedInput,
+        ConstantInput,
+        VariableInput,
+        Frame
+    }
+
     static _extensionJSInfo = {};
     static setExtensionJs(id, data) {
         JSGenerator._extensionJSInfo[id] = data;
