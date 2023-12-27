@@ -640,5 +640,7 @@ execute.scopedEval = scopedEval;
 execute.runtimeFunctions = runtimeFunctions;
 execute.saveGlobalState = saveGlobalState;
 execute.restoreGlobalState = restoreGlobalState;
+// not actually used, this is an export for extensions
+execute.globalState = globalState;
 
 module.exports = execute;
