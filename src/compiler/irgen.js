@@ -2249,6 +2249,10 @@ class IRGenerator {
         ir.procedures = this.procedures;
         return ir;
     }
+    
+    static exports = {
+        ScriptTreeGenerator
+    }
 }
 
 module.exports = IRGenerator;
