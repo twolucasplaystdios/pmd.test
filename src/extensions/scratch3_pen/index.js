@@ -1049,52 +1049,94 @@ class Scratch3PenBlocks {
 
         this._drawContextToPen(ctx);
     }
-    async _drawUriImage(args) {
+
+    _drawUriImagePromiseHandler (thiss) {
+        return ((resolve, args, preloadedImage) => {
+            let URI, X, Y, WIDTH, HEIGHT, ROTATE, CROPX, CROPY, CROPW, CROPH = null;
+            if (args) {
+                URI    = args.URI;
+                X      = args.X;
+                Y      = args.Y;
+                WIDTH  = args.WIDTH;
+                HEIGHT = args.HEIGHT;
+                ROTATE = args.ROTATE;
+                CROPX  = args.CROPX;
+                CROPY  = args.CROPY;
+                CROPW  = args.CROPW;
+                CROPH  = args.CROPH;
+            }
+
+            const ctx = thiss._getBitmapCanvas();
+
+            // convert NaN to 0
+            const requestedSizing = [
+                Cast.toNumber(WIDTH),
+                Cast.toNumber(HEIGHT)
+            ];
+
+            function handler(image) {
+                const realX = (Cast.toNumber(X) * thiss._penRes) - (thiss.bitmapCanvas.width / 2);
+                const realY = (Cast.toNumber(Y) * thiss._penRes) + (thiss.bitmapCanvas.height / 2);
+                if (requestedSizing[0] || requestedSizing[1]) {
+                    ctx.rotate((Cast.toNumber(ROTATE) - 90) * (Math.PI / 180));
+
+                    // if one of these is not specified,
+                    // use sizes from the image
+                    if (!requestedSizing[0]) {
+                        requestedSizing[0] = image.width;
+                    }
+                    if (!requestedSizing[1]) {
+                        requestedSizing[1] = image.height;
+                    }
+
+                    const calculatedSizing = [requestedSizing[0] * thiss._penRes, requestedSizing[1] * thiss._penRes];
+                    // check for cropx only since they are all
+                    // required for a proper crop
+                    if (typeof CROPX !== "undefined") {
+                        // we dont need to correct positions
+                        // or sizing since its relative to image
+                        // not the canvas size
+                        const CX = Cast.toNumber(CROPX);
+                        const CY = Cast.toNumber(CROPY);
+                        // convert NaN to 0
+                        const requestedCSizing = [
+                            Cast.toNumber(CROPW),
+                            Cast.toNumber(CROPH)
+                        ];
+
+                        ctx.drawImage(image, CX, CY, requestedCSizing[0], requestedCSizing[1], realX, -realY, calculatedSizing[0], calculatedSizing[1]);
+                    } else {
+                        ctx.drawImage(image, realX, -realY, calculatedSizing[0], calculatedSizing[1]);
+                    }
+                } else {
+                    ctx.drawImage(image, realX, -realY);
+                }
+
+                thiss._drawContextToPen(ctx);
+                if (resolve) resolve();
+            }
+            if (preloadedImage) {
+                return handler(preloadedImage);
+            }
+            const image = new Image();
+            image.crossOrigin = "anonymous";
+            image.onload = () => handler(image);
+            image.onerror = () => resolve(); // ignore loading errors lol!
+            image.src = Cast.toString(URI);
+        });
+    }
+    _drawUriImage(args) {
+        const thiss = this;
         const uri = Cast.toString(args.URI);
-        const x = Cast.toNumber(args.X)
-        const y = Cast.toNumber(args.Y)
-        let width = Cast.toNumber(args.WIDTH)
-        let height = Cast.toNumber(args.HEIGHT)
-        const radians = MathUtil.degToRad(Cast.toNumber(args.ROTATE) - 90)
-        const cropX = Cast.toNumber(args.CROPX)
-        const cropY = Cast.toNumber(args.CROPY)
-        const cropWidth = Cast.toNumber(args.CROPW)
-        const cropHeight = Cast.toNumber(args.CROPH)
-        let image =  this.preloadedImages[uri]
-        if (!image) {
-            image = await new Promise((resolve, reject) => {
-                const image = new Image();
-                image.crossOrigin = "anonymous";
-                image.onload = () => resolve(image);
-                image.onerror = err => reject(err);
-                image.src = uri;
-            });
-        }            
-        const ctx = thiss._getBitmapCanvas();
-
-        const realX = x * this._penRes;
-        const realY = -(y * this._penRes);
-        const imageArgs = [image, cropX, cropY, cropWidth, cropHeight, realX, realY, width, height]
-        if (typeof width && height === "undefined") {
-            imageArgs.splice(6, 2);
+        if (this.preloadedImages.hasOwnProperty(uri)) {
+            // we already loaded this image before
+            const func = this._drawUriImagePromiseHandler(thiss);
+            return func(null, args, this.preloadedImages[uri]);
         }
-        ctx.rotate(radians);
-
-        // if one of these is not specified,
-        // use sizes from the image
-        width ??= image.width;
-        height ??= image.height;
-
-        width *= this._penRes; 
-        height *= this._penRes;
-        
-        if (typeof cropX && cropY === "undefined") {
-            imageArgs.splice(1, 4);
-        }
-
-        console.log(imageArgs)
-        ctx.drawImage(...imageArgs);
-        this._drawContextToPen(ctx)
+        return new Promise(resolve => {
+            const func = this._drawUriImagePromiseHandler(thiss);
+            func(resolve, args);
+        })
     }
 
     drawUriImage (args) {
