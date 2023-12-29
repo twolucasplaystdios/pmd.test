@@ -1060,8 +1060,7 @@ class Scratch3PenBlocks {
         const ctx = this._getBitmapCanvas();
         ctx.rotate(MathUtil.degToRad(ROTATE - 90));
 
-        // if one of these is not specified,
-        // use sizes from the image
+        // use sizes from the image if none specified
         const width = (WIDTH ?? image.width) * this._penRes;
         const height = (HEIGHT ?? image.height) * this._penRes;
         const realX = (X * this._penRes) - (width / 2);
