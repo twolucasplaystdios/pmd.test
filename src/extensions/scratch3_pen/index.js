@@ -1078,13 +1078,13 @@ class Scratch3PenBlocks {
     }
 
     drawUriImage (args) {
-        return this._drawUriImage(args);
+        this._drawUriImage(args);
     }
     drawUriImageWHR (args) {
-        return this._drawUriImage(args);
+        this._drawUriImage(args);
     }
     drawUriImageWHCX1Y1X2Y2R (args) {
-        return this._drawUriImage(args);
+        this._drawUriImage(args);
     }
 
     preloadUriImage ({ URI, NAME }) {
