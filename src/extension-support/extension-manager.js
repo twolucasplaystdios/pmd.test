@@ -513,14 +513,14 @@ class ExtensionManager {
 
     removeExtension(id) {
         const serviceName = this._loadedExtensions.get(id);
-        const {provider} = dispatch._getServiceProvider(serviceName)
+        const {provider} = dispatch._getServiceProvider(serviceName);
         if (typeof provider.remove === 'function') {
             dispatch.call(serviceName, 'dispose');
         }
 
         this._loadedExtensions.delete(id);
         const workerId = +serviceName.split('.')[1];
-        delete this.workerURLs[workerId]
+        delete this.workerURLs[workerId];
         dispatch.call('runtime', '_removeExtensionPrimitive', id);
         this.refreshBlocks();
     }
@@ -726,12 +726,12 @@ class ExtensionManager {
 
     _normalize(thing, to) {
         switch (to) {
-            case 'string': return Cast.toString(thing);
-            case 'bigint':
-            case 'number': return Cast.toNumber(thing);
-            case 'boolean': return Cast.toBoolean(thing);
-            case 'function': return new Function(thing);
-            default: return Cast.toString(thing);
+        case 'string': return Cast.toString(thing);
+        case 'bigint':
+        case 'number': return Cast.toNumber(thing);
+        case 'boolean': return Cast.toBoolean(thing);
+        case 'function': return new Function(thing);
+        default: return Cast.toString(thing);
         }
     }
 
@@ -842,14 +842,13 @@ class ExtensionManager {
                     'broadcast': "exception"
                 };
                 const realBlockInfo = getBlockInfo(args);
-                Object.keys(realBlockInfo.arguments).forEach(arg => {
+                for (const arg in realBlockInfo.arguments) {
                     const expected = normal[realBlockInfo.arguments[arg].type];
                     if (realBlockInfo.arguments[arg].exemptFromNormalization === true) return;
                     if (expected === 'exception') return;
                     if (!expected) return;
-                    if (arg.startsWith('substack')) return;
                     if (!(typeof args[arg] === expected)) args[arg] = this._normalize(args[arg], expected);
-                });
+                }
                 // TODO: filter args using the keys of realBlockInfo.arguments? maybe only if sandboxed?
                 return callBlockFunc(args, util, realBlockInfo);
             };
