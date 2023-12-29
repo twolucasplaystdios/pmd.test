@@ -1076,14 +1076,27 @@ class Scratch3PenBlocks {
         this._drawContextToPen(ctx);
     }
 
+    // todo: should these be merged into their own function? they all have the same code...
     drawUriImage (args) {
-        this._drawUriImage(args);
+        const preloaded = this.preloadedImages[args.URI];
+        const possiblePromise = this._drawUriImage(args);
+        if (!preloaded) {
+            return possiblePromise;
+        }
     }
     drawUriImageWHR (args) {
-        this._drawUriImage(args);
+        const preloaded = this.preloadedImages[args.URI];
+        const possiblePromise = this._drawUriImage(args);
+        if (!preloaded) {
+            return possiblePromise;
+        }
     }
     drawUriImageWHCX1Y1X2Y2R (args) {
-        this._drawUriImage(args);
+        const preloaded = this.preloadedImages[args.URI];
+        const possiblePromise = this._drawUriImage(args);
+        if (!preloaded) {
+            return possiblePromise;
+        }
     }
 
     preloadUriImage ({ URI, NAME }) {
