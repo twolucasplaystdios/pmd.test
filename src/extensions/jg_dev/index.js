@@ -267,6 +267,13 @@ class JgDevBlocks {
                     text: 'throw an error',
                     blockType: BlockType.COMMAND
                 },
+                {
+                    opcode: 'hiddenBoolean',
+                    text: 'im actually a boolean output',
+                    blockType: BlockType.REPORTER,
+                    forceOutputType: 'Boolean',
+                    disableMonitor: true
+                },
             ],
             menus: {
                 variable: "getVariablesMenu",
@@ -530,6 +537,10 @@ class JgDevBlocks {
     }
     compiledOutput() {
         return '<unavailable without compiler>';
+    }
+
+    hiddenBoolean() {
+        return true;
     }
 
     multiplyTest(args, util) {

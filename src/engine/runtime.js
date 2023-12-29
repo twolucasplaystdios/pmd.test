@@ -1655,6 +1655,9 @@ class Runtime extends EventEmitter {
         if (typeof blockInfo.blockShape === 'number') {
             blockJSON.outputShape = blockInfo.blockShape;
         }
+        if (blockInfo.forceOutputType) {
+            blockJSON.output = blockInfo.forceOutputType;
+        }
 
         const mutation = blockInfo.isDynamic 
             ? `<mutation blockInfo="${xmlEscape.escapeAttribute(JSON.stringify(blockInfo))}"/>` 
