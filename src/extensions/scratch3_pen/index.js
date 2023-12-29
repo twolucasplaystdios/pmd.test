@@ -76,6 +76,17 @@ const LayerNames = {
     'back': StageLayering.SPRITE_LAYER
 };
 
+const parseArray = (string) => {
+    let array;
+    try {
+        array = JSON.parse(string);
+    } catch {
+        array = [];
+    }
+    if (!Array.isArray(array)) return [];
+    return array;
+};
+
 /**
  * @typedef {object} PenState - the pen state associated with a particular target.
  * @property {Boolean} penDown - tracks whether the pen should draw for this target.
@@ -784,6 +795,36 @@ class Scratch3PenBlocks {
                         SHAPE: {
                             type: ArgumentType.POLYGON,
                             nodes: 3
+                        },
+                        COLOR: {
+                            type: ArgumentType.COLOR
+                        }
+                    },
+                    hideFromPalette: false
+                },
+                {
+                    opcode: 'draw4SidedComplexShape',
+                    blockType: BlockType.COMMAND,
+                    text: 'draw quadrilateral [SHAPE] with fill [COLOR]',
+                    arguments: {
+                        SHAPE: {
+                            type: ArgumentType.POLYGON,
+                            nodes: 4
+                        },
+                        COLOR: {
+                            type: ArgumentType.COLOR
+                        }
+                    },
+                    hideFromPalette: false
+                },
+                {
+                    opcode: 'drawArrayComplexShape',
+                    blockType: BlockType.COMMAND,
+                    text: 'draw polygon from points [SHAPE] with fill [COLOR]',
+                    arguments: {
+                        SHAPE: {
+                            type: ArgumentType.STRING,
+                            defaultValue: '[-20, 20, 20, 20, 0, -20]'
                         },
                         COLOR: {
                             type: ArgumentType.COLOR
@@ -1505,6 +1546,35 @@ class Scratch3PenBlocks {
         ctx.fill();
 
         this._drawContextToPen(ctx);
+    }
+
+    draw4SidedComplexShape (args, util) {
+        this.drawComplexShape(args, util);
+    }
+
+    drawArrayComplexShape (args, util) {
+        const providedData = Cast.toString(args.SHAPE);
+        const providedPoints = parseArray(providedData); // ignores objects
+        if (providedPoints.length <= 0) return; // we can save processing by just ignoring empty arrays
+        if (providedPoints.length % 2 !== 0) providedPoints.push(0); // the last point is missing a Y value, Y will be 0 for that point
+        const points = [];
+        let currentPoint = {};
+        let isXCoord = true;
+        for (const num of providedPoints) {
+            if (isXCoord) {
+                currentPoint.x = Cast.toNumber(num);
+                isXCoord = false;
+                continue;
+            }
+            currentPoint.y = Cast.toNumber(num);
+            points.push(currentPoint);
+            currentPoint = {}; // make a new object so we dont override the others inside the array
+            isXCoord = true;
+        }
+        this.drawComplexShape({
+            ...args,
+            SHAPE: points
+        }, util);
     }
 }
 
