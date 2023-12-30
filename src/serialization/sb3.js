@@ -408,6 +408,14 @@ const getExtensionIdForOpcode = function (opcode) {
 };
 
 /**
+ * @param {Runtime} runtime
+ * @returns {Array<string>} runtime -> extensionIDs
+ */
+const getExtensionIDs = runtime => runtime._blockInfo
+    .map(ext => ext.id)
+    .filter(ext => runtime.extensionManager.isExtensionLoaded(ext));
+
+/**
  * @param {Set<string>|string[]} extensionIDs Project extension IDs
  * @param {Runtime} runtime
  * @returns {Record<string, string>|null} extension ID -> URL map, or null if no custom extensions.
@@ -450,14 +458,9 @@ const getExtensionURLsToSave = (extensionIDs, runtime) => {
  */
 const serializeBlocks = function (blocks) {
     const obj = Object.create(null);
-    const extensionIDs = new Set();
     for (const blockID in blocks) {
         if (!blocks.hasOwnProperty(blockID)) continue;
         obj[blockID] = serializeBlock(blocks[blockID], blocks);
-        const extensionID = getExtensionIdForOpcode(blocks[blockID].opcode);
-        if (extensionID) {
-            extensionIDs.add(extensionID);
-        }
     }
     // once we have completed a first pass, do a second pass on block inputs
     for (const blockID in obj) {
@@ -486,7 +489,7 @@ const serializeBlocks = function (blocks) {
             delete obj[blockID];
         }
     }
-    return [obj, Array.from(extensionIDs)];
+    return obj;
 };
 
 /**
@@ -521,13 +524,7 @@ const deserializeStandaloneBlocks = blocks => {
  * @returns {object} Something that can be understood by deserializeStandaloneBlocks
  */
 const serializeStandaloneBlocks = (blocks, runtime) => {
-    const extensionIDs = new Set();
-    for (const block of blocks) {
-        const extensionID = getExtensionIdForOpcode(block.opcode);
-        if (extensionID) {
-            extensionIDs.add(extensionID);
-        }
-    }
+    const extensionIDs = new Set(getExtensionIDs(runtime));
     const extensionURLs = getExtensionURLsToSave(extensionIDs, runtime);
     if (extensionURLs) {
         return {
@@ -687,16 +684,15 @@ const serializeComments = function (comments) {
  * @param {Set} extensions A set of extensions to add extension IDs to
  * @return {object} A serialized representation of the given target.
  */
-const serializeTarget = function (target, extensions) {
+const serializeTarget = function (target) {
     const obj = Object.create(null);
-    let targetExtensions = [];
     obj.isStage = target.isStage;
     obj.name = obj.isStage ? 'Stage' : target.name;
     const vars = serializeVariables(target.variables);
     obj.variables = vars.variables;
     obj.lists = vars.lists;
     obj.broadcasts = vars.broadcasts;
-    [obj.blocks, targetExtensions] = serializeBlocks(target.blocks);
+    obj.blocks = serializeBlocks(target.blocks);
     obj.comments = serializeComments(target.comments);
 
     // TODO remove this check/patch when (#1901) is fixed
@@ -725,10 +721,6 @@ const serializeTarget = function (target, extensions) {
         obj.rotationStyle = target.rotationStyle;
     }
 
-    // Add found extensions to the extensions object
-    targetExtensions.forEach(extensionId => {
-        extensions.add(extensionId);
-    });
     return obj;
 };
 
@@ -781,7 +773,7 @@ const serialize = function (runtime, targetId, {allowOptimization = true} = {}) 
     // Fetch targets
     const obj = Object.create(null);
     // Create extension set to hold extension ids found while serializing targets
-    const extensions = new Set();
+    const extensions = getExtensionIDs(runtime);
 
     const originalTargetsToSerialize = targetId ?
         [runtime.getTargetById(targetId)] :
@@ -805,7 +797,7 @@ const serialize = function (runtime, targetId, {allowOptimization = true} = {}) 
     if (targetId) {
         const target = serializedTargets[0];
         const extensionURLs = getExtensionURLsToSave(extensions, runtime);
-        target.extensions = Array.from(extensions);
+        target.extensions = extensions;
         if (extensionURLs) {
             obj.extensionURLs = extensionURLs;
         }
@@ -830,7 +822,7 @@ const serialize = function (runtime, targetId, {allowOptimization = true} = {}) 
     }
 
     // Assemble extension list
-    obj.extensions = Array.from(extensions);
+    obj.extensions = extensions;
     const extensionURLs = getExtensionURLsToSave(extensions, runtime);
     if (extensionURLs) {
         obj.extensionURLs = extensionURLs;
@@ -1251,9 +1243,6 @@ const parseScratchObject = function (object, runtime, extensions, zip, assets) {
             if (typeof blockJSON !== 'object' || Array.isArray(blockJSON)) continue;
             const extensionID = getExtensionIdForOpcode(blockJSON.opcode);
             const isPatched = extensions.patcher.patchExists(extensionID);
-            if (extensionID && !isPatched) {
-                extensions.extensionIDs.add(extensionID);
-            }
             if (isPatched) {
                 extensions.patcher.runExtensionPatch(extensionID, extensions, object);
             }
@@ -1503,12 +1492,6 @@ const deserializeMonitor = function (monitorData, runtime, targets, extensions) 
         }
 
         runtime.monitorBlocks.createBlock(monitorBlock);
-
-        // If the block is from an extension, record it.
-        const extensionID = getExtensionIdForOpcode(monitorBlock.opcode);
-        if (extensionID) {
-            extensions.extensionIDs.add(extensionID);
-        }
     }
 
     runtime.requestAddMonitor(MonitorRecord(monitorData));
@@ -1555,7 +1538,7 @@ const deserialize = function (json, runtime, zip, isSingleSprite) {
     const extensionPatcher = new OldExtensions(runtime);
     extensionPatcher.registerExtensions(ExtensionPatches);
     const extensions = {
-        extensionIDs: new Set(),
+        extensionIDs: new Set(json.extensions),
         extensionURLs: new Map(),
         extensionData: {},
         patcher: extensionPatcher
