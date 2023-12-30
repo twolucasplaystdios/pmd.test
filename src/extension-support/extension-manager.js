@@ -844,9 +844,9 @@ class ExtensionManager {
                 const realBlockInfo = getBlockInfo(args);
                 for (const arg in realBlockInfo.arguments) {
                     const expected = normal[realBlockInfo.arguments[arg].type];
-                    if (realBlockInfo.arguments[arg].exemptFromNormalization === true) return;
-                    if (expected === 'exception') return;
-                    if (!expected) return;
+                    if (realBlockInfo.arguments[arg].exemptFromNormalization === true) continue;
+                    if (expected === 'exception') continue;
+                    if (!expected) continue;
                     if (!(typeof args[arg] === expected)) args[arg] = this._normalize(args[arg], expected);
                 }
                 // TODO: filter args using the keys of realBlockInfo.arguments? maybe only if sandboxed?
