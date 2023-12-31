@@ -918,8 +918,13 @@ class Blocks {
         if (preserveStack) {
             const parent = this._blocks[block.parent];
             const next = this._blocks[block.next];
-            if (parent) parent.next = block.next;
+            const input = parent?.inputs
+                ? [...Object.entries(parent.inputs)]
+                    .find(ent => ent[1].block === blockId)?.[1]
+                : null;
+            if (parent && !input) parent.next = block.next;
             if (next) next.parent = block.parent;
+            if (next && input) input.block = block.next;
         }
 
         // Delete inputs (including branches)
@@ -945,6 +950,8 @@ class Blocks {
             if (next) {
                 this._scripts.push(next.id);
                 next.topLevel = true;
+                next.x = block.x;
+                next.y = block.y;
             }
             this._scripts.splice(i, 1);
         }

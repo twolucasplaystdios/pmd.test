@@ -513,10 +513,9 @@ class ExtensionManager {
 
     removeExtension(id) {
         const serviceName = this._loadedExtensions.get(id);
-        const {provider} = dispatch._getServiceProvider(serviceName);
-        if (typeof provider.remove === 'function') {
-            dispatch.call(serviceName, 'dispose');
-        }
+        dispatch.call(serviceName, 'dispose');
+        delete dispatch.services[serviceName];
+        delete this.runtime[`ext_${id}`];
 
         this._loadedExtensions.delete(id);
         const workerId = +serviceName.split('.')[1];
